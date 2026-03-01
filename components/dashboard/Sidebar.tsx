@@ -1,0 +1,74 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+
+const navItems = [
+  { href: "/dashboard", label: "Dashboard", icon: "las la-th-large" },
+  { href: "/dashboard/properties", label: "My Properties", icon: "las la-building" },
+  { href: "/dashboard/financials", label: "Financials", icon: "las la-wallet" },
+  { href: "/dashboard/documents", label: "Documents", icon: "las la-file-alt" },
+];
+
+export function Sidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="w-64 border-r border-gray-200 bg-white flex flex-col fixed h-full z-50">
+      <div className="p-6">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="bg-[#134e4a] rounded-lg p-2 text-white">
+            <i className="las la-city text-xl" aria-hidden />
+          </div>
+          <div>
+            <h1 className="text-gray-900 text-base font-bold leading-tight">
+              Riviola
+            </h1>
+            <p className="text-gray-500 text-xs font-medium">
+              Investor Management
+            </p>
+          </div>
+        </Link>
+      </div>
+      <nav className="flex-1 px-4 space-y-2 mt-4">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                isActive
+                  ? "bg-[#134e4a]/10 text-[#134e4a]"
+                  : "text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              <i className={`${item.icon} text-lg`} aria-hidden />
+              <span className="text-sm font-semibold">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      <div className="p-4 border-t border-gray-100">
+        <div className="flex items-center gap-3 p-2">
+          <div className="size-10 rounded-full bg-gray-200 overflow-hidden relative">
+            <Image
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMcPYQbj6EIqkA64ty9wwLMuMOWke1mCjd2zQbl1GTCbBz0Hldg8nseEu5eUgUx1ZTkw23gzZW9S14hOzWDlRN_o8dwtTthv92w-O_jCSRQtsN_VC5WTb9w6K2x7jr6jn3wU6GHjIxiQ1dXQytx23XnM4e00FY2YrIp3BT_aTbFZLr3GdHsVsiW2ZdE_X-K_UerD_ZFTYmoBgWJsUO2aNW_bCeEtQbgRt-KLNwotc8HbVukKTHg46iREk3lC9akDb6BJ1XpMHNT2m3"
+              alt="Profile"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold truncate text-gray-900">
+              Alex Sterling
+            </p>
+            <p className="text-xs text-gray-500 truncate">Premium Member</p>
+          </div>
+          <i className="las la-cog text-gray-400 text-sm" aria-hidden />
+        </div>
+      </div>
+    </aside>
+  );
+}

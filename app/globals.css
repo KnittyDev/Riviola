@@ -1,26 +1,123 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css");
 @import "tailwindcss";
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --background-secondary: #f9fafb;
+  --foreground: #111827;
+  --primary: #134e4a;
+  --primary-hover: #115e59;
+  --secondary-btn: #000000;
+  --secondary-btn-hover: #1f2937;
+  --accent-teal: #14b8a6;
+  --dark-bg: #0a0f0f;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary-btn: var(--secondary-btn);
+  --color-secondary-btn-hover: var(--secondary-btn-hover);
+  --color-accent-teal: var(--accent-teal);
+  --color-dark-bg: var(--dark-bg);
+  --font-sans: var(--font-plus-jakarta);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Butonlarda ve tıklanabilir öğelerde el imleci */
+button,
+[type="button"],
+[type="submit"],
+[role="button"],
+a[href]:not([href=""]) {
+  cursor: pointer;
+}
+
+/* Disabled butonlarda varsayılan imleç */
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* Line Awesome icon base size */
+.las, .lar, .lab {
+  font-size: 1.25rem;
+}
+
+/* Utility classes */
+.grainy-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+}
+
+.marquee-content {
+  display: flex;
+  width: 200%;
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Page / card entrance animations */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-in {
+  animation: fade-in 0.35s ease both;
+}
+
+/* stagger helpers */
+.delay-50  { animation-delay: 50ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-250 { animation-delay: 250ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-350 { animation-delay: 350ms; }
+.delay-400 { animation-delay: 400ms; }
+
+/* Upcoming Milestones – active dot pulse */
+@keyframes milestone-dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(19, 78, 74, 0.35);
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.9;
+    box-shadow: 0 0 0 6px rgba(19, 78, 74, 0);
+  }
+}
+
+.milestone-dot-active {
+  animation: milestone-dot-pulse 2s ease-in-out infinite;
 }
