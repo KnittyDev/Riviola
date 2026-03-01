@@ -10,6 +10,7 @@ const navItems = [
   { href: "/dashboard/staff/buildings", label: "Buildings", icon: "las la-building" },
   { href: "/dashboard/staff/investors", label: "Investors", icon: "las la-user-friends" },
   { href: "/dashboard/staff/requests", label: "Requests", icon: "las la-tasks" },
+  { href: "/dashboard/staff/subscription", label: "Subscription", icon: "las la-credit-card" },
 ];
 
 export function StaffSidebar() {
@@ -51,14 +52,7 @@ export function StaffSidebar() {
           );
         })}
       </nav>
-      <div className="p-4 border-t border-gray-100 space-y-2">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-semibold transition-colors"
-        >
-          <i className="las la-external-link-alt text-lg" aria-hidden />
-          Investor dashboard
-        </Link>
+      <div className="p-4 border-t border-gray-100">
         <button
           type="button"
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-semibold transition-colors"
