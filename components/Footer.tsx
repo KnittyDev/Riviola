@@ -91,19 +91,19 @@ export function Footer() {
           </p>
           <div className="flex gap-8 text-xs font-bold text-gray-400">
             <Link
-              href="#"
+              href="/privacy"
               className="hover:text-[#134e4a] transition-colors uppercase tracking-widest"
             >
               Privacy
             </Link>
             <Link
-              href="#"
+              href="/terms"
               className="hover:text-[#134e4a] transition-colors uppercase tracking-widest"
             >
               Terms
             </Link>
             <Link
-              href="#"
+              href="/cookies"
               className="hover:text-[#134e4a] transition-colors uppercase tracking-widest"
             >
               Cookies

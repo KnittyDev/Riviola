@@ -57,12 +57,12 @@ export function HeroSection() {
               <div className="size-10 rounded-lg bg-[#134e4a]/20 flex items-center justify-center">
                 <i className="las la-chart-line text-[#134e4a] text-xl" aria-hidden />
               </div>
-              <span className="text-teal-600 text-xs font-bold">+12.5%</span>
+              <span className="text-gray-200 text-xs font-bold">+12.5%</span>
             </div>
             <p className="text-gray-600 text-xs font-bold uppercase tracking-widest mb-1">
               Managed Value
             </p>
-            <p className="text-gray-900 text-3xl font-extrabold">4.2B€</p>
+            <p className="text-gray-900 text-3xl font-extrabold">878M€</p>
           </div>
           <div className="absolute top-20 -left-10 glass-card p-6 rounded-3xl w-56 z-20 hidden md:block group hover:-translate-y-2 transition-transform">
             <div className="flex items-center gap-3 mb-3">
