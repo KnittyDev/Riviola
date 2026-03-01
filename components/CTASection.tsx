@@ -13,18 +13,18 @@ export function CTASection() {
             Set the foundation for your next project today.
           </h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button
-              type="button"
-              className="h-16 px-10 rounded-2xl bg-white text-[#134e4a] font-extrabold text-lg shadow-xl shadow-black/20 hover:scale-105 transition-transform"
+            <a
+              href="/onboarding"
+              className="h-16 px-10 rounded-2xl bg-white text-[#134e4a] font-extrabold text-lg shadow-xl shadow-black/20 hover:scale-105 transition-transform flex items-center justify-center"
             >
               Schedule a Consultation
-            </button>
-            <button
-              type="button"
-              className="h-16 px-10 rounded-2xl bg-teal-800 text-white font-extrabold text-lg border border-teal-700 hover:bg-teal-700 transition-colors"
+            </a>
+            <a
+              href="/onboarding"
+              className="h-16 px-10 rounded-2xl bg-teal-800 text-white font-extrabold text-lg border border-teal-700 hover:bg-teal-700 transition-colors flex items-center justify-center"
             >
-              Request Case Study
-            </button>
+              Start Free Trial
+            </a>
           </div>
         </div>
       </div>

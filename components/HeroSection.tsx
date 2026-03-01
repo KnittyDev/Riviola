@@ -27,18 +27,18 @@ export function HeroSection() {
             beam, budget, and breakthrough in real-time.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              type="button"
+            <a
+              href="/onboarding"
               className="h-14 px-8 rounded-2xl bg-[#134e4a] text-white font-bold text-lg flex items-center justify-center gap-2 group hover:bg-[#115e59] hover:gap-4 transition-all"
             >
               Launch Project <i className="las la-arrow-right text-xl" aria-hidden />
-            </button>
-            <button
-              type="button"
-              className="h-14 px-8 rounded-2xl bg-gray-100 text-gray-900 font-bold text-lg hover:bg-gray-200 transition-all"
+            </a>
+            <a
+              href="/onboarding"
+              className="h-14 px-8 rounded-2xl bg-gray-100 text-gray-900 font-bold text-lg hover:bg-gray-200 transition-all flex items-center justify-center"
             >
               View Demo
-            </button>
+            </a>
           </div>
         </div>
         <div className="lg:col-span-6 relative h-[600px]">

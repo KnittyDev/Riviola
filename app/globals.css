@@ -94,6 +94,22 @@ button:disabled,
   animation: fade-in 0.35s ease both;
 }
 
+/* Smoother entrance for onboarding transition text */
+@keyframes smooth-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-smooth-in {
+  animation: smooth-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* stagger helpers */
 .delay-50  { animation-delay: 50ms; }
 .delay-100 { animation-delay: 100ms; }
@@ -120,4 +136,14 @@ button:disabled,
 
 .milestone-dot-active {
   animation: milestone-dot-pulse 2s ease-in-out infinite;
+}
+
+/* Onboarding – Continue button pulse */
+@keyframes btn-pulse-soft {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(19, 78, 74, 0.4); }
+  50% { opacity: 0.95; box-shadow: 0 0 0 12px rgba(19, 78, 74, 0); }
+}
+
+.animate-btn-pulse {
+  animation: btn-pulse-soft 1.5s ease-in-out infinite;
 }
