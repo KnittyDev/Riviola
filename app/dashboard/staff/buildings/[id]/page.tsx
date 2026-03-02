@@ -3,6 +3,8 @@ import Image from "next/image";
 import { getBuildingById, getBuildingMilestones } from "@/lib/staffBuildingsData";
 import { notFound } from "next/navigation";
 import { BuildingMilestonesLog } from "./BuildingMilestonesLog";
+import { BuildingProgressClient, BuildingStatusBadgeClient, NextMilestoneClient } from "./BuildingOverridesClient";
+import type { BuildingStatus } from "@/lib/staffBuildingOverrides";
 
 export default async function StaffBuildingDetailPage({
   params,
@@ -58,25 +60,15 @@ export default async function StaffBuildingDetailPage({
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Progress</p>
             <div className="flex items-center gap-3">
-              <div className="flex-1 max-w-xs h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#134e4a] rounded-full transition-all"
-                  style={{ width: `${building.progress}%` }}
-                />
-              </div>
-              <span className="text-sm font-bold text-[#134e4a]">{building.progress}%</span>
-              <span
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                  building.status === "Completed" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
-                }`}
-              >
-                {building.status === "Completed" ? "Completed" : "In progress"}
-              </span>
+              <BuildingProgressClient buildingId={id} fallbackProgress={building.progress} />
+              <BuildingStatusBadgeClient buildingId={id} fallbackStatus={building.status as BuildingStatus} />
             </div>
           </div>
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Next milestone</p>
-            <p className="text-gray-700 mt-0.5">{building.nextMilestone}</p>
+            <p className="text-gray-700 mt-0.5">
+              <NextMilestoneClient buildingId={id} fallbackNextMilestone={building.nextMilestone} />
+            </p>
           </div>
         </div>
       </div>

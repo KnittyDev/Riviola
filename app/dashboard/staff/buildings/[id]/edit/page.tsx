@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getBuildingById } from "@/lib/staffBuildingsData";
+import { buildingBlocks, buildingFloors, getBuildingById } from "@/lib/staffBuildingsData";
 import { notFound } from "next/navigation";
 import { EditBuildingForm } from "./EditBuildingForm";
 
@@ -35,6 +35,8 @@ export default async function EditBuildingPage({
         defaultStatus={building.status}
         defaultProgress={building.progress}
         defaultNextMilestone={building.nextMilestone}
+        defaultBlocks={buildingBlocks[building.id] ?? ["Block A"]}
+        defaultFloors={buildingFloors[building.id] ?? 1}
       />
     </div>
   );

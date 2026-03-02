@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import type { BuildingStatus, PlannedMilestone } from "@/lib/staffBuildingOverrides";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
@@ -10,6 +11,41 @@ const labelClass = "block text-sm font-semibold text-gray-700 mb-1";
 export default function NewBuildingPage() {
   const [blocks, setBlocks] = useState<string[]>(["Block A"]);
   const [newBlockName, setNewBlockName] = useState("");
+  const [status, setStatus] = useState<BuildingStatus>("Planned");
+  const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>([]);
+  const [nextMilestoneId, setNextMilestoneId] = useState<string | null>(null);
+
+  const sortedPlanned = useMemo(() => plannedMilestones, [plannedMilestones]);
+
+  function newId() {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  const DRAFT_KEY = "riviola.new_building_draft.v1";
+  useEffect(() => {
+    const raw = window.localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw) as {
+        status?: BuildingStatus;
+        plannedMilestones?: PlannedMilestone[];
+        nextMilestoneId?: string | null;
+      };
+      if (draft.status) setStatus(draft.status);
+      if (Array.isArray(draft.plannedMilestones)) setPlannedMilestones(draft.plannedMilestones);
+      if (typeof draft.nextMilestoneId === "string" || draft.nextMilestoneId === null) {
+        setNextMilestoneId(draft.nextMilestoneId ?? null);
+      }
+    } catch {
+      // ignore draft errors
+    }
+  }, []);
+
+  useEffect(() => {
+    const draft = { status, plannedMilestones, nextMilestoneId };
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  }, [status, plannedMilestones, nextMilestoneId]);
 
   function addBlock() {
     const name = newBlockName.trim() || `Block ${String.fromCharCode(65 + blocks.length)}`;
@@ -69,6 +105,49 @@ export default function NewBuildingPage() {
             placeholder="e.g. Adriatic Coast, Montenegro"
             className={inputClass}
           />
+        </div>
+
+        <div>
+          <span className={labelClass}>Status</span>
+          <p className="text-xs text-gray-500 mb-3">
+            Set the current state of this building/project.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {(
+              [
+                { value: "Planned", icon: "las la-calendar", helper: "Preparing to start", tone: "bg-sky-100 text-sky-700" },
+                { value: "In progress", icon: "las la-hourglass-half", helper: "Construction ongoing", tone: "bg-amber-100 text-amber-700" },
+                { value: "At risk", icon: "las la-exclamation-triangle", helper: "Needs attention", tone: "bg-red-100 text-red-700" },
+                { value: "On hold", icon: "las la-pause-circle", helper: "Paused temporarily", tone: "bg-gray-100 text-gray-700" },
+                { value: "Completed", icon: "las la-check-circle", helper: "Handover done", tone: "bg-emerald-100 text-emerald-700" },
+                { value: "Cancelled", icon: "las la-times-circle", helper: "Stopped permanently", tone: "bg-zinc-100 text-zinc-700" },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setStatus(opt.value)}
+                className={`relative flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
+                  status === opt.value
+                    ? "border-[#134e4a] bg-[#134e4a]/5 shadow-sm shadow-[#134e4a]/10"
+                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
+                }`}
+              >
+                <span className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${opt.tone}`}>
+                  <i className={`${opt.icon} text-xl`} aria-hidden />
+                </span>
+                <div className="min-w-0">
+                  <span className="block text-sm font-semibold text-gray-900">{opt.value}</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">{opt.helper}</span>
+                </div>
+                {status === opt.value && (
+                  <span className="absolute top-3 right-3 flex size-5 items-center justify-center rounded-full bg-[#134e4a]">
+                    <i className="las la-check text-xs text-white" aria-hidden />
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
 
         <hr className="border-gray-200" />
@@ -150,6 +229,99 @@ export default function NewBuildingPage() {
               placeholder="e.g. 24"
               className={inputClass}
             />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 p-5 bg-gray-50/40">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
+              <p className="text-xs text-gray-500 mt-1">Add upcoming milestones and mark which one is next.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                setPlannedMilestones((prev) => [
+                  ...prev,
+                  { id: newId(), title: "", dateTimeLocal: "" },
+                ])
+              }
+              className="shrink-0 px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors"
+            >
+              <i className="las la-plus text-base" aria-hidden /> Add milestone
+            </button>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {sortedPlanned.length === 0 ? (
+              <div className="rounded-xl bg-white border border-gray-200 p-4 text-sm text-gray-500">
+                No planned milestones yet.
+              </div>
+            ) : (
+              sortedPlanned.map((m, idx) => {
+                const isNext = nextMilestoneId ? nextMilestoneId === m.id : idx === 0;
+                return (
+                  <div key={m.id} className="rounded-xl bg-white border border-gray-200 p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setNextMilestoneId(m.id)}
+                        className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${
+                          isNext
+                            ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]"
+                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        }`}
+                      >
+                        <i className="las la-flag text-sm" aria-hidden />
+                        Next
+                      </button>
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Title</label>
+                          <input
+                            type="text"
+                            value={m.title}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setPlannedMilestones((prev) =>
+                                prev.map((x) => (x.id === m.id ? { ...x, title: value } : x))
+                              );
+                            }}
+                            placeholder="e.g. Roofing structure"
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Target date & time</label>
+                          <input
+                            type="datetime-local"
+                            value={m.dateTimeLocal}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setPlannedMilestones((prev) =>
+                                prev.map((x) => (x.id === m.id ? { ...x, dateTimeLocal: value } : x))
+                              );
+                            }}
+                            className={inputClass}
+                          />
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPlannedMilestones((prev) => prev.filter((x) => x.id !== m.id));
+                          if (nextMilestoneId === m.id) setNextMilestoneId(null);
+                        }}
+                        className="shrink-0 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        aria-label="Remove milestone"
+                      >
+                        <i className="las la-times text-lg" aria-hidden />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 

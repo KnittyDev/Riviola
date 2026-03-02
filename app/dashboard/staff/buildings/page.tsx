@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { staffBuildings } from "@/lib/staffBuildingsData";
+import { BuildingListMetaClient } from "./BuildingListMetaClient";
+import type { BuildingStatus } from "@/lib/staffBuildingOverrides";
 
 export default function StaffBuildingsPage() {
   return (
@@ -41,17 +43,11 @@ export default function StaffBuildingsPage() {
                 </div>
               </Link>
               <div className="flex items-center gap-4 shrink-0 sm:pl-2">
-                <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#134e4a] rounded-full" style={{ width: `${b.progress}%` }} />
-                </div>
-                <span className="text-sm font-bold text-[#134e4a] w-10">{b.progress}%</span>
-                <span
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                    b.status === "Completed" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
-                  }`}
-                >
-                  {b.status === "Completed" ? "Completed" : "In progress"}
-                </span>
+                <BuildingListMetaClient
+                  buildingId={b.id}
+                  fallbackProgress={b.progress}
+                  fallbackStatus={b.status as BuildingStatus}
+                />
                 <Link
                   href={`/dashboard/staff/buildings/${b.id}/edit`}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
