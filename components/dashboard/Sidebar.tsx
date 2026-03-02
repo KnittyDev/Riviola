@@ -67,7 +67,13 @@ export function Sidebar() {
             </p>
             <p className="text-xs text-gray-500 truncate">Premium Member</p>
           </div>
-          <i className="las la-cog text-gray-400 text-sm" aria-hidden />
+          <Link
+            href="/dashboard/settings"
+            className="p-2 rounded-lg text-gray-400 hover:text-[#134e4a] hover:bg-gray-50 transition-colors"
+            aria-label="Profile settings"
+          >
+            <i className="las la-cog text-sm" aria-hidden />
+          </Link>
         </div>
       </div>
     </aside>
