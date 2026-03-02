@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPropertyDetail } from "@/lib/propertyDetailData";
+import { WeeklyPhotoUpdates } from "@/components/WeeklyPhotoUpdates";
 
 function formatPlanDate(d: string, t: string) {
   const date = new Date(d + "T" + t);
@@ -171,6 +172,11 @@ export default async function PropertyDetailPage({
           </div>
         </section>
       </div>
+
+      {/* Weekly photo updates */}
+      {property.weeklyUpdates && property.weeklyUpdates.length > 0 && (
+        <WeeklyPhotoUpdates weeklyUpdates={property.weeklyUpdates} />
+      )}
     </div>
   );
 }

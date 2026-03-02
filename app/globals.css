@@ -1,5 +1,6 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css");
 @import "tailwindcss";
+@import "react-international-phone/style.css";
 
 :root {
   --background: #ffffff;
@@ -146,4 +147,28 @@ button:disabled,
 
 .animate-btn-pulse {
   animation: btn-pulse-soft 1.5s ease-in-out infinite;
+}
+
+/* react-international-phone theme tweaks */
+.react-international-phone-input-container {
+  width: 100%;
+}
+.react-international-phone-input {
+  width: 100%;
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid #e5e7eb; /* gray-200 */
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  outline: none;
+}
+.react-international-phone-input:focus {
+  border-color: rgba(19, 78, 74, 1);
+  box-shadow: 0 0 0 4px rgba(19, 78, 74, 0.15);
+}
+.react-international-phone-country-selector-button {
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+.react-international-phone-country-selector-button:hover {
+  background: rgba(19, 78, 74, 0.06);
 }

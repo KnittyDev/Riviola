@@ -13,6 +13,19 @@ export interface LogItem {
   message: string;
 }
 
+export interface WeeklyPhotoUpdateImage {
+  url: string;
+  alt: string;
+}
+
+export interface WeeklyPhotoUpdate {
+  id: string;
+  weekLabel: string;
+  range: string;
+  description: string;
+  images: WeeklyPhotoUpdateImage[];
+}
+
 export interface PropertyDetail {
   id: string;
   title: string;
@@ -26,6 +39,7 @@ export interface PropertyDetail {
   deliveryDate: string;
   plans: PlanItem[];
   logs: LogItem[];
+  weeklyUpdates?: WeeklyPhotoUpdate[];
 }
 
 const propertyDetails: Record<string, PropertyDetail> = {
@@ -92,6 +106,44 @@ const propertyDetails: Record<string, PropertyDetail> = {
       { date: "2024-10-12", time: "14:00", category: "Construction", message: "Drywall finishing completed in living area. Sanding and primer scheduled for 14 Oct 08:00." },
       { date: "2024-10-11", time: "17:45", category: "Safety", message: "Weekly safety audit completed. No incidents. Scaffolding inspection passed." },
       { date: "2024-10-10", time: "10:20", category: "Design", message: "Client approval received for master bathroom tile layout. Variation V-012 closed." },
+    ],
+    weeklyUpdates: [
+      {
+        id: "w1",
+        weekLabel: "Week 41",
+        range: "7–13 Oct 2024",
+        description: "Focus on interior finishes and terrace works.",
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=900&q=80",
+            alt: "Living area finishes progress",
+          },
+          {
+            url: "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?w=900&q=80",
+            alt: "Master bathroom tiling detail",
+          },
+          {
+            url: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=900&q=80",
+            alt: "Terrace glass balustrade installation",
+          },
+        ],
+      },
+      {
+        id: "w2",
+        weekLabel: "Week 40",
+        range: "30 Sep – 6 Oct 2024",
+        description: "Electrical and MEP checks across zones 1–3.",
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=900&q=80",
+            alt: "Electrical panel inspection",
+          },
+          {
+            url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=900&q=80",
+            alt: "MEP coordination on site",
+          },
+        ],
+      },
     ],
   },
   "2": {

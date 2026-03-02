@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { PhoneInput } from "react-international-phone";
 
 type ProfileSettings = {
   fullName: string;
@@ -136,13 +137,14 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="phone">Phone</label>
-              <input
-                id="phone"
-                value={form.phone}
-                onChange={(e) => update("phone", e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
-                placeholder="+90 5xx xxx xx xx"
-              />
+              <div className="w-full">
+                <PhoneInput
+                  defaultCountry="tr"
+                  value={form.phone}
+                  onChange={(value) => update("phone", value)}
+                  inputProps={{ id: "phone", name: "phone", placeholder: "+90 5xx xxx xx xx" }}
+                />
+              </div>
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="company">Company</label>
