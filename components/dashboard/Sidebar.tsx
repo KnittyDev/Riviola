@@ -8,6 +8,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: "las la-th-large" },
   { href: "/dashboard/properties", label: "My Properties", icon: "las la-building" },
   { href: "/dashboard/financials", label: "Financials", icon: "las la-wallet" },
+  { href: "/dashboard/fees", label: "Fees & Payments", icon: "las la-receipt" },
   { href: "/dashboard/documents", label: "Documents", icon: "las la-file-alt" },
 ];
 

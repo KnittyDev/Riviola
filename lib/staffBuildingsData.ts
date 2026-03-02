@@ -48,3 +48,34 @@ export const buildingFloors: Record<string, number> = {
   "2": 12,
   "3": 3,
 };
+
+/** Past progress milestones (written/logged for the building). dateTime: ISO string for full detail (day, date, time). */
+export interface ProgressMilestoneLog {
+  id: string;
+  label: string;
+  date: string;
+  /** Optional ISO date-time for detailed display (e.g. "2024-01-15T14:30:00") */
+  dateTime?: string;
+}
+
+export const buildingProgressMilestones: Record<string, ProgressMilestoneLog[]> = {
+  "1": [
+    { id: "1", label: "Foundation completed", date: "Jan 2024", dateTime: "2024-01-15T09:00:00" },
+    { id: "2", label: "Structure complete", date: "Apr 2024", dateTime: "2024-04-08T14:30:00" },
+    { id: "3", label: "Roofing structure", date: "Jun 2024", dateTime: "2024-06-12T11:15:00" },
+    { id: "4", label: "MEP rough-in", date: "Aug 2024", dateTime: "2024-08-05T16:45:00" },
+    { id: "5", label: "Final exterior painting", date: "Oct 2024", dateTime: "2024-10-15T10:00:00" },
+  ],
+  "2": [
+    { id: "1", label: "Foundation completed", date: "Mar 2024", dateTime: "2024-03-01T08:30:00" },
+    { id: "2", label: "Roofing structure", date: "May 2024", dateTime: "2024-05-15T13:00:00" },
+  ],
+  "3": [
+    { id: "1", label: "Construction complete", date: "Feb 2024", dateTime: "2024-02-20T15:30:00" },
+    { id: "2", label: "Handover done", date: "Mar 2024", dateTime: "2024-03-05T10:00:00" },
+  ],
+};
+
+export function getBuildingMilestones(buildingId: string): ProgressMilestoneLog[] {
+  return buildingProgressMilestones[buildingId] ?? [];
+}

@@ -130,7 +130,7 @@ export function MilestonesTable() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {rows.map((row, i) => {
-              const status = statusConfig[row.status];
+              const status = statusConfig[row.status] ?? statusConfig.pending;
               const isOverdueRow = row.isOverdue;
               return (
                 <tr
@@ -144,7 +144,7 @@ export function MilestonesTable() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`p-2 rounded-xl ${iconBgClass[row.status]}`}
+                        className={`p-2 rounded-xl ${iconBgClass[row.status] ?? iconBgClass.pending}`}
                       >
                         <i className={`${row.icon} text-xl`} aria-hidden />
                       </div>

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getBuildingById } from "@/lib/staffBuildingsData";
+import { getBuildingById, getBuildingMilestones } from "@/lib/staffBuildingsData";
 import { notFound } from "next/navigation";
+import { BuildingMilestonesLog } from "./BuildingMilestonesLog";
 
 export default async function StaffBuildingDetailPage({
   params,
@@ -79,6 +80,8 @@ export default async function StaffBuildingDetailPage({
           </div>
         </div>
       </div>
+
+      <BuildingMilestonesLog buildingId={id} milestones={getBuildingMilestones(id)} />
     </div>
   );
 }
