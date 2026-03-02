@@ -31,7 +31,10 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
   let globalIndex = 0;
 
   return (
-    <section className="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <section
+      id="weekly-photos"
+      className="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden scroll-mt-8"
+    >
       <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
         <i className="las la-image text-[#134e4a] text-xl" aria-hidden />
         <h2 className="text-lg font-bold text-gray-900">Weekly photo updates</h2>
