@@ -39,7 +39,7 @@ const USE_CASES = [
 type UseCaseId = (typeof USE_CASES)[number]["id"];
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [step1Confirming, setStep1Confirming] = useState(false);
   const [useCases, setUseCases] = useState<UseCaseId[]>([]);
   const [projectName, setProjectName] = useState("");
@@ -97,20 +97,19 @@ export default function OnboardingPage() {
           <span className="text-base font-extrabold text-[#134e4a]">Riviola</span>
         </Link>
         {/* Step indicator */}
-        <div className="flex items-center gap-2">
+        <div className={`flex items-center gap-2 transition-opacity duration-300 ${step === 0 ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
           {([1, 2, 3] as const).map((s) => (
             <div
               key={s}
               className={`flex items-center gap-2 ${s < 3 ? "after:content-[''] after:w-8 after:h-px after:mx-1 after:bg-gray-200" : ""}`}
             >
               <div
-                className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ease-out ${
-                  step === s
+                className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ease-out ${step === s
                     ? "bg-[#134e4a] text-white scale-110"
                     : step > s
                       ? "bg-[#134e4a]/15 text-[#134e4a]"
                       : "bg-gray-100 text-gray-400"
-                }`}
+                  }`}
               >
                 {step > s ? <i className="las la-check text-xs" aria-hidden /> : s}
               </div>
@@ -124,6 +123,22 @@ export default function OnboardingPage() {
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+
+        {/* ── STEP 0 → Welcome ── */}
+        {step === 0 && (
+          <div key="step0-welcome" className="w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-[280px]">
+            <p className="text-center text-5xl md:text-7xl font-medium text-[#134e4a] animate-smooth-in w-full max-w-5xl">
+              Welcome to Riviola
+            </p>
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="animate-smooth-in animate-btn-pulse mt-10 flex items-center gap-2 px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors cursor-pointer"
+            >
+              Get Started <i className="las la-arrow-right" aria-hidden />
+            </button>
+          </div>
+        )}
 
         {/* ── STEP 1 → Transition (message + blinking Continue) ── */}
         {step === 1 && step1Confirming && (
@@ -162,19 +177,15 @@ export default function OnboardingPage() {
                     key={u.id}
                     type="button"
                     onClick={() => toggleUseCase(u.id)}
-                    className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-300 ease-out animate-fade-in-up w-full ${
-                      isLast ? "sm:w-[calc((100%-0.75rem)/2)]" : ""
-                    } ${
-                      idx === 0 ? "delay-50" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : idx === 3 ? "delay-200" : "delay-250"
-                    } ${
-                      selected
+                    className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-300 ease-out animate-fade-in-up w-full ${isLast ? "sm:w-[calc((100%-0.75rem)/2)]" : ""
+                      } ${idx === 0 ? "delay-50" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : idx === 3 ? "delay-200" : "delay-250"
+                      } ${selected
                         ? "border-[#134e4a] bg-[#134e4a]/5 shadow-md shadow-[#134e4a]/10"
                         : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
-                    }`}
+                      }`}
                   >
-                    <div className={`size-12 rounded-xl flex items-center justify-center mb-3 transition-colors ${
-                      selected ? "bg-[#134e4a] text-white" : "bg-[#134e4a]/10 text-[#134e4a]"
-                    }`}>
+                    <div className={`size-12 rounded-xl flex items-center justify-center mb-3 transition-colors ${selected ? "bg-[#134e4a] text-white" : "bg-[#134e4a]/10 text-[#134e4a]"
+                      }`}>
                       <i className={`las ${u.icon} text-2xl`} aria-hidden />
                     </div>
                     <p className={`font-bold ${selected ? "text-[#134e4a]" : "text-gray-900"}`}>
