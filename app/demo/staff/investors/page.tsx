@@ -6,7 +6,7 @@ export default function StaffInvestorsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Investors</h1>
         <Link
-          href="/dashboard/staff/investors/new"
+          href="/demo/staff/investors/new"
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
         >
           <i className="las la-user-plus" aria-hidden />
@@ -18,7 +18,7 @@ export default function StaffInvestorsPage() {
         <p className="text-gray-500 font-medium">No investor accounts yet.</p>
         <p className="text-sm text-gray-400 mt-1 mb-6">When you create accounts for investors they will appear here.</p>
         <Link
-          href="/dashboard/staff/investors/new"
+          href="/demo/staff/investors/new"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
         >
           <i className="las la-plus" aria-hidden />

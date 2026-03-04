@@ -34,7 +34,7 @@ export function HeroSection() {
               Launch Project <i className="las la-arrow-right text-xl" aria-hidden />
             </a>
             <a
-              href="/onboarding"
+              href="/demo"
               className="h-14 px-8 rounded-2xl bg-gray-100 text-gray-900 font-bold text-lg hover:bg-gray-200 transition-all flex items-center justify-center"
             >
               View Demo

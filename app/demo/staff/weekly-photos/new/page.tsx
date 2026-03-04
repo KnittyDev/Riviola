@@ -15,11 +15,9 @@ function NewWeeklyPhotoForm() {
     const [description, setDescription] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Photo upload state
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
 
-    // Pre-select building from URL if present
     useEffect(() => {
         const buildingId = searchParams.get("buildingId");
         if (buildingId && staffBuildings.some((b) => b.id === buildingId)) {
@@ -27,14 +25,12 @@ function NewWeeklyPhotoForm() {
         }
     }, [searchParams]);
 
-    // Cleanup previews on unmount
     useEffect(() => {
         return () => {
             previews.forEach((url) => URL.revokeObjectURL(url));
         };
     }, [previews]);
 
-    // Available blocks for the selected building
     const availableBlocks = useMemo(() => {
         if (!selectedBuildingId) return [];
         return buildingBlocks[selectedBuildingId] || [];
@@ -42,7 +38,7 @@ function NewWeeklyPhotoForm() {
 
     const handleBuildingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedBuildingId(e.target.value);
-        setSelectedBlocks([]); // Reset blocks when building changes
+        setSelectedBlocks([]);
     };
 
     const toggleBlock = (block: string) => {
@@ -63,7 +59,6 @@ function NewWeeklyPhotoForm() {
         if (e.target.files) {
             const files = Array.from(e.target.files);
             const newPreviews = files.map((file) => URL.createObjectURL(file));
-
             setSelectedFiles((prev) => [...prev, ...files]);
             setPreviews((prev) => [...prev, ...newPreviews]);
         }
@@ -78,12 +73,9 @@ function NewWeeklyPhotoForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-
-        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500));
-
         setIsSubmitting(false);
-        router.push("/dashboard/staff");
+        router.push("/demo/staff");
     };
 
     const canSubmit = selectedBuildingId && selectedBlocks.length > 0 && dateRange && description && selectedFiles.length > 0;
@@ -93,7 +85,7 @@ function NewWeeklyPhotoForm() {
             <div className="mb-8 flex items-center justify-between">
                 <div>
                     <Link
-                        href="/dashboard/staff"
+                        href="/demo/staff"
                         className="text-sm font-semibold text-gray-500 hover:text-[#134e4a] transition-colors flex items-center gap-1 mb-2"
                     >
                         <i className="las la-arrow-left" aria-hidden /> Back to dashboard
@@ -105,7 +97,6 @@ function NewWeeklyPhotoForm() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Building Selection */}
                 <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                     <label className="block text-sm font-bold text-gray-700 mb-2">
                         Select Building
@@ -125,7 +116,6 @@ function NewWeeklyPhotoForm() {
                     </select>
                 </div>
 
-                {/* Block Selection */}
                 {selectedBuildingId && (
                     <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up">
                         <div className="flex items-center justify-between mb-4">
@@ -161,7 +151,6 @@ function NewWeeklyPhotoForm() {
                     </div>
                 )}
 
-                {/* Date and Description */}
                 <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4">
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div>
@@ -202,7 +191,6 @@ function NewWeeklyPhotoForm() {
                     </div>
                 </div>
 
-                {/* Photo Previews */}
                 {previews.length > 0 && (
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fade-in-up">
                         {previews.map((url, idx) => (
@@ -225,7 +213,6 @@ function NewWeeklyPhotoForm() {
                     </div>
                 )}
 
-                {/* Photo Upload Simulation */}
                 <div className="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-10 shadow-sm text-center hover:border-[#134e4a] transition-colors group">
                     <div className="size-16 rounded-full bg-[#134e4a]/10 flex items-center justify-center mx-auto mb-4 text-[#134e4a] group-hover:bg-[#134e4a] group-hover:text-white transition-all">
                         <i className="las la-cloud-upload-alt text-3xl" aria-hidden />

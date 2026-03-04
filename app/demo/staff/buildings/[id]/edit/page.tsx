@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { buildingBlocks, buildingFloors, getBuildingById } from "@/lib/staffBuildingsData";
 import { notFound } from "next/navigation";
-import { EditBuildingForm } from "./EditBuildingForm";
+import { EditBuildingForm } from "@/app/dashboard/staff/buildings/[id]/edit/EditBuildingForm";
 
 export default async function EditBuildingPage({
   params,
@@ -13,9 +13,9 @@ export default async function EditBuildingPage({
   if (!building) notFound();
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-8">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <Link
-        href={`/dashboard/staff/buildings/${id}`}
+        href={`/demo/staff/buildings/${id}`}
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
       >
         <i className="las la-arrow-left" aria-hidden />
@@ -37,6 +37,7 @@ export default async function EditBuildingPage({
         defaultNextMilestone={building.nextMilestone}
         defaultBlocks={buildingBlocks[building.id] ?? ["Block A"]}
         defaultFloors={buildingFloors[building.id] ?? 1}
+        basePath="/demo/staff"
       />
     </div>
   );

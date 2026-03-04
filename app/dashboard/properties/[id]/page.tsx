@@ -59,7 +59,7 @@ export default async function PropertyDetailPage({
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+          <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <span className="inline-block px-3 py-1 bg-white/90 text-gray-900 text-xs font-bold rounded-lg uppercase tracking-wider mb-2">
               {property.badge}
             </span>
@@ -95,11 +95,11 @@ export default async function PropertyDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Plans */}
         <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
             <i className="las la-calendar-check text-[#134e4a] text-xl" aria-hidden />
             <h2 className="text-lg font-bold text-gray-900">Plans & schedule</h2>
           </div>
-          <div className="p-4 sm:p-6">
+          <div className="p-6">
             <div className="relative">
               <div className="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200" />
               <ul className="space-y-0">
@@ -141,11 +141,11 @@ export default async function PropertyDetailPage({
 
         {/* Logs */}
         <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
             <i className="las la-clipboard-list text-[#134e4a] text-xl" aria-hidden />
             <h2 className="text-lg font-bold text-gray-900">Activity log</h2>
           </div>
-          <div className="p-4 sm:p-6 max-h-[600px] overflow-y-auto">
+          <div className="p-6 max-h-[600px] overflow-y-auto">
             <ul className="space-y-4">
               {property.logs.map((log, i) => (
                 <li

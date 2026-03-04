@@ -9,7 +9,7 @@ type ProfileSettings = {
   phone: string;
   company: string;
   language: "English" | "Turkish";
-  currency: "EUR" | "USD" | "GBP";
+  currency: "EUR" | "USD" | "GBP" | "TRY";
   notifyPayments: boolean;
   notifyMilestones: boolean;
   notifyDocuments: boolean;
@@ -191,6 +191,7 @@ export default function SettingsPage() {
                   <option value="EUR">EUR (€)</option>
                   <option value="USD">USD ($)</option>
                   <option value="GBP">GBP (£)</option>
+                  <option value="TRY">TRY (₺)</option>
                 </select>
               </div>
             </div>

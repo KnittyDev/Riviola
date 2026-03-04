@@ -16,6 +16,8 @@ type Props = {
   defaultNextMilestone: string;
   defaultBlocks: string[];
   defaultFloors: number;
+  /** Base path for redirect/cancel (e.g. /dashboard/staff or /demo/staff). Defaults to /dashboard/staff. */
+  basePath?: string;
 };
 
 const statusOptions: Array<{
@@ -80,6 +82,8 @@ function formatForNextMilestone(title: string, dateTimeLocal: string) {
   return `${title.trim() || "Milestone"}${datePart ? ` — ${datePart}` : ""}`;
 }
 
+const DEFAULT_BASE = "/dashboard/staff";
+
 export function EditBuildingForm({
   id,
   defaultName,
@@ -90,6 +94,7 @@ export function EditBuildingForm({
   defaultNextMilestone,
   defaultBlocks,
   defaultFloors,
+  basePath = DEFAULT_BASE,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState<BuildingStatus>(defaultStatus);
@@ -162,7 +167,7 @@ export function EditBuildingForm({
           floors,
           units,
         });
-        router.push(`/dashboard/staff/buildings/${id}`);
+        router.push(`${basePath}/buildings/${id}`);
       }}
     >
       <input type="hidden" name="id" value={id} />
@@ -462,7 +467,7 @@ export function EditBuildingForm({
           Save changes
         </button>
         <Link
-          href={`/dashboard/staff/buildings/${id}`}
+          href={`${basePath}/buildings/${id}`}
           className="px-6 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
         >
           Cancel

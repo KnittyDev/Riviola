@@ -2,16 +2,16 @@ import Link from "next/link";
 
 export function DashboardHeader() {
   return (
-    <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10">
+    <header className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-10">
       <div>
         <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
           My Residences
         </h2>
-        <p className="text-gray-500 mt-1 text-sm sm:text-base">
+        <p className="text-gray-500 mt-1">
           Welcome back, your properties are appreciating on schedule.
         </p>
       </div>
-      <div className="flex items-center gap-2 sm:gap-4">
+      <div className="flex items-center gap-4">
         <button
           type="button"
           className="p-2.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"

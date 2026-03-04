@@ -10,7 +10,7 @@ export default function StaffPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="grid sm:grid-cols-2 gap-4 mb-8">
         <Link
-          href="/dashboard/staff/weekly-photos/new"
+          href="/demo/staff/weekly-photos/new"
           className="group flex items-center gap-4 p-6 rounded-2xl border-2 border-[#134e4a] bg-[#134e4a] text-white hover:bg-[#115e59] hover:border-[#115e59] transition-colors"
         >
           <div className="size-14 rounded-xl bg-white/20 flex items-center justify-center">
@@ -25,7 +25,7 @@ export default function StaffPage() {
           <i className="las la-plus-circle text-2xl ml-auto opacity-80 group-hover:opacity-100" aria-hidden />
         </Link>
         <Link
-          href="/dashboard/staff/investors/new"
+          href="/demo/staff/investors/new"
           className="group flex items-center gap-4 p-6 rounded-2xl border-2 border-gray-200 bg-white hover:border-[#134e4a] hover:bg-[#134e4a]/5 transition-colors"
         >
           <div className="size-14 rounded-xl bg-[#134e4a]/10 flex items-center justify-center text-[#134e4a]">
@@ -86,7 +86,7 @@ export default function StaffPage() {
         </div>
       </div>
 
-      <ActiveProjectsSection />
+      <ActiveProjectsSection basePath="/demo/staff" />
     </div>
   );
 }

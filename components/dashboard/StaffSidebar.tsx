@@ -19,21 +19,25 @@ interface StaffSidebarProps {
   onClose?: () => void;
 }
 
-export function StaffSidebar({ open = true, onClose }: StaffSidebarProps) {
+export function StaffSidebar({ open = false, onClose }: StaffSidebarProps) {
   const pathname = usePathname();
 
   return (
     <>
+      {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity lg:hidden ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        role="button"
+        tabIndex={0}
         onClick={onClose}
+        onKeyDown={(e) => e.key === "Escape" && onClose?.()}
         aria-hidden
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 lg:hidden ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
       <aside
-        className={`w-64 max-w-[85vw] border-r border-gray-200 bg-white flex flex-col fixed left-0 top-0 h-full z-50 transition-transform duration-200 ease-out lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        className={`fixed left-0 top-0 z-50 h-full w-64 flex flex-col border-r border-gray-200 bg-white transition-transform duration-200 ease-out lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
-      <div className="p-6">
-        <Link href="/dashboard/staff" className="flex items-center gap-3">
+        <div className="flex items-center justify-between p-4 lg:p-6">
+          <Link href="/dashboard/staff" className="flex items-center gap-3" onClick={onClose}>
           <div className="bg-[#134e4a] rounded-lg p-2 text-white">
             <i className="las la-hard-hat text-xl" aria-hidden />
           </div>
@@ -46,8 +50,16 @@ export function StaffSidebar({ open = true, onClose }: StaffSidebarProps) {
             </p>
           </div>
         </Link>
-      </div>
-      <nav className="flex-1 px-4 space-y-2 mt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 lg:hidden"
+            aria-label="Close menu"
+          >
+            <i className="las la-times text-xl" aria-hidden />
+          </button>
+        </div>
+      <nav className="flex-1 px-4 space-y-2 mt-2 lg:mt-4">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/dashboard/staff" && pathname?.startsWith(item.href));
           return (
@@ -75,14 +87,6 @@ export function StaffSidebar({ open = true, onClose }: StaffSidebarProps) {
           Logout
         </button>
       </div>
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute top-4 right-4 p-2 rounded-lg text-gray-500 hover:bg-gray-100 lg:hidden"
-        aria-label="Close menu"
-      >
-        <i className="las la-times text-xl" aria-hidden />
-      </button>
     </aside>
     </>
   );

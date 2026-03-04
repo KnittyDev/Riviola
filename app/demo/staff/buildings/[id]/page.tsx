@@ -18,7 +18,7 @@ export default async function StaffBuildingDetailPage({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <Link
-        href="/dashboard/staff/buildings"
+        href="/demo/staff/buildings"
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
       >
         <i className="las la-arrow-left" aria-hidden />
@@ -39,14 +39,14 @@ export default async function StaffBuildingDetailPage({
           <h1 className="text-2xl font-extrabold text-gray-900">{building.name}</h1>
           <div className="flex items-center gap-3">
             <Link
-              href={`/dashboard/staff/weekly-photos/new?buildingId=${id}`}
+              href={`/demo/staff/weekly-photos/new?buildingId=${id}`}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
             >
               <i className="las la-camera" aria-hidden />
               Add weekly photo
             </Link>
             <Link
-              href={`/dashboard/staff/buildings/${id}/edit`}
+              href={`/demo/staff/buildings/${id}/edit`}
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
             >
               <i className="las la-pen text-sm" aria-hidden />

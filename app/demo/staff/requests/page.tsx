@@ -145,7 +145,7 @@ export default function StaffRequestsPage() {
                       ))}
                     </select>
                     <Link
-                      href={`/dashboard/staff/buildings/${req.buildingId}`}
+                      href={`/demo/staff/buildings/${req.buildingId}`}
                       className="text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
                     >
                       View building

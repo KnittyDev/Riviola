@@ -108,7 +108,7 @@ export default function PropertiesPage() {
     <div className="p-4 sm:p-6 lg:p-8">
       {/* Page header */}
       <div className="mb-8 animate-fade-in">
-        <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
           My Properties
         </h2>
         <p className="text-gray-500 mt-1">

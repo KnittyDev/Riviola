@@ -17,7 +17,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#f9fafb] flex flex-col">
       {/* Header */}
       <header className="border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2">
             <div className="size-10 flex items-center justify-center rounded-xl bg-[#134e4a] text-white">
               <i className="las la-building text-2xl" aria-hidden />
