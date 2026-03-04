@@ -30,7 +30,7 @@ export const aidatPayments: AidatPayment[] = [
     status: "Paid",
     paidAt: "2026-02-28T18:12:00Z",
     method: "Card",
-    reference: "AIDAT-AR-0325-0012",
+    reference: "DUES-AR-0325-0012",
   },
   {
     id: "p_002",
@@ -45,7 +45,7 @@ export const aidatPayments: AidatPayment[] = [
     status: "Paid",
     paidAt: "2026-02-28T11:02:00Z",
     method: "Bank transfer",
-    reference: "AIDAT-SP-0325-0007",
+    reference: "DUES-SP-0325-0007",
   },
   {
     id: "p_003",
@@ -60,7 +60,7 @@ export const aidatPayments: AidatPayment[] = [
     status: "Refunded",
     paidAt: "2026-02-15T09:41:00Z",
     method: "Card",
-    reference: "AIDAT-AR-0225-0004",
+    reference: "DUES-AR-0225-0004",
   },
   {
     id: "p_004",
@@ -75,7 +75,7 @@ export const aidatPayments: AidatPayment[] = [
     status: "Failed",
     paidAt: "2026-02-14T16:20:00Z",
     method: "Card",
-    reference: "AIDAT-VS-0325-0002",
+    reference: "DUES-VS-0325-0002",
   },
   {
     id: "p_005",
@@ -90,7 +90,7 @@ export const aidatPayments: AidatPayment[] = [
     status: "Paid",
     paidAt: "2026-01-30T08:10:00Z",
     method: "Card",
-    reference: "AIDAT-SP-0125-0002",
+    reference: "DUES-SP-0125-0002",
   },
 ];
 

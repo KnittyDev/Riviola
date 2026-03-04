@@ -10,16 +10,16 @@ export default function StaffPage() {
     <div className="max-w-7xl mx-auto px-6 py-8">
       <div className="grid sm:grid-cols-2 gap-4 mb-8">
         <Link
-          href="/dashboard/staff/buildings/new"
+          href="/dashboard/staff/weekly-photos/new"
           className="group flex items-center gap-4 p-6 rounded-2xl border-2 border-[#134e4a] bg-[#134e4a] text-white hover:bg-[#115e59] hover:border-[#115e59] transition-colors"
         >
           <div className="size-14 rounded-xl bg-white/20 flex items-center justify-center">
-            <i className="las la-building text-2xl" aria-hidden />
+            <i className="las la-camera text-2xl" aria-hidden />
           </div>
           <div>
-            <h2 className="text-lg font-bold">Add building</h2>
+            <h2 className="text-lg font-bold">Add weekly photo</h2>
             <p className="text-sm text-white/90 mt-0.5">
-              Create a new project or building record.
+              Upload weekly progress photos for projects.
             </p>
           </div>
           <i className="las la-plus-circle text-2xl ml-auto opacity-80 group-hover:opacity-100" aria-hidden />

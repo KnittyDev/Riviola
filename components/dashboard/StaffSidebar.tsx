@@ -10,7 +10,7 @@ const navItems = [
   { href: "/dashboard/staff/buildings", label: "Buildings", icon: "las la-building" },
   { href: "/dashboard/staff/investors", label: "Investors", icon: "las la-user-friends" },
   { href: "/dashboard/staff/requests", label: "Requests", icon: "las la-tasks" },
-  { href: "/dashboard/staff/aidat-payments", label: "Aidat payments", icon: "las la-receipt" },
+  { href: "/dashboard/staff/aidat-payments", label: "Dues Payments", icon: "las la-receipt" },
   { href: "/dashboard/staff/subscription", label: "Subscription", icon: "las la-credit-card" },
 ];
 
@@ -41,11 +41,10 @@ export function StaffSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-                isActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive
                   ? "bg-[#134e4a]/10 text-[#134e4a]"
                   : "text-gray-600 hover:bg-gray-50"
-              }`}
+                }`}
             >
               <i className={`${item.icon} text-lg`} aria-hidden />
               <span className="text-sm font-semibold">{item.label}</span>

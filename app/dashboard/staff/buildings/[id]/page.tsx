@@ -35,15 +35,24 @@ export default async function StaffBuildingDetailPage({
             priority
           />
         </div>
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-2xl font-extrabold text-gray-900">{building.name}</h1>
-          <Link
-            href={`/dashboard/staff/buildings/${id}/edit`}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
-          >
-            <i className="las la-pen" aria-hidden />
-            Edit building
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/dashboard/staff/weekly-photos/new?buildingId=${id}`}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
+            >
+              <i className="las la-camera" aria-hidden />
+              Add weekly photo
+            </Link>
+            <Link
+              href={`/dashboard/staff/buildings/${id}/edit`}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
+            >
+              <i className="las la-pen text-sm" aria-hidden />
+              Edit
+            </Link>
+          </div>
         </div>
         <div className="p-6 space-y-4">
           <div>

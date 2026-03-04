@@ -95,9 +95,9 @@ export function PricingSection() {
             return (
               <div
                 key={tier.name}
-                className={`p-8 rounded-[32px] border transition-all relative ${tier.recommended
-                  ? "border-2 border-[#134e4a] bg-white shadow-2xl md:-mt-4 md:mb-4"
-                  : "border-gray-200 bg-[#f9fafb]/50 hover:bg-white hover:shadow-2xl"
+                className={`p-8 rounded-[32px] border-2 transition-all relative ${tier.recommended
+                  ? "border-[#134e4a] bg-white shadow-2xl md:-mt-4 md:mb-4"
+                  : "border-teal-400 bg-[#f9fafb]/50 hover:border-[#134e4a] hover:bg-white hover:shadow-2xl"
                   }`}
               >
                 {tier.recommended && (
@@ -137,7 +137,7 @@ export function PricingSection() {
                     ? "bg-[#134e4a] text-white hover:bg-[#115e59]"
                     : tier.variant === "secondary"
                       ? "bg-black text-white hover:bg-[#1f2937]"
-                      : "border-2 border-gray-300 text-gray-900 hover:bg-gray-50"
+                      : "border-2 border-[#134e4a] text-[#134e4a] hover:bg-teal-50"
                     }`}
                 >
                   {tier.cta}

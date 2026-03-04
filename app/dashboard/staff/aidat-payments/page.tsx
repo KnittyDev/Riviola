@@ -103,8 +103,8 @@ function exportRowsToPrintPdf({
       </thead>
       <tbody>
         ${rows
-          .map(
-            (r) => `
+      .map(
+        (r) => `
           <tr>
             <td>
               <div><strong>${escapeHtml(r.investorName)}</strong></div>
@@ -124,8 +124,8 @@ function exportRowsToPrintPdf({
             </td>
           </tr>
         `
-          )
-          .join("")}
+      )
+      .join("")}
       </tbody>
     </table>
   </body>
@@ -206,7 +206,7 @@ export default function StaffAidatPaymentsPage() {
             status: "Pending" as const,
             paidAt: new Date().toISOString(),
             method: "Card" as const,
-            reference: `AIDAT-${period.replaceAll(" ", "")}-${r.buildingId}`,
+            reference: `DUES-${period.replaceAll(" ", "")}-${r.buildingId}`,
           } satisfies AidatPayment
         );
       });
@@ -234,7 +234,7 @@ export default function StaffAidatPaymentsPage() {
     <div className="max-w-7xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Latest aidat payments
+          Latest Dues payments
         </h1>
         <p className="text-gray-500 mt-1">
           Track incoming common charges (aidat) payments from investors.
@@ -268,9 +268,8 @@ export default function StaffAidatPaymentsPage() {
               key={s}
               type="button"
               onClick={() => setStatus(s as any)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                status === s ? "bg-[#134e4a] text-white" : "text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${status === s ? "bg-[#134e4a] text-white" : "text-gray-600 hover:bg-gray-100"
+                }`}
             >
               {s}
             </button>
@@ -308,14 +307,14 @@ export default function StaffAidatPaymentsPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden animate-fade-in-up" style={{ animationDelay: "100ms" }}>
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <h3 className="text-lg font-bold text-gray-900">
-            {includeAllDues && period !== "All" ? `Aidat report — ${period}` : "Incoming payments"}
+            {includeAllDues && period !== "All" ? `Dues report — ${period}` : "Incoming payments"}
           </h3>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() =>
                 exportRowsToPrintPdf({
-                  title: includeAllDues && period !== "All" ? `Aidat report — ${period}` : "Aidat payments",
+                  title: includeAllDues && period !== "All" ? `Dues report — ${period}` : "Dues payments",
                   subtitle:
                     includeAllDues && period !== "All"
                       ? "All dues (paid + pending/failed/refunded) for the selected month."

@@ -10,11 +10,11 @@ export default function StaffBuildingsPage() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Buildings</h1>
         <Link
-          href="/dashboard/staff/buildings/new"
+          href="/dashboard/staff/weekly-photos/new"
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
         >
-          <i className="las la-plus" aria-hidden />
-          Add building
+          <i className="las la-camera" aria-hidden />
+          Add weekly photo
         </Link>
       </div>
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
