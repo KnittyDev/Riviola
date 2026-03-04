@@ -105,7 +105,7 @@ export default function PropertiesPage() {
   }, [activeFilter, search]);
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Page header */}
       <div className="mb-8 animate-fade-in">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">

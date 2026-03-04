@@ -55,7 +55,7 @@ export function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
 
   return (
-    <section className="py-32 bg-white overflow-hidden" id="pricing">
+    <section id="pricing" className="py-32 bg-white overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <h2 className="text-4xl font-extrabold text-gray-900 mb-6 tracking-tight">

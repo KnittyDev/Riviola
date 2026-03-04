@@ -63,7 +63,7 @@ export default function OnboardingPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center px-4 sm:px-6">
         <div className="max-w-lg w-full text-center animate-fade-in-up">
           <div className="size-20 rounded-full bg-[#134e4a]/10 flex items-center justify-center mx-auto mb-6 transition-transform duration-300 hover:scale-105">
             <i className="las la-calendar-check text-4xl text-[#134e4a]" aria-hidden />
@@ -89,7 +89,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-[#f9fafb] flex flex-col">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-white">
+      <div className="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-gray-200 bg-white">
         <Link href="/" className="flex items-center gap-2">
           <div className="size-8 rounded-lg bg-[#134e4a] flex items-center justify-center text-white">
             <i className="las la-building" aria-hidden />
@@ -122,7 +122,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
 
         {/* ── STEP 0 → Welcome ── */}
         {step === 0 && (

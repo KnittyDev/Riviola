@@ -120,7 +120,7 @@ export default function FeesPage() {
   const canPay = (status: FeeStatus) => status === "due" || status === "overdue";
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-fade-in">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">

@@ -1,6 +1,6 @@
 export function CTASection() {
   return (
-    <section className="w-full bg-white py-16 mb-24">
+    <section id="cta" className="w-full bg-white py-16 mb-24 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-8 md:px-12 lg:px-20">
         <div className="relative rounded-[48px] bg-[#134e4a] overflow-hidden py-24 px-12 text-center">
         <div className="absolute inset-0 grainy-overlay" />

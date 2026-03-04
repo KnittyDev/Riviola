@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const navLinks = [
-  { href: "#solutions", label: "Solutions" },
-  { href: "#infrastructure", label: "Infrastructure" },
+  { href: "#features", label: "Features" },
   { href: "#pricing", label: "Pricing" },
+  { href: "#cta", label: "Contact" },
 ];
 
 export function Header() {

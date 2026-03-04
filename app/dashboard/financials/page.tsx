@@ -5,7 +5,7 @@ import { MilestonesTable } from "@/components/dashboard/financials/MilestonesTab
 
 export default function FinancialsPage() {
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Page title */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-fade-in">
         <div className="flex flex-col gap-2">

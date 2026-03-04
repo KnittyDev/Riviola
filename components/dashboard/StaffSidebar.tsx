@@ -14,11 +14,24 @@ const navItems = [
   { href: "/dashboard/staff/subscription", label: "Subscription", icon: "las la-credit-card" },
 ];
 
-export function StaffSidebar() {
+interface StaffSidebarProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export function StaffSidebar({ open = true, onClose }: StaffSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-gray-200 bg-white flex flex-col fixed h-full z-50">
+    <>
+      <div
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity lg:hidden ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={onClose}
+        aria-hidden
+      />
+      <aside
+        className={`w-64 max-w-[85vw] border-r border-gray-200 bg-white flex flex-col fixed left-0 top-0 h-full z-50 transition-transform duration-200 ease-out lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+      >
       <div className="p-6">
         <Link href="/dashboard/staff" className="flex items-center gap-3">
           <div className="bg-[#134e4a] rounded-lg p-2 text-white">
@@ -41,6 +54,7 @@ export function StaffSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive
                   ? "bg-[#134e4a]/10 text-[#134e4a]"
                   : "text-gray-600 hover:bg-gray-50"
@@ -61,6 +75,15 @@ export function StaffSidebar() {
           Logout
         </button>
       </div>
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-4 right-4 p-2 rounded-lg text-gray-500 hover:bg-gray-100 lg:hidden"
+        aria-label="Close menu"
+      >
+        <i className="las la-times text-xl" aria-hidden />
+      </button>
     </aside>
+    </>
   );
 }

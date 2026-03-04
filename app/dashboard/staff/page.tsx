@@ -7,7 +7,7 @@ import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjec
 
 export default function StaffPage() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="grid sm:grid-cols-2 gap-4 mb-8">
         <Link
           href="/dashboard/staff/weekly-photos/new"

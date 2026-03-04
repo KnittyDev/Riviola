@@ -16,7 +16,7 @@ export default async function StaffBuildingDetailPage({
   if (!building) notFound();
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <Link
         href="/dashboard/staff/buildings"
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
@@ -35,9 +35,9 @@ export default async function StaffBuildingDetailPage({
             priority
           />
         </div>
-        <div className="px-6 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-2xl font-extrabold text-gray-900">{building.name}</h1>
-          <div className="flex items-center gap-3">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-4">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900">{building.name}</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Link
               href={`/dashboard/staff/weekly-photos/new?buildingId=${id}`}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"

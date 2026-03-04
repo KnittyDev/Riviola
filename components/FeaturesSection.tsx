@@ -23,7 +23,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="relative bg-[#f9fafb] py-24 overflow-hidden border-y border-gray-200">
+    <section id="features" className="relative bg-[#f9fafb] py-24 overflow-hidden border-y border-gray-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight">

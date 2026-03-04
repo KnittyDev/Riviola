@@ -84,7 +84,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 animate-fade-in">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
