@@ -16,24 +16,27 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .single();
   const role = profile?.role ?? "investor";
-  if (role !== "staff" && role !== "admin") {
-    await supabase.auth.signOut();
-    redirect("/login");
-  }
   let companyName = "Company";
   let companyLogoUrl: string | null = null;
-  if (profile?.company_id) {
-    const { data: company } = await supabase
-      .from("companies")
-      .select("name, logo_url")
-      .eq("id", profile.company_id)
-      .single();
-    if (company?.name) companyName = company.name.trim();
-    if (company?.logo_url) companyLogoUrl = company.logo_url;
+  if (role === "staff" || role === "admin") {
+    if (profile?.company_id) {
+      const { data: company } = await supabase
+        .from("companies")
+        .select("name, logo_url")
+        .eq("id", profile.company_id)
+        .single();
+      if (company?.name) companyName = company.name.trim();
+      if (company?.logo_url) companyLogoUrl = company.logo_url;
+    }
   }
-  const fullName = profile?.full_name?.trim() || "Staff";
+  const fullName = profile?.full_name?.trim() || (role === "investor" ? "Investor" : "Staff");
   return (
-    <DashboardLayoutClient companyName={companyName} companyLogoUrl={companyLogoUrl} fullName={fullName}>
+    <DashboardLayoutClient
+      role={role}
+      companyName={companyName}
+      companyLogoUrl={companyLogoUrl}
+      fullName={fullName}
+    >
       {children}
     </DashboardLayoutClient>
   );

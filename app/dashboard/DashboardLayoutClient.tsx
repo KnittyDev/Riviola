@@ -7,17 +7,19 @@ import { StaffSidebar } from "@/components/dashboard/StaffSidebar";
 
 export function DashboardLayoutClient({
   children,
+  role = "investor",
   companyName = "Company",
   companyLogoUrl = null,
   fullName = "Staff",
 }: {
   children: React.ReactNode;
+  role?: "investor" | "staff" | "admin";
   companyName?: string;
   companyLogoUrl?: string | null;
   fullName?: string;
 }) {
   const pathname = usePathname();
-  const isStaff = pathname?.startsWith("/dashboard/staff");
+  const isStaff = pathname?.startsWith("/dashboard/staff") && (role === "staff" || role === "admin");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (

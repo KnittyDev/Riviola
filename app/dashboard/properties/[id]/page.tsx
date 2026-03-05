@@ -1,8 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { getPropertyDetail } from "@/lib/propertyDetailData";
 import { WeeklyPhotoUpdates } from "@/components/WeeklyPhotoUpdates";
+import { BuildingProgressClient } from "@/app/dashboard/staff/buildings/[id]/BuildingOverridesClient";
+import { BuildingMilestonesLog } from "@/app/dashboard/staff/buildings/[id]/BuildingMilestonesLog";
+import type { PlannedMilestoneDb } from "@/lib/supabase/types";
+import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
+
+const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
 
 function formatPlanDate(d: string, t: string) {
   const date = new Date(d + "T" + t);
@@ -28,14 +35,165 @@ function formatLogTime(t: string) {
   return t;
 }
 
+function plannedMilestonesToLog(items: PlannedMilestoneDb[]): ProgressMilestoneLog[] {
+  if (!Array.isArray(items) || items.length === 0) return [];
+  return items
+    .map((m) => {
+      const label = (m.title && m.title.trim()) || "Milestone";
+      const dateTime = m.dateTimeLocal ? (m.dateTimeLocal.includes("T") ? m.dateTimeLocal : `${m.dateTimeLocal}T00:00:00`) : undefined;
+      const date = dateTime
+        ? new Date(dateTime).toLocaleDateString("en-GB", { month: "short", year: "numeric" })
+        : "";
+      return { id: m.id, label, date, dateTime };
+    })
+    .sort((a, b) => {
+      if (!a.dateTime || !b.dateTime) return 0;
+      return new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime();
+    });
+}
+
+function getCurrentAndNextLabels(
+  planned: PlannedMilestoneDb[],
+  currentMilestoneId: string | null
+): { current: string | null; next: string | null } {
+  if (!Array.isArray(planned) || planned.length === 0) return { current: null, next: null };
+  const sorted = [...planned].sort((a, b) => {
+    const da = a.dateTimeLocal ? new Date(a.dateTimeLocal).getTime() : 0;
+    const db = b.dateTimeLocal ? new Date(b.dateTimeLocal).getTime() : 0;
+    return da - db;
+  });
+  const idx = currentMilestoneId ? sorted.findIndex((m) => m.id === currentMilestoneId) : -1;
+  const current = idx >= 0 ? ((sorted[idx].title && sorted[idx].title.trim()) || "Milestone") : null;
+  const nextItem = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+  const next = nextItem ? ((nextItem.title && nextItem.title.trim()) || "Milestone") : null;
+  return { current, next };
+}
+
 export default async function PropertyDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const property = getPropertyDetail(id);
-  if (!property) notFound();
+  let property = getPropertyDetail(id);
+
+  if (!property) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) notFound();
+    const { data: building } = await supabase
+      .from("buildings")
+      .select("id, name, location, image_url, progress, status, company_id, planned_milestones, current_milestone_id")
+      .eq("id", id)
+      .single();
+    if (!building) notFound();
+    const { data: assignment } = await supabase
+      .from("investor_properties")
+      .select("block, unit")
+      .eq("building_id", id)
+      .eq("profile_id", user.id)
+      .maybeSingle();
+    if (!assignment) notFound();
+
+    const { data: company } = (building as { company_id?: string }).company_id
+      ? await supabase
+          .from("companies")
+          .select("name")
+          .eq("id", (building as { company_id: string }).company_id)
+          .single()
+      : { data: null };
+    const companyName = company?.name ?? "";
+
+    const { data: updatesRows } = await supabase
+      .from("building_weekly_updates")
+      .select("id, week_label, date_range, description, building_weekly_update_images(storage_path, alt, sort_order)")
+      .eq("building_id", id)
+      .order("created_at", { ascending: false });
+    const weeklyUpdates = (updatesRows ?? []).map((u: { id: string; week_label: string | null; date_range: string; description: string; building_weekly_update_images: Array<{ storage_path: string; alt: string | null; sort_order: number }> }) => {
+      const images = (u.building_weekly_update_images ?? [])
+        .sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order)
+        .map((img: { storage_path: string; alt: string | null }) => {
+          const { data: urlData } = supabase.storage.from("weekly_photos").getPublicUrl(img.storage_path);
+          return { url: urlData.publicUrl, alt: img.alt ?? "" };
+        });
+      return { id: u.id, weekLabel: u.week_label ?? "", range: u.date_range, description: u.description ?? "", images };
+    });
+
+    return (
+      <div className="p-4 sm:p-6 lg:p-8">
+        <Link
+          href="/dashboard/properties"
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-[#134e4a] text-sm font-medium mb-6 transition-colors"
+        >
+          <i className="las la-arrow-left" aria-hidden />
+          Back to properties
+        </Link>
+        <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white mb-8">
+          <div className="relative h-64 md:h-80">
+            <Image
+              src={(building as { image_url?: string | null }).image_url || PLACEHOLDER_IMAGE}
+              alt={(building as { name: string }).name}
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+              <span className="inline-block px-3 py-1 bg-white/90 text-gray-900 text-xs font-bold rounded-lg uppercase tracking-wider mb-2">
+                {companyName || "Property"}
+              </span>
+              <h1 className="text-2xl md:text-3xl font-extrabold">
+                {(building as { name: string }).name}
+              </h1>
+              <p className="text-white/90 text-sm mt-1 flex items-center gap-1">
+                <i className="las la-map-marker-alt" aria-hidden />
+                {(building as { location: string | null }).location || "—"}
+              </p>
+              <p className="text-white/90 text-sm mt-2 font-medium">
+                Your unit: {assignment.block} · {assignment.unit}
+              </p>
+            </div>
+          </div>
+          <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Progress</p>
+              <div className="mt-1">
+                <BuildingProgressClient progress={(building as { progress: number }).progress} />
+              </div>
+            </div>
+          </div>
+          {(() => {
+            const planned = (building as { planned_milestones?: PlannedMilestoneDb[] }).planned_milestones ?? [];
+            const currentId = (building as { current_milestone_id?: string | null }).current_milestone_id ?? null;
+            const { current, next } = getCurrentAndNextLabels(planned, currentId);
+            return (
+              <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-100 pt-4">
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Current milestone</p>
+                  <p className="text-gray-700 mt-0.5">{current ?? "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Next milestone</p>
+                  <p className="text-gray-700 mt-0.5">{next ?? "—"}</p>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+        <BuildingMilestonesLog
+          milestones={plannedMilestonesToLog((building as { planned_milestones?: PlannedMilestoneDb[] }).planned_milestones ?? [])}
+          currentMilestoneId={(building as { current_milestone_id?: string | null }).current_milestone_id ?? null}
+        />
+        {weeklyUpdates.length > 0 && (
+          <div className="mt-8">
+            <WeeklyPhotoUpdates weeklyUpdates={weeklyUpdates} />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">

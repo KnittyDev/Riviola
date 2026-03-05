@@ -92,3 +92,18 @@ export type BuildingWeeklyUpdateImageInsert = Omit<
   BuildingWeeklyUpdateImage,
   "id"
 >;
+
+export type InvestorProperty = {
+  id: string;
+  profile_id: string;
+  building_id: string;
+  block: string;
+  unit: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type InvestorPropertyInsert = Omit<
+  InvestorProperty,
+  "id" | "created_at" | "updated_at"
+>;

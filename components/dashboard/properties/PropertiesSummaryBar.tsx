@@ -1,11 +1,10 @@
-const stats = [
-  { icon: "las la-building", label: "Total Properties", value: "4" },
-  { icon: "las la-hard-hat", label: "Under Construction", value: "2" },
-  { icon: "las la-check-circle", label: "Completed", value: "1" },
-  { icon: "las la-euro-sign", label: "Total Value", value: "3.24M€" },
-];
-
-export function PropertiesSummaryBar() {
+export function PropertiesSummaryBar({ totalCount = 0 }: { totalCount?: number }) {
+  const stats = [
+    { icon: "las la-building", label: "Total Properties", value: String(totalCount) },
+    { icon: "las la-hard-hat", label: "Under Construction", value: "—" },
+    { icon: "las la-check-circle", label: "Completed", value: "—" },
+    { icon: "las la-euro-sign", label: "Total Value", value: "—" },
+  ];
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {stats.map((s, i) => (

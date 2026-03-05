@@ -38,7 +38,7 @@ function LoginForm() {
             router.replace("/dashboard/staff");
             return;
           }
-          setCheckingAuth(false);
+          router.replace("/dashboard");
         })
         .catch(() => setCheckingAuth(false));
     }).catch(() => setCheckingAuth(false));
@@ -71,13 +71,11 @@ function LoginForm() {
         .eq("id", data.user.id)
         .single();
       const role = profile?.role ?? "investor";
-      if (role !== "staff" && role !== "admin") {
-        await supabase.auth.signOut();
-        setError("Only staff members can sign in.");
-        setLoading(false);
-        return;
+      if (role === "staff" || role === "admin") {
+        window.location.href = "/dashboard/staff";
+      } else {
+        window.location.href = "/dashboard";
       }
-      window.location.href = "/dashboard/staff";
     } catch (err) {
       setError("Something went wrong. Please try again.");
       setLoading(false);

@@ -45,17 +45,15 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
             key={w.id}
             className="border border-gray-100 rounded-2xl p-4 md:p-5"
           >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-              <div>
-                <p className="text-xs font-semibold text-[#134e4a] uppercase tracking-wider">
-                  {w.weekLabel}
-                </p>
-                <p className="text-sm text-gray-500">{w.range}</p>
-              </div>
-              <p className="text-sm text-gray-600 max-w-xl">{w.description}</p>
+            <div className="mb-4">
+              <p className="text-xs font-semibold text-[#134e4a] uppercase tracking-wider">
+                {w.weekLabel}
+              </p>
+              <p className="text-sm text-gray-500">{w.range}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {w.images.map((img, idx) => {
+            <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 min-w-0 flex-1">
+                {w.images.map((img, idx) => {
                 const index = globalIndex++;
                 return (
                   <button
@@ -79,6 +77,10 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
                   </button>
                 );
               })}
+              </div>
+              <p className="text-sm text-gray-600 flex-1 min-w-0 md:pt-0">
+                {w.description}
+              </p>
             </div>
           </article>
         ))}
