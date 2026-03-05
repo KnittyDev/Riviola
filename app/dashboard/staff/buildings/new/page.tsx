@@ -2,20 +2,44 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import type { BuildingStatus, PlannedMilestone } from "@/lib/staffBuildingOverrides";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import type { BuildingStatus } from "@/lib/supabase/types";
+import type { PlannedMilestone } from "@/lib/staffBuildingOverrides";
+import { computeProgressFromMilestones } from "@/lib/buildings";
+
+const BANNER_BUCKET = "building_banners";
+const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
 const labelClass = "block text-sm font-semibold text-gray-700 mb-1";
 
 export default function NewBuildingPage() {
+  const router = useRouter();
   const [blocks, setBlocks] = useState<string[]>(["Block A"]);
   const [newBlockName, setNewBlockName] = useState("");
   const [status, setStatus] = useState<BuildingStatus>("Planned");
   const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>([]);
-  const [nextMilestoneId, setNextMilestoneId] = useState<string | null>(null);
+  const [currentMilestoneId, setCurrentMilestoneId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
 
   const sortedPlanned = useMemo(() => plannedMilestones, [plannedMilestones]);
+
+  useEffect(() => {
+    if (!bannerFile) {
+      setBannerPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(bannerFile);
+    setBannerPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [bannerFile]);
 
   function newId() {
     if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -30,12 +54,12 @@ export default function NewBuildingPage() {
       const draft = JSON.parse(raw) as {
         status?: BuildingStatus;
         plannedMilestones?: PlannedMilestone[];
-        nextMilestoneId?: string | null;
+        currentMilestoneId?: string | null;
       };
       if (draft.status) setStatus(draft.status);
       if (Array.isArray(draft.plannedMilestones)) setPlannedMilestones(draft.plannedMilestones);
-      if (typeof draft.nextMilestoneId === "string" || draft.nextMilestoneId === null) {
-        setNextMilestoneId(draft.nextMilestoneId ?? null);
+      if (typeof draft.currentMilestoneId === "string" || draft.currentMilestoneId === null) {
+        setCurrentMilestoneId(draft.currentMilestoneId ?? null);
       }
     } catch {
       // ignore draft errors
@@ -43,9 +67,9 @@ export default function NewBuildingPage() {
   }, []);
 
   useEffect(() => {
-    const draft = { status, plannedMilestones, nextMilestoneId };
+    const draft = { status, plannedMilestones, currentMilestoneId };
     window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  }, [status, plannedMilestones, nextMilestoneId]);
+  }, [status, plannedMilestones, currentMilestoneId]);
 
   function addBlock() {
     const name = newBlockName.trim() || `Block ${String.fromCharCode(65 + blocks.length)}`;
@@ -63,6 +87,80 @@ export default function NewBuildingPage() {
     setBlocks((prev) => prev.map((b, i) => (i === index ? value : b)));
   }
 
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const form = e.currentTarget;
+    const name = (form.querySelector('[name="name"]') as HTMLInputElement)?.value?.trim() ?? "";
+    const location = (form.querySelector('[name="location"]') as HTMLInputElement)?.value?.trim() ?? "";
+    const floors = parseInt((form.querySelector('[name="floors"]') as HTMLInputElement)?.value ?? "1", 10) || 1;
+    const units = parseInt((form.querySelector('[name="units"]') as HTMLInputElement)?.value ?? "1", 10) || 1;
+    if (!name) {
+      setError("Building name is required.");
+      return;
+    }
+    setSaving(true);
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setError("Not signed in.");
+      setSaving(false);
+      return;
+    }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("company_id")
+      .eq("id", user.id)
+      .single();
+    const companyId = profile?.company_id ?? null;
+    if (!companyId) {
+      setError("No company assigned. Set your company in profile settings.");
+      setSaving(false);
+      return;
+    }
+    const progress = computeProgressFromMilestones(plannedMilestones, currentMilestoneId);
+    const { data: building, error: insertError } = await supabase
+      .from("buildings")
+      .insert({
+        company_id: companyId,
+        name,
+        location: location || null,
+        status,
+        progress,
+        units,
+        floors,
+        blocks: blocks.length ? blocks : ["Block A"],
+        planned_milestones: plannedMilestones,
+        current_milestone_id: currentMilestoneId,
+      })
+      .select("id")
+      .single();
+    if (insertError) {
+      setSaving(false);
+      setError(insertError.message);
+      return;
+    }
+    let imageUrl: string | null = null;
+    if (building && bannerFile) {
+      const ext = bannerFile.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${building.id}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from(BANNER_BUCKET)
+        .upload(path, bannerFile, { upsert: true, contentType: bannerFile.type });
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from(BANNER_BUCKET).getPublicUrl(path);
+        imageUrl = urlData.publicUrl;
+        await supabase.from("buildings").update({ image_url: imageUrl }).eq("id", building.id);
+      }
+    }
+    toast.success("Building created successfully.");
+    setSaving(false);
+    router.push(building ? `/dashboard/staff/buildings/${building.id}` : "/dashboard/staff/buildings");
+    router.refresh();
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <Link
@@ -78,9 +176,14 @@ export default function NewBuildingPage() {
       <p className="text-gray-500 mt-1 mb-8">
         Create a new project or building record. Set block names, floors and units so investors can be assigned to specific units.
       </p>
+      {error && (
+        <p className="text-red-600 text-sm mb-4" role="alert">
+          {error}
+        </p>
+      )}
       <form
         className="space-y-6 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit}
       >
         <div>
           <label htmlFor="name" className={labelClass}>
@@ -105,6 +208,49 @@ export default function NewBuildingPage() {
             placeholder="e.g. Adriatic Coast, Montenegro"
             className={inputClass}
           />
+        </div>
+
+        <div>
+          <span className={labelClass}>Banner photo</span>
+          <p className="text-xs text-gray-500 mb-2">
+            Banner image for the building detail page. Recommended: wide image (e.g. 1200×400).
+          </p>
+          <div className="rounded-xl border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50/50">
+            <input
+              id="banner"
+              name="banner"
+              type="file"
+              accept={ACCEPT_IMAGE}
+              className="hidden"
+              onChange={(e) => setBannerFile(e.target.files?.[0] ?? null)}
+            />
+            {bannerPreview ? (
+              <div className="relative w-full aspect-[3/1] max-h-48 rounded-lg overflow-hidden bg-gray-100 mb-3">
+                <Image
+                  src={bannerPreview}
+                  alt="Banner preview"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 640px"
+                />
+                <button
+                  type="button"
+                  onClick={() => setBannerFile(null)}
+                  className="absolute top-2 right-2 size-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70"
+                  aria-label="Remove photo"
+                >
+                  <i className="las la-times text-lg" aria-hidden />
+                </button>
+              </div>
+            ) : null}
+            <label
+              htmlFor="banner"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] cursor-pointer transition-colors"
+            >
+              <i className="las la-camera text-lg" aria-hidden />
+              {bannerPreview ? "Change photo" : "Upload banner photo"}
+            </label>
+          </div>
         </div>
 
         <div>
@@ -236,7 +382,7 @@ export default function NewBuildingPage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
-              <p className="text-xs text-gray-500 mt-1">Add upcoming milestones and mark which one is next.</p>
+              <p className="text-xs text-gray-500 mt-1">Add milestones and select which one is current.</p>
             </div>
             <button
               type="button"
@@ -258,22 +404,23 @@ export default function NewBuildingPage() {
                 No planned milestones yet.
               </div>
             ) : (
-              sortedPlanned.map((m, idx) => {
-                const isNext = nextMilestoneId ? nextMilestoneId === m.id : idx === 0;
+              sortedPlanned.map((m) => {
+                const isCurrent = currentMilestoneId === m.id;
                 return (
                   <div key={m.id} className="rounded-xl bg-white border border-gray-200 p-4">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                       <button
                         type="button"
-                        onClick={() => setNextMilestoneId(m.id)}
+                        onClick={() => setCurrentMilestoneId(m.id)}
                         className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${
-                          isNext
+                          isCurrent
                             ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]"
                             : "border-gray-200 text-gray-600 hover:bg-gray-50"
                         }`}
+                        aria-label="Set as current milestone"
                       >
                         <i className="las la-flag text-sm" aria-hidden />
-                        Next
+                        Current
                       </button>
                       <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -310,7 +457,7 @@ export default function NewBuildingPage() {
                         type="button"
                         onClick={() => {
                           setPlannedMilestones((prev) => prev.filter((x) => x.id !== m.id));
-                          if (nextMilestoneId === m.id) setNextMilestoneId(null);
+                          if (currentMilestoneId === m.id) setCurrentMilestoneId(null);
                         }}
                         className="shrink-0 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                         aria-label="Remove milestone"
@@ -328,12 +475,13 @@ export default function NewBuildingPage() {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors"
+            disabled={saving}
+            className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-50 transition-colors"
           >
-            Add building
+            {saving ? "Adding..." : "Add building"}
           </button>
           <Link
-            href="/dashboard/staff"
+            href="/dashboard/staff/buildings"
             className="px-6 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
           >
             Cancel

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const USE_CASES = [
   {
@@ -91,9 +92,13 @@ export default function OnboardingPage() {
       {/* Top bar */}
       <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-white">
         <Link href="/" className="flex items-center gap-2">
-          <div className="size-8 rounded-lg bg-[#134e4a] flex items-center justify-center text-white">
-            <i className="las la-building" aria-hidden />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Riviola"
+            width={32}
+            height={32}
+            className="size-8 rounded-lg object-contain shrink-0"
+          />
           <span className="text-base font-extrabold text-[#134e4a]">Riviola</span>
         </Link>
         {/* Step indicator */}

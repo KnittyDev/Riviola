@@ -1,11 +1,27 @@
 import Link from "next/link";
-import Image from "next/image";
-import { staffBuildings } from "@/lib/staffBuildingsData";
+import { createClient } from "@/lib/supabase/server";
+import { getStaffCompanyId } from "@/lib/buildings";
+import { redirect } from "next/navigation";
 import { StaffPerformanceChart } from "@/components/dashboard/staff/StaffPerformanceChart";
 import { CriticalAlerts } from "@/components/dashboard/staff/CriticalAlerts";
 import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjectsSection";
+import type { Building } from "@/lib/supabase/types";
 
-export default function StaffPage() {
+export default async function StaffPage() {
+  const supabase = await createClient();
+  const companyId = await getStaffCompanyId(supabase);
+  if (!companyId) redirect("/dashboard/staff");
+
+  const { data: buildings } = await supabase
+    .from("buildings")
+    .select("id, name, location, status, progress, image_url")
+    .eq("company_id", companyId)
+    .order("created_at", { ascending: false });
+
+  const list = (buildings ?? []) as Pick<Building, "id" | "name" | "location" | "status" | "progress" | "image_url">[];
+  const activeCount = list.filter((b) => b.status === "In progress").length;
+  const completedCount = list.filter((b) => b.status === "Completed").length;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -55,19 +71,19 @@ export default function StaffPage() {
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Buildings
           </p>
-          <p className="text-2xl font-extrabold text-gray-900">3</p>
+          <p className="text-2xl font-extrabold text-gray-900">{list.length}</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Active projects
           </p>
-          <p className="text-2xl font-extrabold text-[#134e4a]">2</p>
+          <p className="text-2xl font-extrabold text-[#134e4a]">{activeCount}</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Completed
           </p>
-          <p className="text-2xl font-extrabold text-emerald-600">1</p>
+          <p className="text-2xl font-extrabold text-emerald-600">{completedCount}</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
@@ -86,7 +102,7 @@ export default function StaffPage() {
         </div>
       </div>
 
-      <ActiveProjectsSection />
+      <ActiveProjectsSection buildings={list} />
     </div>
   );
 }

@@ -125,7 +125,7 @@ export function StaffPerformanceChart() {
               dataKey="actual"
               fill="url(#staffActualFill)"
               stroke="none"
-              legendType={false}
+              legendType="none"
             />
             <Line
               type="monotone"

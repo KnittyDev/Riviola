@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const navLinks = [
   { href: "#features", label: "Features" },
@@ -10,13 +11,17 @@ export function Header() {
   return (
     <header className="fixed top-0 z-[100] w-full bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="size-10 flex items-center justify-center rounded-xl bg-[#134e4a] text-white">
-            <i className="las la-building text-2xl" aria-hidden />
-          </div>
+        <Link href="/" className="flex items-center gap-3">
+          <Image
+            src="/logo.png"
+            alt="Riviola"
+            width={40}
+            height={40}
+            className="size-10 rounded-xl object-contain shrink-0"
+            priority
+          />
           <span className="text-xl font-extrabold tracking-tight text-[#134e4a]">
             Riviola
-            <span className="text-gray-400 font-light"></span>
           </span>
         </Link>
         <nav className="hidden lg:flex items-center gap-10">

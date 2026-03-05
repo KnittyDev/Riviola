@@ -39,7 +39,7 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
         <i className="las la-image text-[#134e4a] text-xl" aria-hidden />
         <h2 className="text-lg font-bold text-gray-900">Weekly photo updates</h2>
       </div>
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-6 max-w-4xl">
         {weeklyUpdates.map((w) => (
           <article
             key={w.id}
@@ -62,8 +62,10 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
                     key={idx}
                     type="button"
                     onClick={() => openAt(index)}
-                    className={`relative rounded-xl overflow-hidden bg-gray-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#134e4a] focus:ring-offset-2 ${
-                      idx === 0 ? "sm:col-span-2 h-48 md:h-56" : "h-32 md:h-40"
+                    className={`relative rounded-xl overflow-hidden bg-gray-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#134e4a] focus:ring-offset-2 min-h-0 ${
+                      idx === 0
+                        ? "sm:col-span-2 aspect-video max-h-52 sm:max-h-56"
+                        : "aspect-square max-h-36 sm:max-h-40"
                     }`}
                     aria-label={`View full size: ${img.alt}`}
                   >
@@ -72,7 +74,7 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
                       alt={img.alt}
                       fill
                       className="object-cover"
-                      sizes={idx === 0 ? "(min-width: 768px) 50vw, 100vw" : "33vw"}
+                      sizes={idx === 0 ? "(min-width: 640px) 420px, 100vw" : "(min-width: 640px) 200px, 100vw"}
                     />
                   </button>
                 );

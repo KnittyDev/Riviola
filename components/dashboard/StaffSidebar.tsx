@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-const companyName = "Example Construction";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { href: "/dashboard/staff", label: "Overview", icon: "las la-th-large" },
@@ -15,12 +15,25 @@ const navItems = [
 ];
 
 interface StaffSidebarProps {
+  companyName?: string;
+  companyLogoUrl?: string | null;
+  fullName?: string;
   open?: boolean;
   onClose?: () => void;
 }
 
-export function StaffSidebar({ open = false, onClose }: StaffSidebarProps) {
+const LOGO_SIZE = 40;
+
+export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, fullName = "Staff", open = false, onClose }: StaffSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <>
@@ -38,8 +51,19 @@ export function StaffSidebar({ open = false, onClose }: StaffSidebarProps) {
       >
         <div className="flex items-center justify-between p-4 lg:p-6">
           <Link href="/dashboard/staff" className="flex items-center gap-3" onClick={onClose}>
-          <div className="bg-[#134e4a] rounded-lg p-2 text-white">
-            <i className="las la-hard-hat text-xl" aria-hidden />
+          <div className="shrink-0 w-10 h-10 rounded-lg bg-[#134e4a] flex items-center justify-center overflow-hidden">
+            {companyLogoUrl ? (
+              <Image
+                src={companyLogoUrl}
+                alt=""
+                width={LOGO_SIZE}
+                height={LOGO_SIZE}
+                className="w-full h-full object-contain"
+                unoptimized
+              />
+            ) : (
+              <i className="las la-hard-hat text-xl text-white" aria-hidden />
+            )}
           </div>
           <div>
             <h1 className="text-gray-900 text-base font-bold leading-tight">
@@ -78,9 +102,31 @@ export function StaffSidebar({ open = false, onClose }: StaffSidebarProps) {
           );
         })}
       </nav>
-      <div className="p-4 border-t border-gray-100">
+      <div className="p-4 border-t border-gray-100 space-y-2">
+        <div className="flex items-center gap-3 p-2">
+          <div className="size-10 rounded-full bg-[#134e4a]/10 flex items-center justify-center shrink-0">
+            <span className="text-[#134e4a] font-bold text-sm">
+              {fullName.charAt(0).toUpperCase() || "S"}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold truncate text-gray-900">
+              {fullName}
+            </p>
+            <p className="text-xs text-gray-500 truncate">{companyName}</p>
+          </div>
+          <Link
+            href="/dashboard/staff/settings"
+            onClick={onClose}
+            className="p-2 rounded-lg text-gray-400 hover:text-[#134e4a] hover:bg-gray-50 transition-colors"
+            aria-label="Profile settings"
+          >
+            <i className="las la-cog text-sm" aria-hidden />
+          </Link>
+        </div>
         <button
           type="button"
+          onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-semibold transition-colors"
         >
           <i className="las la-sign-out-alt text-lg" aria-hidden />

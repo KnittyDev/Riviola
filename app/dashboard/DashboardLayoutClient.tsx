@@ -7,8 +7,14 @@ import { StaffSidebar } from "@/components/dashboard/StaffSidebar";
 
 export function DashboardLayoutClient({
   children,
+  companyName = "Company",
+  companyLogoUrl = null,
+  fullName = "Staff",
 }: {
   children: React.ReactNode;
+  companyName?: string;
+  companyLogoUrl?: string | null;
+  fullName?: string;
 }) {
   const pathname = usePathname();
   const isStaff = pathname?.startsWith("/dashboard/staff");
@@ -18,6 +24,9 @@ export function DashboardLayoutClient({
     <div className="flex min-h-screen bg-[#f6f8f8]">
       {isStaff ? (
         <StaffSidebar
+          companyName={companyName}
+          companyLogoUrl={companyLogoUrl}
+          fullName={fullName}
           open={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
         />
@@ -37,8 +46,8 @@ export function DashboardLayoutClient({
         >
           <i className="las la-bars text-xl" aria-hidden />
         </button>
-        <span className="text-base font-bold text-gray-900">
-          {isStaff ? "Staff" : "Dashboard"}
+        <span className="text-base font-bold text-gray-900 truncate max-w-[180px]">
+          {isStaff ? companyName : "Dashboard"}
         </span>
         <div className="w-10" aria-hidden />
       </div>

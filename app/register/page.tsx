@@ -2,95 +2,56 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-function LoginForm() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+export default function RegisterPage() {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [registeredMessage, setRegisteredMessage] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-
-  useEffect(() => {
-    if (searchParams.get("registered") === "1") setRegisteredMessage(true);
-  }, [searchParams]);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) {
-        setCheckingAuth(false);
-        return;
-      }
-      supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single()
-        .then(({ data: profile }) => {
-          const role = profile?.role ?? "investor";
-          if (role === "staff" || role === "admin") {
-            router.replace("/dashboard/staff");
-            return;
-          }
-          setCheckingAuth(false);
-        })
-        .catch(() => setCheckingAuth(false));
-    }).catch(() => setCheckingAuth(false));
-  }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (password !== confirmPassword) return;
     setError(null);
     setLoading(true);
     try {
       const supabase = createClient();
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-      if (signInError) {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      });
+      if (signUpError) {
         setError(
-          signInError.message === "Invalid login credentials"
-            ? "Invalid email or password."
-            : signInError.message
+          signUpError.message.includes("already registered")
+            ? "This email is already registered. Please sign in."
+            : signUpError.message
         );
         setLoading(false);
         return;
       }
-      if (!data?.user) {
-        setError("Sign in failed. Please try again.");
-        setLoading(false);
+      if (data.user && !data.session) {
+        setError(null);
+        window.location.href = "/login?registered=1";
         return;
       }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", data.user.id)
-        .single();
-      const role = profile?.role ?? "investor";
-      if (role !== "staff" && role !== "admin") {
-        await supabase.auth.signOut();
-        setError("Only staff members can sign in.");
-        setLoading(false);
+      if (data.session && data.user) {
+        window.location.href = "/dashboard/staff";
         return;
       }
-      window.location.href = "/dashboard/staff";
+      setLoading(false);
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setError(message);
       setLoading(false);
     }
   }
 
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center">
-        <i className="las la-spinner animate-spin text-3xl text-[#134e4a]" aria-hidden />
-      </div>
-    );
-  }
+  const passwordsMatch = !confirmPassword || password === confirmPassword;
 
   return (
     <div className="min-h-screen bg-[#f9fafb] flex flex-col">
@@ -125,19 +86,39 @@ function LoginForm() {
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                Sign in
+                Create account
               </h1>
               <p className="text-gray-500 text-sm mt-2">
-                Enter your credentials to access your account.
+                Enter your details to get started with Riviola.
               </p>
-              {registeredMessage && (
-                <p className="text-[#134e4a] text-sm mt-2 font-medium">
-                  Account created. Please sign in.
-                </p>
-              )}
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                >
+                  Full name
+                </label>
+                <div className="relative">
+                  <i
+                    className="las la-user absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"
+                    aria-hidden
+                  />
+                  <input
+                    id="fullName"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Alex Sterling"
+                    required
+                    autoComplete="name"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#134e4a]/20 focus:border-[#134e4a] transition-all"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label
                   htmlFor="email"
@@ -182,9 +163,43 @@ function LoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    autoComplete="current-password"
+                    minLength={8}
+                    autoComplete="new-password"
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#134e4a]/20 focus:border-[#134e4a] transition-all"
                   />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                >
+                  Confirm password
+                </label>
+                <div className="relative">
+                  <i
+                    className="las la-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"
+                    aria-hidden
+                  />
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    minLength={8}
+                    autoComplete="new-password"
+                    className={`w-full pl-11 pr-4 py-3 rounded-xl border text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#134e4a]/20 transition-all ${
+                      confirmPassword && !passwordsMatch
+                        ? "border-red-300 focus:border-red-500"
+                        : "border-gray-200 focus:border-[#134e4a]"
+                    }`}
+                  />
+                  {confirmPassword && !passwordsMatch && (
+                    <p className="text-red-600 text-xs mt-1.5">Passwords do not match.</p>
+                  )}
                 </div>
               </div>
 
@@ -195,38 +210,26 @@ function LoginForm() {
             )}
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] disabled:opacity-70 transition-colors shadow-lg shadow-[#134e4a]/20"
+                disabled={!passwordsMatch || loading}
+                className="w-full py-3.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] disabled:opacity-50 disabled:pointer-events-none transition-colors shadow-lg shadow-[#134e4a]/20"
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? "Creating account..." : "Create account"}
               </button>
             </form>
 
             <p className="text-center text-gray-500 text-sm mt-6">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="font-semibold text-[#134e4a] hover:underline">
-                Create account
+              Already have an account?{" "}
+              <Link href="/login" className="font-semibold text-[#134e4a] hover:underline">
+                Sign in
               </Link>
             </p>
           </div>
 
           <p className="text-center text-gray-500 text-xs mt-6">
-            By signing in, you agree to our Terms of Service and Privacy Policy.
+            By creating an account, you agree to our Terms of Service and Privacy Policy.
           </p>
         </div>
       </main>
     </div>
-  );
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center">
-        <i className="las la-spinner animate-spin text-3xl text-[#134e4a]" aria-hidden />
-      </div>
-    }>
-      <LoginForm />
-    </Suspense>
   );
 }

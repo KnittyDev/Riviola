@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { BuildingStatus, StaffBuildingOverride } from "@/lib/staffBuildingOverrides";
-import { readBuildingOverride } from "@/lib/staffBuildingOverrides";
+import type { BuildingStatus } from "@/lib/supabase/types";
 
 function statusConfig(status: BuildingStatus) {
   switch (status) {
@@ -21,22 +19,8 @@ function statusConfig(status: BuildingStatus) {
   }
 }
 
-export function BuildingStatusBadgeClient({
-  buildingId,
-  fallbackStatus,
-}: {
-  buildingId: string;
-  fallbackStatus: BuildingStatus;
-}) {
-  const [override, setOverride] = useState<StaffBuildingOverride | null>(null);
-
-  useEffect(() => {
-    setOverride(readBuildingOverride(buildingId));
-  }, [buildingId]);
-
-  const resolved = (override?.status ?? fallbackStatus) as BuildingStatus;
-  const cfg = useMemo(() => statusConfig(resolved), [resolved]);
-
+export function BuildingStatusBadgeClient({ status }: { status: BuildingStatus }) {
+  const cfg = statusConfig(status);
   return (
     <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${cfg.className}`}>
       {cfg.label}
@@ -44,21 +28,7 @@ export function BuildingStatusBadgeClient({
   );
 }
 
-export function BuildingProgressClient({
-  buildingId,
-  fallbackProgress,
-}: {
-  buildingId: string;
-  fallbackProgress: number;
-}) {
-  const [override, setOverride] = useState<StaffBuildingOverride | null>(null);
-
-  useEffect(() => {
-    setOverride(readBuildingOverride(buildingId));
-  }, [buildingId]);
-
-  const progress = typeof override?.progress === "number" ? override.progress : fallbackProgress;
-
+export function BuildingProgressClient({ progress }: { progress: number }) {
   return (
     <>
       <div className="flex-1 max-w-xs h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -72,19 +42,6 @@ export function BuildingProgressClient({
   );
 }
 
-export function NextMilestoneClient({
-  buildingId,
-  fallbackNextMilestone,
-}: {
-  buildingId: string;
-  fallbackNextMilestone: string;
-}) {
-  const [override, setOverride] = useState<StaffBuildingOverride | null>(null);
-
-  useEffect(() => {
-    setOverride(readBuildingOverride(buildingId));
-  }, [buildingId]);
-
-  return <>{override?.nextMilestone ?? fallbackNextMilestone}</>;
+export function NextMilestoneClient({ nextMilestone }: { nextMilestone: string }) {
+  return <>{nextMilestone}</>;
 }
-

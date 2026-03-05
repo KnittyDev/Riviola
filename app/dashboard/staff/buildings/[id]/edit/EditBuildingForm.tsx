@@ -1,10 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import type { BuildingStatus, PlannedMilestone } from "@/lib/staffBuildingOverrides";
-import { readBuildingOverride, writeBuildingOverride } from "@/lib/staffBuildingOverrides";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+import type { BuildingStatus } from "@/lib/supabase/types";
+import type { PlannedMilestone } from "@/lib/staffBuildingOverrides";
+import { computeProgressFromMilestones } from "@/lib/buildings";
+
+const BANNER_BUCKET = "building_banners";
+const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 
 type Props = {
   id: string;
@@ -12,10 +19,11 @@ type Props = {
   defaultLocation: string;
   defaultUnits: number;
   defaultStatus: BuildingStatus;
-  defaultProgress: number;
-  defaultNextMilestone: string;
   defaultBlocks: string[];
   defaultFloors: number;
+  defaultImageUrl?: string | null;
+  defaultPlannedMilestones?: PlannedMilestone[];
+  defaultCurrentMilestoneId?: string | null;
   /** Base path for redirect/cancel (e.g. /dashboard/staff or /demo/staff). Defaults to /dashboard/staff. */
   basePath?: string;
 };
@@ -76,12 +84,6 @@ function newId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-function formatForNextMilestone(title: string, dateTimeLocal: string) {
-  if (!title.trim() && !dateTimeLocal) return "";
-  const datePart = dateTimeLocal ? dateTimeLocal.replace("T", " ") : "";
-  return `${title.trim() || "Milestone"}${datePart ? ` — ${datePart}` : ""}`;
-}
-
 const DEFAULT_BASE = "/dashboard/staff";
 
 export function EditBuildingForm({
@@ -91,21 +93,37 @@ export function EditBuildingForm({
   defaultUnits,
   defaultStatus,
   defaultProgress,
-  defaultNextMilestone,
   defaultBlocks,
   defaultFloors,
+  defaultImageUrl = null,
+  defaultPlannedMilestones = [],
+  defaultCurrentMilestoneId = null,
   basePath = DEFAULT_BASE,
 }: Props) {
   const router = useRouter();
+  const [name, setName] = useState<string>(defaultName);
+  const [location, setLocation] = useState<string>(defaultLocation);
   const [status, setStatus] = useState<BuildingStatus>(defaultStatus);
-  const [progress, setProgress] = useState<number>(defaultProgress);
-  const [nextMilestone, setNextMilestone] = useState<string>(defaultNextMilestone);
   const [units, setUnits] = useState<number>(defaultUnits);
   const [floors, setFloors] = useState<number>(defaultFloors);
   const [blocks, setBlocks] = useState<string[]>(defaultBlocks.length ? defaultBlocks : ["Block A"]);
   const [newBlockName, setNewBlockName] = useState("");
-  const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>([]);
-  const [nextMilestoneId, setNextMilestoneId] = useState<string | null>(null);
+  const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>(defaultPlannedMilestones);
+  const [currentMilestoneId, setCurrentMilestoneId] = useState<string | null>(defaultCurrentMilestoneId ?? null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!bannerFile) {
+      setBannerPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(bannerFile);
+    setBannerPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [bannerFile]);
 
   function addBlock() {
     const name =
@@ -124,53 +142,60 @@ export function EditBuildingForm({
     setBlocks((prev) => prev.map((b, i) => (i === index ? value : b)));
   }
 
-  useEffect(() => {
-    const override = readBuildingOverride(id);
-    if (!override) return;
-    if (override.status) setStatus(override.status);
-    if (typeof override.progress === "number") setProgress(override.progress);
-    if (typeof override.nextMilestone === "string") setNextMilestone(override.nextMilestone);
-    if (Array.isArray(override.plannedMilestones)) setPlannedMilestones(override.plannedMilestones);
-    if (typeof override.nextMilestoneId === "string" || override.nextMilestoneId === null) {
-      setNextMilestoneId(override.nextMilestoneId ?? null);
-    }
-    if (Array.isArray(override.blocks)) setBlocks(override.blocks.length ? override.blocks : ["Block A"]);
-    if (typeof override.floors === "number") setFloors(override.floors);
-    if (typeof override.units === "number") setUnits(override.units);
-  }, [id]);
-
-  useEffect(() => {
-    if (plannedMilestones.length === 0) return;
-    if (nextMilestoneId) return;
-    const shouldAutofill =
-      nextMilestone.trim() === "" || nextMilestone === defaultNextMilestone;
-    if (!shouldAutofill) return;
-    const first = plannedMilestones[0];
-    setNextMilestoneId(first.id);
-    setNextMilestone(formatForNextMilestone(first.title, first.dateTimeLocal));
-  }, [plannedMilestones, nextMilestoneId, nextMilestone, defaultNextMilestone]);
-
   const sortedPlanned = useMemo(() => plannedMilestones, [plannedMilestones]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setSaving(true);
+    const supabase = createClient();
+    let imageUrl: string | null | undefined = undefined;
+    if (bannerFile) {
+      const ext = bannerFile.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${id}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from(BANNER_BUCKET)
+        .upload(path, bannerFile, { upsert: true, contentType: bannerFile.type });
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from(BANNER_BUCKET).getPublicUrl(path);
+        imageUrl = urlData.publicUrl;
+      }
+    }
+    const progress = computeProgressFromMilestones(plannedMilestones, currentMilestoneId);
+    const payload: Record<string, unknown> = {
+      name: name.trim() || defaultName,
+      location: location.trim() || null,
+      status,
+      progress,
+      units,
+      floors,
+      blocks: blocks.length ? blocks : ["Block A"],
+      planned_milestones: plannedMilestones,
+      current_milestone_id: currentMilestoneId,
+    };
+    if (imageUrl !== undefined) payload.image_url = imageUrl;
+    const { error: updateError } = await supabase.from("buildings").update(payload).eq("id", id);
+    setSaving(false);
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+    toast.success("Building saved successfully.");
+    router.push(`${basePath}/buildings/${id}`);
+    router.refresh();
+  }
 
   return (
     <form
       className="space-y-6 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
-      onSubmit={(e) => {
-        e.preventDefault();
-        writeBuildingOverride(id, {
-          status,
-          progress,
-          nextMilestone,
-          plannedMilestones,
-          nextMilestoneId,
-          blocks,
-          floors,
-          units,
-        });
-        router.push(`${basePath}/buildings/${id}`);
-      }}
+      onSubmit={handleSubmit}
     >
       <input type="hidden" name="id" value={id} />
+      {error && (
+        <p className="text-red-600 text-sm mb-4" role="alert">
+          {error}
+        </p>
+      )}
       <div>
         <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
           Building / project name
@@ -179,7 +204,8 @@ export function EditBuildingForm({
           id="name"
           name="name"
           type="text"
-          defaultValue={defaultName}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Avala Resort"
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
@@ -192,10 +218,53 @@ export function EditBuildingForm({
           id="location"
           name="location"
           type="text"
-          defaultValue={defaultLocation}
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
           placeholder="e.g. Adriatic Coast, Montenegro"
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
+      </div>
+      <div>
+        <span className="block text-sm font-semibold text-gray-700 mb-1">Banner photo</span>
+        <p className="text-xs text-gray-500 mb-2">
+          Banner image for the building detail page. Leave empty to keep current.
+        </p>
+        <div className="rounded-xl border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50/50">
+          <input
+            id="banner"
+            name="banner"
+            type="file"
+            accept={ACCEPT_IMAGE}
+            className="hidden"
+            onChange={(e) => setBannerFile(e.target.files?.[0] ?? null)}
+          />
+          {(bannerPreview || defaultImageUrl) ? (
+            <div className="relative w-full aspect-[3/1] max-h-48 rounded-lg overflow-hidden bg-gray-100 mb-3">
+              <Image
+                src={bannerPreview || defaultImageUrl || ""}
+                alt="Banner"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 640px"
+              />
+              <button
+                type="button"
+                onClick={() => setBannerFile(null)}
+                className="absolute top-2 right-2 size-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70"
+                aria-label="Remove photo"
+              >
+                <i className="las la-times text-lg" aria-hidden />
+              </button>
+            </div>
+          ) : null}
+          <label
+            htmlFor="banner"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] cursor-pointer transition-colors"
+          >
+            <i className="las la-camera text-lg" aria-hidden />
+            {bannerPreview || defaultImageUrl ? "Change photo" : "Upload banner photo"}
+          </label>
+        </div>
       </div>
       <div>
         <label htmlFor="units" className="block text-sm font-semibold text-gray-700 mb-1">
@@ -323,28 +392,13 @@ export function EditBuildingForm({
           ))}
         </div>
       </div>
-      <div>
-        <label htmlFor="progress" className="block text-sm font-semibold text-gray-700 mb-1">
-          Progress (%)
-        </label>
-        <input
-          id="progress"
-          name="progress"
-          type="number"
-          min={0}
-          max={100}
-          value={progress}
-          onChange={(e) => setProgress(Number(e.target.value))}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
-        />
-      </div>
 
-      <div className="rounded-2xl border border-gray-200 p-5 bg-gray-50/40">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
-            <p className="text-xs text-gray-500 mt-1">Add upcoming milestones and select which one is next.</p>
-          </div>
+        <div className="rounded-2xl border border-gray-200 p-5 bg-gray-50/40">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
+              <p className="text-xs text-gray-500 mt-1">Add milestones and select which one is current.</p>
+            </div>
           <button
             type="button"
             onClick={() =>
@@ -365,26 +419,23 @@ export function EditBuildingForm({
               No planned milestones yet. Add a few to build your timeline.
             </div>
           ) : (
-            sortedPlanned.map((m, idx) => {
-              const isNext = nextMilestoneId ? nextMilestoneId === m.id : idx === 0;
+            sortedPlanned.map((m) => {
+              const isCurrent = currentMilestoneId === m.id;
               return (
                 <div key={m.id} className="rounded-xl bg-white border border-gray-200 p-4">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        setNextMilestoneId(m.id);
-                        setNextMilestone(formatForNextMilestone(m.title, m.dateTimeLocal));
-                      }}
+                      onClick={() => setCurrentMilestoneId(m.id)}
                       className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${
-                        isNext
+                        isCurrent
                           ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]"
                           : "border-gray-200 text-gray-600 hover:bg-gray-50"
                       }`}
-                      aria-label="Set as next milestone"
+                      aria-label="Set as current milestone"
                     >
                       <i className="las la-flag text-sm" aria-hidden />
-                      Next
+                      Current
                     </button>
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
@@ -397,9 +448,6 @@ export function EditBuildingForm({
                             setPlannedMilestones((prev) =>
                               prev.map((x) => (x.id === m.id ? { ...x, title: value } : x))
                             );
-                            if (nextMilestoneId === m.id) {
-                              setNextMilestone(formatForNextMilestone(value, m.dateTimeLocal));
-                            }
                           }}
                           placeholder="e.g. Final exterior painting"
                           className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors text-sm"
@@ -415,9 +463,6 @@ export function EditBuildingForm({
                             setPlannedMilestones((prev) =>
                               prev.map((x) => (x.id === m.id ? { ...x, dateTimeLocal: value } : x))
                             );
-                            if (nextMilestoneId === m.id) {
-                              setNextMilestone(formatForNextMilestone(m.title, value));
-                            }
                           }}
                           className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors text-sm"
                         />
@@ -427,10 +472,7 @@ export function EditBuildingForm({
                       type="button"
                       onClick={() => {
                         setPlannedMilestones((prev) => prev.filter((x) => x.id !== m.id));
-                        if (nextMilestoneId === m.id) {
-                          setNextMilestoneId(null);
-                          setNextMilestone(defaultNextMilestone);
-                        }
+                        if (currentMilestoneId === m.id) setCurrentMilestoneId(null);
                       }}
                       className="shrink-0 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                       aria-label="Remove milestone"
@@ -445,26 +487,13 @@ export function EditBuildingForm({
         </div>
       </div>
 
-      <div>
-        <label htmlFor="nextMilestone" className="block text-sm font-semibold text-gray-700 mb-1">
-          Next milestone
-        </label>
-        <input
-          id="nextMilestone"
-          name="nextMilestone"
-          type="text"
-          value={nextMilestone}
-          onChange={(e) => setNextMilestone(e.target.value)}
-          placeholder="e.g. Final exterior painting – Oct 15, 2024"
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
-        />
-      </div>
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
-          className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors"
+          disabled={saving}
+          className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-50 transition-colors"
         >
-          Save changes
+          {saving ? "Saving..." : "Save changes"}
         </button>
         <Link
           href={`${basePath}/buildings/${id}`}

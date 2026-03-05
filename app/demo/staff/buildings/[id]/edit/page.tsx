@@ -33,8 +33,6 @@ export default async function EditBuildingPage({
         defaultLocation={building.location}
         defaultUnits={building.units}
         defaultStatus={building.status}
-        defaultProgress={building.progress}
-        defaultNextMilestone={building.nextMilestone}
         defaultBlocks={buildingBlocks[building.id] ?? ["Block A"]}
         defaultFloors={buildingFloors[building.id] ?? 1}
         basePath="/demo/staff"

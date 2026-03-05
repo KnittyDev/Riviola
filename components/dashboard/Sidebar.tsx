@@ -37,9 +37,13 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
       >
         <div className="flex items-center justify-between p-4 lg:p-6">
           <Link href="/dashboard" className="flex items-center gap-3" onClick={onClose}>
-          <div className="bg-[#134e4a] rounded-lg p-2 text-white">
-            <i className="las la-city text-xl" aria-hidden />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Riviola"
+            width={40}
+            height={40}
+            className="size-10 rounded-lg object-contain shrink-0"
+          />
           <div>
             <h1 className="text-gray-900 text-base font-bold leading-tight">
               Riviola

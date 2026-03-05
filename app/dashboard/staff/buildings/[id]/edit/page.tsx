@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { buildingBlocks, buildingFloors, getBuildingById } from "@/lib/staffBuildingsData";
+import { createClient } from "@/lib/supabase/server";
+import { getStaffCompanyId } from "@/lib/buildings";
 import { notFound } from "next/navigation";
 import { EditBuildingForm } from "./EditBuildingForm";
+import type { Building } from "@/lib/supabase/types";
 
 export default async function EditBuildingPage({
   params,
@@ -9,8 +11,26 @@ export default async function EditBuildingPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const building = getBuildingById(id);
-  if (!building) notFound();
+  const supabase = await createClient();
+  const companyId = await getStaffCompanyId(supabase);
+  if (!companyId) notFound();
+
+  const { data: row } = await supabase
+    .from("buildings")
+    .select("*")
+    .eq("id", id)
+    .eq("company_id", companyId)
+    .single();
+
+  if (!row) notFound();
+  const building = row as Building;
+
+  const blocks = Array.isArray(building.blocks) && building.blocks.length > 0
+    ? building.blocks
+    : ["Block A"];
+  const plannedMilestones = Array.isArray(building.planned_milestones)
+    ? building.planned_milestones
+    : [];
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-8">
@@ -30,13 +50,14 @@ export default async function EditBuildingPage({
       <EditBuildingForm
         id={building.id}
         defaultName={building.name}
-        defaultLocation={building.location}
+        defaultLocation={building.location ?? ""}
         defaultUnits={building.units}
         defaultStatus={building.status}
-        defaultProgress={building.progress}
-        defaultNextMilestone={building.nextMilestone}
-        defaultBlocks={buildingBlocks[building.id] ?? ["Block A"]}
-        defaultFloors={buildingFloors[building.id] ?? 1}
+        defaultBlocks={blocks}
+        defaultFloors={building.floors}
+        defaultImageUrl={building.image_url}
+        defaultPlannedMilestones={plannedMilestones}
+        defaultCurrentMilestoneId={building.current_milestone_id ?? null}
       />
     </div>
   );

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { BuildingStatus, StaffBuildingOverride } from "@/lib/staffBuildingOverrides";
-import { readBuildingOverride } from "@/lib/staffBuildingOverrides";
+import type { BuildingStatus } from "@/lib/supabase/types";
 
 function statusClass(status: BuildingStatus) {
   switch (status) {
@@ -22,24 +20,13 @@ function statusClass(status: BuildingStatus) {
 }
 
 export function BuildingListMetaClient({
-  buildingId,
-  fallbackProgress,
-  fallbackStatus,
+  progress,
+  status,
 }: {
-  buildingId: string;
-  fallbackProgress: number;
-  fallbackStatus: BuildingStatus;
+  progress: number;
+  status: BuildingStatus;
 }) {
-  const [override, setOverride] = useState<StaffBuildingOverride | null>(null);
-
-  useEffect(() => {
-    setOverride(readBuildingOverride(buildingId));
-  }, [buildingId]);
-
-  const progress = typeof override?.progress === "number" ? override.progress : fallbackProgress;
-  const resolvedStatus = (override?.status ?? fallbackStatus) as BuildingStatus;
-  const cfg = useMemo(() => statusClass(resolvedStatus), [resolvedStatus]);
-
+  const cfg = statusClass(status);
   return (
     <>
       <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -52,4 +39,3 @@ export function BuildingListMetaClient({
     </>
   );
 }
-
