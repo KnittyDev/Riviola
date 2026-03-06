@@ -13,6 +13,7 @@ const tiers = [
     name: "Essence",
     description: "Perfect for single buildings or small portfolios.",
     monthlyPrice: 109,
+    includedTierName: null as string | null,
     features: [
       "Up to 2 Buildings / Projects",
       "Basic Investor Tracking",
@@ -21,7 +22,7 @@ const tiers = [
       "Standard Financial Reporting",
       "Investor Portal Access",
       "We manage 50% of the process.",
-      "0% commission on all payments made and transferred"
+      "0% commission on all payments made and transferred",
     ],
     cta: "Choose Essence",
     variant: "secondary" as const,
@@ -31,18 +32,14 @@ const tiers = [
     name: "Signature",
     description: "Optimized for professional property management firms.",
     monthlyPrice: 199,
+    includedTierName: "Essence",
     features: [
-      "Up to 10 Buildings / Projects",
       "We will take care of the entire process for you.",
+      "Up to 10 Buildings / Projects",
       "Automated Dues Collection",
       "Advanced Financial Analytics",
       "Auto Invoice Generation",
-      "Document Management",
-      "Basic Financial Reporting",
-      "Basic Investor Tracking",
       "Request & Maintenance Tracking",
-      "Investor Portal Access",
-      "0% commission on all payments made and transferred"
     ],
     cta: "Choose Signature",
     variant: "primary" as const,
@@ -52,19 +49,14 @@ const tiers = [
     name: "Ultra Deluxe",
     description: "Enterprise-grade features for large-scale operations.",
     monthlyPrice: 249,
+    includedTierName: "Signature",
     features: [
-      "Unlimited Buildings & Projects",
       "We will take care of the entire process for you.",
+      "Unlimited Buildings & Projects",
       "Full Customization",
-      "Document Management",
-      "Basic Financial Reporting",
-      "Basic Investor Tracking",
       "Priority Support & Dedicated Manager",
       "White-label Investor Reports",
       "Bulk Payment Processing",
-      "0% commission on all payments made and transferred",
-      "Investor Portal Access",
-      "Request & Maintenance Tracking"
     ],
     cta: "Choose Ultra Deluxe",
     variant: "outline" as const,
@@ -143,6 +135,14 @@ export function PricingSection() {
                   </p>
                 )}
                 <ul className="space-y-4 mb-8">
+                  {tier.includedTierName && (
+                    <li className="flex items-center gap-3 text-sm text-gray-600">
+                      <i className="las la-check-double text-teal-500 text-lg shrink-0" aria-hidden />
+                      <span className="flex-1 font-medium text-gray-700">
+                        All {tier.includedTierName} features included
+                      </span>
+                    </li>
+                  )}
                   {tier.features.map((feature) => {
                     const isFullProcess = feature === FULL_PROCESS_FEATURE;
                     return (

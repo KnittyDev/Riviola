@@ -177,10 +177,10 @@ export function FeesPageClient({ fees, company }: Props) {
               type="button"
               onClick={() => downloadDuesPdf(fees, company)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
-              title="Download dues summary (PDF)"
+              title="Download dues summary (Invoice)"
             >
-              <i className="las la-file-pdf text-lg" aria-hidden />
-              Download PDF
+              <i className="las la-file-invoice text-lg" aria-hidden />
+              Download Invoice
             </button>
           </div>
         </div>
@@ -207,7 +207,7 @@ export function FeesPageClient({ fees, company }: Props) {
                   Status
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  PDF
+                  Invoice
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
                   Action
@@ -268,10 +268,10 @@ export function FeesPageClient({ fees, company }: Props) {
                           type="button"
                           onClick={() => downloadDuesPdf([row], company)}
                           className="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#134e4a] text-xs font-medium transition-colors"
-                          title={`Download PDF: ${row.period} – ${row.building}`}
+                          title={`Download invoice: ${row.period} – ${row.building}`}
                         >
-                          <i className="las la-file-pdf text-base" aria-hidden />
-                          PDF
+                          <i className="las la-file-invoice text-base" aria-hidden />
+                          Invoice
                         </button>
                       </td>
                       <td className="px-6 py-4 text-right">
