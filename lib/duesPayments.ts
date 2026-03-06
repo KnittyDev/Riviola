@@ -119,6 +119,57 @@ export async function getUnitsForBuilding(
 }
 
 /**
+ * Returns period keys (YYYY-MM) from the earliest investor_property created_at month in this building
+ * through current month + 2. Used for staff dues table columns so dues start from when units were registered.
+ */
+export async function getPeriodsForBuildingFromEarliestUnit(
+  supabase: SupabaseClient,
+  buildingId: string
+): Promise<string[]> {
+  const { data: rows, error } = await supabase
+    .from("investor_properties")
+    .select("created_at")
+    .eq("building_id", buildingId)
+    .limit(1000);
+
+  if (error || !rows?.length) {
+    const now = new Date();
+    const periods: string[] = [];
+    for (let i = -12; i <= 2; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      periods.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+    }
+    return periods;
+  }
+
+  let earliest = new Date((rows[0] as { created_at: string }).created_at);
+  rows.forEach((r) => {
+    const d = new Date((r as { created_at: string }).created_at);
+    if (d < earliest) earliest = d;
+  });
+
+  const startYear = earliest.getFullYear();
+  const startMonth = earliest.getMonth() + 1;
+  const now = new Date();
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 3, 0);
+  const endYear = endDate.getFullYear();
+  const endMonth = endDate.getMonth() + 1;
+
+  const periods: string[] = [];
+  let y = startYear;
+  let m = startMonth;
+  while (y < endYear || (y === endYear && m <= endMonth)) {
+    periods.push(`${y}-${String(m).padStart(2, "0")}`);
+    m++;
+    if (m > 12) {
+      m = 1;
+      y++;
+    }
+  }
+  return periods;
+}
+
+/**
  * Returns which units (investor_property_id) have a dues_payments record for the given building and period.
  * Map<investor_property_id, { paid_at, marked_by }>.
  */
@@ -151,6 +202,52 @@ export async function getDuesPaymentsForBuildingAndPeriod(
     map.set(p.investor_property_id, { paid_at: p.paid_at, marked_by: p.marked_by });
   });
   return map;
+}
+
+/**
+ * Returns paid status per period per unit for a building. periods = e.g. ["2025-01", "2025-02", ...].
+ * Result: Record<period, Record<investor_property_id, DuesPaymentStatus>> (serializable for client).
+ */
+export async function getDuesPaymentsForBuildingAndPeriods(
+  supabase: SupabaseClient,
+  buildingId: string,
+  periods: string[]
+): Promise<Record<string, Record<string, DuesPaymentStatus>>> {
+  if (!periods.length) return {};
+  const { data: unitIds } = await supabase
+    .from("investor_properties")
+    .select("id")
+    .eq("building_id", buildingId);
+  if (!unitIds?.length) return {};
+  const ids = unitIds.map((u: { id: string }) => u.id);
+  const { data: payments, error } = await supabase
+    .from("dues_payments")
+    .select("investor_property_id, period, paid_at, marked_by")
+    .in("investor_property_id", ids)
+    .in("period", periods);
+  if (error) {
+    console.error("[duesPayments] getDuesPaymentsForBuildingAndPeriods error:", error.message);
+    return {};
+  }
+  const byPeriod: Record<string, Record<string, DuesPaymentStatus>> = {};
+  periods.forEach((p) => {
+    byPeriod[p] = {};
+  });
+  (payments ?? []).forEach(
+    (row: {
+      investor_property_id: string;
+      period: string;
+      paid_at: string | null;
+      marked_by: string | null;
+    }) => {
+      if (!byPeriod[row.period]) byPeriod[row.period] = {};
+      byPeriod[row.period][row.investor_property_id] = {
+        paid_at: row.paid_at,
+        marked_by: row.marked_by,
+      };
+    }
+  );
+  return byPeriod;
 }
 
 /**

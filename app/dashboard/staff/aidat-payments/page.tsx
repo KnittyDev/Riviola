@@ -3,16 +3,13 @@ import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import {
   getBuildingDuesSettings,
   getUnitsForBuilding,
-  getDuesPaymentsForBuildingAndPeriod,
+  getDuesPaymentsForBuildingAndPeriods,
+  getPeriodsForBuildingFromEarliestUnit,
 } from "@/lib/duesPayments";
 import { DuesPaymentsClient } from "./DuesPaymentsClient";
 
 export const dynamic = "force-dynamic";
 
-function getDefaultPeriod(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-}
 
 export default async function StaffAidatPaymentsPage({
   searchParams,
@@ -42,7 +39,7 @@ export default async function StaffAidatPaymentsPage({
     );
   }
 
-  const { building: paramBuilding, period: paramPeriod } = await searchParams;
+  const { building: paramBuilding } = await searchParams;
 
   const { data: buildings } = await supabase
     .from("buildings")
@@ -51,39 +48,42 @@ export default async function StaffAidatPaymentsPage({
     .order("name");
 
   const list = buildings ?? [];
-  const selectedBuildingId = paramBuilding && list.some((b) => b.id === paramBuilding)
-    ? paramBuilding
-    : list[0]?.id ?? "";
-  const period = paramPeriod && /^\d{4}-\d{2}$/.test(paramPeriod)
-    ? paramPeriod
-    : getDefaultPeriod();
+  const selectedBuildingId =
+    paramBuilding && list.some((b) => b.id === paramBuilding)
+      ? paramBuilding
+      : list[0]?.id ?? "";
 
-  let settings: { payment_window_start_day: number; payment_window_end_day: number; amount_cents: number | null; currency: string | null } | null = null;
+  let settings: {
+    payment_window_start_day: number;
+    payment_window_end_day: number;
+    amount_cents: number | null;
+    currency: string | null;
+  } | null = null;
   let units: Awaited<ReturnType<typeof getUnitsForBuilding>> = [];
-  let paidRecord: Record<string, { paid_at: string | null; marked_by: string | null }> = {};
+  let periods: string[] = [];
+  let paidByPeriod: Record<string, Record<string, { paid_at: string | null; marked_by: string | null }>> = {};
 
   if (selectedBuildingId) {
     const serviceClient = createServiceRoleClient();
+    periods = await getPeriodsForBuildingFromEarliestUnit(serviceClient, selectedBuildingId);
     const [settingsResult, unitsResult, paidResult] = await Promise.all([
       getBuildingDuesSettings(supabase, selectedBuildingId),
       getUnitsForBuilding(serviceClient, selectedBuildingId),
-      getDuesPaymentsForBuildingAndPeriod(serviceClient, selectedBuildingId, period),
+      getDuesPaymentsForBuildingAndPeriods(serviceClient, selectedBuildingId, periods),
     ]);
     settings = settingsResult;
     units = unitsResult;
-    paidResult.forEach((v, k) => {
-      paidRecord[k] = v;
-    });
+    paidByPeriod = paidResult;
   }
 
   return (
     <DuesPaymentsClient
       buildings={list.map((b) => ({ id: b.id, name: b.name }))}
       selectedBuildingId={selectedBuildingId}
-      period={period}
+      periods={periods}
       settings={settings}
       units={units}
-      paidRecord={paidRecord}
+      paidByPeriod={paidByPeriod}
     />
   );
 }

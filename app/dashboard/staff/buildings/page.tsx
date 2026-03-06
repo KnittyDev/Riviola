@@ -105,6 +105,13 @@ export default async function StaffBuildingsPage() {
                       : `${weeklyCountByBuilding[b.id]} weekly update${(weeklyCountByBuilding[b.id] ?? 0) === 1 ? "" : "s"}`}
                   </span>
                   <Link
+                    href={`/dashboard/staff/buildings/${b.id}`}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
+                  >
+                    <i className="las la-external-link-alt text-sm" aria-hidden />
+                    See
+                  </Link>
+                  <Link
                     href={`/dashboard/staff/buildings/${b.id}/edit`}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
                   >

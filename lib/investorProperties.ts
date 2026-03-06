@@ -27,6 +27,8 @@ export type InvestorPropertyWithBuilding = {
   unit: string;
   area_m2: number | null;
   delivery_period: string | null;
+  purchase_value: number | null;
+  purchase_currency: string | null;
   building: {
     name: string;
     location: string | null;
@@ -50,7 +52,7 @@ export async function getInvestorPropertiesWithBuilding(
   // Step 1: fetch the investor's own property rows
   const { data: rows, error: rowsError } = await supabase
     .from("investor_properties")
-    .select("id, building_id, block, unit, area_m2, delivery_period")
+    .select("id, building_id, block, unit, area_m2, delivery_period, purchase_value, purchase_currency")
     .eq("profile_id", profileId);
 
   if (rowsError) {
@@ -106,6 +108,8 @@ export async function getInvestorPropertiesWithBuilding(
       unit: r.unit,
       area_m2: r.area_m2 ?? null,
       delivery_period: r.delivery_period ?? null,
+      purchase_value: r.purchase_value != null ? Number(r.purchase_value) : null,
+      purchase_currency: r.purchase_currency ?? null,
       building: bld
         ? {
             name: bld.name,

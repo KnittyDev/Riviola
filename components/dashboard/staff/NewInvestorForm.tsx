@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createInvestorAction } from "@/app/dashboard/staff/investors/actions";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
@@ -15,14 +17,97 @@ export type BuildingOption = {
   floors: number;
 };
 
+const CURRENCIES = [
+  { value: "EUR", label: "EUR (€)" },
+  { value: "USD", label: "USD ($)" },
+  { value: "GBP", label: "GBP (£)" },
+  { value: "TRY", label: "TRY (₺)" },
+] as const;
+
+function formatAmount(value: number, currency: string): string {
+  const sym = { EUR: "€", USD: "$", GBP: "£", TRY: "₺" }[currency] ?? currency + " ";
+  return `${sym} ${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) {
+  const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [buildingId, setBuildingId] = useState("");
+  const [block, setBlock] = useState("");
+  const [unit, setUnit] = useState("");
+  const [areaM2, setAreaM2] = useState<string>("");
+  const [deliveryPeriod, setDeliveryPeriod] = useState("");
+  const [totalAmount, setTotalAmount] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("EUR");
   const [paymentPlanType, setPaymentPlanType] = useState<"full" | "installments">("full");
   const [installmentCount, setInstallmentCount] = useState<number>(6);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [error]);
+
   const selected = buildings.find((b) => b.id === buildingId);
   const blocks = selected?.blocks ?? [];
   const floorCount = selected?.floors ?? 6;
   const floorOptions = Array.from({ length: floorCount }, (_, i) => i + 1);
+
+  const totalNum = totalAmount.trim() === "" ? null : parseFloat(totalAmount);
+  const isValidTotal = totalNum != null && !Number.isNaN(totalNum) && totalNum >= 0;
+  const installmentPreview =
+    paymentPlanType === "installments" && isValidTotal && installmentCount >= 1
+      ? totalNum! / installmentCount
+      : null;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const areaNum = areaM2.trim() === "" ? null : parseFloat(areaM2);
+      const validArea = areaNum != null && !Number.isNaN(areaNum) && areaNum >= 0;
+      const result = await createInvestorAction({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        password,
+        phone: phone.trim() || null,
+        buildingId,
+        block: block.trim(),
+        unit: unit.trim(),
+        areaM2: validArea ? areaNum : null,
+        deliveryPeriod: deliveryPeriod.trim() || null,
+        purchaseValue: isValidTotal ? totalNum! : null,
+        purchaseCurrency: currency.trim() || null,
+      });
+      if (!result) {
+        setError("Sunucu yanıt vermedi. Tekrar deneyin.");
+        return;
+      }
+      if (result.ok) {
+        setSuccess(true);
+        router.refresh();
+        router.push("/dashboard/staff/investors");
+        return;
+      }
+      const message =
+        typeof result.error === "string"
+          ? result.error
+          : (result as { message?: string }).message ?? "Hesap oluşturulamadı. Tekrar deneyin.";
+      setError(message);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Bir hata oluştu. Tekrar deneyin.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -41,8 +126,22 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
       </p>
       <form
         className="space-y-6 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit}
       >
+        {error && (
+          <p
+            ref={errorRef}
+            className="text-red-600 text-sm p-3 rounded-xl bg-red-50 border border-red-100"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
+        {success && (
+          <p className="text-green-700 text-sm p-3 rounded-xl bg-green-50 border border-green-100">
+            Hesap oluşturuldu. Yönlendiriliyorsunuz…
+          </p>
+        )}
         <div>
           <label htmlFor="name" className={labelClass}>
             Full name
@@ -52,6 +151,9 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             name="name"
             type="text"
             placeholder="e.g. John Smith"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
             className={inputClass}
           />
         </div>
@@ -64,6 +166,9 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             name="email"
             type="email"
             placeholder="investor@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             className={inputClass}
           />
         </div>
@@ -76,6 +181,24 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             name="password"
             type="password"
             placeholder="Initial password (can be changed later)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label htmlFor="phone" className={labelClass}>
+            Phone
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            placeholder="e.g. +90 555 123 4567"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             className={inputClass}
           />
         </div>
@@ -90,7 +213,10 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             id="building"
             name="building"
             value={buildingId}
-            onChange={(e) => setBuildingId(e.target.value)}
+            onChange={(e) => {
+              setBuildingId(e.target.value);
+              setBlock("");
+            }}
             className={inputClass}
           >
             <option value="">Select project</option>
@@ -111,12 +237,15 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
               <select
                 id="block"
                 name="block"
+                value={block}
+                onChange={(e) => setBlock(e.target.value)}
+                required
                 className={inputClass}
               >
                 <option value="">Select block</option>
-                {blocks.map((block) => (
-                  <option key={block} value={block}>
-                    {block}
+                {blocks.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
                   </option>
                 ))}
               </select>
@@ -126,11 +255,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                 <label htmlFor="floor" className={labelClass}>
                   Floor
                 </label>
-                <select
-                  id="floor"
-                  name="floor"
-                  className={inputClass}
-                >
+                <select id="floor" name="floor" className={inputClass}>
                   <option value="">Select floor</option>
                   {floorOptions.map((f) => (
                     <option key={f} value={f}>
@@ -148,6 +273,41 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                   name="unit"
                   type="text"
                   placeholder="e.g. 402"
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  required
+                  className={inputClass}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="areaM2" className={labelClass}>
+                  Area (m²)
+                </label>
+                <input
+                  id="areaM2"
+                  name="areaM2"
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  placeholder="e.g. 85"
+                  value={areaM2}
+                  onChange={(e) => setAreaM2(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="deliveryPeriod" className={labelClass}>
+                  Delivery period
+                </label>
+                <input
+                  id="deliveryPeriod"
+                  name="deliveryPeriod"
+                  type="text"
+                  placeholder="e.g. Q3 2026, Q4 2026"
+                  value={deliveryPeriod}
+                  onChange={(e) => setDeliveryPeriod(e.target.value)}
                   className={inputClass}
                 />
               </div>
@@ -156,6 +316,44 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         )}
 
         <hr className="border-gray-200" />
+
+        <div>
+          <span className={labelClass}>Amount to pay (total)</span>
+          <p className="text-xs text-gray-500 mb-2">
+            Total amount the investor has paid or will pay for this unit.
+          </p>
+          <div className="flex flex-wrap gap-3 items-end">
+            <div className="flex-1 min-w-[10rem]">
+              <input
+                id="totalAmount"
+                name="totalAmount"
+                type="number"
+                min={0}
+                step={0.01}
+                placeholder="e.g. 150000"
+                value={totalAmount}
+                onChange={(e) => setTotalAmount(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div className="w-32">
+              <label htmlFor="currency" className="sr-only">Currency</label>
+              <select
+                id="currency"
+                name="currency"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className={inputClass}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
 
         <div>
           <span className={labelClass}>Payment plan</span>
@@ -203,14 +401,37 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
               />
             </div>
           )}
+
+          {/* Payment preview */}
+          <div className="mt-4 p-4 rounded-xl bg-teal-50 border border-teal-100">
+            <p className="text-sm font-semibold text-teal-900 mb-1">Preview</p>
+            {!isValidTotal ? (
+              <p className="text-sm text-teal-700">Enter total amount above to see preview.</p>
+            ) : paymentPlanType === "full" ? (
+              <p className="text-sm text-teal-800">
+                One-time payment: <strong>{formatAmount(totalNum!, currency)}</strong>
+              </p>
+            ) : (
+              <div className="text-sm text-teal-800 space-y-0.5">
+                <p>
+                  <strong>{installmentCount}</strong> installments of{" "}
+                  <strong>{formatAmount(installmentPreview!, currency)}</strong> each
+                </p>
+                <p>
+                  Total: <strong>{formatAmount(totalNum!, currency)}</strong>
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors"
+            disabled={loading}
+            className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-60 disabled:pointer-events-none transition-colors"
           >
-            Create account
+            {loading ? "Oluşturuluyor…" : "Create account"}
           </button>
           <Link
             href="/dashboard/staff"

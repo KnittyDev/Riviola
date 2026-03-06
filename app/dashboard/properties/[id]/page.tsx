@@ -91,7 +91,7 @@ export default async function PropertyDetailPage({
     if (!building) notFound();
     const { data: assignment } = await supabase
       .from("investor_properties")
-      .select("block, unit, area_m2, delivery_period")
+      .select("block, unit, area_m2, delivery_period, purchase_value, purchase_currency")
       .eq("building_id", id)
       .eq("profile_id", user.id)
       .maybeSingle();

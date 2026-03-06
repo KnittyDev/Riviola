@@ -101,6 +101,8 @@ export type InvestorProperty = {
   unit: string;
   area_m2: number | null;
   delivery_period: string | null;
+  purchase_value: number | null;
+  purchase_currency: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -144,12 +146,15 @@ export type DuesPaymentRow = {
   id: string;
   investor_property_id: string;
   period: string;
+  payment_number: string;
   paid_at: string | null;
   marked_by: string | null;
   created_at: string;
 };
 
-export type DuesPaymentInsert = Omit<DuesPaymentRow, "id" | "created_at"> & {
+export type DuesPaymentInsert = Omit<DuesPaymentRow, "id" | "created_at" | "payment_number"> & {
   id?: string;
   created_at?: string;
+  /** Set by DB trigger if omitted */
+  payment_number?: string;
 };

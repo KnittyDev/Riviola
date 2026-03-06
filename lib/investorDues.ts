@@ -15,6 +15,8 @@ export type InvestorDuesFeeItem = {
   currency: string | null;
   status: "paid" | "due" | "overdue";
   paid_at: string | null;
+  /** Reference number e.g. #12345678 when paid */
+  payment_number: string | null;
 };
 
 /** Generates period keys YYYY-MM from start (inclusive) to end (inclusive). */
@@ -101,16 +103,25 @@ export async function getInvestorDuesFees(
 
   const { data: payments } = await supabase
     .from("dues_payments")
-    .select("investor_property_id, period, paid_at")
+    .select("investor_property_id, period, paid_at, payment_number")
     .in("investor_property_id", propIds)
     .in("period", allPeriods);
   const paidSet = new Set(
     (payments ?? []).map(
-      (p) => `${p.investor_property_id}:${p.period}`
+      (p: { investor_property_id: string; period: string }) => `${p.investor_property_id}:${p.period}`
     )
   );
   const paidAtMap = new Map(
-    (payments ?? []).map((p) => [`${p.investor_property_id}:${p.period}`, p.paid_at ?? null])
+    (payments ?? []).map((p: { investor_property_id: string; period: string; paid_at: string | null }) => [
+      `${p.investor_property_id}:${p.period}`,
+      p.paid_at ?? null,
+    ])
+  );
+  const paymentNumberMap = new Map(
+    (payments ?? []).map((p: { investor_property_id: string; period: string; payment_number: string | null }) => [
+      `${p.investor_property_id}:${p.period}`,
+      p.payment_number ?? null,
+    ])
   );
 
   const items: InvestorDuesFeeItem[] = [];
@@ -137,6 +148,7 @@ export async function getInvestorDuesFees(
       const key = `${prop.id}:${period}`;
       const isPaid = paidSet.has(key);
       const paid_at = paidAtMap.get(key) ?? null;
+      const payment_number = paymentNumberMap.get(key) ?? null;
       const [y, m] = period.split("-").map(Number);
       const endDay = settings?.end ?? 31;
       const dueDate = new Date(y, m - 1, Math.min(endDay, 28));
@@ -173,6 +185,7 @@ export async function getInvestorDuesFees(
         currency,
         status,
         paid_at,
+        payment_number,
       });
     }
   }

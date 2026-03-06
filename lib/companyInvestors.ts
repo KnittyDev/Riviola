@@ -19,6 +19,8 @@ export type CompanyInvestorPropertyRow = {
   unit: string;
   area_m2: number | null;
   delivery_period: string | null;
+  purchase_value: number | null;
+  purchase_currency: string | null;
 };
 
 /**
@@ -41,7 +43,7 @@ export async function getCompanyInvestorProperties(
 
   const { data: rows, error: rowsError } = await supabase
     .from("investor_properties")
-    .select("profile_id, building_id, block, unit, area_m2, delivery_period")
+    .select("id, profile_id, building_id, block, unit, area_m2, delivery_period, purchase_value, purchase_currency")
     .in("building_id", buildingIds)
     .order("block")
     .order("unit");
@@ -52,36 +54,47 @@ export async function getCompanyInvestorProperties(
   }
 
   const profileIds = [...new Set((rows ?? []).map((r: { profile_id: string }) => r.profile_id))];
-  const profileMap = new Map<string, { full_name: string | null; email: string | null }>();
+  const profileMap = new Map<string, { full_name: string | null; email: string | null; phone: string | null }>();
   if (profileIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, full_name, email")
+      .select("id, full_name, email, phone")
       .in("id", profileIds);
-    (profiles ?? []).forEach((p: { id: string; full_name: string | null; email: string | null }) => {
-      profileMap.set(p.id, { full_name: p.full_name?.trim() ?? null, email: p.email?.trim() ?? null });
+    (profiles ?? []).forEach((p: { id: string; full_name: string | null; email: string | null; phone: string | null }) => {
+      profileMap.set(p.id, {
+        full_name: p.full_name?.trim() ?? null,
+        email: p.email?.trim() ?? null,
+        phone: p.phone?.trim() ?? null,
+      });
     });
   }
 
   return (rows ?? []).map((r: {
+    id: string;
     profile_id: string;
     building_id: string;
     block: string;
     unit: string;
     area_m2: number | null;
     delivery_period: string | null;
+    purchase_value: number | null;
+    purchase_currency: string | null;
   }) => {
     const profile = profileMap.get(r.profile_id);
     return {
+      id: r.id,
       profile_id: r.profile_id,
       full_name: profile?.full_name ?? null,
       email: profile?.email ?? null,
+      phone: profile?.phone ?? null,
       building_id: r.building_id,
       building_name: buildingNames.get(r.building_id) ?? "",
       block: r.block,
       unit: r.unit,
       area_m2: r.area_m2 != null ? Number(r.area_m2) : null,
       delivery_period: r.delivery_period ?? null,
+      purchase_value: r.purchase_value != null ? Number(r.purchase_value) : null,
+      purchase_currency: r.purchase_currency ?? null,
     };
   });
 }

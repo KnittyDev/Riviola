@@ -21,23 +21,12 @@ function formatDuesAmount(cents: number, currency: string | null): string {
   return `${sym} ${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 }
 
-function getMonthOptions(): { value: string; label: string }[] {
-  const options: { value: string; label: string }[] = [];
-  const now = new Date();
-  for (let i = -6; i <= 6; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    options.push({ value, label: formatMonthLabel(value) });
-  }
-  return options;
-}
-
 type Building = { id: string; name: string };
 
 type Props = {
   buildings: Building[];
   selectedBuildingId: string;
-  period: string;
+  periods: string[];
   settings: {
     payment_window_start_day: number;
     payment_window_end_day: number;
@@ -45,18 +34,17 @@ type Props = {
     currency: string | null;
   } | null;
   units: UnitForDues[];
-  paidRecord: Record<string, { paid_at: string | null; marked_by: string | null }>;
+  paidByPeriod: Record<string, Record<string, { paid_at: string | null; marked_by: string | null }>>;
 };
 
 export function DuesPaymentsClient({
   buildings,
   selectedBuildingId,
-  period,
+  periods,
   settings,
   units,
-  paidRecord,
+  paidByPeriod,
 }: Props) {
-  const paidMap = useMemo(() => new Map(Object.entries(paidRecord)), [paidRecord]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showSettingsForm, setShowSettingsForm] = useState(false);
@@ -67,7 +55,7 @@ export function DuesPaymentsClient({
   );
   const [currency, setCurrency] = useState(settings?.currency ?? "EUR");
   const [savingSettings, setSavingSettings] = useState(false);
-  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [togglingKey, setTogglingKey] = useState<string | null>(null);
 
   const CURRENCIES = [
     { value: "EUR", label: "EUR (€)" },
@@ -76,13 +64,9 @@ export function DuesPaymentsClient({
     { value: "TRY", label: "TRY (₺)" },
   ] as const;
 
-  const monthOptions = getMonthOptions();
-  const selectedBuilding = buildings.find((b) => b.id === selectedBuildingId);
-
-  function updateParams(buildingId?: string, newPeriod?: string) {
+  function updateParams(buildingId?: string) {
     const params = new URLSearchParams(searchParams.toString());
     if (buildingId != null) params.set("building", buildingId);
-    if (newPeriod != null) params.set("period", newPeriod);
     router.push(`/dashboard/staff/aidat-payments?${params.toString()}`);
   }
 
@@ -110,12 +94,13 @@ export function DuesPaymentsClient({
     router.refresh();
   }
 
-  async function handleTogglePaid(unitId: string, currentlyPaid: boolean) {
-    setTogglingId(unitId);
+  async function handleTogglePaid(unitId: string, period: string, currentlyPaid: boolean) {
+    const key = `${unitId}-${period}`;
+    setTogglingKey(key);
     const result = currentlyPaid
       ? await unmarkDuesPaidAction(unitId, period)
       : await markDuesPaidAction(unitId, period);
-    setTogglingId(null);
+    setTogglingKey(null);
     if (result.error) {
       toast.error(result.error);
       return;
@@ -124,7 +109,9 @@ export function DuesPaymentsClient({
     router.refresh();
   }
 
-  const paidCount = units.filter((u) => paidMap.get(u.id)?.paid_at).length;
+  function isPaid(unitId: string, period: string): boolean {
+    return !!paidByPeriod[period]?.[unitId]?.paid_at;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -147,18 +134,6 @@ export function DuesPaymentsClient({
           {buildings.map((b) => (
             <option key={b.id} value={b.id}>
               {b.name}
-            </option>
-          ))}
-        </select>
-        <label className="text-sm font-semibold text-gray-700 shrink-0">Month</label>
-        <select
-          value={period}
-          onChange={(e) => updateParams(undefined, e.target.value)}
-          className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
-        >
-          {monthOptions.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
             </option>
           ))}
         </select>
@@ -271,54 +246,58 @@ export function DuesPaymentsClient({
               <p className="text-sm text-gray-400 mt-1">Assign investors to units to track dues.</p>
             </div>
           ) : (
-            <>
-              <p className="text-sm text-gray-600 mb-3">
-                <strong>{paidCount}</strong> of <strong>{units.length}</strong> units paid for {formatMonthLabel(period)}.
-              </p>
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="border-b border-gray-200 bg-gray-50/80">
-                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Block</th>
-                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Unit</th>
-                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Investor</th>
-                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                          Dues paid for {formatMonthLabel(period)}
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-gray-200 bg-gray-50/80">
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">Block</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">Unit</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[10rem]">Investor</th>
+                      {periods.map((p) => (
+                        <th
+                          key={p}
+                          className="px-2 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center min-w-[3.5rem]"
+                          title={formatMonthLabel(p)}
+                        >
+                          {formatMonthLabel(p)}
                         </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {units.map((u) => {
-                        const status = paidMap.get(u.id);
-                        const isPaid = !!status?.paid_at;
-                        return (
-                          <tr key={u.id} className="hover:bg-gray-50/80">
-                            <td className="px-6 py-4 text-sm font-medium text-gray-900">{u.block}</td>
-                            <td className="px-6 py-4 text-sm font-medium text-gray-900">{u.unit}</td>
-                            <td className="px-6 py-4 text-sm text-gray-600">{u.full_name ?? "—"}</td>
-                            <td className="px-6 py-4 text-right">
-                              <label className="inline-flex items-center gap-2 cursor-pointer">
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {units.map((u) => (
+                      <tr key={u.id} className="hover:bg-gray-50/80">
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{u.block}</td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{u.unit}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{u.full_name ?? "—"}</td>
+                        {periods.map((p) => {
+                          const paid = isPaid(u.id, p);
+                          const key = `${u.id}-${p}`;
+                          return (
+                            <td key={p} className="px-2 py-3 text-center">
+                              <label className="inline-flex items-center justify-center gap-1 cursor-pointer">
                                 <input
                                   type="checkbox"
-                                  checked={isPaid}
-                                  disabled={togglingId === u.id}
-                                  onChange={() => handleTogglePaid(u.id, isPaid)}
-                                  className="rounded border-gray-300 text-[#134e4a] focus:ring-[#134e4a]"
+                                  checked={paid}
+                                  disabled={togglingKey === key}
+                                  onChange={() => handleTogglePaid(u.id, p, paid)}
+                                  className="h-4 w-4 rounded border-gray-300 accent-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 focus:ring-offset-0"
+                                  title={paid ? "Paid – click to unmark" : "Unpaid – click to mark paid"}
                                 />
-                                <span className="text-sm font-medium text-gray-700">
-                                  {isPaid ? "Paid" : "Unpaid"}
+                                <span className="text-xs font-medium text-gray-600 sr-only sm:not-sr-only">
+                                  {paid ? "Paid" : "—"}
                                 </span>
                               </label>
                             </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </>
+            </div>
           )}
         </>
       )}

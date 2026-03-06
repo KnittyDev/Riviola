@@ -3,6 +3,7 @@ import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { getStaffCompanyId } from "@/lib/buildings";
 import { getCompanyInvestorProperties } from "@/lib/companyInvestors";
 import { redirect } from "next/navigation";
+import { InvestorsTable } from "@/components/dashboard/staff/InvestorsTable";
 
 export const dynamic = "force-dynamic";
 
@@ -45,64 +46,7 @@ export default async function StaffInvestorsPage() {
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50/80">
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Investor
-                  </th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Project
-                  </th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Block
-                  </th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Unit
-                  </th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    m²
-                  </th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Delivery
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {properties.map((row, idx) => (
-                  <tr key={`${row.profile_id}-${row.building_id}-${row.block}-${row.unit}-${idx}`} className="hover:bg-gray-50/80">
-                    <td className="px-6 py-4">
-                      <p className="font-semibold text-gray-900">{row.full_name || "—"}</p>
-                      {row.email && (
-                        <a href={`mailto:${row.email}`} className="text-sm text-[#134e4a] hover:underline">
-                          {row.email}
-                        </a>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/dashboard/staff/buildings/${row.building_id}`}
-                        className="text-sm font-medium text-gray-900 hover:text-[#134e4a]"
-                      >
-                        {row.building_name}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{row.block}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{row.unit}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {row.area_m2 != null ? `${row.area_m2}` : "—"}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {row.delivery_period || "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <InvestorsTable rows={properties} />
       )}
     </div>
   );

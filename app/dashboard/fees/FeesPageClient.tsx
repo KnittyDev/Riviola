@@ -8,6 +8,7 @@ import {
   createDuesCheckoutSessionAction,
   confirmDuesPaymentFromSessionAction,
 } from "./actions";
+import { downloadDuesPdf } from "@/lib/duesPdf";
 
 type FeeStatus = "paid" | "due" | "overdue";
 
@@ -170,20 +171,15 @@ export function FeesPageClient({ fees }: Props) {
           <h3 className="text-lg font-bold text-gray-900">
             All fees and expenses
           </h3>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <button
               type="button"
-              className="p-2 text-gray-500 hover:text-[#134e4a] transition-colors rounded-lg hover:bg-gray-50"
-              aria-label="Filter"
+              onClick={() => downloadDuesPdf(fees)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
+              title="Download dues summary (PDF)"
             >
-              <i className="las la-filter text-xl" aria-hidden />
-            </button>
-            <button
-              type="button"
-              className="p-2 text-gray-500 hover:text-[#134e4a] transition-colors rounded-lg hover:bg-gray-50"
-              aria-label="Export"
-            >
-              <i className="las la-download text-xl" aria-hidden />
+              <i className="las la-file-pdf text-lg" aria-hidden />
+              Download PDF
             </button>
           </div>
         </div>
@@ -209,6 +205,9 @@ export function FeesPageClient({ fees }: Props) {
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  PDF
+                </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
                   Action
                 </th>
@@ -217,7 +216,7 @@ export function FeesPageClient({ fees }: Props) {
             <tbody className="divide-y divide-gray-200">
               {fees.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                     No dues recorded yet. Dues appear here once your building manager configures payment windows for your units.
                   </td>
                 </tr>
@@ -263,10 +262,26 @@ export function FeesPageClient({ fees }: Props) {
                           {status.label}
                         </span>
                       </td>
+                      <td className="px-6 py-4">
+                        <button
+                          type="button"
+                          onClick={() => downloadDuesPdf([row])}
+                          className="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#134e4a] text-xs font-medium transition-colors"
+                          title={`Download PDF: ${row.period} – ${row.building}`}
+                        >
+                          <i className="las la-file-pdf text-base" aria-hidden />
+                          PDF
+                        </button>
+                      </td>
                       <td className="px-6 py-4 text-right">
                         {row.status === "paid" ? (
                           <span className="text-xs text-gray-500 font-medium" title={row.paid_at ?? undefined}>
                             {formatPaidAt(row.paid_at)}
+                            {row.payment_number && (
+                              <span className="block mt-0.5 font-mono text-[#134e4a]">
+                                {row.payment_number}
+                              </span>
+                            )}
                           </span>
                         ) : (
                           <button
