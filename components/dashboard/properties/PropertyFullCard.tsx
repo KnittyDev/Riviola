@@ -14,9 +14,6 @@ export interface PropertyFull {
   title: string;
   location: string;
   progress: number;
-  value: string;
-  roi: string;
-  roiPositive: boolean;
   area: string;
   deliveryDate: string;
   updateTime: string;
@@ -73,7 +70,7 @@ export function PropertyFullCard({
         </div>
 
         {/* Bottom info */}
-        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+        <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-2">
           <div>
             <p className="text-white text-lg font-bold leading-tight drop-shadow">
               {property.title}
@@ -83,39 +80,17 @@ export function PropertyFullCard({
               {property.location}
             </p>
           </div>
+          {property.area && property.area !== "—" && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-bold rounded-lg">
+              <i className="las la-expand-arrows-alt text-sm" aria-hidden />
+              {property.area}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Body */}
       <div className="p-5 space-y-4">
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-              Value
-            </p>
-            <p className="text-sm font-bold text-gray-900">{property.value}</p>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-              ROI
-            </p>
-            <p
-              className={`text-sm font-bold ${
-                property.roiPositive ? "text-emerald-600" : "text-red-500"
-              }`}
-            >
-              {property.roi}
-            </p>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-3 text-center">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-              Area
-            </p>
-            <p className="text-sm font-bold text-gray-900">{property.area}</p>
-          </div>
-        </div>
-
         {/* Progress */}
         {property.status !== "planning" && (
           <div>

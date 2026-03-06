@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export function DeleteBuildingButton({ buildingId }: { buildingId: string }) {
   const router = useRouter();

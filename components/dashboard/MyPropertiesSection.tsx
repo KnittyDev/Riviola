@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { PropertyCard } from "./PropertyCard";
 import { DashboardWeeklyPhotoCard } from "./DashboardWeeklyPhotoCard";
-import type { InvestorPropertyWithBuilding } from "@/lib/investorProperties";
+import type { InvestorPropertyWithBuilding, InvestorWeeklyUpdateItem } from "@/lib/investorProperties";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
 
 export function MyPropertiesSection({
   investorProperties = [],
+  weeklyUpdates = [],
 }: {
   investorProperties?: InvestorPropertyWithBuilding[];
+  weeklyUpdates?: InvestorWeeklyUpdateItem[];
 }) {
   return (
     <div className="col-span-12">
@@ -35,13 +37,14 @@ export function MyPropertiesSection({
             title={`${p.building.name} · ${p.block} ${p.unit}`}
             location={p.building.location || "—"}
             progress={p.building.progress}
+            area={p.area_m2 != null && p.area_m2 > 0 ? `${p.area_m2} m²` : undefined}
             updateTime="—"
             updateText="Assigned unit. View details for updates."
           />
         ))}
         {/* Weekly Photo column */}
         <div className="lg:col-span-1">
-          <DashboardWeeklyPhotoCard />
+          <DashboardWeeklyPhotoCard weeklyUpdates={weeklyUpdates} />
         </div>
       </div>
     </div>

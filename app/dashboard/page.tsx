@@ -4,7 +4,7 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { PortfolioChart } from "@/components/dashboard/PortfolioChart";
 import { UpcomingMilestones } from "@/components/dashboard/UpcomingMilestones";
 import { MyPropertiesSection } from "@/components/dashboard/MyPropertiesSection";
-import { getInvestorPropertiesWithBuilding } from "@/lib/investorProperties";
+import { getInvestorPropertiesWithBuilding, getInvestorWeeklyUpdates, getInvestorUpcomingMilestones } from "@/lib/investorProperties";
 
 export const dynamic = "force-dynamic";
 
@@ -28,12 +28,26 @@ export default async function DashboardPage() {
   const role = profile?.role ?? "investor";
   if (role === "staff" || role === "admin") redirect("/dashboard/staff");
 
-  // 3. Fetch investor properties using a client with explicit Bearer token
-  //    so that RLS correctly identifies auth.uid()
+  // 3. Fetch investor properties and weekly updates (same token for RLS)
   const tokenClient = createClientWithToken(session.access_token);
   const investorProperties = await getInvestorPropertiesWithBuilding(
     tokenClient,
     user.id
+  );
+  const buildingIds = [...new Set(investorProperties.map((p) => p.building_id))];
+  const buildingNameById = new Map(
+    investorProperties.map((p) => [p.building_id, p.building.name])
+  );
+  const weeklyUpdates = await getInvestorWeeklyUpdates(
+    tokenClient,
+    buildingIds,
+    buildingNameById
+  );
+  const upcomingMilestones = await getInvestorUpcomingMilestones(
+    tokenClient,
+    buildingIds,
+    buildingNameById,
+    5
   );
 
   return (
@@ -44,9 +58,12 @@ export default async function DashboardPage() {
           <PortfolioChart />
         </div>
         <div className="col-span-12 lg:col-span-4">
-          <UpcomingMilestones />
+          <UpcomingMilestones milestones={upcomingMilestones} />
         </div>
-        <MyPropertiesSection investorProperties={investorProperties} />
+        <MyPropertiesSection
+          investorProperties={investorProperties}
+          weeklyUpdates={weeklyUpdates}
+        />
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ export default async function PropertyDetailPage({
     if (!building) notFound();
     const { data: assignment } = await supabase
       .from("investor_properties")
-      .select("block, unit")
+      .select("block, unit, area_m2, delivery_period")
       .eq("building_id", id)
       .eq("profile_id", user.id)
       .maybeSingle();
@@ -163,6 +163,18 @@ export default async function PropertyDetailPage({
                 <BuildingProgressClient progress={(building as { progress: number }).progress} />
               </div>
             </div>
+            {(assignment as { area_m2?: number | null })?.area_m2 != null && (assignment as { area_m2: number }).area_m2 > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Area</p>
+                <p className="text-gray-900 font-bold mt-1">{(assignment as { area_m2: number }).area_m2} m²</p>
+              </div>
+            )}
+            {(assignment as { delivery_period?: string | null })?.delivery_period?.trim() && (
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Delivery</p>
+                <p className="text-gray-900 font-bold mt-1">{(assignment as { delivery_period: string }).delivery_period}</p>
+              </div>
+            )}
           </div>
           {(() => {
             const planned = (building as { planned_milestones?: PlannedMilestoneDb[] }).planned_milestones ?? [];

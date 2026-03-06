@@ -99,6 +99,8 @@ export type InvestorProperty = {
   building_id: string;
   block: string;
   unit: string;
+  area_m2: number | null;
+  delivery_period: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -107,3 +109,19 @@ export type InvestorPropertyInsert = Omit<
   InvestorProperty,
   "id" | "created_at" | "updated_at"
 >;
+
+export type InvestorRequestRow = {
+  id: string;
+  profile_id: string;
+  building_id: string;
+  type: string;
+  status: string;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type InvestorRequestInsert = Omit<
+  InvestorRequestRow,
+  "id" | "created_at" | "updated_at"
+> & { status?: string };

@@ -11,12 +11,16 @@ export function DashboardLayoutClient({
   companyName = "Company",
   companyLogoUrl = null,
   fullName = "Staff",
+  avatarUrl = null,
+  email = null,
 }: {
   children: React.ReactNode;
   role?: "investor" | "staff" | "admin";
   companyName?: string;
   companyLogoUrl?: string | null;
   fullName?: string;
+  avatarUrl?: string | null;
+  email?: string | null;
 }) {
   const pathname = usePathname();
   const isStaff = pathname?.startsWith("/dashboard/staff") && (role === "staff" || role === "admin");
@@ -34,6 +38,9 @@ export function DashboardLayoutClient({
         />
       ) : (
         <Sidebar
+          fullName={fullName}
+          avatarUrl={avatarUrl}
+          email={email}
           open={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
         />

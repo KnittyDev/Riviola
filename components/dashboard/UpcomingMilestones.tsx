@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import type { InvestorUpcomingMilestoneItem } from "@/lib/investorProperties";
 
-const milestones = [
-  { date: "OCT 15, 2024", title: "Final Exterior Painting", active: true },
-  { date: "NOV 02, 2024", title: "Interior Fit-out Phase 3", active: false },
-  { date: "DEC 20, 2024", title: "Key Handover Ceremony", active: false },
-];
+interface UpcomingMilestonesProps {
+  milestones?: InvestorUpcomingMilestoneItem[];
+}
 
-export function UpcomingMilestones() {
+export function UpcomingMilestones({ milestones: propMilestones = [] }: UpcomingMilestonesProps) {
   const [liveSeconds, setLiveSeconds] = useState(0);
 
   useEffect(() => {
@@ -48,49 +47,53 @@ export function UpcomingMilestones() {
         </div>
       </div>
 
-      {/* Timeline */}
+      {/* Timeline - no vertical line */}
       <div className="px-6 py-4 flex-1">
         <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-[#134e4a]/30 via-gray-200 to-gray-100" />
-
           <div className="space-y-0">
-            {milestones.map((m, i) => (
-              <div key={m.date} className="relative flex gap-4 pb-5 last:pb-0">
-                {/* Dot */}
-                <div className="relative z-10 flex shrink-0 items-start pt-0.5">
-                  <div
-                    className={`flex items-center justify-center rounded-full transition-all ${
-                      m.active
-                        ? "size-5 bg-[#134e4a] shadow-md shadow-[#134e4a]/30 milestone-dot-active ring-4 ring-[#134e4a]/10"
-                        : "size-3 bg-gray-200 mt-1.5"
-                    }`}
-                  >
-                    {m.active && (
-                      <span className="size-1.5 rounded-full bg-white" />
+            {propMilestones.length === 0 ? (
+              <p className="text-sm text-gray-500 py-4">No upcoming milestones for your properties yet.</p>
+            ) : (
+              propMilestones.map((m, i) => (
+                <div key={`${m.date}-${m.title}-${i}`} className="relative flex gap-4 pb-5 last:pb-0">
+                  {/* Dot */}
+                  <div className="relative z-10 flex shrink-0 items-start pt-0.5">
+                    <div
+                      className={`flex items-center justify-center rounded-full transition-all ${
+                        m.active
+                          ? "size-5 bg-[#134e4a] shadow-md shadow-[#134e4a]/30 milestone-dot-active ring-4 ring-[#134e4a]/10"
+                          : "size-3 bg-gray-200 mt-1.5"
+                      }`}
+                    >
+                      {m.active && (
+                        <span className="size-1.5 rounded-full bg-white" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 pt-0">
+                    <p
+                      className={`text-[10px] font-bold uppercase tracking-widest ${
+                        m.active ? "text-[#134e4a]" : "text-gray-400"
+                      }`}
+                    >
+                      {m.date}
+                    </p>
+                    <p
+                      className={`text-sm font-bold mt-0.5 ${
+                        m.active ? "text-gray-900" : "text-gray-500"
+                      }`}
+                    >
+                      {m.title}
+                    </p>
+                    {m.building_name && (
+                      <p className="text-xs text-gray-400 mt-0.5">{m.building_name}</p>
                     )}
                   </div>
                 </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0 pt-0">
-                  <p
-                    className={`text-[10px] font-bold uppercase tracking-widest ${
-                      m.active ? "text-[#134e4a]" : "text-gray-400"
-                    }`}
-                  >
-                    {m.date}
-                  </p>
-                  <p
-                    className={`text-sm font-bold mt-0.5 ${
-                      m.active ? "text-gray-900" : "text-gray-500"
-                    }`}
-                  >
-                    {m.title}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -98,10 +101,10 @@ export function UpcomingMilestones() {
       {/* Button */}
       <div className="p-4 pt-2 border-t border-gray-100 bg-gray-50/50">
         <Link
-          href="/dashboard/milestones"
+          href="/dashboard/properties"
           className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-[#134e4a] text-white text-sm font-bold hover:bg-[#115e59] transition-colors shadow-sm"
         >
-          View full timeline
+          View properties
           <i className="las la-arrow-right text-base" aria-hidden />
         </Link>
       </div>

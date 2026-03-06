@@ -28,10 +28,11 @@ export default function RootLayout({
     <html lang="en" className={plusJakarta.variable}>
       <body className="antialiased bg-white text-gray-900 font-sans">
         {children}
+        {/* Single Toaster for entire app (investor + staff); styling in globals.css .riviola-toast* */}
         <Toaster
           position="top-center"
           theme="light"
-          closeButton
+          closeButton={false}
           expand={false}
           duration={4000}
           toastOptions={{
@@ -39,7 +40,6 @@ export default function RootLayout({
               toast: "riviola-toast",
               title: "riviola-toast-title",
               description: "riviola-toast-description",
-              closeButton: "riviola-toast-close",
               success: "riviola-toast-success",
               error: "riviola-toast-error",
             },

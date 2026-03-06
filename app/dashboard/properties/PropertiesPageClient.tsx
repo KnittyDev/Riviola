@@ -11,6 +11,8 @@ import type { InvestorPropertyWithBuilding } from "@/lib/investorProperties";
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
 
 function toPropertyFull(p: InvestorPropertyWithBuilding): PropertyFull {
+  const areaStr =
+    p.area_m2 != null && p.area_m2 > 0 ? `${p.area_m2} m²` : "—";
   return {
     id: p.building_id,
     imageSrc: p.building.image_url || PLACEHOLDER_IMAGE,
@@ -20,11 +22,8 @@ function toPropertyFull(p: InvestorPropertyWithBuilding): PropertyFull {
     title: `${p.building.name} · ${p.block} ${p.unit}`,
     location: p.building.location || "—",
     progress: p.building.progress,
-    value: "—",
-    roi: "—",
-    roiPositive: true,
-    area: "—",
-    deliveryDate: "—",
+    area: areaStr,
+    deliveryDate: p.delivery_period?.trim() || "—",
     updateTime: "—",
     updateText: "Assigned unit. View details for updates.",
   };

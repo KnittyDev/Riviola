@@ -1,10 +1,32 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+/** Single upcoming milestone for dashboard display. */
+export type InvestorUpcomingMilestoneItem = {
+  date: string;
+  dateIso: string;
+  title: string;
+  active: boolean;
+  building_name: string;
+};
+
+/** Single weekly update with building context for dashboard display. */
+export type InvestorWeeklyUpdateItem = {
+  id: string;
+  building_id: string;
+  building_name: string;
+  week_label: string;
+  date_range: string;
+  description: string;
+  images: { url: string; alt: string }[];
+};
+
 export type InvestorPropertyWithBuilding = {
   id: string;
   building_id: string;
   block: string;
   unit: string;
+  area_m2: number | null;
+  delivery_period: string | null;
   building: {
     name: string;
     location: string | null;
@@ -28,7 +50,7 @@ export async function getInvestorPropertiesWithBuilding(
   // Step 1: fetch the investor's own property rows
   const { data: rows, error: rowsError } = await supabase
     .from("investor_properties")
-    .select("id, building_id, block, unit")
+    .select("id, building_id, block, unit, area_m2, delivery_period")
     .eq("profile_id", profileId);
 
   if (rowsError) {
@@ -82,6 +104,8 @@ export async function getInvestorPropertiesWithBuilding(
       building_id: r.building_id,
       block: r.block,
       unit: r.unit,
+      area_m2: r.area_m2 ?? null,
+      delivery_period: r.delivery_period ?? null,
       building: bld
         ? {
             name: bld.name,
@@ -94,4 +118,126 @@ export async function getInvestorPropertiesWithBuilding(
       company_name: bld?.company_id ? (companyMap.get(bld.company_id) ?? "") : "",
     };
   });
+}
+
+/**
+ * Fetches weekly photo updates for the given building IDs (investor's properties).
+ * Use the same token client as for getInvestorPropertiesWithBuilding so RLS allows access.
+ */
+export async function getInvestorWeeklyUpdates(
+  supabase: SupabaseClient,
+  buildingIds: string[],
+  buildingNameById: Map<string, string>
+): Promise<InvestorWeeklyUpdateItem[]> {
+  if (buildingIds.length === 0) return [];
+
+  const { data: updatesRows, error } = await supabase
+    .from("building_weekly_updates")
+    .select("id, building_id, week_label, date_range, description, building_weekly_update_images(storage_path, alt, sort_order)")
+    .in("building_id", buildingIds)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[investorProperties] weekly updates error:", error.message);
+    return [];
+  }
+  if (!updatesRows?.length) return [];
+
+  const result: InvestorWeeklyUpdateItem[] = [];
+
+  for (const row of updatesRows as Array<{
+    id: string;
+    building_id: string;
+    week_label: string | null;
+    date_range: string;
+    description: string;
+    building_weekly_update_images: Array<{ storage_path: string; alt: string | null; sort_order: number }>;
+  }>) {
+    const images = (row.building_weekly_update_images ?? [])
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((img) => {
+        const { data: urlData } = supabase.storage.from("weekly_photos").getPublicUrl(img.storage_path);
+        return { url: urlData.publicUrl, alt: img.alt ?? "" };
+      });
+
+    result.push({
+      id: row.id,
+      building_id: row.building_id,
+      building_name: buildingNameById.get(row.building_id) ?? "Property",
+      week_label: row.week_label ?? "",
+      date_range: row.date_range,
+      description: row.description ?? "",
+      images,
+    });
+  }
+
+  return result;
+}
+
+type PlannedMilestoneRow = { id: string; title: string; dateTimeLocal: string };
+
+/**
+ * Fetches upcoming milestones for the investor's buildings (current + next per building),
+ * sorted by date, for dashboard display.
+ */
+export async function getInvestorUpcomingMilestones(
+  supabase: SupabaseClient,
+  buildingIds: string[],
+  buildingNameById: Map<string, string>,
+  limit = 5
+): Promise<InvestorUpcomingMilestoneItem[]> {
+  if (buildingIds.length === 0) return [];
+
+  const { data: buildings, error } = await supabase
+    .from("buildings")
+    .select("id, name, planned_milestones, current_milestone_id")
+    .in("id", buildingIds);
+
+  if (error || !buildings?.length) return [];
+
+  const all: InvestorUpcomingMilestoneItem[] = [];
+
+  for (const b of buildings as Array<{
+    id: string;
+    name: string;
+    planned_milestones: PlannedMilestoneRow[] | null;
+    current_milestone_id: string | null;
+  }>) {
+    const planned = Array.isArray(b.planned_milestones) ? b.planned_milestones : [];
+    if (planned.length === 0) continue;
+
+    const sorted = [...planned].sort(
+      (a, b) =>
+        new Date(a.dateTimeLocal || 0).getTime() - new Date(b.dateTimeLocal || 0).getTime()
+    );
+    const currentIdx = b.current_milestone_id
+      ? sorted.findIndex((m) => m.id === b.current_milestone_id)
+      : -1;
+    const startIdx = currentIdx >= 0 ? currentIdx : 0;
+    const buildingName = buildingNameById.get(b.id) ?? b.name ?? "Property";
+
+    for (let i = startIdx; i < Math.min(startIdx + 3, sorted.length); i++) {
+      const m = sorted[i];
+      const dt = m.dateTimeLocal ? new Date(m.dateTimeLocal) : null;
+      const dateStr = dt
+        ? dt.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }).toUpperCase()
+        : "";
+      const dateIso = dt ? dt.toISOString() : "";
+      all.push({
+        date: dateStr,
+        dateIso,
+        title: (m.title && m.title.trim()) || "Milestone",
+        active: i === currentIdx,
+        building_name: buildingName,
+      });
+    }
+  }
+
+  return all
+    .sort((a, b) => (a.dateIso || "").localeCompare(b.dateIso || ""))
+    .slice(0, limit);
 }

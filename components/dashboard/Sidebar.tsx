@@ -14,11 +14,19 @@ const navItems = [
 ];
 
 interface SidebarProps {
+  fullName?: string;
+  avatarUrl?: string | null;
+  email?: string | null;
   open?: boolean;
   onClose?: () => void;
 }
 
-export function Sidebar({ open = false, onClose }: SidebarProps) {
+export function Sidebar({
+  fullName = "Investor",
+  avatarUrl = null,
+  open = false,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -84,19 +92,26 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
       </nav>
       <div className="p-4 border-t border-gray-100">
         <div className="flex items-center gap-3 p-2">
-          <div className="size-10 rounded-full bg-gray-200 overflow-hidden relative">
-            <Image
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMcPYQbj6EIqkA64ty9wwLMuMOWke1mCjd2zQbl1GTCbBz0Hldg8nseEu5eUgUx1ZTkw23gzZW9S14hOzWDlRN_o8dwtTthv92w-O_jCSRQtsN_VC5WTb9w6K2x7jr6jn3wU6GHjIxiQ1dXQytx23XnM4e00FY2YrIp3BT_aTbFZLr3GdHsVsiW2ZdE_X-K_UerD_ZFTYmoBgWJsUO2aNW_bCeEtQbgRt-KLNwotc8HbVukKTHg46iREk3lC9akDb6BJ1XpMHNT2m3"
-              alt="Profile"
-              fill
-              className="object-cover"
-            />
+          <div className="size-10 rounded-full bg-gray-200 overflow-hidden relative shrink-0">
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
+                alt="Profile"
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#134e4a]/10 text-[#134e4a]">
+                <i className="las la-user text-lg" aria-hidden />
+              </div>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold truncate text-gray-900">
-              Alex Sterling
+              {fullName}
             </p>
-            <p className="text-xs text-gray-500 truncate">Premium Member</p>
+            <p className="text-xs text-gray-500 truncate">Investor Account</p>
           </div>
           <Link
             href="/dashboard/settings"

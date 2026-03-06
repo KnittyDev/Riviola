@@ -9,7 +9,7 @@ export const REQUEST_TYPES = [
 ] as const;
 
 export type RequestType = (typeof REQUEST_TYPES)[number];
-export type RequestStatus = "Pending" | "In progress" | "Done";
+export type RequestStatus = "Pending" | "In progress" | "Done" | "Cancelled";
 
 export const requestTypeIcons: Record<RequestType, string> = {
   "Site tour": "las la-map-marked-alt",

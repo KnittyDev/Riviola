@@ -9,6 +9,7 @@ export interface PropertyCardProps {
   title: string;
   location: string;
   progress: number;
+  area?: string;
   updateTime: string;
   updateText: string;
 }
@@ -21,6 +22,7 @@ export function PropertyCard({
   title,
   location,
   progress,
+  area,
   updateTime,
   updateText,
 }: PropertyCardProps) {
@@ -56,6 +58,12 @@ export function PropertyCard({
             />
           </div>
         </div>
+        {area != null && area !== "" && (
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Area</span>
+            <span className="font-bold text-gray-900">{area}</span>
+          </div>
+        )}
         {id && (
           <Link
             href={`/dashboard/properties/${id}`}
