@@ -60,7 +60,8 @@ export function PurchasePaymentsClient({
   const [addingPlanFor, setAddingPlanFor] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
-  const selectedUnit = selectedUnitId
+  const showAllUnits = selectedUnitId === "__all__";
+  const selectedUnit = !showAllUnits && selectedUnitId
     ? unitsInBlock.find((u) => u.id === selectedUnitId) ?? unitsInBlock[0]
     : unitsInBlock[0];
 
@@ -186,6 +187,7 @@ export function PurchasePaymentsClient({
               onChange={(e) => updateParams({ unit: e.target.value })}
               className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none min-w-[180px]"
             >
+              <option value="__all__">List all</option>
               {unitsInBlock.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.unit} — {u.full_name ?? "—"}
@@ -206,6 +208,19 @@ export function PurchasePaymentsClient({
             Only investors with type &quot;Buyer&quot; appear here. Assign buyers to units in the Investors section.
           </p>
         </div>
+      ) : showAllUnits ? (
+        <ListAllView
+          blockName={selectedBlock}
+          units={unitsInBlock}
+          formatAmount={formatAmount}
+          formatDate={formatDate}
+          addingPlanFor={addingPlanFor}
+          setAddingPlanFor={setAddingPlanFor}
+          togglingId={togglingId}
+          onCreatePlan={handleCreatePlan}
+          onMarkPaid={handleMarkPaid}
+          onDeletePlan={handleDeletePlan}
+        />
       ) : selectedUnit ? (
         <UnitCard
           key={selectedUnit.id}
@@ -214,13 +229,81 @@ export function PurchasePaymentsClient({
           formatDate={formatDate}
           addingPlanFor={addingPlanFor}
           setAddingPlanFor={setAddingPlanFor}
-togglingId={togglingId}
-              onCreatePlan={handleCreatePlan}
-              onMarkPaid={handleMarkPaid}
-              onDeletePlan={handleDeletePlan}
+          togglingId={togglingId}
+          onCreatePlan={handleCreatePlan}
+          onMarkPaid={handleMarkPaid}
+          onDeletePlan={handleDeletePlan}
         />
       ) : null}
     </div>
+  );
+}
+
+type ListAllViewProps = {
+  blockName: string;
+  units: BuyerUnitWithInstallments[];
+  formatAmount: (value: number, currency: string) => string;
+  formatDate: (dateStr: string | null) => string;
+  addingPlanFor: string | null;
+  setAddingPlanFor: (id: string | null) => void;
+  togglingId: string | null;
+  onCreatePlan: (
+    investorPropertyId: string,
+    planType: "full" | "installments",
+    totalAmount: number,
+    currency: string,
+    downPaymentAmount: number,
+    installmentCount: number,
+    dueDate: string | null
+  ) => Promise<void>;
+  onMarkPaid: (installmentId: string, isPaid: boolean) => Promise<void>;
+  onDeletePlan: (investorPropertyId: string) => Promise<void>;
+};
+
+function ListAllView({
+  blockName,
+  units,
+  formatAmount,
+  formatDate,
+  addingPlanFor,
+  setAddingPlanFor,
+  togglingId,
+  onCreatePlan,
+  onMarkPaid,
+  onDeletePlan,
+}: ListAllViewProps) {
+  return (
+    <section className="space-y-5">
+      <header className="flex flex-wrap items-baseline gap-3">
+        <h2 className="text-lg font-bold text-gray-900">
+          All units in {blockName || "block"}
+        </h2>
+        <span className="rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
+          {units.length} {units.length === 1 ? "unit" : "units"}
+        </span>
+      </header>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {units.map((u) => (
+          <div
+            key={u.id}
+            className="rounded-xl border-2 border-gray-200 bg-white overflow-hidden shadow-sm hover:border-[#134e4a]/30 hover:shadow-md transition-all"
+          >
+            <UnitCard
+              unit={u}
+              formatAmount={formatAmount}
+              formatDate={formatDate}
+              addingPlanFor={addingPlanFor}
+              setAddingPlanFor={setAddingPlanFor}
+              togglingId={togglingId}
+              onCreatePlan={onCreatePlan}
+              onMarkPaid={onMarkPaid}
+              onDeletePlan={onDeletePlan}
+              variant="compact"
+            />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -242,6 +325,7 @@ type UnitCardProps = {
   ) => Promise<void>;
   onMarkPaid: (installmentId: string, isPaid: boolean) => Promise<void>;
   onDeletePlan: (investorPropertyId: string) => Promise<void>;
+  variant?: "default" | "compact";
 };
 
 function UnitCard({
@@ -254,6 +338,7 @@ function UnitCard({
   onCreatePlan,
   onMarkPaid,
   onDeletePlan,
+  variant = "default",
 }: UnitCardProps) {
   const [planType, setPlanType] = useState<"full" | "installments">("full");
   const [totalAmount, setTotalAmount] = useState(
@@ -290,75 +375,63 @@ function UnitCard({
     );
   }
 
+  const isCompact = variant === "compact";
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="p-6 border-b border-gray-100">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">
-              {unit.block} / {unit.unit}
-            </h3>
-            <p className="text-sm text-gray-500">{unit.full_name ?? "—"}</p>
-            {unit.purchase_value != null && (
-              <p className="text-sm font-medium text-[#134e4a] mt-1">
-                Contract: {formatAmount(unit.purchase_value, unit.purchase_currency ?? "EUR")}
-              </p>
-            )}
-          </div>
-          {unit.installments.length > 0 && (
+    <div className={isCompact ? "bg-white" : "bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"}>
+      <div className={`border-b border-gray-100 flex flex-wrap items-center gap-x-4 gap-y-1 ${isCompact ? "px-3 py-2.5" : "px-4 py-3"}`}>
+        <span className="font-semibold text-gray-900 text-sm">
+          {unit.block} / {unit.unit}
+        </span>
+        <span className="text-gray-500 text-sm">{unit.full_name ?? "—"}</span>
+        {unit.purchase_value != null && (
+          <span className="text-xs font-medium text-[#134e4a]">
+            Contract: {formatAmount(unit.purchase_value, unit.purchase_currency ?? "EUR")}
+          </span>
+        )}
+        <div className="ml-auto flex items-center gap-2">
+          {unit.installments.length > 0 ? (
             <button
               type="button"
               onClick={() => onDeletePlan(unit.id)}
-              className="text-sm font-medium text-red-600 hover:text-red-700"
+              className="text-xs font-medium text-red-600 hover:text-red-700"
             >
               Delete plan
             </button>
-          )}
+          ) : !isAdding ? (
+            <button
+              type="button"
+              onClick={() => setAddingPlanFor(unit.id)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#134e4a] text-white text-xs font-semibold hover:bg-[#115e59]"
+            >
+              <i className="las la-plus text-sm" aria-hidden />
+              Add payment plan
+            </button>
+          ) : null}
         </div>
       </div>
 
       {unit.installments.length === 0 ? (
-        <div className="p-6">
-          {!isAdding ? (
-            <button
-              type="button"
-              onClick={() => setAddingPlanFor(unit.id)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59]"
-            >
-              <i className="las la-plus" aria-hidden />
-              Add payment plan
-            </button>
-          ) : (
-            <form onSubmit={submitAddPlan} className="space-y-4 max-w-md">
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Plan type</label>
-                <select
-                  value={planType}
-                  onChange={(e) => setPlanType(e.target.value as "full" | "installments")}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
-                >
-                  <option value="full">Full payment (one installment)</option>
-                  <option value="installments">Down payment + installments</option>
-                </select>
-              </div>
+        <div className={isCompact ? "p-3" : "p-4"}>
+          {!isAdding ? null : (
+            <form onSubmit={submitAddPlan} className="space-y-3 max-w-md">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Total amount</label>
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    value={totalAmount}
-                    onChange={(e) => setTotalAmount(e.target.value)}
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
-                  />
+                  <label className="block text-xs font-semibold text-gray-600 mb-0.5">Plan type</label>
+                  <select
+                    value={planType}
+                    onChange={(e) => setPlanType(e.target.value as "full" | "installments")}
+                    className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm"
+                  >
+                    <option value="full">Full payment</option>
+                    <option value="installments">Down + installments</option>
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Currency</label>
+                  <label className="block text-xs font-semibold text-gray-600 mb-0.5">Currency</label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                    className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm"
                   >
                     {Object.entries(CURRENCY_SYMBOLS).map(([code, sym]) => (
                       <option key={code} value={code}>{code} ({sym})</option>
@@ -366,52 +439,65 @@ function UnitCard({
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Due date (optional)</label>
-                <input
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-0.5">Total amount</label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={totalAmount}
+                    onChange={(e) => setTotalAmount(e.target.value)}
+                    className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-0.5">Due date</label>
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm"
+                  />
+                </div>
               </div>
               {planType === "installments" && (
-                <>
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Down payment (optional)</label>
+                    <label className="block text-xs font-semibold text-gray-600 mb-0.5">Down payment</label>
                     <input
                       type="number"
                       min={0}
                       step={0.01}
                       value={downPayment}
                       onChange={(e) => setDownPayment(e.target.value)}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Number of installments</label>
+                    <label className="block text-xs font-semibold text-gray-600 mb-0.5">Installments</label>
                     <input
                       type="number"
                       min={1}
                       value={installmentCount}
                       onChange={(e) => setInstallmentCount(parseInt(e.target.value, 10) || 1)}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm"
                     />
                   </div>
-                </>
+                </div>
               )}
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-1">
                 <button
                   type="submit"
                   disabled={!canCreate}
-                  className="px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] disabled:opacity-50"
+                  className="px-3 py-1.5 rounded-lg bg-[#134e4a] text-white text-xs font-semibold hover:bg-[#115e59] disabled:opacity-50"
                 >
                   Create plan
                 </button>
                 <button
                   type="button"
                   onClick={() => setAddingPlanFor(null)}
-                  className="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50"
+                  className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-700 text-xs font-semibold hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -420,18 +506,18 @@ function UnitCard({
           )}
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className={isCompact ? "overflow-x-auto px-3 pb-3" : "overflow-x-auto"}>
           <table className="w-full text-left border-collapse">
-<thead>
-            <tr className="bg-gray-50/80 border-b border-gray-200">
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Payment</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Amount</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Due date</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase text-right">Actions</th>
+            <thead>
+              <tr className="bg-gray-50/80 border-b border-gray-200">
+                <th className={`text-xs font-semibold text-gray-500 uppercase ${isCompact ? "px-3 py-1.5" : "px-4 py-2"}`}>Payment</th>
+                <th className={`text-xs font-semibold text-gray-500 uppercase ${isCompact ? "px-3 py-1.5" : "px-4 py-2"}`}>Amount</th>
+                <th className={`text-xs font-semibold text-gray-500 uppercase ${isCompact ? "px-3 py-1.5" : "px-4 py-2"}`}>Due date</th>
+                <th className={`text-xs font-semibold text-gray-500 uppercase ${isCompact ? "px-3 py-1.5" : "px-4 py-2"}`}>Status</th>
+                <th className={`text-xs font-semibold text-gray-500 uppercase text-right ${isCompact ? "px-3 py-1.5" : "px-4 py-2"}`}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-100">
               {unit.installments.map((inst) => (
                 <InstallmentRow
                   key={inst.id}
@@ -440,6 +526,7 @@ function UnitCard({
                   formatDate={formatDate}
                   togglingId={togglingId}
                   onMarkPaid={onMarkPaid}
+                  compact={isCompact}
                 />
               ))}
             </tbody>
@@ -456,40 +543,43 @@ function InstallmentRow({
   formatDate,
   togglingId,
   onMarkPaid,
+  compact,
 }: {
   inst: PurchaseInstallment;
   formatAmount: (v: number, c: string) => string;
   formatDate: (d: string | null) => string;
   togglingId: string | null;
   onMarkPaid: (id: string, isPaid: boolean) => Promise<void>;
+  compact?: boolean;
 }) {
   const isPaid = !!inst.paid_at;
   const loading = togglingId === inst.id;
+  const cellClass = compact ? "px-3 py-1.5" : "px-4 py-2.5";
 
   return (
-    <tr className="hover:bg-gray-50/80">
-      <td className="px-6 py-4 font-medium text-gray-900">{inst.label}</td>
-      <td className="px-6 py-4 text-sm text-gray-700">
+    <tr className="hover:bg-gray-50/50">
+      <td className={`${cellClass} font-medium text-gray-900 text-sm`}>{inst.label}</td>
+      <td className={`${cellClass} text-sm text-gray-700`}>
         {formatAmount(Number(inst.amount), inst.currency)}
       </td>
-      <td className="px-6 py-4 text-sm text-gray-500">{formatDate(inst.due_date)}</td>
-      <td className="px-6 py-4">
+      <td className={`${cellClass} text-sm text-gray-500`}>{formatDate(inst.due_date)}</td>
+      <td className={cellClass}>
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+          className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
             isPaid ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
           }`}
         >
           {isPaid ? "Paid" : "Pending"}
         </span>
       </td>
-      <td className="px-6 py-4 text-right">
+      <td className={`${cellClass} text-right`}>
         <button
           type="button"
           disabled={loading}
           onClick={() => onMarkPaid(inst.id, isPaid)}
-          className="text-sm font-medium text-[#134e4a] hover:underline disabled:opacity-50"
+          className="text-xs font-medium text-[#134e4a] hover:underline disabled:opacity-50"
         >
-          {loading ? "…" : isPaid ? "Unmark paid" : "Mark as paid"}
+          {loading ? "…" : isPaid ? "Unmark" : "Mark paid"}
         </button>
       </td>
     </tr>

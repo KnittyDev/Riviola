@@ -61,9 +61,11 @@ export default async function StaffPurchasePaymentsPage({
 
   const unitsInBlock = selectedBlock ? units.filter((u) => u.block === selectedBlock) : units;
   const selectedUnitId =
-    paramUnit && unitsInBlock.some((u) => u.id === paramUnit)
-      ? paramUnit
-      : unitsInBlock[0]?.id ?? "";
+    paramUnit === "__all__"
+      ? "__all__"
+      : paramUnit && unitsInBlock.some((u) => u.id === paramUnit)
+        ? paramUnit
+        : unitsInBlock[0]?.id ?? "";
 
   return (
     <PurchasePaymentsClient

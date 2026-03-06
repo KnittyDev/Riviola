@@ -62,7 +62,7 @@ export function HeroSection() {
             <p className="text-gray-600 text-xs font-bold uppercase tracking-widest mb-1">
               Managed Value
             </p>
-            <p className="text-gray-900 text-3xl font-extrabold">878M€</p>
+            <p className="text-gray-900 text-3xl font-extrabold">18M€</p>
           </div>
           <div className="animate-fade-in-up delay-500 absolute top-20 -left-10 glass-card p-6 rounded-3xl w-56 z-20 hidden md:block group hover:-translate-y-2 transition-transform">
             <div className="flex items-center gap-3 mb-3">

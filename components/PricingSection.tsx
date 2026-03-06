@@ -4,6 +4,10 @@ import { useState } from "react";
 
 const ANNUAL_DISCOUNT = 0.35; // 35% off when billed annually
 
+const FULL_PROCESS_FEATURE = "We will take care of the entire process for you.";
+const FULL_PROCESS_MODAL_TEXT =
+  "We manage and take responsibility for the entire process on your behalf. We handle all documentation for your construction projects, register investors, buyers, and renters, and communicate with investors. We take care of all issues. We manage the maintenance fees for apartment buildings and residential units.";
+
 const tiers = [
   {
     name: "Essence",
@@ -12,8 +16,12 @@ const tiers = [
     features: [
       "Up to 2 Buildings / Projects",
       "Basic Investor Tracking",
-      "Standard Financial Reporting",
       "Document Management",
+      "Basic Financial Reporting",
+      "Standard Financial Reporting",
+      "Investor Portal Access",
+      "We manage 50% of the process.",
+      "0% commission on all payments made and transferred"
     ],
     cta: "Choose Essence",
     variant: "secondary" as const,
@@ -25,10 +33,16 @@ const tiers = [
     monthlyPrice: 199,
     features: [
       "Up to 10 Buildings / Projects",
+      "We will take care of the entire process for you.",
       "Automated Dues Collection",
       "Advanced Financial Analytics",
+      "Auto Invoice Generation",
+      "Document Management",
+      "Basic Financial Reporting",
+      "Basic Investor Tracking",
       "Request & Maintenance Tracking",
       "Investor Portal Access",
+      "0% commission on all payments made and transferred"
     ],
     cta: "Choose Signature",
     variant: "primary" as const,
@@ -40,10 +54,17 @@ const tiers = [
     monthlyPrice: 249,
     features: [
       "Unlimited Buildings & Projects",
-      "Custom API Integrations",
+      "We will take care of the entire process for you.",
+      "Full Customization",
+      "Document Management",
+      "Basic Financial Reporting",
+      "Basic Investor Tracking",
       "Priority Support & Dedicated Manager",
       "White-label Investor Reports",
       "Bulk Payment Processing",
+      "0% commission on all payments made and transferred",
+      "Investor Portal Access",
+      "Request & Maintenance Tracking"
     ],
     cta: "Choose Ultra Deluxe",
     variant: "outline" as const,
@@ -53,6 +74,7 @@ const tiers = [
 
 export function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
 
   return (
     <section id="pricing" className="py-32 bg-white overflow-hidden scroll-mt-20">
@@ -121,15 +143,29 @@ export function PricingSection() {
                   </p>
                 )}
                 <ul className="space-y-4 mb-8">
-                  {tier.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-center gap-3 text-sm text-gray-600"
-                    >
-                      <i className="las la-check-circle text-teal-500 text-lg shrink-0" aria-hidden />
-                      {feature}
-                    </li>
-                  ))}
+                  {tier.features.map((feature) => {
+                    const isFullProcess = feature === FULL_PROCESS_FEATURE;
+                    return (
+                      <li
+                        key={feature}
+                        className="flex items-center gap-3 text-sm text-gray-600"
+                      >
+                        <i className="las la-check-circle text-teal-500 text-lg shrink-0" aria-hidden />
+                        <span className="flex-1">{feature}</span>
+                        {isFullProcess && (
+                          <button
+                            type="button"
+                            onClick={() => setInfoModalOpen(true)}
+                            className="shrink-0 w-5 h-5 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center hover:bg-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 animate-pulse hover:animate-none"
+                            aria-label="What does full process care mean?"
+                            title="More info"
+                          >
+                            <span className="text-xs font-bold">?</span>
+                          </button>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <button
                   type="button"
@@ -147,6 +183,39 @@ export function PricingSection() {
           })}
         </div>
       </div>
+
+      {infoModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="full-process-modal-title"
+        >
+          <div
+            className="absolute inset-0 bg-black/50"
+            aria-hidden
+            onClick={() => setInfoModalOpen(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border border-gray-100">
+            <div className="flex items-start justify-between gap-4">
+              <h3 id="full-process-modal-title" className="text-lg font-bold text-gray-900">
+                Full process care
+              </h3>
+              <button
+                type="button"
+                onClick={() => setInfoModalOpen(false)}
+                className="shrink-0 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label="Close"
+              >
+                <i className="las la-times text-xl" aria-hidden />
+              </button>
+            </div>
+            <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+              {FULL_PROCESS_MODAL_TEXT}
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
