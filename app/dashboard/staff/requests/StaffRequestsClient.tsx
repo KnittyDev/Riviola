@@ -120,19 +120,30 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                         {" · "}
                         {req.buildingName}
                       </p>
-                      {req.investorUnits.length > 0 && (
-                        <div className="mt-2 text-sm text-gray-600">
-                          <span className="font-semibold text-gray-700">Unit(s):</span>{" "}
-                          {req.investorUnits.map((u, i) => (
-                            <span key={`${u.block}-${u.unit}-${i}`}>
-                              {i > 0 && " · "}
-                              Block {u.block}, Unit {u.unit}
-                              {u.area_m2 != null && ` (${u.area_m2} m²)`}
-                              {u.delivery_period && ` · ${u.delivery_period}`}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      <div className="mt-2">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Project / Block · Unit</p>
+                        {req.investorUnits.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {req.investorUnits.map((u, i) => (
+                              <span
+                                key={`${u.block}-${u.unit}-${i}`}
+                                className="inline-flex flex-wrap items-center gap-x-2 gap-y-0.5 rounded-lg bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700"
+                              >
+                                <span><span className="text-gray-500">Block:</span> {u.block}</span>
+                                <span><span className="text-gray-500">Unit:</span> {u.unit}</span>
+                                {u.area_m2 != null && (
+                                  <span><span className="text-gray-500">m²:</span> {u.area_m2}</span>
+                                )}
+                                {u.delivery_period && (
+                                  <span><span className="text-gray-500">Delivery:</span> {u.delivery_period}</span>
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-400">No unit assigned to the requester in this building.</p>
+                        )}
+                      </div>
                       {req.note && (
                         <p className="text-sm text-gray-500 mt-1.5">
                           <span className="font-semibold text-gray-700">Note:</span> {req.note}

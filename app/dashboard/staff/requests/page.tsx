@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { getStaffRequests } from "@/lib/investorRequests";
 import { StaffRequestsClient } from "./StaffRequestsClient";
 
@@ -29,7 +29,8 @@ export default async function StaffRequestsPage() {
     );
   }
 
-  const initialRequests = await getStaffRequests(supabase, companyId);
+  const serviceClient = createServiceRoleClient();
+  const initialRequests = await getStaffRequests(serviceClient, companyId);
 
   return <StaffRequestsClient initialRequests={initialRequests} />;
 }

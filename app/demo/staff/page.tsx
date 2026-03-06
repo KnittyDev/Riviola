@@ -82,7 +82,7 @@ export default function StaffPage() {
           <StaffPerformanceChart />
         </div>
         <div className="lg:col-span-4 min-h-[320px]">
-          <CriticalAlerts />
+          <CriticalAlerts recentPayments={[]} overdueDues={[]} />
         </div>
       </div>
 

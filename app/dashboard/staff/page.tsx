@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { StaffPerformanceChart } from "@/components/dashboard/staff/StaffPerformanceChart";
 import { CriticalAlerts } from "@/components/dashboard/staff/CriticalAlerts";
 import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjectsSection";
+import { getStaffRecentDuesPayments, getStaffOverdueDues } from "@/lib/duesPayments";
 import type { Building } from "@/lib/supabase/types";
 
 export default async function StaffPage() {
@@ -21,6 +22,11 @@ export default async function StaffPage() {
   const list = (buildings ?? []) as Pick<Building, "id" | "name" | "location" | "status" | "progress" | "image_url">[];
   const activeCount = list.filter((b) => b.status === "In progress").length;
   const completedCount = list.filter((b) => b.status === "Completed").length;
+
+  const [recentPayments, overdueDues] = await Promise.all([
+    getStaffRecentDuesPayments(supabase, companyId, 10),
+    getStaffOverdueDues(supabase, companyId, 20),
+  ]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -98,7 +104,7 @@ export default async function StaffPage() {
           <StaffPerformanceChart />
         </div>
         <div className="lg:col-span-4 min-h-[320px]">
-          <CriticalAlerts />
+          <CriticalAlerts recentPayments={recentPayments} overdueDues={overdueDues} />
         </div>
       </div>
 

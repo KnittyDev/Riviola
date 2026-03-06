@@ -125,3 +125,31 @@ export type InvestorRequestInsert = Omit<
   InvestorRequestRow,
   "id" | "created_at" | "updated_at"
 > & { status?: string };
+
+export type BuildingDuesSettingsRow = {
+  building_id: string;
+  payment_window_start_day: number;
+  payment_window_end_day: number;
+  amount_cents: number | null;
+  currency: string | null;
+  updated_at: string;
+};
+
+export type BuildingDuesSettingsInsert = Omit<
+  BuildingDuesSettingsRow,
+  "updated_at"
+> & { updated_at?: string };
+
+export type DuesPaymentRow = {
+  id: string;
+  investor_property_id: string;
+  period: string;
+  paid_at: string | null;
+  marked_by: string | null;
+  created_at: string;
+};
+
+export type DuesPaymentInsert = Omit<DuesPaymentRow, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
