@@ -8,6 +8,7 @@ import { StaffSidebar } from "@/components/dashboard/StaffSidebar";
 export function DashboardLayoutClient({
   children,
   role = "investor",
+  investorType = null,
   companyName = "Company",
   companyLogoUrl = null,
   fullName = "Staff",
@@ -16,6 +17,7 @@ export function DashboardLayoutClient({
 }: {
   children: React.ReactNode;
   role?: "investor" | "staff" | "admin";
+  investorType?: "renter" | "buyer" | null;
   companyName?: string;
   companyLogoUrl?: string | null;
   fullName?: string;
@@ -41,6 +43,7 @@ export function DashboardLayoutClient({
           fullName={fullName}
           avatarUrl={avatarUrl}
           email={email}
+          investorType={investorType}
           open={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
         />

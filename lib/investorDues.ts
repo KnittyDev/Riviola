@@ -198,3 +198,42 @@ export async function getInvestorDuesFees(
 
   return items;
 }
+
+export type CompanyForInvoice = {
+  name: string;
+  logo_url: string | null;
+};
+
+/**
+ * Returns the company (name, logo_url) for the investor's first property's building.
+ * Used for PDF invoice header.
+ */
+export async function getCompanyForInvestorProfile(
+  supabase: SupabaseClient,
+  profileId: string
+): Promise<CompanyForInvoice | null> {
+  const { data: props } = await supabase
+    .from("investor_properties")
+    .select("building_id")
+    .eq("profile_id", profileId)
+    .limit(1);
+  const first = (props ?? [])[0] as { building_id: string } | undefined;
+  if (!first?.building_id) return null;
+  const { data: building } = await supabase
+    .from("buildings")
+    .select("company_id")
+    .eq("id", first.building_id)
+    .single();
+  const companyId = (building as { company_id: string } | null)?.company_id;
+  if (!companyId) return null;
+  const { data: company } = await supabase
+    .from("companies")
+    .select("name, logo_url")
+    .eq("id", companyId)
+    .single();
+  if (!company) return null;
+  return {
+    name: (company as { name: string }).name ?? "",
+    logo_url: (company as { logo_url: string | null }).logo_url ?? null,
+  };
+}

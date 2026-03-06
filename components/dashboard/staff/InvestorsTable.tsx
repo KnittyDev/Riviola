@@ -50,6 +50,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
     const validArea = areaM2 != null && !Number.isNaN(areaM2) && areaM2 >= 0;
     const purchaseValue = purchaseValueRaw === "" ? null : parseFloat(purchaseValueRaw);
     const validPurchase = purchaseValue != null && !Number.isNaN(purchaseValue) && purchaseValue >= 0;
+    const investorType = (form.querySelector("[name=investorType]") as HTMLSelectElement)?.value === "renter" ? "renter" : "buyer";
 
     const result = await updateInvestorAction({
       profileId: editing.profile_id,
@@ -57,6 +58,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
       fullName: fullName || null,
       email: email || null,
       phone: phone || null,
+      investorType,
       block,
       unit,
       areaM2: validArea ? areaM2 : null,
@@ -213,6 +215,17 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                     inputProps={{ name: "phone", placeholder: "+90 5xx xxx xx xx" }}
                   />
                 </div>
+              </div>
+              <div>
+                <label className={labelClass}>Investor type</label>
+                <select
+                  name="investorType"
+                  defaultValue={editing.investor_type ?? "buyer"}
+                  className={inputClass}
+                >
+                  <option value="buyer">Buyer (sees Financials)</option>
+                  <option value="renter">Renter (no Financials)</option>
+                </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

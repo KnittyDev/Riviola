@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient, createClientWithToken } from "@/lib/supabase/server";
 import { getInvestorPropertiesWithBuilding } from "@/lib/investorProperties";
+import { getInvestorDuesFees } from "@/lib/investorDues";
 import { PropertiesSummaryBar } from "@/components/dashboard/properties/PropertiesSummaryBar";
 import { PropertiesPageClient } from "./PropertiesPageClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function PropertiesPage() {
-  // 1. Verify session via cookie-based client
   const supabase = await createClient();
   const {
     data: { session },
@@ -16,23 +16,57 @@ export default async function PropertiesPage() {
 
   const user = session.user;
 
-  // 2. Fetch profile role
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, investor_type")
     .eq("id", user.id)
     .single();
 
   const role = profile?.role ?? "investor";
   if (role === "staff" || role === "admin") redirect("/dashboard/staff");
 
-  // 3. Fetch investor properties using a client with explicit Bearer token
-  //    so that RLS correctly identifies auth.uid()
+  const investorType = (profile?.investor_type ?? "buyer") as "buyer" | "renter";
+
   const tokenClient = createClientWithToken(session.access_token);
-  const investorProperties = await getInvestorPropertiesWithBuilding(
-    tokenClient,
-    user.id
-  );
+  const [investorProperties, duesFees] = await Promise.all([
+    getInvestorPropertiesWithBuilding(tokenClient, user.id),
+    getInvestorDuesFees(tokenClient, user.id),
+  ]);
+
+  let totalValueLabel = "Total Value";
+  let totalValueDisplay = "—";
+  if (investorType === "buyer") {
+    const byCurrency: Record<string, number> = {};
+    for (const p of investorProperties) {
+      if (p.purchase_value != null && p.purchase_value >= 0 && p.purchase_currency) {
+        const c = p.purchase_currency.trim() || "EUR";
+        byCurrency[c] = (byCurrency[c] ?? 0) + p.purchase_value;
+      }
+    }
+    const sym: Record<string, string> = { EUR: "€", USD: "$", GBP: "£", TRY: "₺" };
+    totalValueDisplay =
+      Object.entries(byCurrency).length === 0
+        ? "—"
+        : Object.entries(byCurrency)
+            .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
+            .join(" · ");
+  } else {
+    totalValueLabel = "Total Paid";
+    const byCurrency: Record<string, number> = {};
+    for (const f of duesFees) {
+      if (f.status === "paid" && f.paid_at && f.amount_cents != null) {
+        const c = f.currency ?? "EUR";
+        byCurrency[c] = (byCurrency[c] ?? 0) + f.amount_cents / 100;
+      }
+    }
+    const sym: Record<string, string> = { EUR: "€", USD: "$", GBP: "£", TRY: "₺" };
+    totalValueDisplay =
+      Object.entries(byCurrency).length === 0
+        ? "—"
+        : Object.entries(byCurrency)
+            .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
+            .join(" · ");
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -41,11 +75,18 @@ export default async function PropertiesPage() {
           My Properties
         </h2>
         <p className="text-gray-500 mt-1">
-          Manage and track all your real estate assets.
+          {investorType === "buyer"
+            ? "Manage and track all your real estate assets."
+            : "Manage and track your rented units."}
         </p>
       </div>
 
-      <PropertiesSummaryBar totalCount={investorProperties.length} />
+      <PropertiesSummaryBar
+        totalCount={investorProperties.length}
+        investorType={investorType}
+        totalValueLabel={totalValueLabel}
+        totalValueDisplay={totalValueDisplay}
+      />
 
       <PropertiesPageClient investorProperties={investorProperties} />
     </div>

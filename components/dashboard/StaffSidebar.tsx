@@ -11,6 +11,7 @@ const navItems = [
   { href: "/dashboard/staff/investors", label: "Investors", icon: "las la-user-friends" },
   { href: "/dashboard/staff/requests", label: "Requests", icon: "las la-tasks" },
   { href: "/dashboard/staff/aidat-payments", label: "Dues Payments", icon: "las la-receipt" },
+  { href: "/dashboard/staff/purchase-payments", label: "Purchase Payments", icon: "las la-wallet" },
   { href: "/dashboard/staff/subscription", label: "Subscription", icon: "las la-credit-card" },
 ];
 

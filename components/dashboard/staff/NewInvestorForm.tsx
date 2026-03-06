@@ -42,6 +42,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
   const [deliveryPeriod, setDeliveryPeriod] = useState("");
   const [totalAmount, setTotalAmount] = useState<string>("");
   const [currency, setCurrency] = useState<string>("EUR");
+  const [investorType, setInvestorType] = useState<"renter" | "buyer">("buyer");
   const [paymentPlanType, setPaymentPlanType] = useState<"full" | "installments">("full");
   const [installmentCount, setInstallmentCount] = useState<number>(6);
   const [loading, setLoading] = useState(false);
@@ -84,6 +85,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         deliveryPeriod: deliveryPeriod.trim() || null,
         purchaseValue: isValidTotal ? totalNum! : null,
         purchaseCurrency: currency.trim() || null,
+        investorType,
       });
       if (!result) {
         setError("Sunucu yanıt vermedi. Tekrar deneyin.");
@@ -201,6 +203,21 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             onChange={(e) => setPhone(e.target.value)}
             className={inputClass}
           />
+        </div>
+        <div>
+          <label htmlFor="investorType" className={labelClass}>
+            Investor type
+          </label>
+          <select
+            id="investorType"
+            name="investorType"
+            value={investorType}
+            onChange={(e) => setInvestorType(e.target.value as "renter" | "buyer")}
+            className={inputClass}
+          >
+            <option value="buyer">Buyer (sees Financials)</option>
+            <option value="renter">Renter (no Financials)</option>
+          </select>
         </div>
 
         <hr className="border-gray-200" />

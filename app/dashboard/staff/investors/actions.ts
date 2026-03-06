@@ -9,6 +9,7 @@ export type CreateInvestorInput = {
   fullName: string;
   email: string;
   password: string;
+  phone?: string | null;
   buildingId: string;
   block: string;
   unit: string;
@@ -16,6 +17,7 @@ export type CreateInvestorInput = {
   deliveryPeriod: string | null;
   purchaseValue: number | null;
   purchaseCurrency: string | null;
+  investorType: "renter" | "buyer";
 };
 
 export async function createInvestorAction(
@@ -70,7 +72,12 @@ export async function createInvestorAction(
 
   const profileId = newUser.user.id;
   const phoneTrimmed = (input.phone ?? "").trim() || null;
-  await service.from("profiles").update({ phone: phoneTrimmed, full_name: fullName }).eq("id", profileId);
+  const investorType = input.investorType ?? "buyer";
+  await service.from("profiles").update({
+    phone: phoneTrimmed,
+    full_name: fullName,
+    investor_type: investorType,
+  }).eq("id", profileId);
 
   const { error: insertError } = await supabase.from("investor_properties").insert({
     profile_id: profileId,
@@ -101,6 +108,7 @@ export type UpdateInvestorInput = {
   fullName: string | null;
   email: string | null;
   phone: string | null;
+  investorType: "renter" | "buyer";
   block: string;
   unit: string;
   areaM2: number | null;
@@ -141,6 +149,7 @@ export async function updateInvestorAction(
     full_name: (input.fullName ?? "").trim() || null,
     email: (input.email ?? "").trim().toLowerCase() || null,
     phone: (input.phone ?? "").trim() || null,
+    investor_type: input.investorType,
   }).eq("id", input.profileId);
 
   const { error: updateError } = await supabase

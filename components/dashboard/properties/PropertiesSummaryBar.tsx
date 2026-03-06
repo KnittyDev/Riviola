@@ -1,9 +1,21 @@
-export function PropertiesSummaryBar({ totalCount = 0 }: { totalCount?: number }) {
+type PropertiesSummaryBarProps = {
+  totalCount?: number;
+  investorType?: "buyer" | "renter";
+  totalValueLabel?: string;
+  totalValueDisplay?: string;
+};
+
+export function PropertiesSummaryBar({
+  totalCount = 0,
+  investorType = "buyer",
+  totalValueLabel = "Total Value",
+  totalValueDisplay = "—",
+}: PropertiesSummaryBarProps) {
   const stats = [
     { icon: "las la-building", label: "Total Properties", value: String(totalCount) },
     { icon: "las la-hard-hat", label: "Under Construction", value: "—" },
     { icon: "las la-check-circle", label: "Completed", value: "—" },
-    { icon: "las la-euro-sign", label: "Total Value", value: "—" },
+    { icon: "las la-euro-sign", label: totalValueLabel, value: totalValueDisplay },
   ];
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

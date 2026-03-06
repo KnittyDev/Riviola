@@ -8,21 +8,40 @@ const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a
 export function MyPropertiesSection({
   investorProperties = [],
   weeklyUpdates = [],
+  investorType = "buyer",
+  assetValueFormatted = "—",
+  paidAmountFormatted = "—",
 }: {
   investorProperties?: InvestorPropertyWithBuilding[];
   weeklyUpdates?: InvestorWeeklyUpdateItem[];
+  investorType?: "buyer" | "renter";
+  assetValueFormatted?: string;
+  paidAmountFormatted?: string;
 }) {
+  const isBuyer = investorType === "buyer";
   return (
     <div className="col-span-12">
       <div className="flex justify-between items-end mb-6">
-        <h4 className="text-2xl font-bold text-gray-900">
-          My Active Properties
-        </h4>
+        <div>
+          <h4 className="text-2xl font-bold text-gray-900">
+            My Active Properties
+          </h4>
+          {isBuyer && assetValueFormatted !== "—" && (
+            <p className="text-sm text-gray-500 mt-0.5">
+              Total value: <span className="font-semibold text-gray-700">{assetValueFormatted}</span>
+            </p>
+          )}
+          {!isBuyer && paidAmountFormatted !== "—" && (
+            <p className="text-sm text-gray-500 mt-0.5">
+              Total paid: <span className="font-semibold text-gray-700">{paidAmountFormatted}</span>
+            </p>
+          )}
+        </div>
         <Link
           href="/dashboard/properties"
           className="text-[#134e4a] font-bold text-sm flex items-center gap-1 hover:underline"
         >
-          View All Assets{" "}
+          {isBuyer ? "View All Assets" : "View All Properties"}{" "}
           <i className="las la-arrow-right text-sm" aria-hidden />
         </Link>
       </div>

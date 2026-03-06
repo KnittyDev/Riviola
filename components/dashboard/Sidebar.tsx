@@ -4,11 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-const navItems = [
+const allNavItems = [
   { href: "/dashboard", label: "Dashboard", icon: "las la-th-large" },
   { href: "/dashboard/properties", label: "My Properties", icon: "las la-building" },
   { href: "/dashboard/requests", label: "Requests", icon: "las la-tasks" },
-  { href: "/dashboard/financials", label: "Financials", icon: "las la-wallet" },
+  { href: "/dashboard/financials", label: "Financials", icon: "las la-wallet", buyerOnly: true },
   { href: "/dashboard/fees", label: "Fees & Payments", icon: "las la-receipt" },
   // { href: "/dashboard/documents", label: "Documents", icon: "las la-file-alt" },
 ];
@@ -17,6 +17,8 @@ interface SidebarProps {
   fullName?: string;
   avatarUrl?: string | null;
   email?: string | null;
+  /** When "renter", Financials is hidden. Only "buyer" sees Financials. */
+  investorType?: "renter" | "buyer" | null;
   open?: boolean;
   onClose?: () => void;
 }
@@ -24,10 +26,14 @@ interface SidebarProps {
 export function Sidebar({
   fullName = "Investor",
   avatarUrl = null,
+  investorType = "buyer",
   open = false,
   onClose,
 }: SidebarProps) {
   const pathname = usePathname();
+  const navItems = investorType === "renter"
+    ? allNavItems.filter((item) => !("buyerOnly" in item && item.buyerOnly))
+    : allNavItems;
 
   return (
     <>

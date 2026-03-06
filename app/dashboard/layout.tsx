@@ -12,7 +12,7 @@ export default async function DashboardLayout({
   if (!user) redirect("/login");
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, company_id, full_name, avatar_url, email")
+    .select("role, company_id, full_name, avatar_url, email, investor_type")
     .eq("id", user.id)
     .single();
   const role = profile?.role ?? "investor";
@@ -32,9 +32,11 @@ export default async function DashboardLayout({
   const fullName = profile?.full_name?.trim() || (role === "investor" ? "Investor" : "Staff");
   const avatarUrl = profile?.avatar_url?.trim() || null;
   const email = profile?.email?.trim() || user.email?.trim() || null;
+  const investorType = role === "investor" ? (profile?.investor_type ?? "buyer") : null;
   return (
     <DashboardLayoutClient
       role={role}
+      investorType={investorType}
       companyName={companyName}
       companyLogoUrl={companyLogoUrl}
       fullName={fullName}

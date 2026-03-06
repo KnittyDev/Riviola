@@ -1,5 +1,8 @@
 export type ProfileRole = "investor" | "staff" | "admin";
 
+/** For role=investor only: renter (no financials) or buyer (sees financials). */
+export type InvestorType = "renter" | "buyer";
+
 export type Company = {
   id: string;
   name: string;
@@ -16,6 +19,7 @@ export type Profile = {
   avatar_url: string | null;
   company_id: string | null;
   role: ProfileRole;
+  investor_type: InvestorType | null;
   language: string | null;
   currency: string | null;
   notify_payments: boolean | null;
@@ -158,3 +162,23 @@ export type DuesPaymentInsert = Omit<DuesPaymentRow, "id" | "created_at" | "paym
   /** Set by DB trigger if omitted */
   payment_number?: string;
 };
+
+export type PurchaseInstallment = {
+  id: string;
+  investor_property_id: string;
+  sequence: number;
+  label: string;
+  amount: number;
+  currency: string;
+  due_date: string | null;
+  paid_at: string | null;
+  marked_by: string | null;
+  receipt_document_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PurchaseInstallmentInsert = Omit<
+  PurchaseInstallment,
+  "id" | "created_at" | "updated_at"
+> & { id?: string; created_at?: string; updated_at?: string };

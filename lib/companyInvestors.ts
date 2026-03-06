@@ -10,9 +10,12 @@ export type CompanyInvestor = {
 
 /** Single row for staff: one investor property with project (building), block, unit, etc. */
 export type CompanyInvestorPropertyRow = {
+  id: string;
   profile_id: string;
   full_name: string | null;
   email: string | null;
+  phone: string | null;
+  investor_type: "renter" | "buyer" | null;
   building_id: string;
   building_name: string;
   block: string;
@@ -54,17 +57,18 @@ export async function getCompanyInvestorProperties(
   }
 
   const profileIds = [...new Set((rows ?? []).map((r: { profile_id: string }) => r.profile_id))];
-  const profileMap = new Map<string, { full_name: string | null; email: string | null; phone: string | null }>();
+  const profileMap = new Map<string, { full_name: string | null; email: string | null; phone: string | null; investor_type: "renter" | "buyer" | null }>();
   if (profileIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, full_name, email, phone")
+      .select("id, full_name, email, phone, investor_type")
       .in("id", profileIds);
-    (profiles ?? []).forEach((p: { id: string; full_name: string | null; email: string | null; phone: string | null }) => {
+    (profiles ?? []).forEach((p: { id: string; full_name: string | null; email: string | null; phone: string | null; investor_type: "renter" | "buyer" | null }) => {
       profileMap.set(p.id, {
         full_name: p.full_name?.trim() ?? null,
         email: p.email?.trim() ?? null,
         phone: p.phone?.trim() ?? null,
+        investor_type: p.investor_type ?? null,
       });
     });
   }
@@ -87,6 +91,7 @@ export async function getCompanyInvestorProperties(
       full_name: profile?.full_name ?? null,
       email: profile?.email ?? null,
       phone: profile?.phone ?? null,
+      investor_type: profile?.investor_type ?? null,
       building_id: r.building_id,
       building_name: buildingNames.get(r.building_id) ?? "",
       block: r.block,

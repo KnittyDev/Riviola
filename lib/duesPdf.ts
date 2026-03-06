@@ -1,6 +1,11 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import type { InvestorDuesFeeItem } from "@/lib/investorDues";
+import QRCode from "qrcode";
+import type { InvestorDuesFeeItem, CompanyForInvoice } from "@/lib/investorDues";
+
+const SUPPORT_EMAIL = "support@riviola.net";
+const PAGE_WIDTH_MM = 210;
+const PAGE_HEIGHT_MM = 297;
 
 function formatPaidAt(paidAt: string | null): string {
   if (!paidAt) return "—";
@@ -19,7 +24,7 @@ function formatPaidAt(paidAt: string | null): string {
   }
 }
 
-/** Load image from public URL and return as base64 data URL for jsPDF */
+/** Load image from URL and return as base64 data URL for jsPDF */
 function loadImageAsBase64(url: string): Promise<string> {
   return fetch(url)
     .then((r) => r.blob())
@@ -34,28 +39,52 @@ function loadImageAsBase64(url: string): Promise<string> {
     );
 }
 
+/** Generate QR code as data URL (PNG) */
+function generateQrDataUrl(url: string): Promise<string> {
+  return QRCode.toDataURL(url, { width: 200, margin: 1 });
+}
+
 /**
  * Generates a PDF of the investor's dues and triggers download.
  */
-export async function downloadDuesPdf(fees: InvestorDuesFeeItem[]): Promise<void> {
+export async function downloadDuesPdf(
+  fees: InvestorDuesFeeItem[],
+  company: CompanyForInvoice | null = null
+): Promise<void> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const pageWidth = doc.getPageWidth();
   const margin = 14;
   let y = 14;
+  const pageWidth = PAGE_WIDTH_MM;
+  const pageHeight = PAGE_HEIGHT_MM;
+
+  const headerHeight = 22;
+
+  const logoLeft = margin - 2;
+  if (company?.logo_url) {
+    try {
+      const logoData = await loadImageAsBase64(company.logo_url);
+      const logoFormat = logoData.startsWith("data:image/png") ? "PNG" : "JPEG";
+      const logoW = 12;
+      const logoH = 12;
+      doc.addImage(logoData, logoFormat, logoLeft, y, logoW, logoH);
+    } catch {
+      // skip logo on error
+    }
+  }
 
   try {
     const euFlagData = await loadImageAsBase64("/eu_flag.jpg");
     const imgW = 24;
     const imgH = 16;
     doc.addImage(euFlagData, "JPEG", pageWidth - margin - imgW, y, imgW, imgH);
-    y += imgH + 8;
   } catch {
-    y += 4;
+    // skip EU flag on error
   }
+  y += headerHeight;
 
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("Dues & Fees Summary", margin, y);
+  doc.text("Dues & Fees Summary", logoLeft, y);
   y += 8;
 
   doc.setFontSize(10);
@@ -63,9 +92,33 @@ export async function downloadDuesPdf(fees: InvestorDuesFeeItem[]): Promise<void
   doc.text(`Generated on ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}`, margin, y);
   y += 12;
 
+  let qrDataUrl: string | null = null;
+  try {
+    const appUrl = typeof window !== "undefined" ? window.location.origin : "https://riviola.net";
+    qrDataUrl = await generateQrDataUrl(appUrl);
+  } catch {
+    // no QR on error
+  }
+
+  function drawPdfFooter(doc: jsPDF, qr: string | null) {
+    const footerY = pageHeight - 28;
+    if (qr) {
+      const qrSize = 18;
+      const qrX = (pageWidth - qrSize) / 2;
+      doc.addImage(qr, "PNG", qrX, footerY, qrSize, qrSize);
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 100, 100);
+      doc.text("Scan the QR code using your phone to view your dues and payments.", pageWidth / 2, footerY + qrSize + 5, { align: "center" });
+      doc.text("For support: " + SUPPORT_EMAIL, pageWidth / 2, footerY + qrSize + 9, { align: "center" });
+      doc.setTextColor(0, 0, 0);
+    }
+  }
+
   if (fees.length === 0) {
     doc.setFontSize(11);
     doc.text("No dues recorded yet.", margin, y);
+    drawPdfFooter(doc, qrDataUrl);
     doc.save("dues-summary.pdf");
     return;
   }
@@ -109,9 +162,10 @@ export async function downloadDuesPdf(fees: InvestorDuesFeeItem[]): Promise<void
       doc.text(
         `Page ${data.pageNumber} of ${doc.getNumberOfPages()}`,
         pageWidth - margin - 20,
-        doc.getPageHeight() - 10
+        pageHeight - 10
       );
       doc.setTextColor(0, 0, 0);
+      drawPdfFooter(doc, qrDataUrl);
     },
   });
 
@@ -133,6 +187,24 @@ export async function downloadDuesPdf(fees: InvestorDuesFeeItem[]): Promise<void
   doc.text(`Total items: ${fees.length}  •  Paid: ${paidCount}  •  Due/Overdue: ${dueCount}`, margin, y);
   y += 6;
   doc.text(`Amount still due: € ${totalDue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, margin, y);
+  y += 10;
+
+  if (company) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(company.name || "Company", margin, y);
+    y += 5;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 80);
+    doc.text(SUPPORT_EMAIL, margin, y);
+    doc.setTextColor(0, 0, 0);
+    y += 6;
+    doc.setFontSize(9);
+    doc.setTextColor(19, 78, 74);
+    doc.text("The payment was successfully completed.", margin, y);
+    doc.setTextColor(0, 0, 0);
+  }
 
   doc.save(fileName);
 }
