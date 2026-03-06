@@ -19,14 +19,39 @@ function formatPaidAt(paidAt: string | null): string {
   }
 }
 
+/** Load image from public URL and return as base64 data URL for jsPDF */
+function loadImageAsBase64(url: string): Promise<string> {
+  return fetch(url)
+    .then((r) => r.blob())
+    .then(
+      (blob) =>
+        new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+    );
+}
+
 /**
  * Generates a PDF of the investor's dues and triggers download.
  */
-export function downloadDuesPdf(fees: InvestorDuesFeeItem[]): void {
+export async function downloadDuesPdf(fees: InvestorDuesFeeItem[]): Promise<void> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.getPageWidth();
   const margin = 14;
-  let y = 20;
+  let y = 14;
+
+  try {
+    const euFlagData = await loadImageAsBase64("/eu_flag.jpg");
+    const imgW = 24;
+    const imgH = 16;
+    doc.addImage(euFlagData, "JPEG", pageWidth - margin - imgW, y, imgW, imgH);
+    y += imgH + 8;
+  } catch {
+    y += 4;
+  }
 
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
