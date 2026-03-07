@@ -130,6 +130,13 @@ export async function getInvestorDuesFees(
     USD: "$",
     GBP: "£",
     TRY: "₺",
+    CHF: "Fr",
+    AUD: "A$",
+    CAD: "C$",
+    NOK: "kr",
+    SEK: "kr",
+    AED: "د.إ",
+    SAR: "﷼",
   };
 
   for (const { prop, periods } of propPeriodsList) {

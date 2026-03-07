@@ -22,10 +22,30 @@ const CURRENCIES = [
   { value: "USD", label: "USD ($)" },
   { value: "GBP", label: "GBP (£)" },
   { value: "TRY", label: "TRY (₺)" },
+  { value: "CHF", label: "CHF (Fr)" },
+  { value: "AUD", label: "AUD (A$)" },
+  { value: "CAD", label: "CAD (C$)" },
+  { value: "NOK", label: "NOK (kr)" },
+  { value: "SEK", label: "SEK (kr)" },
+  { value: "AED", label: "AED (د.إ)" },
+  { value: "SAR", label: "SAR (﷼)" },
 ] as const;
 
 function formatAmount(value: number, currency: string): string {
-  const sym = { EUR: "€", USD: "$", GBP: "£", TRY: "₺" }[currency] ?? currency + " ";
+  const sym =
+    {
+      EUR: "€",
+      USD: "$",
+      GBP: "£",
+      TRY: "₺",
+      CHF: "Fr",
+      AUD: "A$",
+      CAD: "C$",
+      NOK: "kr",
+      SEK: "kr",
+      AED: "د.إ",
+      SAR: "﷼",
+    }[currency] ?? currency + " ";
   return `${sym} ${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 

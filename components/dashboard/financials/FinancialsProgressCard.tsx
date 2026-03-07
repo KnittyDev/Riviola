@@ -5,6 +5,13 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   USD: "$",
   GBP: "£",
   TRY: "₺",
+  CHF: "Fr",
+  AUD: "A$",
+  CAD: "C$",
+  NOK: "kr",
+  SEK: "kr",
+  AED: "د.إ",
+  SAR: "﷼",
 };
 
 function formatAmount(value: number, currency: string): string {

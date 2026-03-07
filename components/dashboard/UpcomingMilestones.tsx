@@ -47,22 +47,28 @@ export function UpcomingMilestones({ milestones: propMilestones = [] }: Upcoming
         </div>
       </div>
 
-      {/* Timeline - no vertical line */}
+      {/* Timeline with connecting line */}
       <div className="px-6 py-4 flex-1">
         <div className="relative">
+          {propMilestones.length > 1 && (
+            <div
+              className="absolute left-[11px] top-3 bottom-8 w-0.5 bg-gray-200 rounded-full"
+              aria-hidden
+            />
+          )}
           <div className="space-y-0">
             {propMilestones.length === 0 ? (
               <p className="text-sm text-gray-500 py-4">No upcoming milestones for your properties yet.</p>
             ) : (
               propMilestones.map((m, i) => (
                 <div key={`${m.date}-${m.title}-${i}`} className="relative flex gap-4 pb-5 last:pb-0">
-                  {/* Dot */}
-                  <div className="relative z-10 flex shrink-0 items-start pt-0.5">
+                  {/* Dot - centered on timeline line */}
+                  <div className="relative z-10 flex shrink-0 w-6 justify-center items-start pt-0.5">
                     <div
-                      className={`flex items-center justify-center rounded-full transition-all ${
+                      className={`flex items-center justify-center rounded-full transition-all shrink-0 ${
                         m.active
                           ? "size-5 bg-[#134e4a] shadow-md shadow-[#134e4a]/30 milestone-dot-active ring-4 ring-[#134e4a]/10"
-                          : "size-3 bg-gray-200 mt-1.5"
+                          : "size-[14px] bg-gray-200 mt-1.5"
                       }`}
                     >
                       {m.active && (

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -14,42 +13,51 @@ import {
 } from "recharts";
 
 const PRIMARY = "#134e4a";
-const PROJECTED = "#cbd5e1";
 
-const DATA = [
-  { month: "JAN", actual: 128, projected: 125 },
-  { month: "FEB", actual: 131, projected: 130 },
-  { month: "MAR", actual: 133, projected: 132 },
-  { month: "APR", actual: 136, projected: 135 },
-  { month: "MAY", actual: 138, projected: 138 },
-  { month: "JUN", actual: 139, projected: 140 },
-  { month: "JUL", actual: 141, projected: 142 },
-  { month: "AUG", actual: 142, projected: 143 },
-  { month: "SEP", actual: 142.5, projected: 144 },
-  { month: "OCT", actual: 142.8, projected: 145 },
+export type StaffPerformancePoint = {
+  label: string;
+  value: number;
+};
+
+type StaffPerformanceChartProps = {
+  /** Aggregated value per building (or similar) */
+  data?: StaffPerformancePoint[];
+};
+
+const FALLBACK_DATA: StaffPerformancePoint[] = [
+  { label: "Project A", value: 2_500_000 },
+  { label: "Project B", value: 1_800_000 },
+  { label: "Project C", value: 1_200_000 },
+  { label: "Project D", value: 900_000 },
 ];
 
-function formatValue(value: number) {
-  return `€${value.toFixed(1)}M`;
+function formatEuro(value: number) {
+  if (value >= 1_000_000) {
+    return `€${(value / 1_000_000).toFixed(1)}M`;
+  }
+  if (value >= 1_000) {
+    return `€${(value / 1_000).toFixed(1)}k`;
+  }
+  return `€${value.toFixed(0)}`;
 }
 
-export function StaffPerformanceChart() {
+export function StaffPerformanceChart({ data }: StaffPerformanceChartProps) {
+  const chartData = data && data.length > 0 ? data : FALLBACK_DATA;
+  const totalValue = chartData.reduce((sum, d) => sum + d.value, 0);
+  const maxValue = chartData.reduce((max, d) => (d.value > max ? d.value : max), 0) || 1;
+
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm h-full flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-gray-900">Portfolio Performance</h3>
+        <h3 className="text-lg font-bold text-gray-900">Investor Portfolio Value</h3>
         <p className="text-2xl font-extrabold text-gray-900 mt-1">
-          {formatValue(142.8)}
-        </p>
-        <p className="text-sm text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
-          <i className="las la-arrow-up" aria-hidden />
-          4.2%
+          {formatEuro(totalValue)}
         </p>
       </div>
       <div className="flex-1 min-h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
-            data={DATA}
+            data={chartData}
             margin={{ top: 8, right: 8, left: 0, bottom: 20 }}
           >
             <defs>
@@ -60,7 +68,7 @@ export function StaffPerformanceChart() {
             </defs>
             <CartesianGrid strokeDasharray="0" stroke="#f1f5f9" vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="label"
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 10, fontWeight: 600, fill: "#94a3b8" }}
@@ -68,7 +76,7 @@ export function StaffPerformanceChart() {
             />
             <YAxis
               hide
-              domain={[120, 150]}
+              domain={[0, maxValue * 1.1]}
             />
             <Tooltip
               contentStyle={{
@@ -78,20 +86,13 @@ export function StaffPerformanceChart() {
               }}
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null;
-                const byKey = new Map(payload.map((p) => [p.dataKey, p]));
-                const actual = byKey.get("actual");
-                const projected = byKey.get("projected");
+                const point = payload[0];
                 return (
                   <div className="bg-white px-4 py-3 rounded-xl border border-gray-200 shadow-lg">
                     <p className="text-sm font-bold text-gray-900 mb-2">{label}</p>
-                    {actual && (
+                    {point && (
                       <p className="text-sm text-gray-700">
-                        Actual : {formatValue(Number(actual.value))}
-                      </p>
-                    )}
-                    {projected && (
-                      <p className="text-sm text-gray-700">
-                        Projected : {formatValue(Number(projected.value))}
+                        Total value: {formatEuro(Number(point.value))}
                       </p>
                     )}
                   </div>
@@ -108,41 +109,24 @@ export function StaffPerformanceChart() {
                       className="inline-block size-2 rounded-full"
                       style={{ backgroundColor: PRIMARY }}
                     />
-                    Actual
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span
-                      className="inline-block size-2 rounded-full"
-                      style={{ backgroundColor: PROJECTED }}
-                    />
-                    Projected
+                    Portfolio value
                   </span>
                 </div>
               )}
             />
             <Area
               type="monotone"
-              dataKey="actual"
+              dataKey="value"
               fill="url(#staffActualFill)"
               stroke="none"
               legendType="none"
             />
             <Line
               type="monotone"
-              dataKey="actual"
-              name="Actual"
+              dataKey="value"
+              name="Portfolio value"
               stroke={PRIMARY}
               strokeWidth={2.5}
-              strokeLinecap="round"
-              dot={false}
-            />
-            <Line
-              type="monotone"
-              dataKey="projected"
-              name="Projected"
-              stroke={PROJECTED}
-              strokeWidth={1.5}
-              strokeDasharray="4 4"
               strokeLinecap="round"
               dot={false}
             />

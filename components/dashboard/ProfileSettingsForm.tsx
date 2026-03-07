@@ -15,6 +15,13 @@ const CURRENCY_OPTIONS = [
   { value: "USD" as const, label: "USD ($)" },
   { value: "GBP" as const, label: "GBP (£)" },
   { value: "TRY" as const, label: "TRY (₺)" },
+  { value: "CHF" as const, label: "CHF (Fr)" },
+  { value: "AUD" as const, label: "AUD (A$)" },
+  { value: "CAD" as const, label: "CAD (C$)" },
+  { value: "NOK" as const, label: "NOK (kr)" },
+  { value: "SEK" as const, label: "SEK (kr)" },
+  { value: "AED" as const, label: "AED (د.إ)" },
+  { value: "SAR" as const, label: "SAR (﷼)" },
 ];
 
 const ROLE_LABELS: Record<ProfileRole, string> = {
@@ -281,20 +288,45 @@ export function ProfileSettingsForm() {
                 <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="currency">
                   Currency
                 </label>
-                <select
-                  id="currency"
-                  value={form.currency}
-                  onChange={(e) =>
-                    update("currency", e.target.value as "EUR" | "USD" | "GBP" | "TRY")
-                  }
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
-                >
-                  {CURRENCY_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                {profile?.role === "investor" ? (
+                  <div className="py-2">
+                    <p className="text-sm text-gray-700 font-medium">
+                      {form.currency}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Your currency is managed by staff and cannot be changed here.
+                    </p>
+                  </div>
+                ) : (
+                  <select
+                    id="currency"
+                    value={form.currency}
+                    onChange={(e) =>
+                      update(
+                        "currency",
+                        e.target.value as
+                          | "EUR"
+                          | "USD"
+                          | "GBP"
+                          | "TRY"
+                          | "CHF"
+                          | "AUD"
+                          | "CAD"
+                          | "NOK"
+                          | "SEK"
+                          | "AED"
+                          | "SAR"
+                      )
+                    }
+                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
+                  >
+                    {CURRENCY_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { getStaffCompanyId } from "@/lib/buildings";
 import { redirect } from "next/navigation";
 import { StaffPerformanceChart } from "@/components/dashboard/staff/StaffPerformanceChart";
@@ -7,6 +7,7 @@ import { CriticalAlerts } from "@/components/dashboard/staff/CriticalAlerts";
 import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjectsSection";
 import { getStaffRecentDuesPayments, getStaffOverdueDues } from "@/lib/duesPayments";
 import type { Building } from "@/lib/supabase/types";
+import { getCompanyInvestorProperties } from "@/lib/companyInvestors";
 
 export default async function StaffPage() {
   const supabase = await createClient();
@@ -23,10 +24,73 @@ export default async function StaffPage() {
   const activeCount = list.filter((b) => b.status === "In progress").length;
   const completedCount = list.filter((b) => b.status === "Completed").length;
 
-  const [recentPayments, overdueDues] = await Promise.all([
+  const serviceClient = createServiceRoleClient();
+
+  const [recentPayments, overdueDues, investorProperties] = await Promise.all([
     getStaffRecentDuesPayments(supabase, companyId, 10),
     getStaffOverdueDues(supabase, companyId, 20),
+    getCompanyInvestorProperties(serviceClient, companyId),
   ]);
+
+  // Build a time-series of investor portfolio value (EUR) based on when units were registered
+  const byMonth = new Map<string, number>(); // key = YYYY-MM
+  for (const row of investorProperties) {
+    if (
+      row.purchase_value != null &&
+      row.purchase_value >= 0 &&
+      row.purchase_currency &&
+      row.created_at
+    ) {
+      const currency = row.purchase_currency.trim() || "EUR";
+      // Only aggregate EUR for now so the chart is in a single currency
+      if (currency !== "EUR") continue;
+      const d = new Date(row.created_at);
+      if (Number.isNaN(d.getTime())) continue;
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      byMonth.set(key, (byMonth.get(key) ?? 0) + row.purchase_value);
+    }
+  }
+
+  const sortedKeys = Array.from(byMonth.keys()).sort();
+
+  let performanceData: { label: string; value: number }[] = [];
+  if (sortedKeys.length > 0) {
+    // Build cumulative values for all months where purchases happened
+    const cumulativeByKey = new Map<string, number>();
+    let cumulative = 0;
+    for (const key of sortedKeys) {
+      cumulative += byMonth.get(key) ?? 0;
+      cumulativeByKey.set(key, cumulative);
+    }
+
+    // Build a 3‑month window: current month and previous 2 months
+    const now = new Date();
+    const months: Date[] = [];
+    const start = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+    for (let i = 0; i < 3; i++) {
+      months.push(new Date(start.getFullYear(), start.getMonth() + i, 1));
+    }
+
+    performanceData = months.map((d) => {
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      // Find the latest purchase month <= this key
+      let value = 0;
+      for (let i = sortedKeys.length - 1; i >= 0; i--) {
+        const k = sortedKeys[i];
+        if (k <= key) {
+          value = cumulativeByKey.get(k) ?? 0;
+          break;
+        }
+      }
+      const label = d
+        .toLocaleDateString("en-GB", {
+          month: "short",
+          year: "2-digit",
+        })
+        .toUpperCase();
+      return { label, value };
+    });
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -101,7 +165,7 @@ export default async function StaffPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-2">
         <div className="lg:col-span-8 min-h-[320px]">
-          <StaffPerformanceChart />
+          <StaffPerformanceChart data={performanceData} />
         </div>
         <div className="lg:col-span-4 min-h-[320px]">
           <CriticalAlerts recentPayments={recentPayments} overdueDues={overdueDues} />

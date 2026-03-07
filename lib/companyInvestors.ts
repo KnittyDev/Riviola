@@ -16,6 +16,7 @@ export type CompanyInvestorPropertyRow = {
   email: string | null;
   phone: string | null;
   investor_type: "renter" | "buyer" | null;
+  created_at: string;
   building_id: string;
   building_name: string;
   block: string;
@@ -46,7 +47,7 @@ export async function getCompanyInvestorProperties(
 
   const { data: rows, error: rowsError } = await supabase
     .from("investor_properties")
-    .select("id, profile_id, building_id, block, unit, area_m2, delivery_period, purchase_value, purchase_currency")
+    .select("id, profile_id, building_id, block, unit, area_m2, delivery_period, purchase_value, purchase_currency, created_at")
     .in("building_id", buildingIds)
     .order("block")
     .order("unit");
@@ -76,6 +77,7 @@ export async function getCompanyInvestorProperties(
   return (rows ?? []).map((r: {
     id: string;
     profile_id: string;
+    created_at: string;
     building_id: string;
     block: string;
     unit: string;
@@ -92,6 +94,7 @@ export async function getCompanyInvestorProperties(
       email: profile?.email ?? null,
       phone: profile?.phone ?? null,
       investor_type: profile?.investor_type ?? null,
+      created_at: r.created_at,
       building_id: r.building_id,
       building_name: buildingNames.get(r.building_id) ?? "",
       block: r.block,

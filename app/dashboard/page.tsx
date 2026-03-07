@@ -12,6 +12,13 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   USD: "$",
   GBP: "£",
   TRY: "₺",
+  CHF: "Fr",
+  AUD: "A$",
+  CAD: "C$",
+  NOK: "kr",
+  SEK: "kr",
+  AED: "د.إ",
+  SAR: "﷼",
 };
 
 function formatValueByCurrency(totalByCurrency: Record<string, number>): string {

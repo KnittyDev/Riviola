@@ -45,7 +45,9 @@ export default function OnboardingPage() {
   const [useCases, setUseCases] = useState<UseCaseId[]>([]);
   const [projectName, setProjectName] = useState("");
   const [location, setLocation] = useState("");
-  const [unitCount, setUnitCount] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
 
   const goToStep2 = () => {
@@ -60,7 +62,7 @@ export default function OnboardingPage() {
   };
 
   const canProceed1 = useCases.length > 0;
-  const canProceed2 = projectName.trim() && location.trim() && unitCount;
+  const canProceed2 = fullName.trim() && companyName.trim() && location.trim() && email.trim();
 
   if (done) {
     return (
@@ -243,15 +245,28 @@ export default function OnboardingPage() {
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm space-y-5 transition-shadow duration-300 hover:shadow-md">
               <div>
-                <label htmlFor="pname" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Project name
+                <label htmlFor="pfull" className="block text-sm font-semibold text-gray-700 mb-1">
+                  Full name
                 </label>
                 <input
-                  id="pname"
+                  id="pfull"
                   type="text"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  placeholder="e.g. Porto Budva"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="e.g. John Doe"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
+                />
+              </div>
+              <div>
+                <label htmlFor="plocation" className="block text-sm font-semibold text-gray-700 mb-1">
+                  Company name
+                </label>
+                <input
+                  id="pcompany"
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  placeholder="e.g. Riviola Ltd."
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
               </div>
@@ -269,16 +284,15 @@ export default function OnboardingPage() {
                 />
               </div>
               <div>
-                <label htmlFor="punits" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Unit count
+                <label htmlFor="pemail" className="block text-sm font-semibold text-gray-700 mb-1">
+                  Contact email
                 </label>
                 <input
-                  id="punits"
-                  type="number"
-                  min={1}
-                  value={unitCount}
-                  onChange={(e) => setUnitCount(e.target.value)}
-                  placeholder="How many units / apartments?"
+                  id="pemail"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
               </div>

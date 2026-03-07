@@ -73,7 +73,7 @@ export function PricingSection() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <h2 className="text-4xl font-extrabold text-gray-900 mb-6 tracking-tight">
-            Investment-Scale Pricing
+            Pricing
           </h2>
           <div className="inline-flex p-1 bg-gray-100 rounded-2xl">
             <button
