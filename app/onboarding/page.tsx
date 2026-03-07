@@ -6,41 +6,47 @@ import Image from "next/image";
 
 const USE_CASES = [
   {
-    id: "project-management",
-    icon: "las la-tasks",
-    label: "Project management",
-    desc: "Tasks, progress, and team coordination.",
+    id: "property-management",
+    icon: "las la-building",
+    label: "Property management",
+    desc: "Manage buildings, units, and tenant occupancy.",
   },
   {
-    id: "investor-communication",
-    icon: "las la-users",
-    label: "Communication with investors",
-    desc: "Stakeholder updates and transparent reporting.",
+    id: "dues-collection",
+    icon: "las la-receipt",
+    label: "Dues & payments",
+    desc: "Track aidat payments and automated invoicing.",
   },
   {
-    id: "photo-documentation",
-    icon: "las la-camera",
-    label: "Photo documentation",
-    desc: "Construction site and progress visual documentation.",
+    id: "investor-relations",
+    icon: "las la-user-friends",
+    label: "Investor relations",
+    desc: "Keep stakeholders updated with clear reports.",
   },
   {
-    id: "financial-tracking",
-    icon: "las la-chart-line",
-    label: "Financial tracking",
-    desc: "Budget, cost, and reporting.",
+    id: "maintenance-requests",
+    icon: "las la-tools",
+    label: "Maintenance requests",
+    desc: "Collect and track staff tasks and requests.",
   },
   {
-    id: "milestones",
-    icon: "las la-flag-checkered",
-    label: "Task tracking and milestones",
-    desc: "Stages, delivery dates, and status.",
+    id: "weekly-updates",
+    icon: "las la-camera-retro",
+    label: "Weekly photo updates",
+    desc: "Document and share project progress visually.",
+  },
+  {
+    id: "financial-reporting",
+    icon: "las la-chart-pie",
+    label: "Financial reporting",
+    desc: "Monitor cashflow and installment payments.",
   },
 ] as const;
 
 type UseCaseId = (typeof USE_CASES)[number]["id"];
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
+  const [step, setStep] = useState<0 | 1 | 2 | 3 | 4>(0);
   const [step1Confirming, setStep1Confirming] = useState(false);
   const [useCases, setUseCases] = useState<UseCaseId[]>([]);
   const [projectName, setProjectName] = useState("");
@@ -48,7 +54,30 @@ export default function OnboardingPage() {
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedTimezone, setSelectedTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [done, setDone] = useState(false);
+
+  // Common timezones list
+  const COMMON_TIMEZONES = [
+    "UTC",
+    "Europe/London",
+    "Europe/Paris",
+    "Europe/Istanbul",
+    "Europe/Berlin",
+    "America/New_York",
+    "America/Los_Angeles",
+    "America/Chicago",
+    "Asia/Dubai",
+    "Asia/Tokyo",
+    "Asia/Singapore",
+    "Australia/Sydney",
+  ];
+
+  // Add current timezone if not in list
+  const timezones = Array.from(new Set([selectedTimezone, ...COMMON_TIMEZONES])).sort();
 
   const goToStep2 = () => {
     setStep(2);
@@ -71,19 +100,21 @@ export default function OnboardingPage() {
           <div className="size-20 rounded-full bg-[#134e4a]/10 flex items-center justify-center mx-auto mb-6 transition-transform duration-300 hover:scale-105">
             <i className="las la-calendar-check text-4xl text-[#134e4a]" aria-hidden />
           </div>
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-3">
-            Your demo is booked.
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+            You&apos;re all set!
           </h2>
-          <p className="text-gray-500 text-sm leading-relaxed mb-8">
-            A Riviola specialist will reach out within 24 hours to confirm your personalised session. In the meantime, explore the platform.
+          <p className="text-gray-500 text-base leading-relaxed mb-8">
+            Your personalised experience is ready. Dive in now to explore the demo dashboard and see Riviola in action.
           </p>
-          <Link
-            href="/dashboard/staff"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Enter platform
-            <i className="las la-arrow-right" aria-hidden />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/dashboard/staff"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#134e4a] text-white font-bold hover:bg-[#115e59] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#134e4a]/20"
+            >
+              Explore Demo Dashboard
+              <i className="las la-arrow-right" aria-hidden />
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -105,17 +136,17 @@ export default function OnboardingPage() {
         </Link>
         {/* Step indicator */}
         <div className={`flex items-center gap-2 transition-opacity duration-300 ${step === 0 ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-          {([1, 2, 3] as const).map((s) => (
+          {([1, 2, 3, 4] as const).map((s) => (
             <div
               key={s}
-              className={`flex items-center gap-2 ${s < 3 ? "after:content-[''] after:w-8 after:h-px after:mx-1 after:bg-gray-200" : ""}`}
+              className={`flex items-center gap-2 ${s < 4 ? "after:content-[''] after:w-8 after:h-px after:mx-1 after:bg-gray-200" : ""}`}
             >
               <div
                 className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ease-out ${step === s
-                    ? "bg-[#134e4a] text-white scale-110"
-                    : step > s
-                      ? "bg-[#134e4a]/15 text-[#134e4a]"
-                      : "bg-gray-100 text-gray-400"
+                  ? "bg-[#134e4a] text-white scale-110"
+                  : step > s
+                    ? "bg-[#134e4a]/15 text-[#134e4a]"
+                    : "bg-gray-100 text-gray-400"
                   }`}
               >
                 {step > s ? <i className="las la-check text-xs" aria-hidden /> : s}
@@ -178,14 +209,12 @@ export default function OnboardingPage() {
             <div className="grid sm:grid-cols-2 gap-3">
               {USE_CASES.map((u, idx) => {
                 const selected = useCases.includes(u.id);
-                const isLast = idx === USE_CASES.length - 1;
-                const card = (
+                return (
                   <button
                     key={u.id}
                     type="button"
                     onClick={() => toggleUseCase(u.id)}
-                    className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-300 ease-out animate-fade-in-up w-full ${isLast ? "sm:w-[calc((100%-0.75rem)/2)]" : ""
-                      } ${idx === 0 ? "delay-50" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : idx === 3 ? "delay-200" : "delay-250"
+                    className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-300 ease-out animate-fade-in-up w-full ${idx === 0 ? "delay-50" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : idx === 3 ? "delay-200" : idx === 4 ? "delay-250" : "delay-300"
                       } ${selected
                         ? "border-[#134e4a] bg-[#134e4a]/5 shadow-md shadow-[#134e4a]/10"
                         : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
@@ -208,14 +237,6 @@ export default function OnboardingPage() {
                     )}
                   </button>
                 );
-                if (isLast) {
-                  return (
-                    <div key={u.id} className="sm:col-span-2 flex sm:justify-center">
-                      {card}
-                    </div>
-                  );
-                }
-                return card;
               })}
             </div>
             <div className="flex justify-end mt-8">
@@ -355,10 +376,168 @@ export default function OnboardingPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setDone(true)}
+                onClick={() => setStep(4)}
                 className="flex items-center gap-2 px-7 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               >
-                Book my demo <i className="las la-arrow-right" aria-hidden />
+                Choose time <i className="las la-arrow-right" aria-hidden />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 4 → Booking Calendar ── */}
+        {step === 4 && (
+          <div key="step4" className="max-w-4xl w-full animate-fade-in-up">
+            <div className="text-center mb-10">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">Step 4 of 4</p>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+                Select a date & time
+              </h1>
+              <p className="text-gray-500 mt-3 text-sm">
+                Pick a slot for your personalized demo session.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 bg-white rounded-3xl border border-gray-100 p-8 shadow-xl shadow-gray-200/50">
+              {/* Calendar Column */}
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-bold text-gray-900 text-lg">
+                    {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                  </h3>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))}
+                      className="size-10 rounded-xl flex items-center justify-center border border-gray-200 hover:bg-gray-50 transition-colors"
+                    >
+                      <i className="las la-angle-left" />
+                    </button>
+                    <button
+                      onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))}
+                      className="size-10 rounded-xl flex items-center justify-center border border-gray-200 hover:bg-gray-50 transition-colors"
+                    >
+                      <i className="las la-angle-right" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                    <div key={day} className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-wider h-8 flex items-center justify-center">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-7 gap-2">
+                  {(() => {
+                    const days = [];
+                    const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+                    const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+
+                    // Padding for first day (Monday-based)
+                    let startDay = firstDay.getDay() - 1;
+                    if (startDay === -1) startDay = 6;
+
+                    for (let i = 0; i < startDay; i++) {
+                      days.push(<div key={`empty-${i}`} className="h-12" />);
+                    }
+
+                    for (let d = 1; d <= lastDay.getDate(); d++) {
+                      const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), d);
+                      const isToday = new Date().toDateString() === date.toDateString();
+                      const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+                      const isSelected = selectedDate?.toDateString() === date.toDateString();
+
+                      days.push(
+                        <button
+                          key={d}
+                          onClick={() => !isPast && setSelectedDate(date)}
+                          disabled={isPast}
+                          className={`h-12 rounded-xl flex items-center justify-center text-sm font-semibold transition-all
+                            ${isSelected ? 'bg-[#134e4a] text-white shadow-lg shadow-[#134e4a]/30 scale-105' :
+                              isPast ? 'text-gray-300 cursor-not-allowed' :
+                                'text-gray-700 hover:bg-gray-100'}
+                            ${isToday && !isSelected ? 'text-[#134e4a] underline decoration-2 underline-offset-4' : ''}
+                          `}
+                        >
+                          {d}
+                        </button>
+                      );
+                    }
+                    return days;
+                  })()}
+                </div>
+              </div>
+
+              {/* Time Slots Column */}
+              <div className="border-t lg:border-t-0 lg:border-l border-gray-100 pt-8 lg:pt-0 lg:pl-8">
+                <h3 className="font-bold text-gray-900 text-lg mb-6">
+                  {selectedDate ? selectedDate.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }) : 'Select a date'}
+                </h3>
+
+                {selectedDate ? (
+                  <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    {['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'].map(time => (
+                      <button
+                        key={time}
+                        onClick={() => setSelectedTime(time)}
+                        className={`py-3 rounded-xl text-sm font-bold border-2 transition-all
+                          ${selectedTime === time
+                            ? 'border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a] shadow-sm'
+                            : 'border-gray-100 hover:border-gray-200 text-gray-600'}
+                        `}
+                      >
+                        {time}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-40 flex flex-col items-center justify-center text-gray-400 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                    <i className="las la-calendar text-3xl mb-2" />
+                    <p className="text-xs">Pick a day first</p>
+                  </div>
+                )}
+
+                <div className="mt-8 space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                      Timezone
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedTimezone}
+                        onChange={(e) => setSelectedTimezone(e.target.value)}
+                        className="w-full bg-gray-50 border border-gray-100 text-gray-600 text-xs rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#134e4a]/10 appearance-none cursor-pointer"
+                      >
+                        {timezones.map(tz => (
+                          <option key={tz} value={tz}>{tz}</option>
+                        ))}
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-xs">
+                        <i className="las la-angle-down" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mt-10">
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-gray-700"
+              >
+                <i className="las la-arrow-left" /> Back
+              </button>
+              <button
+                type="button"
+                disabled={!selectedDate || !selectedTime}
+                onClick={() => setDone(true)}
+                className="flex items-center gap-2 px-10 py-4 rounded-xl bg-[#134e4a] text-white font-bold hover:bg-[#115e59] disabled:opacity-40 disabled:pointer-events-none transition-all shadow-lg shadow-[#134e4a]/20"
+              >
+                Confirm Booking <i className="las la-check" />
               </button>
             </div>
           </div>
