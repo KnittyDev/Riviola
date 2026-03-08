@@ -2,87 +2,144 @@ import Link from "next/link";
 
 const features = [
   {
+    id: "hub",
     iconClass: "las la-building",
     title: "Properties Hub",
-    description:
-      "Manage units, leases and availability from a single centralized dashboard.",
+    description: "The heartbeat of your operation. Manage units, leases, and real-time availability from a high-level command center.",
+    size: "large",
+    gradient: "from-emerald-500/10 to-teal-500/10",
   },
   {
+    id: "investor",
     iconClass: "las la-user-friends",
     title: "Investor Portal",
-    description:
-      "Track investor profiles, allocations and distributions with clear audit trails.",
+    description: "Premium reporting for stakeholders. Track allocations and distributions with zero friction.",
+    size: "medium",
+    gradient: "from-blue-500/10 to-indigo-500/10",
   },
   {
+    id: "payments",
     iconClass: "las la-receipt",
     title: "Dues & Payments",
-    description:
-      "Automate invoices, collections, installments and reconciliation workflows.",
+    description: "Automate the pulse of your cashflow with smart invoicing and reconciliation.",
+    size: "medium",
+    gradient: "from-amber-500/10 to-orange-500/10",
   },
   {
+    id: "docs",
     iconClass: "las la-file-contract",
-    title: "Documents & Compliance",
-    description:
-      "Securely store blueprints, contracts and approvals with granular access controls.",
+    title: "Secure Vault",
+    description: "Compliance made effortless. Store blueprints and contracts securely.",
+    size: "small",
   },
   {
+    id: "insights",
     iconClass: "las la-chart-line",
     title: "Financial Insights",
-    description:
-      "Real-time P&L, cashflow views and customizable reports for stakeholders.",
+    description: "Deep-dive analytics and custom reporting boards.",
+    size: "small",
   },
   {
+    id: "maintenance",
     iconClass: "las la-tools",
-    title: "Requests & Maintenance",
-    description:
-      "Collect tenant requests, dispatch staff and track resolution progress.",
+    title: "Smart Requests",
+    description: "Track maintenance from request to resolution instantly.",
+    size: "small",
   },
   {
+    id: "photos",
     iconClass: "las la-camera-retro",
-    title: "Photo Updates",
-    description:
-      "Schedule and deliver weekly property photo updates to stakeholders.",
-  },
-  {
-    iconClass: "las la-credit-card",
-    title: "Billing & Subscriptions",
-    description:
-      "Flexible billing, subscription controls and payment history at a glance.",
+    title: "Visual Updates",
+    description: "Weekly progress photos delivered to every stakeholder.",
+    size: "small",
   },
 ];
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="relative bg-gradient-to-b from-white via-[#fbfcfd] to-[#f9fafb] py-24 overflow-hidden border-y border-gray-100 scroll-mt-20">
-      <div className="absolute -left-16 -top-10 w-72 h-72 bg-gradient-to-tr from-[#d1fae5] to-[#ecfeff] opacity-30 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute right-0 -bottom-20 w-96 h-96 bg-gradient-to-br from-[#eef2ff] to-[#fff7ed] opacity-20 rounded-full blur-3xl pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            Everything you need to run properties — simplified.
-          </h2>
-          <p className="text-gray-600 text-base md:text-lg mb-6">
-            From tenant requests to investor reporting, a cohesive toolset built
-            to streamline operations and surface the insights you need.
-          </p>
-          <Link href="/demo" className="inline-flex items-center gap-3 bg-[#134e4a] text-white px-5 py-3 rounded-full font-semibold shadow-sm hover:shadow-md transition-all">
-            Try the demo
-            <i className="las la-arrow-right text-sm" aria-hidden />
+    <section id="features" className="relative bg-[#fcfdfe] pt-32 pb-20 overflow-hidden border-y border-gray-100 scroll-mt-20">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#d1fae5] opacity-20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#eef2ff] opacity-20 blur-[120px] rounded-full" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-16">
+          <div className="max-w-2xl">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
+              Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#134e4a] to-[#115e59]">run properties</span> — simplified.
+            </h2>
+            <p className="text-gray-600 text-lg leading-relaxed">
+              Ditch the scattered tools. Riviola brings your entire operation into a single, high-performance ecosystem.
+            </p>
+          </div>
+          <Link href="/demo" className="shrink-0 group flex items-center gap-3 bg-[#134e4a] text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-[#134e4a]/10 hover:shadow-2xl hover:shadow-[#134e4a]/20 hover:-translate-y-1 transition-all">
+            Start Free Exploration
+            <i className="las la-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="group relative p-6 rounded-2xl bg-white border border-gray-100 transform hover:-translate-y-1 hover:scale-101 hover:shadow-lg transition-all duration-300"
-            >
-              <div className="w-14 h-14 rounded-xl bg-[#134e4a] flex items-center justify-center mb-4 text-white group-hover:bg-[#0f5b55] transition-colors">
-                <i className={`${feature.iconClass} text-2xl`} aria-hidden />
+
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 min-h-[800px]">
+          {/* Main Feature - Hub (Span 2x2) */}
+          <div className="md:col-span-2 md:row-span-2 group relative p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden">
+            <div className={`absolute inset-0 bg-gradient-to-br ${features[0].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+            <div className="relative z-10">
+              <div className="w-20 h-20 rounded-3xl bg-[#134e4a] flex items-center justify-center mb-8 text-white shadow-lg shadow-[#134e4a]/20 transform group-hover:rotate-6 transition-transform duration-500">
+                <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M2.5 0.5V0H3.5V0.5C3.5 1.60457 4.39543 2.5 5.5 2.5H6V3V3.5H5.5C4.39543 3.5 3.5 4.39543 3.5 5.5V6H3H2.5V5.5C2.5 4.39543 1.60457 3.5 0.5 3.5H0V3V2.5H0.5C1.60457 2.5 2.5 1.60457 2.5 0.5Z" />
+                  <path d="M14.5 4.5V5H13.5V4.5C13.5 3.94772 13.0523 3.5 12.5 3.5H12V3V2.5H12.5C13.0523 2.5 13.5 2.05228 13.5 1.5V1H14H14.5V1.5C14.5 2.05228 14.9477 2.5 15.5 2.5H16V3V3.5H15.5C14.9477 3.5 14.5 3.94772 14.5 4.5Z" />
+                  <path d="M8.40706 4.92939L8.5 4H9.5L9.59294 4.92939C9.82973 7.29734 11.7027 9.17027 14.0706 9.40706L15 9.5V10.5L14.0706 10.5929C11.7027 10.8297 9.82973 12.7027 9.59294 15.0706L9.5 16H8.5L8.40706 15.0706C8.17027 12.7027 6.29734 10.8297 3.92939 10.5929L3 10.5V9.5L3.92939 9.40706C6.29734 9.17027 8.17027 7.29734 8.40706 4.92939Z" />
+                </svg>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+              <h3 className="text-3xl font-black text-gray-900 mb-4">{features[0].title}</h3>
+              <p className="text-gray-600 text-xl leading-relaxed max-w-sm">{features[0].description}</p>
             </div>
-          ))}
+            <div className="relative z-10 pt-12 flex items-center gap-2 text-[#134e4a] font-bold group-hover:gap-4 transition-all">
+              See how it works <i className="las la-arrow-right" />
+            </div>
+          </div>
+
+          {/* Medium Feature - Investor (Span 2x1) */}
+          <div className="md:col-span-2 group relative p-8 rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex items-start gap-8 overflow-hidden">
+            <div className={`absolute inset-0 bg-gradient-to-br ${features[1].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+            <div className="relative z-10 w-16 h-16 shrink-0 rounded-2xl bg-[#134e4a]/10 flex items-center justify-center text-[#134e4a]">
+              <i className={`${features[1].iconClass} text-3xl`} aria-hidden />
+            </div>
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{features[1].title}</h3>
+              <p className="text-gray-500 text-base leading-relaxed">{features[1].description}</p>
+            </div>
+          </div>
+
+          {/* Medium Feature - Payments (Span 2x1) */}
+          <div className="md:col-span-2 group relative p-8 rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex items-start gap-8 overflow-hidden">
+            <div className={`absolute inset-0 bg-gradient-to-br ${features[2].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+            <div className="relative z-10 w-16 h-16 shrink-0 rounded-2xl bg-[#134e4a]/10 flex items-center justify-center text-[#134e4a]">
+              <i className={`${features[2].iconClass} text-3xl`} aria-hidden />
+            </div>
+            <div className="relative z-10">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{features[2].title}</h3>
+              <p className="text-gray-500 text-base leading-relaxed">{features[2].description}</p>
+            </div>
+          </div>
+
+          {/* Small Features Row */}
+          <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-4">
+            {features.slice(3).map((feature) => (
+              <div
+                key={feature.id}
+                className="group p-6 rounded-[1.5rem] bg-white border border-gray-100 hover:border-[#134e4a]/20 hover:shadow-lg transition-all duration-300"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mb-4 text-[#134e4a] group-hover:bg-[#134e4a] group-hover:text-white transition-all duration-300">
+                  <i className={`${feature.iconClass} text-2xl`} aria-hidden />
+                </div>
+                <h3 className="text-base font-bold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-500 text-xs leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
