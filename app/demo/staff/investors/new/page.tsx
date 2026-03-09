@@ -1,24 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   staffBuildings,
   buildingBlocks,
   buildingFloors,
 } from "@/lib/staffBuildingsData";
+import { BuildingOption } from "@/components/dashboard/staff/NewInvestorForm";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
 const labelClass = "block text-sm font-semibold text-gray-700 mb-1";
 
+const CURRENCIES = [
+  { value: "EUR", label: "EUR (€)" },
+  { value: "USD", label: "USD ($)" },
+  { value: "GBP", label: "GBP (£)" },
+  { value: "TRY", label: "TRY (₺)" },
+  { value: "CHF", label: "CHF (Fr)" },
+  { value: "AUD", label: "AUD (A$)" },
+  { value: "CAD", label: "CAD (C$)" },
+  { value: "NOK", label: "NOK (kr)" },
+  { value: "SEK", label: "SEK (kr)" },
+  { value: "AED", label: "AED (د.إ)" },
+  { value: "SAR", label: "SAR (﷼)" },
+] as const;
+
+function formatAmount(value: number, currency: string): string {
+  const sym =
+    {
+      EUR: "€",
+      USD: "$",
+      GBP: "£",
+      TRY: "₺",
+      CHF: "Fr",
+      AUD: "A$",
+      CAD: "C$",
+      NOK: "kr",
+      SEK: "kr",
+      AED: "د.إ",
+      SAR: "﷼",
+    }[currency] ?? currency + " ";
+  return `${sym} ${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 export default function NewInvestorPage() {
+  const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [buildingId, setBuildingId] = useState("");
+  const [block, setBlock] = useState("");
+  const [unit, setUnit] = useState("");
+  const [areaM2, setAreaM2] = useState<string>("");
+  const [deliveryPeriod, setDeliveryPeriod] = useState("");
+  const [totalAmount, setTotalAmount] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("EUR");
+  const [investorType, setInvestorType] = useState<"renter" | "buyer">("buyer");
   const [paymentPlanType, setPaymentPlanType] = useState<"full" | "installments">("full");
   const [installmentCount, setInstallmentCount] = useState<number>(6);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [error]);
+
+  const selected = staffBuildings.find((b) => b.id === buildingId);
   const blocks = buildingId ? buildingBlocks[buildingId] ?? [] : [];
   const floorCount = buildingId ? buildingFloors[buildingId] ?? 6 : 0;
   const floorOptions = Array.from({ length: floorCount }, (_, i) => i + 1);
+
+  const totalNum = totalAmount.trim() === "" ? null : parseFloat(totalAmount);
+  const isValidTotal = totalNum != null && !Number.isNaN(totalNum) && totalNum >= 0;
+  const installmentPreview =
+    paymentPlanType === "installments" && isValidTotal && installmentCount >= 1
+      ? totalNum! / installmentCount
+      : null;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    setSuccess(true);
+    setTimeout(() => {
+      router.push("/demo/staff/investors");
+    }, 1500);
+    setLoading(false);
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -37,8 +115,22 @@ export default function NewInvestorPage() {
       </p>
       <form
         className="space-y-6 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit}
       >
+        {error && (
+          <p
+            ref={errorRef}
+            className="text-red-600 text-sm p-3 rounded-xl bg-red-50 border border-red-100"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
+        {success && (
+          <p className="text-green-700 text-sm p-3 rounded-xl bg-green-50 border border-green-100">
+            Account created (Demo). Redirecting...
+          </p>
+        )}
         <div>
           <label htmlFor="name" className={labelClass}>
             Full name
@@ -48,6 +140,9 @@ export default function NewInvestorPage() {
             name="name"
             type="text"
             placeholder="e.g. John Smith"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
             className={inputClass}
           />
         </div>
@@ -60,6 +155,9 @@ export default function NewInvestorPage() {
             name="email"
             type="email"
             placeholder="investor@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             className={inputClass}
           />
         </div>
@@ -72,8 +170,41 @@ export default function NewInvestorPage() {
             name="password"
             type="password"
             placeholder="Initial password (can be changed later)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
             className={inputClass}
           />
+        </div>
+        <div>
+          <label htmlFor="phone" className={labelClass}>
+            Phone
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            placeholder="e.g. +90 555 123 4567"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label htmlFor="investorType" className={labelClass}>
+            Investor type
+          </label>
+          <select
+            id="investorType"
+            name="investorType"
+            value={investorType}
+            onChange={(e) => setInvestorType(e.target.value as "renter" | "buyer")}
+            className={inputClass}
+          >
+            <option value="buyer">Buyer (sees Financials)</option>
+            <option value="renter">Renter (no Financials)</option>
+          </select>
         </div>
 
         <hr className="border-gray-200" />
@@ -86,13 +217,16 @@ export default function NewInvestorPage() {
             id="building"
             name="building"
             value={buildingId}
-            onChange={(e) => setBuildingId(e.target.value)}
+            onChange={(e) => {
+              setBuildingId(e.target.value);
+              setBlock("");
+            }}
             className={inputClass}
           >
             <option value="">Select project</option>
-            {staffBuildings.map((b) => (
+            {staffBuildings.map((b: any) => (
               <option key={b.id} value={b.id}>
-                {b.name} – {b.location}
+                {b.name} – {b.location || "—"}
               </option>
             ))}
           </select>
@@ -107,12 +241,15 @@ export default function NewInvestorPage() {
               <select
                 id="block"
                 name="block"
+                value={block}
+                onChange={(e) => setBlock(e.target.value)}
+                required
                 className={inputClass}
               >
                 <option value="">Select block</option>
-                {blocks.map((block) => (
-                  <option key={block} value={block}>
-                    {block}
+                {blocks.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
                   </option>
                 ))}
               </select>
@@ -122,11 +259,7 @@ export default function NewInvestorPage() {
                 <label htmlFor="floor" className={labelClass}>
                   Floor
                 </label>
-                <select
-                  id="floor"
-                  name="floor"
-                  className={inputClass}
-                >
+                <select id="floor" name="floor" className={inputClass} defaultValue="">
                   <option value="">Select floor</option>
                   {floorOptions.map((f) => (
                     <option key={f} value={f}>
@@ -144,6 +277,41 @@ export default function NewInvestorPage() {
                   name="unit"
                   type="text"
                   placeholder="e.g. 402"
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  required
+                  className={inputClass}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="areaM2" className={labelClass}>
+                  Area (m²)
+                </label>
+                <input
+                  id="areaM2"
+                  name="areaM2"
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  placeholder="e.g. 85"
+                  value={areaM2}
+                  onChange={(e) => setAreaM2(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="deliveryPeriod" className={labelClass}>
+                  Delivery period
+                </label>
+                <input
+                  id="deliveryPeriod"
+                  name="deliveryPeriod"
+                  type="text"
+                  placeholder="e.g. Q3 2026, Q4 2026"
+                  value={deliveryPeriod}
+                  onChange={(e) => setDeliveryPeriod(e.target.value)}
                   className={inputClass}
                 />
               </div>
@@ -152,6 +320,44 @@ export default function NewInvestorPage() {
         )}
 
         <hr className="border-gray-200" />
+
+        <div>
+          <span className={labelClass}>Amount to pay (total)</span>
+          <p className="text-xs text-gray-500 mb-2">
+            Total amount the investor has paid or will pay for this unit.
+          </p>
+          <div className="flex flex-wrap gap-3 items-end">
+            <div className="flex-1 min-w-[10rem]">
+              <input
+                id="totalAmount"
+                name="totalAmount"
+                type="number"
+                min={0}
+                step={0.01}
+                placeholder="e.g. 150000"
+                value={totalAmount}
+                onChange={(e) => setTotalAmount(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div className="w-32">
+              <label htmlFor="currency" className="sr-only">Currency</label>
+              <select
+                id="currency"
+                name="currency"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className={inputClass}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
 
         <div>
           <span className={labelClass}>Payment plan</span>
@@ -199,14 +405,37 @@ export default function NewInvestorPage() {
               />
             </div>
           )}
+
+          {/* Payment preview */}
+          <div className="mt-4 p-4 rounded-xl bg-teal-50 border border-teal-100">
+            <p className="text-sm font-semibold text-teal-900 mb-1">Preview</p>
+            {!isValidTotal ? (
+              <p className="text-sm text-teal-700">Enter total amount above to see preview.</p>
+            ) : paymentPlanType === "full" ? (
+              <p className="text-sm text-teal-800">
+                One-time payment: <strong>{formatAmount(totalNum!, currency)}</strong>
+              </p>
+            ) : (
+              <div className="text-sm text-teal-800 space-y-0.5">
+                <p>
+                  <strong>{installmentCount}</strong> installments of{" "}
+                  <strong>{formatAmount(installmentPreview!, currency)}</strong> each
+                </p>
+                <p>
+                  Total: <strong>{formatAmount(totalNum!, currency)}</strong>
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors"
+            disabled={loading}
+            className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-60 disabled:pointer-events-none transition-colors"
           >
-            Create account
+            {loading ? "Creating..." : "Create account"}
           </button>
           <Link
             href="/demo/staff"

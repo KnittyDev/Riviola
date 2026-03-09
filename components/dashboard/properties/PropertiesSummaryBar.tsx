@@ -1,5 +1,7 @@
 type PropertiesSummaryBarProps = {
   totalCount?: number;
+  underConstructionCount?: number;
+  completedCount?: number;
   investorType?: "buyer" | "renter";
   totalValueLabel?: string;
   totalValueDisplay?: string;
@@ -7,14 +9,16 @@ type PropertiesSummaryBarProps = {
 
 export function PropertiesSummaryBar({
   totalCount = 0,
+  underConstructionCount = 0,
+  completedCount = 0,
   investorType = "buyer",
   totalValueLabel = "Total Value",
   totalValueDisplay = "—",
 }: PropertiesSummaryBarProps) {
   const stats = [
     { icon: "las la-building", label: "Total Properties", value: String(totalCount) },
-    { icon: "las la-hard-hat", label: "Under Construction", value: "—" },
-    { icon: "las la-check-circle", label: "Completed", value: "—" },
+    { icon: "las la-hard-hat", label: "Under Construction", value: String(underConstructionCount) },
+    { icon: "las la-check-circle", label: "Completed", value: String(completedCount) },
     { icon: "las la-euro-sign", label: totalValueLabel, value: totalValueDisplay },
   ];
   return (

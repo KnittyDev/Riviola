@@ -108,7 +108,7 @@ export default async function StaffBuildingsPage() {
                     href={`/dashboard/staff/buildings/${b.id}`}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
                   >
-                    <i className="las la-external-link-alt text-sm" aria-hidden />
+                    <i className="las la-eye text-sm" aria-hidden />
                     See
                   </Link>
                   <Link

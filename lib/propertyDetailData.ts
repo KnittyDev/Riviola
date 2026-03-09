@@ -37,6 +37,8 @@ export interface PropertyDetail {
   value: string;
   area: string;
   deliveryDate: string;
+  country?: string;
+  city?: string;
   plans: PlanItem[];
   logs: LogItem[];
   weeklyUpdates?: WeeklyPhotoUpdate[];
@@ -55,6 +57,8 @@ const propertyDetails: Record<string, PropertyDetail> = {
     value: "420.000€",
     area: "148 m²",
     deliveryDate: "Dec 2024",
+    country: "Montenegro",
+    city: "Budva",
     plans: [
       {
         date: "2024-01-15",
@@ -158,6 +162,8 @@ const propertyDetails: Record<string, PropertyDetail> = {
     value: "1.240.000€",
     area: "312 m²",
     deliveryDate: "Jun 2025",
+    country: "United Kingdom",
+    city: "London",
     plans: [
       { date: "2024-03-01", time: "09:00", title: "1st floor structural frame", description: "Structural framework completion and sign-off.", status: "completed" },
       { date: "2024-05-15", time: "10:00", title: "Roofing structure", description: "Weatherproofing and roofing structure.", status: "in-progress" },
@@ -185,6 +191,8 @@ const propertyDetails: Record<string, PropertyDetail> = {
     value: "1.180.000€",
     area: "420 m²",
     deliveryDate: "Mar 2024",
+    country: "France",
+    city: "Nice",
     plans: [
       { date: "2024-03-15", time: "10:00", title: "Key handover", description: "Final handover and key release.", status: "completed" },
     ],
@@ -206,6 +214,8 @@ const propertyDetails: Record<string, PropertyDetail> = {
     value: "890.000€",
     area: "265 m²",
     deliveryDate: "Q3 2026",
+    country: "Spain",
+    city: "Barcelona",
     plans: [
       { date: "2025-01-15", time: "09:00", title: "Site mobilisation", description: "Fencing, site setup and groundworks start.", status: "upcoming" },
       { date: "2025-06-01", time: "10:00", title: "Foundation works", description: "Piling and foundation slab.", status: "upcoming" },

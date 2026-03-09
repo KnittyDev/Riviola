@@ -48,15 +48,15 @@ export default async function PropertiesPage() {
       Object.entries(byCurrency).length === 0
         ? "—"
         : Object.entries(byCurrency)
-            .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
-            .join(" · ");
+          .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
+          .join(" · ");
   } else {
     totalValueLabel = "Total Paid";
     const byCurrency: Record<string, number> = {};
     for (const f of duesFees) {
-      if (f.status === "paid" && f.paid_at && f.amount_cents != null) {
+      if (f.status === "paid" && f.paid_at && f.amountCents != null) {
         const c = f.currency ?? "EUR";
-        byCurrency[c] = (byCurrency[c] ?? 0) + f.amount_cents / 100;
+        byCurrency[c] = (byCurrency[c] ?? 0) + f.amountCents / 100;
       }
     }
     const sym: Record<string, string> = { EUR: "€", USD: "$", GBP: "£", TRY: "₺" };
@@ -64,9 +64,16 @@ export default async function PropertiesPage() {
       Object.entries(byCurrency).length === 0
         ? "—"
         : Object.entries(byCurrency)
-            .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
-            .join(" · ");
+          .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
+          .join(" · ");
   }
+
+  const underConstructionCount = investorProperties.filter(
+    (p) => p.building.status !== "Completed" && p.building.status !== "Cancelled"
+  ).length;
+  const completedCount = investorProperties.filter(
+    (p) => p.building.status === "Completed"
+  ).length;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -83,6 +90,8 @@ export default async function PropertiesPage() {
 
       <PropertiesSummaryBar
         totalCount={investorProperties.length}
+        underConstructionCount={underConstructionCount}
+        completedCount={completedCount}
         investorType={investorType}
         totalValueLabel={totalValueLabel}
         totalValueDisplay={totalValueDisplay}

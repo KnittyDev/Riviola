@@ -233,3 +233,18 @@ button:disabled,
   background: rgba(0, 0, 0, 0.05) !important;
   color: var(--foreground) !important;
 }
+
+/* Eye blink animation for Demo button */
+@keyframes eye-blink {
+  0%, 85%, 100% {
+    transform: scaleY(1);
+  }
+  90%, 95% {
+    transform: scaleY(0.1);
+  }
+}
+
+.animate-eye-blink {
+  animation: eye-blink 3.5s ease-in-out infinite;
+  display: inline-block;
+}

@@ -7,6 +7,7 @@ import { BuildingMilestonesLog } from "./BuildingMilestonesLog";
 import { BuildingProgressClient, BuildingStatusBadgeClient } from "./BuildingOverridesClient";
 import { DeleteBuildingButton } from "../DeleteBuildingButton";
 import { WeeklyPhotoUpdates } from "@/components/WeeklyPhotoUpdates";
+import { WeatherWidget } from "@/components/dashboard/properties/WeatherWidget";
 import type { Building, BuildingStatus } from "@/lib/supabase/types";
 import type { PlannedMilestoneDb } from "@/lib/supabase/types";
 import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
@@ -148,6 +149,7 @@ export default async function StaffBuildingDetailPage({
               <i className="las la-map-marker-alt text-gray-400" aria-hidden />
               {building.location || "—"}
             </p>
+            <WeatherWidget city={building.city ?? undefined} country={building.country ?? undefined} mode="light" />
           </div>
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Units</p>
@@ -183,11 +185,13 @@ export default async function StaffBuildingDetailPage({
         currentMilestoneId={building.current_milestone_id ?? null}
       />
 
-      {weeklyUpdates.length > 0 && (
-        <div className="mt-8">
-          <WeeklyPhotoUpdates weeklyUpdates={weeklyUpdates} />
-        </div>
-      )}
-    </div>
+      {
+        weeklyUpdates.length > 0 && (
+          <div className="mt-8">
+            <WeeklyPhotoUpdates weeklyUpdates={weeklyUpdates} />
+          </div>
+        )
+      }
+    </div >
   );
 }

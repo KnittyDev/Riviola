@@ -41,8 +41,9 @@ export function HeroSection() {
           </Link>
           <Link
             href="/demo"
-            className="h-16 px-10 rounded-2xl bg-white border-2 border-gray-100 text-gray-900 font-bold text-lg hover:border-gray-200 hover:bg-gray-50 flex items-center justify-center transition-all"
+            className="h-16 px-10 rounded-2xl bg-white border-2 border-gray-100 text-gray-900 font-bold text-lg hover:border-gray-200 hover:bg-gray-50 flex items-center justify-center gap-3 transition-all"
           >
+            <i className="las la-eye text-xl animate-eye-blink" />
             View Demo
           </Link>
         </div>

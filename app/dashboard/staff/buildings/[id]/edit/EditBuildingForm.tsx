@@ -9,6 +9,7 @@ import { toast } from "@/lib/toast";
 import type { BuildingStatus } from "@/lib/supabase/types";
 import type { PlannedMilestone } from "@/lib/staffBuildingOverrides";
 import { computeProgressFromMilestones } from "@/lib/buildings";
+import { LocationSelector } from "@/components/dashboard/staff/LocationSelector";
 
 const BANNER_BUCKET = "building_banners";
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
@@ -19,9 +20,12 @@ type Props = {
   defaultLocation: string;
   defaultUnits: number;
   defaultStatus: BuildingStatus;
+  defaultProgress: number;
   defaultBlocks: string[];
   defaultFloors: number;
   defaultImageUrl?: string | null;
+  defaultCountry?: string | null;
+  defaultCity?: string | null;
   defaultPlannedMilestones?: PlannedMilestone[];
   defaultCurrentMilestoneId?: string | null;
   /** Base path for redirect/cancel (e.g. /dashboard/staff or /demo/staff). Defaults to /dashboard/staff. */
@@ -35,49 +39,49 @@ const statusOptions: Array<{
   icon: string;
   toneClass: string;
 }> = [
-  {
-    value: "Planned",
-    label: "Planned",
-    helper: "Preparing to start",
-    icon: "las la-calendar",
-    toneClass: "bg-sky-100 text-sky-700",
-  },
-  {
-    value: "In progress",
-    label: "In progress",
-    helper: "Construction ongoing",
-    icon: "las la-hourglass-half",
-    toneClass: "bg-amber-100 text-amber-700",
-  },
-  {
-    value: "At risk",
-    label: "At risk",
-    helper: "Needs attention",
-    icon: "las la-exclamation-triangle",
-    toneClass: "bg-red-100 text-red-700",
-  },
-  {
-    value: "On hold",
-    label: "On hold",
-    helper: "Paused temporarily",
-    icon: "las la-pause-circle",
-    toneClass: "bg-gray-100 text-gray-700",
-  },
-  {
-    value: "Completed",
-    label: "Completed",
-    helper: "Handover done",
-    icon: "las la-check-circle",
-    toneClass: "bg-emerald-100 text-emerald-700",
-  },
-  {
-    value: "Cancelled",
-    label: "Cancelled",
-    helper: "Stopped permanently",
-    icon: "las la-times-circle",
-    toneClass: "bg-zinc-100 text-zinc-700",
-  },
-];
+    {
+      value: "Planned",
+      label: "Planned",
+      helper: "Preparing to start",
+      icon: "las la-calendar",
+      toneClass: "bg-sky-100 text-sky-700",
+    },
+    {
+      value: "In progress",
+      label: "In progress",
+      helper: "Construction ongoing",
+      icon: "las la-hourglass-half",
+      toneClass: "bg-amber-100 text-amber-700",
+    },
+    {
+      value: "At risk",
+      label: "At risk",
+      helper: "Needs attention",
+      icon: "las la-exclamation-triangle",
+      toneClass: "bg-red-100 text-red-700",
+    },
+    {
+      value: "On hold",
+      label: "On hold",
+      helper: "Paused temporarily",
+      icon: "las la-pause-circle",
+      toneClass: "bg-gray-100 text-gray-700",
+    },
+    {
+      value: "Completed",
+      label: "Completed",
+      helper: "Handover done",
+      icon: "las la-check-circle",
+      toneClass: "bg-emerald-100 text-emerald-700",
+    },
+    {
+      value: "Cancelled",
+      label: "Cancelled",
+      helper: "Stopped permanently",
+      icon: "las la-times-circle",
+      toneClass: "bg-zinc-100 text-zinc-700",
+    },
+  ];
 
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -96,6 +100,8 @@ export function EditBuildingForm({
   defaultBlocks,
   defaultFloors,
   defaultImageUrl = null,
+  defaultCountry = "",
+  defaultCity = "",
   defaultPlannedMilestones = [],
   defaultCurrentMilestoneId = null,
   basePath = DEFAULT_BASE,
@@ -108,6 +114,8 @@ export function EditBuildingForm({
   const [floors, setFloors] = useState<number>(defaultFloors);
   const [blocks, setBlocks] = useState<string[]>(defaultBlocks.length ? defaultBlocks : ["Block A"]);
   const [newBlockName, setNewBlockName] = useState("");
+  const [country, setCountry] = useState<string>(defaultCountry ?? "");
+  const [city, setCity] = useState<string>(defaultCity ?? "");
   const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>(defaultPlannedMilestones);
   const [currentMilestoneId, setCurrentMilestoneId] = useState<string | null>(defaultCurrentMilestoneId ?? null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
@@ -165,6 +173,8 @@ export function EditBuildingForm({
     const payload: Record<string, unknown> = {
       name: name.trim() || defaultName,
       location: location.trim() || null,
+      country: country || null,
+      city: city || null,
       status,
       progress,
       units,
@@ -210,9 +220,15 @@ export function EditBuildingForm({
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
       </div>
+      <LocationSelector
+        selectedCountry={country}
+        selectedCity={city}
+        onCountryChange={setCountry}
+        onCityChange={setCity}
+      />
       <div>
         <label htmlFor="location" className="block text-sm font-semibold text-gray-700 mb-1">
-          Location
+          Full address or detailed location
         </label>
         <input
           id="location"
@@ -220,7 +236,7 @@ export function EditBuildingForm({
           type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          placeholder="e.g. Adriatic Coast, Montenegro"
+          placeholder="e.g. Adriatic Coast, Main Street 12"
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
       </div>
@@ -370,11 +386,10 @@ export function EditBuildingForm({
               key={opt.value}
               type="button"
               onClick={() => setStatus(opt.value)}
-              className={`relative flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
-                status === opt.value
-                  ? "border-[#134e4a] bg-[#134e4a]/5 shadow-sm shadow-[#134e4a]/10"
-                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
-              }`}
+              className={`relative flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-200 ${status === opt.value
+                ? "border-[#134e4a] bg-[#134e4a]/5 shadow-sm shadow-[#134e4a]/10"
+                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
+                }`}
             >
               <span className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${opt.toneClass}`}>
                 <i className={`${opt.icon} text-xl`} aria-hidden />
@@ -393,12 +408,12 @@ export function EditBuildingForm({
         </div>
       </div>
 
-        <div className="rounded-2xl border border-gray-200 p-5 bg-gray-50/40">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
-              <p className="text-xs text-gray-500 mt-1">Add milestones and select which one is current.</p>
-            </div>
+      <div className="rounded-2xl border border-gray-200 p-5 bg-gray-50/40">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
+            <p className="text-xs text-gray-500 mt-1">Add milestones and select which one is current.</p>
+          </div>
           <button
             type="button"
             onClick={() =>
@@ -427,11 +442,10 @@ export function EditBuildingForm({
                     <button
                       type="button"
                       onClick={() => setCurrentMilestoneId(m.id)}
-                      className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${
-                        isCurrent
-                          ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]"
-                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
+                      className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${isCurrent
+                        ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]"
+                        : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        }`}
                       aria-label="Set as current milestone"
                     >
                       <i className="las la-flag text-sm" aria-hidden />

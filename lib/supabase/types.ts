@@ -56,6 +56,8 @@ export type Building = {
   floors: number;
   image_url: string | null;
   next_milestone: string | null;
+  country: string | null;
+  city: string | null;
   blocks: string[];
   planned_milestones: PlannedMilestoneDb[];
   next_milestone_id: string | null;

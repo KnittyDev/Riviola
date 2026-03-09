@@ -53,9 +53,12 @@ export default async function EditBuildingPage({
         defaultLocation={building.location ?? ""}
         defaultUnits={building.units}
         defaultStatus={building.status}
+        defaultProgress={building.progress}
         defaultBlocks={blocks}
         defaultFloors={building.floors}
         defaultImageUrl={building.image_url}
+        defaultCountry={building.country}
+        defaultCity={building.city}
         defaultPlannedMilestones={plannedMilestones}
         defaultCurrentMilestoneId={building.current_milestone_id ?? null}
       />

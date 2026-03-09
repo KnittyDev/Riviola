@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { BuildingStatus, PlannedMilestone } from "@/lib/staffBuildingOverrides";
+import { LocationSelector } from "@/components/dashboard/staff/LocationSelector";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
@@ -14,6 +15,8 @@ export default function NewBuildingPage() {
   const [status, setStatus] = useState<BuildingStatus>("Planned");
   const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>([]);
   const [nextMilestoneId, setNextMilestoneId] = useState<string | null>(null);
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
 
   const sortedPlanned = useMemo(() => plannedMilestones, [plannedMilestones]);
 
@@ -31,21 +34,25 @@ export default function NewBuildingPage() {
         status?: BuildingStatus;
         plannedMilestones?: PlannedMilestone[];
         nextMilestoneId?: string | null;
+        country?: string;
+        city?: string;
       };
       if (draft.status) setStatus(draft.status);
       if (Array.isArray(draft.plannedMilestones)) setPlannedMilestones(draft.plannedMilestones);
       if (typeof draft.nextMilestoneId === "string" || draft.nextMilestoneId === null) {
         setNextMilestoneId(draft.nextMilestoneId ?? null);
       }
+      if (typeof draft.country === "string") setCountry(draft.country);
+      if (typeof draft.city === "string") setCity(draft.city);
     } catch {
       // ignore draft errors
     }
   }, []);
 
   useEffect(() => {
-    const draft = { status, plannedMilestones, nextMilestoneId };
+    const draft = { status, plannedMilestones, nextMilestoneId, country, city };
     window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  }, [status, plannedMilestones, nextMilestoneId]);
+  }, [status, plannedMilestones, nextMilestoneId, country, city]);
 
   function addBlock() {
     const name = newBlockName.trim() || `Block ${String.fromCharCode(65 + blocks.length)}`;
@@ -94,15 +101,22 @@ export default function NewBuildingPage() {
             className={inputClass}
           />
         </div>
+        <LocationSelector
+          selectedCountry={country}
+          selectedCity={city}
+          onCountryChange={setCountry}
+          onCityChange={setCity}
+        />
+
         <div>
           <label htmlFor="location" className={labelClass}>
-            Location
+            Full address or detailed location
           </label>
           <input
             id="location"
             name="location"
             type="text"
-            placeholder="e.g. Adriatic Coast, Montenegro"
+            placeholder="e.g. Adriatic Coast, Main Street 12"
             className={inputClass}
           />
         </div>
@@ -127,11 +141,10 @@ export default function NewBuildingPage() {
                 key={opt.value}
                 type="button"
                 onClick={() => setStatus(opt.value)}
-                className={`relative flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
-                  status === opt.value
+                className={`relative flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-200 ${status === opt.value
                     ? "border-[#134e4a] bg-[#134e4a]/5 shadow-sm shadow-[#134e4a]/10"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
-                }`}
+                  }`}
               >
                 <span className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${opt.tone}`}>
                   <i className={`${opt.icon} text-xl`} aria-hidden />
@@ -240,9 +253,8 @@ export default function NewBuildingPage() {
                       <button
                         type="button"
                         onClick={() => setNextMilestoneId(m.id)}
-                        className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${
-                          isNext ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                        }`}
+                        className={`shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-colors ${isNext ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                          }`}
                       >
                         <i className="las la-flag text-sm" aria-hidden /> Next
                       </button>

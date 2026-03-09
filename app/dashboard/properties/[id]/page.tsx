@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPropertyDetail } from "@/lib/propertyDetailData";
 import { WeeklyPhotoUpdates } from "@/components/WeeklyPhotoUpdates";
+import { WeatherWidget } from "@/components/dashboard/properties/WeatherWidget";
 import { BuildingProgressClient } from "@/app/dashboard/staff/buildings/[id]/BuildingOverridesClient";
 import { BuildingMilestonesLog } from "@/app/dashboard/staff/buildings/[id]/BuildingMilestonesLog";
 import type { PlannedMilestoneDb } from "@/lib/supabase/types";
@@ -85,7 +86,7 @@ export default async function PropertyDetailPage({
     if (!user) notFound();
     const { data: building } = await supabase
       .from("buildings")
-      .select("id, name, location, image_url, progress, status, company_id, planned_milestones, current_milestone_id")
+      .select("id, name, location, country, city, image_url, progress, status, company_id, planned_milestones, current_milestone_id")
       .eq("id", id)
       .single();
     if (!building) notFound();
@@ -99,10 +100,10 @@ export default async function PropertyDetailPage({
 
     const { data: company } = (building as { company_id?: string }).company_id
       ? await supabase
-          .from("companies")
-          .select("name")
-          .eq("id", (building as { company_id: string }).company_id)
-          .single()
+        .from("companies")
+        .select("name")
+        .eq("id", (building as { company_id: string }).company_id)
+        .single()
       : { data: null };
     const companyName = company?.name ?? "";
 
@@ -154,6 +155,10 @@ export default async function PropertyDetailPage({
               <p className="text-white/90 text-sm mt-2 font-medium">
                 Your unit: {assignment.block} · {assignment.unit}
               </p>
+              <WeatherWidget
+                city={(building as { city?: string | null }).city ?? undefined}
+                country={(building as { country?: string | null }).country ?? undefined}
+              />
             </div>
           </div>
           <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100">
@@ -240,6 +245,7 @@ export default async function PropertyDetailPage({
               <i className="las la-map-marker-alt" aria-hidden />
               {property.location}
             </p>
+            <WeatherWidget city={property.city} country={property.country} />
           </div>
         </div>
         <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100">
@@ -276,13 +282,12 @@ export default async function PropertyDetailPage({
                 {property.plans.map((plan, i) => (
                   <li key={i} className="relative flex gap-4 pb-6 last:pb-0">
                     <div
-                      className={`relative z-10 shrink-0 mt-0.5 size-6 rounded-full flex items-center justify-center ${
-                        plan.status === "completed"
+                      className={`relative z-10 shrink-0 mt-0.5 size-6 rounded-full flex items-center justify-center ${plan.status === "completed"
                           ? "bg-emerald-500"
                           : plan.status === "in-progress"
                             ? "bg-amber-500 ring-4 ring-amber-500/20"
                             : "bg-gray-200"
-                      }`}
+                        }`}
                     >
                       {plan.status === "completed" && (
                         <i className="las la-check text-white text-xs" aria-hidden />
