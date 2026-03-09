@@ -48,13 +48,22 @@ export default function StaffBuildingsPage() {
                   fallbackProgress={b.progress}
                   fallbackStatus={b.status as BuildingStatus}
                 />
-                <Link
-                  href={`/demo/staff/buildings/${b.id}/edit`}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
-                >
-                  <i className="las la-pen text-sm" aria-hidden />
-                  Edit
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/demo/staff/buildings/${b.id}`}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors shadow-sm"
+                  >
+                    <i className="las la-eye text-sm" aria-hidden />
+                    See
+                  </Link>
+                  <Link
+                    href={`/demo/staff/buildings/${b.id}/edit`}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a]/20 transition-colors"
+                  >
+                    <i className="las la-pen text-sm" aria-hidden />
+                    Edit
+                  </Link>
+                </div>
               </div>
             </li>
           ))}

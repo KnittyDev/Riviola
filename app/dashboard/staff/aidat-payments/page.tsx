@@ -84,6 +84,9 @@ export default async function StaffAidatPaymentsPage({
       settings={settings}
       units={units}
       paidByPeriod={paidByPeriod}
+      setSettingsFn={setBuildingDuesSettingsAction}
+      markDuesPaidFn={markDuesPaidAction}
+      unmarkDuesPaidFn={unmarkDuesPaidAction}
     />
   );
 }

@@ -4,11 +4,11 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "@/lib/toast";
 import type { UnitForDues } from "@/lib/duesPayments";
-import {
-  setBuildingDuesSettingsAction,
-  markDuesPaidAction,
-  unmarkDuesPaidAction,
-} from "./actions";
+// Actions are now passed as props to allow demo/production swapping
+type ActionResult = { ok?: boolean; error?: string };
+type MarkAction = (unitId: string, period: string) => Promise<ActionResult>;
+type UnmarkAction = (unitId: string, period: string) => Promise<ActionResult>;
+type SettingsAction = (buildingId: string, input: any) => Promise<ActionResult>;
 
 function formatMonthLabel(period: string): string {
   const [y, m] = period.split("-").map(Number);
@@ -44,7 +44,15 @@ export function DuesPaymentsClient({
   settings,
   units,
   paidByPeriod,
-}: Props) {
+  // Add as props
+  markDuesPaidFn,
+  unmarkDuesPaidFn,
+  setSettingsFn,
+}: Props & {
+  markDuesPaidFn: MarkAction;
+  unmarkDuesPaidFn: UnmarkAction;
+  setSettingsFn: SettingsAction;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showSettingsForm, setShowSettingsForm] = useState(false);
@@ -78,7 +86,7 @@ export function DuesPaymentsClient({
       parsed != null && !Number.isNaN(parsed) && parsed >= 0
         ? Math.round(parsed * 100)
         : null;
-    const result = await setBuildingDuesSettingsAction(selectedBuildingId, {
+    const result = await setSettingsFn(selectedBuildingId, {
       payment_window_start_day: startDay,
       payment_window_end_day: endDay,
       amount_cents: amountCents ?? null,
@@ -98,8 +106,8 @@ export function DuesPaymentsClient({
     const key = `${unitId}-${period}`;
     setTogglingKey(key);
     const result = currentlyPaid
-      ? await unmarkDuesPaidAction(unitId, period)
-      : await markDuesPaidAction(unitId, period);
+      ? await unmarkDuesPaidFn(unitId, period)
+      : await markDuesPaidFn(unitId, period);
     setTogglingKey(null);
     if (result.error) {
       toast.error(result.error);

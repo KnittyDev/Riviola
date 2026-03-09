@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "@/lib/toast";
+import { submitOnboarding } from "./actions";
 
 const USE_CASES = [
   {
@@ -46,6 +49,7 @@ const USE_CASES = [
 type UseCaseId = (typeof USE_CASES)[number]["id"];
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [step, setStep] = useState<0 | 1 | 2 | 3 | 4>(0);
   const [step1Confirming, setStep1Confirming] = useState(false);
   const [useCases, setUseCases] = useState<UseCaseId[]>([]);
@@ -59,12 +63,41 @@ export default function OnboardingPage() {
   const [selectedTimezone, setSelectedTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [done, setDone] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleConfirm = async () => {
+    if (!selectedDate || !selectedTime) return;
+
+    setIsSubmitting(true);
+    try {
+      await submitOnboarding({
+        full_name: fullName,
+        company_name: companyName,
+        location,
+        email,
+        use_cases: [...useCases],
+        demo_date: selectedDate.toISOString().split('T')[0],
+        demo_time: selectedTime,
+        demo_timezone: selectedTimezone,
+      });
+      setDone(true);
+      toast.success("Demo request submitted successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to submit demo request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Common timezones list
   const COMMON_TIMEZONES = [
     "UTC",
     "Europe/London",
     "Europe/Paris",
+    "Europe/Belgrade",
+    "Europe/Kyiv",
+    "Europe/Moscow",
     "Europe/Istanbul",
     "Europe/Berlin",
     "America/New_York",
@@ -108,7 +141,7 @@ export default function OnboardingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/dashboard/staff"
+              href="/demo/staff"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#134e4a] text-white font-bold hover:bg-[#115e59] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#134e4a]/20"
             >
               Explore Demo Dashboard
@@ -533,11 +566,19 @@ export default function OnboardingPage() {
               </button>
               <button
                 type="button"
-                disabled={!selectedDate || !selectedTime}
-                onClick={() => setDone(true)}
+                disabled={!selectedDate || !selectedTime || isSubmitting}
+                onClick={handleConfirm}
                 className="flex items-center gap-2 px-10 py-4 rounded-xl bg-[#134e4a] text-white font-bold hover:bg-[#115e59] disabled:opacity-40 disabled:pointer-events-none transition-all shadow-lg shadow-[#134e4a]/20"
               >
-                Confirm Booking <i className="las la-check" />
+                {isSubmitting ? (
+                  <>
+                    Submitting... <i className="las la-spinner animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Confirm Booking <i className="las la-check" />
+                  </>
+                )}
               </button>
             </div>
           </div>

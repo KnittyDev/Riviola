@@ -10,7 +10,7 @@ export function HeroSection() {
         <div className="absolute top-[-5%] right-[10%] w-[35%] h-[50%] bg-[#eef2ff] opacity-25 blur-[100px] rounded-full" />
       </div>
 
-      <div className="w-full flex flex-col items-center text-center overflow-hidden">
+      <div className="w-full flex flex-col items-center text-center">
         {/* Badge */}
         <div className="animate-fade-in-up inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-[#134e4a] text-[10px] font-black tracking-[0.2em] uppercase mb-10">
           <svg className="size-3 text-teal-600 animate-pulse" fill="currentColor" viewBox="0 0 16 16">

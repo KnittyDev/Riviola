@@ -64,18 +64,24 @@ export function ActiveProjectsSection({
                   sizes="256px"
                 />
                 <div
-                  className={`absolute bottom-3 left-3 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider ${
-                    b.status === "Completed"
+                  className={`absolute bottom-3 left-3 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider ${b.status === "Completed"
                       ? "bg-emerald-600 text-white"
                       : "bg-[#134e4a] text-white"
-                  }`}
+                    }`}
                 >
                   {b.status === "Completed" ? "Completed" : b.name.toUpperCase()}
                 </div>
               </div>
               <div className="p-3">
-                <p className="text-sm font-bold text-gray-900 truncate">{b.name}</p>
-                <p className="text-xs text-gray-500">{b.progress}% complete</p>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold text-gray-900 truncate">{b.name}</p>
+                    <p className="text-xs text-gray-500">{b.progress}% complete</p>
+                  </div>
+                  <div className="shrink-0 flex items-center justify-center size-8 rounded-lg bg-gray-50 group-hover:bg-[#134e4a] group-hover:text-white transition-colors">
+                    <i className="las la-arrow-right text-xs" aria-hidden />
+                  </div>
+                </div>
               </div>
             </Link>
           ))}

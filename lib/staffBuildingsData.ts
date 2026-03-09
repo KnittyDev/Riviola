@@ -7,7 +7,7 @@ export const staffBuildings = [
     status: "In progress",
     nextMilestone: "Final exterior painting – Oct 15, 2024",
     units: 24,
-    imageUrl: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80",
+    imageUrl: "https://yklvleoalhkoqncahalg.supabase.co/storage/v1/object/public/building_banners/fe7cad0d-b72f-43e9-b2b3-a68a36596450.jpg",
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ export const staffBuildings = [
     status: "In progress",
     nextMilestone: "Roofing structure – May 15, 2024",
     units: 12,
-    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
+    imageUrl: "https://yklvleoalhkoqncahalg.supabase.co/storage/v1/object/public/building_banners/fe7cad0d-b72f-43e9-b2b3-a68a36596450.jpg",
   },
   {
     id: "3",
@@ -27,7 +27,17 @@ export const staffBuildings = [
     status: "Completed",
     nextMilestone: "Handover done – Mar 2024",
     units: 8,
-    imageUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80",
+    imageUrl: "https://yklvleoalhkoqncahalg.supabase.co/storage/v1/object/public/building_banners/fe7cad0d-b72f-43e9-b2b3-a68a36596450.jpg",
+  },
+  {
+    id: "4",
+    name: "Horizon Towers",
+    location: "New Belgrade, Serbia",
+    progress: 15,
+    status: "In progress",
+    nextMilestone: "Foundation groundwork – Dec 20, 2024",
+    units: 120,
+    imageUrl: "https://yklvleoalhkoqncahalg.supabase.co/storage/v1/object/public/building_banners/fe7cad0d-b72f-43e9-b2b3-a68a36596450.jpg",
   },
 ] as const;
 

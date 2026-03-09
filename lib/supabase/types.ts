@@ -182,3 +182,18 @@ export type PurchaseInstallmentInsert = Omit<
   PurchaseInstallment,
   "id" | "created_at" | "updated_at"
 > & { id?: string; created_at?: string; updated_at?: string };
+
+export type OnboardingSubmission = {
+  id: string;
+  full_name: string;
+  company_name: string;
+  location: string;
+  email: string;
+  use_cases: string[];
+  demo_date: string | null;
+  demo_time: string | null;
+  demo_timezone: string | null;
+  created_at: string;
+};
+
+export type OnboardingSubmissionInsert = Omit<OnboardingSubmission, "id" | "created_at">;

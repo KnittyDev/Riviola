@@ -73,7 +73,7 @@ export default function StaffPage() {
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Investor accounts
           </p>
-          <p className="text-2xl font-extrabold text-gray-900">—</p>
+          <p className="text-2xl font-extrabold text-gray-900">44</p>
         </div>
       </div>
 
@@ -82,11 +82,58 @@ export default function StaffPage() {
           <StaffPerformanceChart />
         </div>
         <div className="lg:col-span-4 min-h-[320px]">
-          <CriticalAlerts recentPayments={[]} overdueDues={[]} />
+          <CriticalAlerts
+            recentPayments={[
+              {
+                id: "rp1",
+                buildingName: "Avala Resort",
+                unit: "A-12",
+                period: "Sept 2024",
+                paid_at: new Date().toISOString(),
+                investorName: "John Doe"
+              },
+              {
+                id: "rp2",
+                buildingName: "Skyline Plaza",
+                unit: "10B",
+                period: "Oct 2024",
+                paid_at: new Date(Date.now() - 86400000).toISOString(),
+                investorName: "Alice Smith"
+              }
+            ]}
+            overdueDues={[
+              {
+                id: "od1",
+                buildingName: "Avala Resort",
+                unit: "C-04",
+                period: "Oct 2024",
+                dueDate: "2024-10-05",
+                investorName: "Marko Nikolic"
+              },
+              {
+                id: "od2",
+                buildingName: "Horizon Towers",
+                unit: "1502",
+                period: "Nov 2024",
+                dueDate: "2024-11-05",
+                investorName: "Sarah Connor"
+              }
+            ]}
+          />
         </div>
       </div>
 
-      <ActiveProjectsSection basePath="/demo/staff" />
+      <ActiveProjectsSection
+        basePath="/demo/staff"
+        buildings={staffBuildings.map(b => ({
+          id: b.id,
+          name: b.name,
+          location: b.location,
+          status: b.status,
+          progress: b.progress,
+          image_url: b.imageUrl
+        }))}
+      />
     </div>
   );
 }
