@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   description:
     "High-end construction management for modern investors. Track every beam, budget, and breakthrough in real-time.",
   icons: {
-    icon: [{ url: "/logo.png", type: "image/png", sizes: "32x32" }, { url: "/logo.png", type: "image/png", sizes: "192x192" }],
-    apple: "/logo.png",
+    icon: [{ url: "/mainlogo.png", type: "image/png", sizes: "32x32" }, { url: "/mainlogo.png", type: "image/png", sizes: "192x192" }],
+    apple: "/mainlogo.png",
   },
 };
 

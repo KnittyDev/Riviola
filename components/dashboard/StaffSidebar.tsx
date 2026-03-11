@@ -63,7 +63,14 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
                 unoptimized
               />
             ) : (
-              <i className="las la-hard-hat text-xl text-white" aria-hidden />
+              <Image
+                src="/mainlogo.png"
+                alt="Riviola"
+                width={LOGO_SIZE}
+                height={LOGO_SIZE}
+                className="w-full h-full object-contain p-1.5"
+                priority
+              />
             )}
           </div>
           <div>

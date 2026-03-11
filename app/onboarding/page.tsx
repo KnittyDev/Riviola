@@ -159,7 +159,7 @@ export default function OnboardingPage() {
       <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-white">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo.png"
+            src="/mainlogo.png"
             alt="Riviola"
             width={32}
             height={32}

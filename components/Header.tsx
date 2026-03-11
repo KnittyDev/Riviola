@@ -13,7 +13,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logo.png"
+            src="/mainlogo.png"
             alt="Riviola"
             width={40}
             height={40}

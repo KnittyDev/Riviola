@@ -52,7 +52,7 @@ export function Sidebar({
         <div className="flex items-center justify-between p-4 lg:p-6">
           <Link href="/dashboard" className="flex items-center gap-3" onClick={onClose}>
           <Image
-            src="/logo.png"
+            src="/mainlogo.png"
             alt="Riviola"
             width={40}
             height={40}
