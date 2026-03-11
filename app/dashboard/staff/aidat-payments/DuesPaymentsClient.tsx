@@ -46,6 +46,7 @@ type Props = {
     payment_window_end_day: number;
     amount_cents: number | null;
     currency: string | null;
+    area_pricing: { min: number; max: number; amount_cents: number }[] | null;
   } | null;
   units: UnitForDues[];
   paidByPeriod: Record<string, Record<string, { paid_at: string | null; marked_by: string | null }>>;
@@ -76,8 +77,28 @@ export function DuesPaymentsClient({
     settings?.amount_cents != null ? (settings.amount_cents / 100).toFixed(2) : ""
   );
   const [currency, setCurrency] = useState(settings?.currency ?? "EUR");
+  const [areaPricing, setAreaPricing] = useState<{ min: string; max: string; amount: string; id: number }[]>(
+    (settings?.area_pricing ?? []).map((t, i) => ({
+      min: t.min.toString(),
+      max: t.max.toString(),
+      amount: (t.amount_cents / 100).toFixed(2),
+      id: i,
+    }))
+  );
   const [savingSettings, setSavingSettings] = useState(false);
   const [togglingKey, setTogglingKey] = useState<string | null>(null);
+
+  function addPricingTier() {
+    setAreaPricing((prev) => [...prev, { min: "", max: "", amount: "", id: Date.now() }]);
+  }
+
+  function updatePricingTier(id: number, key: "min" | "max" | "amount", value: string) {
+    setAreaPricing((prev) => prev.map((t) => (t.id === id ? { ...t, [key]: value } : t)));
+  }
+
+  function removePricingTier(id: number) {
+    setAreaPricing((prev) => prev.filter((t) => t.id !== id));
+  }
 
   const CURRENCIES = [
     { value: "EUR", label: "EUR (€)" },
@@ -108,11 +129,22 @@ export function DuesPaymentsClient({
       parsed != null && !Number.isNaN(parsed) && parsed >= 0
         ? Math.round(parsed * 100)
         : null;
+        
+    const parsedAreaPricing = areaPricing
+      .filter((t) => t.min.trim() !== "" && t.max.trim() !== "" && t.amount.trim() !== "")
+      .map((t) => {
+        const min = parseFloat(t.min) || 0;
+        const max = parseFloat(t.max) || 0;
+        const amountCents = Math.round((parseFloat(t.amount) || 0) * 100);
+        return { min, max, amount_cents: amountCents };
+      });
+
     const result = await setSettingsFn(selectedBuildingId, {
       payment_window_start_day: startDay,
       payment_window_end_day: endDay,
       amount_cents: amountCents ?? null,
       currency: currency || null,
+      area_pricing: parsedAreaPricing.length > 0 ? parsedAreaPricing : null,
     });
     setSavingSettings(false);
     if (result.error) {
@@ -141,6 +173,24 @@ export function DuesPaymentsClient({
 
   function isPaid(unitId: string, period: string): boolean {
     return !!paidByPeriod[period]?.[unitId]?.paid_at;
+  }
+
+  function getExpectedDues(unit: UnitForDues): string {
+    if (!settings) return "—";
+    
+    let expectedCents = settings.amount_cents;
+    
+    if (settings.area_pricing && settings.area_pricing.length > 0 && unit.area_m2 != null) {
+      for (const tier of settings.area_pricing) {
+        if (unit.area_m2 >= tier.min && unit.area_m2 <= tier.max) {
+          expectedCents = tier.amount_cents;
+          break;
+        }
+      }
+    }
+    
+    if (expectedCents == null) return "—";
+    return formatDuesAmount(expectedCents, settings.currency);
   }
 
   return (
@@ -201,6 +251,14 @@ export function DuesPaymentsClient({
                         : ""
                     );
                     setCurrency(settings.currency ?? "EUR");
+                    setAreaPricing(
+                      (settings.area_pricing ?? []).map((t, i) => ({
+                        min: t.min.toString(),
+                        max: t.max.toString(),
+                        amount: (t.amount_cents / 100).toFixed(2),
+                        id: i,
+                      }))
+                    );
                   }
                 }}
                 className="shrink-0 text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
@@ -258,14 +316,79 @@ export function DuesPaymentsClient({
                     ))}
                   </select>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleSaveSettings}
-                  disabled={savingSettings}
-                  className="px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] disabled:opacity-50"
-                >
-                  {savingSettings ? "Saving…" : "Save"}
-                </button>
+                <div className="w-full mt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-semibold text-gray-500">
+                      Area Pricing Tiers (optional overrides based on m²)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={addPricingTier}
+                      className="text-xs font-semibold text-[#134e4a] hover:underline"
+                    >
+                      + Add Tier
+                    </button>
+                  </div>
+                  {areaPricing.length === 0 ? (
+                    <p className="text-xs text-gray-400 italic">No area pricing tiers. Uses fallback amount.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {areaPricing.map((tier) => (
+                        <div key={tier.id} className="flex flex-wrap items-center gap-2 max-w-xl">
+                          <input
+                            type="number"
+                            min={0}
+                            placeholder="Min m²"
+                            value={tier.min}
+                            onChange={(e) => updatePricingTier(tier.id, "min", e.target.value)}
+                            className="w-20 rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
+                            title="Minimum Area (m²)"
+                          />
+                          <span className="text-gray-400 text-sm">-</span>
+                          <input
+                            type="number"
+                            min={0}
+                            placeholder="Max m²"
+                            value={tier.max}
+                            onChange={(e) => updatePricingTier(tier.id, "max", e.target.value)}
+                            className="w-20 rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
+                            title="Maximum Area (m²)"
+                          />
+                          <span className="text-gray-400 text-sm">m² →</span>
+                          <input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            placeholder="Amount"
+                            value={tier.amount}
+                            onChange={(e) => updatePricingTier(tier.id, "amount", e.target.value)}
+                            className="w-24 rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
+                            title="Pricing Amount"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removePricingTier(tier.id)}
+                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                            title="Remove tier"
+                          >
+                            <i className="las la-trash-alt" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-full flex justify-end mt-4">
+                  <button
+                    type="button"
+                    onClick={handleSaveSettings}
+                    disabled={savingSettings}
+                    className="px-6 py-2.5 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] disabled:opacity-50 transition-colors"
+                  >
+                    {savingSettings ? "Saving…" : "Save all settings"}
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -284,6 +407,7 @@ export function DuesPaymentsClient({
                       <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">Block</th>
                       <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">Unit</th>
                       <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[10rem]">Investor</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[6rem]">Dues Amount</th>
                       {periods.map((p) => (
                         <th
                           key={p}
@@ -300,7 +424,8 @@ export function DuesPaymentsClient({
                       <tr key={u.id} className="hover:bg-gray-50/80">
                         <td className="px-4 py-3 text-sm font-medium text-gray-900">{u.block}</td>
                         <td className="px-4 py-3 text-sm font-medium text-gray-900">{u.unit}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{u.full_name ?? "—"}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-[12rem]">{u.full_name ?? "—"}</td>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-900">{getExpectedDues(u)}</td>
                         {periods.map((p) => {
                           const paid = isPaid(u.id, p);
                           const key = `${u.id}-${p}`;

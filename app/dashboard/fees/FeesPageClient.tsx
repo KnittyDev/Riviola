@@ -83,12 +83,28 @@ export function FeesPageClient({ fees, company }: Props) {
     }
   }, [searchParams, router]);
 
-  const totalDue = fees
-    .filter((f) => f.status === "due" || f.status === "overdue")
-    .reduce(
-      (sum, f) => sum + (f.amountCents != null ? f.amountCents / 100 : 0),
-      0
-    );
+  const currencySymbols: Record<string, string> = {
+    EUR: "€", USD: "$", GBP: "£", TRY: "₺", CHF: "Fr", AUD: "A$",
+    CAD: "C$", NOK: "kr", SEK: "kr", AED: "د.إ", SAR: "﷼", ALL: "L",
+  };
+
+  function formatTotalByCurrency(
+    items: InvestorDuesFeeItem[]
+  ): string {
+    const totalByCurrency: Record<string, number> = {};
+    items.forEach((f) => {
+      const cur = f.currency ?? "EUR";
+      totalByCurrency[cur] = (totalByCurrency[cur] ?? 0) + (f.amountCents ?? 0) / 100;
+    });
+    const parts = Object.entries(totalByCurrency).map(([cur, total]) => {
+      const sym = currencySymbols[cur] ?? cur + " ";
+      return `${sym} ${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+    });
+    return parts.length > 0 ? parts.join(" + ") : "€ 0.00";
+  }
+
+  const unpaidItems = fees.filter((f) => f.status === "due" || f.status === "overdue");
+  const totalDueFormatted = formatTotalByCurrency(unpaidItems);
 
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -98,10 +114,7 @@ export function FeesPageClient({ fees, company }: Props) {
     const paidDate = new Date(f.paid_at);
     return paidDate.getFullYear() === currentYear && paidDate.getMonth() === currentMonth;
   });
-  const paidThisMonthTotal = paidThisMonth.reduce(
-    (sum, f) => sum + (f.amountCents != null ? f.amountCents / 100 : 0),
-    0
-  );
+  const paidThisMonthFormatted = formatTotalByCurrency(paidThisMonth);
 
   const nextDue = fees
     .filter((f) => f.status === "due" || f.status === "overdue")
@@ -141,16 +154,16 @@ export function FeesPageClient({ fees, company }: Props) {
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up">
           <p className="text-sm font-medium text-gray-500 mb-1">Total due</p>
           <p className="text-2xl font-bold text-gray-900">
-            € {totalDue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            {totalDueFormatted}
           </p>
           <p className="text-xs text-amber-600 font-medium mt-1">
-            {fees.filter((f) => f.status === "due" || f.status === "overdue").length} item(s) to pay
+            {unpaidItems.length} item(s) to pay
           </p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up delay-100">
           <p className="text-sm font-medium text-gray-500 mb-1">Paid this month</p>
           <p className="text-2xl font-bold text-emerald-600">
-            € {paidThisMonthTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            {paidThisMonthFormatted}
           </p>
           <p className="text-xs text-gray-500 mt-1">
             {paidThisMonth.length} payment(s)

@@ -53,12 +53,12 @@ export async function getInvestorDuesFees(
 
   const { data: props, error: propsError } = await supabase
     .from("investor_properties")
-    .select("id, building_id, block, unit, created_at")
+    .select("id, building_id, block, unit, created_at, area_m2")
     .eq("profile_id", profileId);
 
   if (propsError || !props?.length) return [];
 
-  type PropRow = { id: string; building_id: string; block: string; unit: string; created_at: string };
+  type PropRow = { id: string; building_id: string; block: string; unit: string; created_at: string; area_m2: number | null };
   const propRows = props as PropRow[];
 
   const buildingIds = [...new Set(propRows.map((p) => p.building_id))];
@@ -73,7 +73,7 @@ export async function getInvestorDuesFees(
 
   const { data: settingsRows } = await supabase
     .from("building_dues_settings")
-    .select("building_id, payment_window_start_day, payment_window_end_day, amount_cents, currency")
+    .select("building_id, payment_window_start_day, payment_window_end_day, amount_cents, currency, area_pricing")
     .in("building_id", buildingIds);
   const settingsByBuilding = new Map(
     (settingsRows ?? []).map((s) => [
@@ -83,6 +83,7 @@ export async function getInvestorDuesFees(
         end: s.payment_window_end_day ?? 31,
         amount_cents: s.amount_cents ?? null,
         currency: s.currency ?? "EUR",
+        area_pricing: s.area_pricing as { min: number; max: number; amount_cents: number }[] | null,
       },
     ])
   );
@@ -143,7 +144,17 @@ export async function getInvestorDuesFees(
     const buildingName = buildingMap.get(prop.building_id) ?? "Building";
     const unitLabel = `Block ${prop.block}, Unit ${prop.unit}`;
     const settings = settingsByBuilding.get(prop.building_id);
-    const amountCents = settings?.amount_cents ?? null;
+    let amountCents = settings?.amount_cents ?? null;
+    
+    if (settings?.area_pricing && settings.area_pricing.length > 0 && prop.area_m2 != null) {
+      for (const tier of settings.area_pricing) {
+        if (prop.area_m2 >= tier.min && prop.area_m2 <= tier.max) {
+          amountCents = tier.amount_cents;
+          break;
+        }
+      }
+    }
+    
     const currency = settings?.currency ?? "EUR";
     const sym = currencySymbol[currency] ?? currency + " ";
     const amountFormatted =

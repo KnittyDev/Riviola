@@ -1,10 +1,17 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+export type AreaPricingTier = {
+  min: number;
+  max: number;
+  amount_cents: number;
+};
+
 export type BuildingDuesSettingsInput = {
   payment_window_start_day: number;
   payment_window_end_day: number;
   amount_cents?: number | null;
   currency?: string | null;
+  area_pricing?: AreaPricingTier[] | null;
 };
 
 export type UnitForDues = {
@@ -13,6 +20,7 @@ export type UnitForDues = {
   unit: string;
   profile_id: string;
   full_name?: string | null;
+  area_m2?: number | null;
 };
 
 export type DuesPaymentStatus = {
@@ -31,11 +39,12 @@ export async function getBuildingDuesSettings(
   payment_window_end_day: number;
   amount_cents: number | null;
   currency: string | null;
+  area_pricing: AreaPricingTier[] | null;
   updated_at: string;
 } | null> {
   const { data, error } = await supabase
     .from("building_dues_settings")
-    .select("payment_window_start_day, payment_window_end_day, amount_cents, currency, updated_at")
+    .select("payment_window_start_day, payment_window_end_day, amount_cents, currency, area_pricing, updated_at")
     .eq("building_id", buildingId)
     .single();
 
@@ -45,6 +54,7 @@ export async function getBuildingDuesSettings(
     payment_window_end_day: data.payment_window_end_day,
     amount_cents: data.amount_cents ?? null,
     currency: data.currency ?? null,
+    area_pricing: data.area_pricing ?? null,
     updated_at: data.updated_at,
   };
 }
@@ -66,6 +76,7 @@ export async function setBuildingDuesSettings(
         payment_window_end_day: input.payment_window_end_day,
         amount_cents: input.amount_cents ?? null,
         currency: input.currency ?? null,
+        area_pricing: input.area_pricing ?? [],
         updated_at: new Date().toISOString(),
       },
       { onConflict: "building_id" }
@@ -87,7 +98,7 @@ export async function getUnitsForBuilding(
 ): Promise<UnitForDues[]> {
   const { data: rows, error } = await supabase
     .from("investor_properties")
-    .select("id, block, unit, profile_id")
+    .select("id, block, unit, profile_id, area_m2")
     .eq("building_id", buildingId)
     .order("block")
     .order("unit");
@@ -109,12 +120,13 @@ export async function getUnitsForBuilding(
     });
   }
 
-  return (rows ?? []).map((r: { id: string; block: string; unit: string; profile_id: string }) => ({
+  return (rows ?? []).map((r: { id: string; block: string; unit: string; profile_id: string; area_m2: number | null }) => ({
     id: r.id,
     block: r.block,
     unit: r.unit,
     profile_id: r.profile_id,
     full_name: nameMap.get(r.profile_id) ?? undefined,
+    area_m2: r.area_m2,
   }));
 }
 

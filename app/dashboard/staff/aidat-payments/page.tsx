@@ -62,6 +62,7 @@ export default async function StaffAidatPaymentsPage({
     payment_window_end_day: number;
     amount_cents: number | null;
     currency: string | null;
+    area_pricing: { min: number; max: number; amount_cents: number }[] | null;
   } | null = null;
   let units: Awaited<ReturnType<typeof getUnitsForBuilding>> = [];
   let periods: string[] = [];
