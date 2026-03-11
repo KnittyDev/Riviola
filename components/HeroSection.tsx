@@ -52,10 +52,10 @@ export function HeroSection() {
         <div className="animate-fade-in-up delay-300 relative w-full max-w-5xl group px-6">
           <div className="absolute inset-0 bg-gradient-to-b from-[#134e4a]/10 to-transparent blur-3xl -z-10 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
 
-          <div className="relative overflow-hidden rounded-[4rem] md:rounded-[6rem] border-[12px] md:border-[20px] border-white shadow-2xl shadow-gray-200 aspect-[16/9]">
+          <div className="relative overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] outline outline-[3px] outline-offset-[6px] outline-gray-200/80 shadow-2xl shadow-gray-200 aspect-[16/9] bg-gray-50">
             <Image
               alt="Riviola Platform Preview"
-              className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+              className="w-full h-full object-contain transition-transform duration-[2s] ease-out group-hover:scale-105"
               src="/hero.png"
               fill
               priority
