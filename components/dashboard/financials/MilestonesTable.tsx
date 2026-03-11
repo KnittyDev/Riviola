@@ -14,6 +14,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   SEK: "kr",
   AED: "د.إ",
   SAR: "﷼",
+  ALL: "L",
 };
 
 function formatAmount(value: number, currency: string): string {

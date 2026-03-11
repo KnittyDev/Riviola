@@ -29,23 +29,25 @@ const CURRENCIES = [
   { value: "SEK", label: "SEK (kr)" },
   { value: "AED", label: "AED (د.إ)" },
   { value: "SAR", label: "SAR (﷼)" },
+  { value: "ALL", label: "ALL (L)" },
 ] as const;
 
 function formatAmount(value: number, currency: string): string {
-  const sym =
-    {
-      EUR: "€",
-      USD: "$",
-      GBP: "£",
-      TRY: "₺",
-      CHF: "Fr",
-      AUD: "A$",
-      CAD: "C$",
-      NOK: "kr",
-      SEK: "kr",
-      AED: "د.إ",
-      SAR: "﷼",
-    }[currency] ?? currency + " ";
+  const symbols: Record<string, string> = {
+    EUR: "€",
+    USD: "$",
+    GBP: "£",
+    TRY: "₺",
+    CHF: "Fr",
+    AUD: "A$",
+    CAD: "C$",
+    NOK: "kr",
+    SEK: "kr",
+    AED: "د.إ",
+    SAR: "﷼",
+    ALL: "L",
+  };
+  const sym = symbols[currency] ?? currency + " ";
   return `${sym} ${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
@@ -223,6 +225,9 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             onChange={(e) => setPhone(e.target.value)}
             className={inputClass}
           />
+          <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
+            * Please do not remove or delete the country code (e.g., +90, +382).
+          </p>
         </div>
         <div>
           <label htmlFor="investorType" className={labelClass}>

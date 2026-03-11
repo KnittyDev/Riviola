@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { PhoneInput } from "react-international-phone";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile, ProfileUpdate, ProfileRole } from "@/lib/supabase/types";
 
@@ -22,6 +21,7 @@ const CURRENCY_OPTIONS = [
   { value: "SEK" as const, label: "SEK (kr)" },
   { value: "AED" as const, label: "AED (د.إ)" },
   { value: "SAR" as const, label: "SAR (﷼)" },
+  { value: "ALL" as const, label: "ALL (L)" },
 ];
 
 const ROLE_LABELS: Record<ProfileRole, string> = {
@@ -234,12 +234,18 @@ export function ProfileSettingsForm() {
                 Phone
               </label>
               <div className="w-full">
-                <PhoneInput
-                  defaultCountry="tr"
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
                   value={form.phone}
-                  onChange={(value) => update("phone", value)}
-                  inputProps={{ id: "phone", name: "phone", placeholder: "+90 5xx xxx xx xx" }}
+                  onChange={(e) => update("phone", e.target.value)}
+                  placeholder="+90 5xx xxx xx xx"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
                 />
+                <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
+                  * Please do not remove or delete the country code (e.g., +90, +382).
+                </p>
               </div>
             </div>
             {(profile?.role === "staff" || profile?.role === "admin") && (

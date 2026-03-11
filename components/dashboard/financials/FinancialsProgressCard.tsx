@@ -12,6 +12,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   SEK: "kr",
   AED: "د.إ",
   SAR: "﷼",
+  ALL: "L",
 };
 
 function formatAmount(value: number, currency: string): string {
@@ -30,15 +31,18 @@ export function FinancialsProgressCard({
   totalByCurrency = {},
   paidByCurrency = {},
 }: FinancialsProgressCardProps) {
-  const totalEntries = Object.entries(totalByCurrency ?? {}).filter(([, v]) => v > 0);
+  const safeTotal = totalByCurrency ?? {};
+  const safePaid = paidByCurrency ?? {};
+
+  const totalEntries = Object.entries(safeTotal).filter(([, v]) => v > 0);
   const totalContractDisplay =
     totalEntries.length === 0
       ? "—"
       : totalEntries.map(([c, v]) => formatAmount(v, c)).join(" · ");
 
   const primaryCurrency = totalEntries[0];
-  const primaryTotal = primaryCurrency ? totalByCurrency[primaryCurrency[0]] ?? 0 : 0;
-  const primaryPaid = primaryCurrency ? (paidByCurrency ?? {})[primaryCurrency[0]] ?? 0 : 0;
+  const primaryTotal = primaryCurrency ? safeTotal[primaryCurrency[0]] ?? 0 : 0;
+  const primaryPaid = primaryCurrency ? safePaid[primaryCurrency[0]] ?? 0 : 0;
   const progressPercent =
     primaryTotal > 0 ? Math.round((primaryPaid / primaryTotal) * 100) : 0;
   const paidPercent = Math.min(100, progressPercent);
@@ -48,13 +52,13 @@ export function FinancialsProgressCard({
     totalEntries.length === 0
       ? "—"
       : totalEntries.map(([c]) => {
-          const paid = (paidByCurrency ?? {})[c] ?? 0;
+          const paid = safePaid[c] ?? 0;
           return formatAmount(paid, c);
         }).join(" · ");
 
   const remainingByCurrency: TotalByCurrency = {};
   for (const [c, total] of totalEntries) {
-    const paid = (paidByCurrency ?? {})[c] ?? 0;
+    const paid = safePaid[c] ?? 0;
     remainingByCurrency[c] = Math.max(0, total - paid);
   }
   const remainingDisplay =

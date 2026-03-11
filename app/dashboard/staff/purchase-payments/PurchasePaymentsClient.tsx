@@ -23,6 +23,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   SEK: "kr",
   AED: "د.إ",
   SAR: "﷼",
+  ALL: "L",
 };
 
 function formatAmount(value: number, currency: string): string {
@@ -66,6 +67,14 @@ export function PurchasePaymentsClient({
   const [addingPlanFor, setAddingPlanFor] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "pending" | "unconfigured">("all");
+
+  const STATUS_LABELS = {
+    all: "All Records",
+    paid: "Paid Only",
+    pending: "Pending Only",
+    unconfigured: "Not Configured",
+  };
 
   function updateParams(opts: { building?: string; block?: string; unit?: string }) {
     const params = new URLSearchParams(searchParams.toString());
@@ -134,22 +143,64 @@ export function PurchasePaymentsClient({
     router.refresh();
   }
 
+  // Pre-calculate counts for the filter bar
+  const counts = useMemo(() => {
+    let paid = 0;
+    let pending = 0;
+    let unconfigured = 0;
+    let totalRecords = 0;
+
+    unitsInBlock.forEach(u => {
+        if (u.installments.length === 0) {
+            unconfigured++;
+            totalRecords++;
+        } else {
+            u.installments.forEach(inst => {
+                if (inst.paid_at) paid++;
+                else pending++;
+                totalRecords++;
+            });
+        }
+    });
+
+    return { all: totalRecords, paid, pending, unconfigured };
+  }, [unitsInBlock]);
+
   // Unified data source: Units + their Installments flat
   const allRows = useMemo(() => {
     const lowerQuery = searchQuery.toLowerCase().trim();
     
     // We sort primary by Unit ID/Label to keep them grouped
     return unitsInBlock.flatMap((u) => {
+      const hasPlan = u.installments.length > 0;
       const matchesUnit = u.unit.toLowerCase().includes(lowerQuery) || 
                           (u.full_name?.toLowerCase().includes(lowerQuery) ?? false);
 
-      if (u.installments.length === 0) {
+      // 1. Filter out by unconfigured status if applicable
+      if (statusFilter === "unconfigured") {
+        if (hasPlan) return [];
         if (lowerQuery && !matchesUnit) return [];
         return [{ type: "empty", unit: u, key: `empty-${u.id}` }];
       }
 
+      // 2. Handle empty units in 'all' view
+      if (!hasPlan) {
+        if (statusFilter !== "all") return [];
+        if (lowerQuery && !matchesUnit) return [];
+        return [{ type: "empty", unit: u, key: `empty-${u.id}` }];
+      }
+
+      // 3. Filter installments by status and query
       const filteredInst = u.installments
-        .filter(inst => matchesUnit || inst.label.toLowerCase().includes(lowerQuery))
+        .filter(inst => {
+          // Status match
+          const isPaid = !!inst.paid_at;
+          if (statusFilter === "paid" && !isPaid) return false;
+          if (statusFilter === "pending" && isPaid) return false;
+
+          // Search match
+          return matchesUnit || inst.label.toLowerCase().includes(lowerQuery);
+        })
         .sort((a, b) => (a.due_date || "").localeCompare(b.due_date || ""));
 
       if (lowerQuery && filteredInst.length === 0) return [];
@@ -161,7 +212,7 @@ export function PurchasePaymentsClient({
           key: inst.id,
         }));
     });
-  }, [unitsInBlock, searchQuery]);
+  }, [unitsInBlock, searchQuery, statusFilter]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -228,6 +279,21 @@ export function PurchasePaymentsClient({
         </div>
       </div>
 
+      <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 bg-gray-100/50 rounded-2xl w-fit border border-gray-100">
+          {(["all", "paid", "pending", "unconfigured"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatusFilter(s)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${statusFilter === s ? "bg-white text-gray-900 shadow-md shadow-gray-200/50 scale-[1.02]" : "text-gray-500 hover:text-gray-700 hover:bg-white/50"}`}
+              >
+                {STATUS_LABELS[s]}
+                <span className={`ml-1 px-2 py-0.5 rounded-lg text-[10px] font-black ${statusFilter === s ? "bg-[#134e4a] text-white" : "bg-gray-200 text-gray-500"}`}>
+                    {counts[s]}
+                </span>
+              </button>
+          ))}
+      </div>
+
       {!selectedBuildingId ? (
                 <div className="bg-gray-50 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
                 <i className="las la-building text-5xl text-gray-300 mb-4" />
@@ -269,92 +335,106 @@ export function PurchasePaymentsClient({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 italic-none">
-                    {allRows.map((row: any) => {
-                      const isPlaceholder = row.type === "empty";
-                      const u = row.unit;
-                      const inst = row.inst;
+                    {allRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-8 py-20 text-center">
+                          <div className="flex flex-col items-center gap-2">
+                            <i className="las la-filter text-4xl text-gray-200" />
+                            <p className="text-gray-900 font-bold">No records found matching filters.</p>
+                            <button 
+                                onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}
+                                className="text-[#134e4a] text-xs font-bold hover:underline mt-2"
+                            >
+                                Clear all filters
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      allRows.map((row: any) => {
+                        const isPlaceholder = row.type === "empty";
+                        const u = row.unit;
+                        const inst = row.inst;
 
-                      return (
-                        <tr key={row.key} className={`transition-all duration-200 ${isPlaceholder ? "bg-amber-50/20" : "hover:bg-gray-50/80"}`}>
-                          <td className="px-8 py-5 whitespace-nowrap">
-                            <div className="flex items-center gap-4">
-                              <div className={`size-10 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${isPlaceholder ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>
-                                {u.unit}
+                        return (
+                          <tr key={row.key} className={`transition-all duration-200 ${isPlaceholder ? "bg-amber-50/20" : "hover:bg-gray-50/80"}`}>
+                            <td className="px-8 py-5 whitespace-nowrap">
+                              <div className="flex items-center gap-4">
+                                <div className={`size-10 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${isPlaceholder ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>
+                                  {u.unit}
+                                </div>
+                                <div>
+                                  <p className="text-sm font-black text-gray-900">{u.unit}</p>
+                                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{u.full_name ?? "No Investor"}</p>
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-sm font-black text-gray-900">{u.unit}</p>
-                                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{u.full_name ?? "No Investor"}</p>
+                            </td>
+                            <td className="px-8 py-5">
+                              <div className="flex items-center gap-3">
+                                <div className={`p-2 rounded-xl text-xs shadow-sm ${isPlaceholder ? "bg-gray-100 text-gray-400" : (inst.paid_at ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600")}`}>
+                                  <i className={`las ${isPlaceholder ? "la-lock" : "la-wallet"}`} />
+                                </div>
+                                <span className={`text-sm font-bold ${isPlaceholder ? "text-gray-400 italic" : "text-gray-900"}`}>
+                                  {isPlaceholder ? "No plan configured" : inst.label}
+                                </span>
                               </div>
-                            </div>
-                          </td>
-                          <td className="px-8 py-5">
-                            <div className="flex items-center gap-3">
-                              <div className={`p-2 rounded-xl text-xs shadow-sm ${isPlaceholder ? "bg-gray-100 text-gray-400" : (inst.paid_at ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600")}`}>
-                                <i className={`las ${isPlaceholder ? "la-lock" : "la-wallet"}`} />
+                            </td>
+                            <td className="px-8 py-5 text-sm font-bold text-gray-600 uppercase">
+                              {isPlaceholder ? "—" : formatDate(inst.due_date)}
+                            </td>
+                            <td className="px-8 py-5 text-sm font-black text-gray-900">
+                              {isPlaceholder ? "—" : formatAmount(Number(inst.amount), inst.currency)}
+                            </td>
+                            <td className="px-8 py-5">
+                              <div className="flex justify-center">
+                                  {isPlaceholder ? (
+                                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-wider">
+                                          <i className="las la-clock" /> Not Set
+                                      </span>
+                                  ) : (
+                                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${inst.paid_at ? "bg-emerald-500/10 text-emerald-700 border border-emerald-500/20" : "bg-amber-500/10 text-amber-700 border border-amber-500/20"}`}>
+                                          <span className={`size-1.5 rounded-full ${inst.paid_at ? "bg-emerald-500" : "bg-amber-500"}`} />
+                                          {inst.paid_at ? "Paid" : "Pending"}
+                                      </span>
+                                  )}
                               </div>
-                              <span className={`text-sm font-bold ${isPlaceholder ? "text-gray-400 italic" : "text-gray-900"}`}>
-                                {isPlaceholder ? "No plan configured" : inst.label}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-8 py-5 text-sm font-bold text-gray-600 uppercase">
-                            {isPlaceholder ? "—" : formatDate(inst.due_date)}
-                          </td>
-                          <td className="px-8 py-5 text-sm font-black text-gray-900">
-                            {isPlaceholder ? "—" : formatAmount(Number(inst.amount), inst.currency)}
-                          </td>
-                          <td className="px-8 py-5">
-                            <div className="flex justify-center">
-                                {isPlaceholder ? (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-wider">
-                                        <i className="las la-clock" /> Not Set
-                                    </span>
-                                ) : (
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${inst.paid_at ? "bg-emerald-500/10 text-emerald-700 border border-emerald-500/20" : "bg-amber-500/10 text-amber-700 border border-amber-500/20"}`}>
-                                        <span className={`size-1.5 rounded-full ${inst.paid_at ? "bg-emerald-500" : "bg-amber-500"}`} />
-                                        {inst.paid_at ? "Paid" : "Pending"}
-                                    </span>
-                                )}
-                            </div>
-                          </td>
-                          <td className="px-8 py-5 text-right">
-                             <div className="flex items-center justify-end gap-2">
-                                {isPlaceholder ? (
-                                    <button
-                                        onClick={() => setAddingPlanFor(u.id)}
-                                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-[11px] font-black uppercase tracking-widest hover:bg-[#115e59] shadow-lg shadow-[#134e4a]/20 transition-all hover:-translate-y-0.5"
-                                    >
-                                        <i className="las la-plus" /> Set Plan
-                                    </button>
-                                ) : (
-                                    <div className="flex items-center gap-3">
+                            </td>
+                            <td className="px-8 py-5 text-right">
+                               <div className="flex items-center justify-end gap-2">
+                                  {isPlaceholder ? (
                                       <button
-                                          disabled={togglingId === inst.id}
-                                          onClick={() => handleMarkPaid(inst.id, !!inst.paid_at)}
-                                          className={`text-[11px] font-black uppercase tracking-widest transition-all ${inst.paid_at ? "text-gray-400 hover:text-gray-600" : "text-[#134e4a] hover:underline"}`}
+                                          onClick={() => setAddingPlanFor(u.id)}
+                                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-[11px] font-black uppercase tracking-widest hover:bg-[#115e59] shadow-lg shadow-[#134e4a]/20 transition-all hover:-translate-y-0.5"
                                       >
-                                          {togglingId === inst.id ? "..." : inst.paid_at ? "Unmark" : "Mark Paid"}
+                                          <i className="las la-plus" /> Set Plan
                                       </button>
-                                      {/* Only show delete option on the first installment to avoid confusion, or perhaps in the Unit header?
-                                          Actually, let's keep it simple: Delete Plan is a dangerous action, maybe just in the modal?
-                                          Actually, let's add a small gear icon if you want to delete the whole plan.
-                                      */}
-                                      {inst.label.toLowerCase().includes("down") || inst.label.includes("1") ? (
-                                          <button 
-                                            onClick={() => handleDeletePlan(u.id)}
-                                            className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"
-                                            title="Delete whole plan"
-                                          >
-                                            <i className="las la-trash-alt" />
-                                          </button>
-                                      ) : null}
-                                    </div>
-                                )}
-                             </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                                  ) : (
+                                      <div className="flex items-center gap-3">
+                                        <button
+                                            disabled={togglingId === inst.id}
+                                            onClick={() => handleMarkPaid(inst.id, !!inst.paid_at)}
+                                            className={`text-[11px] font-black uppercase tracking-widest transition-all ${inst.paid_at ? "text-gray-400 hover:text-gray-600" : "text-[#134e4a] hover:underline"}`}
+                                        >
+                                            {togglingId === inst.id ? "..." : inst.paid_at ? "Unmark" : "Mark Paid"}
+                                        </button>
+                                        
+                                        {(inst.label.toLowerCase().includes("down") || inst.label.includes("1")) && (
+                                            <button 
+                                              onClick={() => handleDeletePlan(u.id)}
+                                              className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                                              title="Delete whole plan"
+                                            >
+                                              <i className="las la-trash-alt" />
+                                            </button>
+                                        )}
+                                      </div>
+                                  )}
+                               </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>

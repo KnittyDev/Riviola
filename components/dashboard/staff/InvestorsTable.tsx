@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PhoneInput } from "react-international-phone";
-import type { CompanyInvestorPropertyRow } from "@/lib/companyInvestors";
+import { CompanyInvestorPropertyRow } from "@/lib/companyInvestors";
 import { updateInvestorAction } from "@/app/dashboard/staff/investors/actions";
 
 const inputClass =
@@ -16,6 +15,14 @@ const CURRENCIES = [
   { value: "USD", label: "USD" },
   { value: "GBP", label: "GBP" },
   { value: "TRY", label: "TRY" },
+  { value: "CHF", label: "CHF" },
+  { value: "AUD", label: "AUD" },
+  { value: "CAD", label: "CAD" },
+  { value: "NOK", label: "NOK" },
+  { value: "SEK", label: "SEK" },
+  { value: "AED", label: "AED" },
+  { value: "SAR", label: "SAR" },
+  { value: "ALL", label: "ALL" },
 ];
 
 export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] }) {
@@ -207,14 +214,17 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
               </div>
               <div>
                 <label className={labelClass}>Phone</label>
-                <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-lg [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-3 [&_.react-international-phone-input]:!py-2 [&_.react-international-phone-input]:!text-sm">
-                  <PhoneInput
-                    defaultCountry="tr"
-                    value={editPhone}
-                    onChange={(value) => setEditPhone(value)}
-                    inputProps={{ name: "phone", placeholder: "+90 5xx xxx xx xx" }}
-                  />
-                </div>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="+90 5xx xxx xx xx"
+                  className={inputClass}
+                />
+                <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
+                  * Please do not remove or delete the country code (e.g., +90, +382).
+                </p>
               </div>
               <div>
                 <label className={labelClass}>Investor type</label>
