@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile, ProfileUpdate, ProfileRole } from "@/lib/supabase/types";
 
@@ -233,19 +235,13 @@ export function ProfileSettingsForm() {
               <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="phone">
                 Phone
               </label>
-              <div className="w-full">
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
+              <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-xl [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-4 [&_.react-international-phone-input]:!py-3 [&_.react-international-phone-input]:!text-sm">
+                <PhoneInput
+                  defaultCountry="tr"
                   value={form.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                  placeholder="+90 5xx xxx xx xx"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
+                  onChange={(value) => update("phone", value)}
+                  inputProps={{ id: "phone", name: "phone", placeholder: "+90 5xx xxx xx xx" }}
                 />
-                <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
-                  * Please do not remove or delete the country code (e.g., +90, +382).
-                </p>
               </div>
             </div>
             {(profile?.role === "staff" || profile?.role === "admin") && (

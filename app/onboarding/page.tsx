@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -356,17 +358,14 @@ export default function OnboardingPage() {
                 <label htmlFor="pphone" className="block text-sm font-semibold text-gray-700 mb-1">
                   Phone
                 </label>
-                <input
-                  id="pphone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+90 5xx xxx xx xx"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
-                />
-                <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
-                  * Please do not remove or delete the country code (e.g., +90, +382).
-                </p>
+                <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-xl [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-4 [&_.react-international-phone-input]:!py-3 [&_.react-international-phone-input]:!text-sm">
+                  <PhoneInput
+                    defaultCountry="tr"
+                    value={phone}
+                    onChange={(value) => setPhone(value)}
+                    inputProps={{ id: "pphone", name: "phone", placeholder: "+90 5xx xxx xx xx" }}
+                  />
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-between mt-8">
