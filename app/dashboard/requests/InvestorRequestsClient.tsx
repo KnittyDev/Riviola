@@ -12,6 +12,11 @@ import {
 } from "@/lib/staffRequestsData";
 import type { InvestorRequestView } from "@/lib/investorRequests";
 import { createInvestorRequestAction, cancelInvestorRequestAction } from "./actions";
+import { createClient } from "@/lib/supabase/client";
+import Image from "next/image";
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
 
 export type BuildingForDropdown = {
   building_id: string;
@@ -61,20 +66,62 @@ export function InvestorRequestsClient({
   const [type, setType] = useState<RequestType>("Information");
   const [buildingId, setBuildingId] = useState("");
   const [note, setNote] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [requestToCancel, setRequestToCancel] = useState<InvestorRequestView | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxSlides, setLightboxSlides] = useState<{src: string; alt: string}[]>([]);
+
+  function openLightbox(urls: string[], index: number) {
+    setLightboxSlides(urls.map(url => ({ src: url, alt: "Request attachment" })));
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles(Array.from(e.target.files));
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!buildingId.trim()) return;
     setError(null);
     setSubmitting(true);
+    
+    let imageUrls: string[] = [];
+    if (files.length > 0) {
+      const supabase = createClient();
+      for (const file of files) {
+        const ext = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
+        const { error: uploadError, data } = await supabase.storage
+          .from("investor_requests")
+          .upload(fileName, file);
+        
+        if (uploadError) {
+          setError(`Failed to upload ${file.name}`);
+          setSubmitting(false);
+          return;
+        }
+        
+        const { data: publicUrlData } = supabase.storage
+          .from("investor_requests")
+          .getPublicUrl(fileName);
+          
+        imageUrls.push(publicUrlData.publicUrl);
+      }
+    }
+
     const result = await createInvestorRequestAction(
       buildingId,
       type,
-      note.trim() || undefined
+      note.trim() || undefined,
+      imageUrls
     );
     setSubmitting(false);
     if (result.error) {
@@ -85,6 +132,7 @@ export function InvestorRequestsClient({
     setType("Information");
     setBuildingId("");
     setNote("");
+    setFiles([]);
     setShowForm(false);
     router.refresh();
   }
@@ -201,6 +249,25 @@ export function InvestorRequestsClient({
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none bg-white text-sm resize-none"
               />
             </div>
+            <div>
+              <label
+                htmlFor="request-images"
+                className="block text-sm font-semibold text-gray-700 mb-1"
+              >
+                Attach photos (optional)
+              </label>
+              <input
+                id="request-images"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#134e4a]/10 file:text-[#134e4a] hover:file:bg-[#134e4a]/20 transition-colors"
+              />
+              {files.length > 0 && (
+                <p className="text-xs text-gray-500 mt-2">{files.length} file(s) selected</p>
+              )}
+            </div>
             {error && (
               <p className="text-sm text-red-600 font-medium">{error}</p>
             )}
@@ -218,6 +285,7 @@ export function InvestorRequestsClient({
                   setShowForm(false);
                   setBuildingId("");
                   setNote("");
+                  setFiles([]);
                   setError(null);
                 }}
                 className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors"
@@ -284,6 +352,20 @@ export function InvestorRequestsClient({
                         <p className="text-xs text-gray-400 mt-1 line-clamp-2">
                           {req.note}
                         </p>
+                      )}
+                      {req.imageUrls && req.imageUrls.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {req.imageUrls.map((url, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => openLightbox(req.imageUrls!, i)}
+                              className="relative size-12 rounded-lg overflow-hidden border border-gray-200 hover:opacity-80 transition-opacity"
+                            >
+                              <Image src={url} alt="Attachment" fill className="object-cover" />
+                            </button>
+                          ))}
+                        </div>
                       )}
                       <p className="text-xs text-gray-400 mt-1">
                         Submitted {formatDate(req.requestedAt)}
@@ -356,6 +438,21 @@ export function InvestorRequestsClient({
           </div>
         </div>
       )}
+
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={lightboxSlides}
+        on={{
+          view: ({ index }) => setLightboxIndex(index),
+        }}
+        plugins={[Zoom]}
+        zoom={{
+          maxZoomPixelRatio: 4,
+          scrollToZoom: true,
+        }}
+      />
     </div>
   );
 }

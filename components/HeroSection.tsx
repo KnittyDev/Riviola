@@ -88,7 +88,7 @@ export function HeroSection() {
               <span className="text-teal-600 text-xs font-bold">+12.5%</span>
             </div>
             <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1 text-left">Managed Assets</p>
-            <p className="text-[#134e4a] text-3xl font-black text-left">€4.2B</p>
+            <p className="text-[#134e4a] text-3xl font-black text-left">€18.2M</p>
           </div>
         </div>
       </div>

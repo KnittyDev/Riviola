@@ -10,6 +10,7 @@ export type InvestorRequestView = {
   buildingName: string;
   requestedAt: string;
   note?: string;
+  imageUrls?: string[];
 };
 
 /** Unit info for staff request detail (investor's unit in the request building). */
@@ -36,7 +37,7 @@ export async function getInvestorRequests(
 ): Promise<InvestorRequestView[]> {
   const { data: rows, error } = await supabase
     .from("investor_requests")
-    .select("id, type, status, building_id, note, created_at, buildings(name)")
+    .select("id, type, status, building_id, note, image_urls, created_at, buildings(name)")
     .eq("profile_id", profileId)
     .order("created_at", { ascending: false });
 
@@ -45,15 +46,19 @@ export async function getInvestorRequests(
     return [];
   }
 
-  return (rows ?? []).map((r: { id: string; type: string; status: string; building_id: string; note: string | null; created_at: string; buildings: { name: string } | null }) => ({
-    id: r.id,
-    type: r.type as RequestType,
-    status: r.status as RequestStatus,
-    buildingId: r.building_id,
-    buildingName: r.buildings?.name ?? "",
-    requestedAt: r.created_at,
-    note: r.note ?? undefined,
-  }));
+  return (rows ?? []).map((r: { id: string; type: string; status: string; building_id: string; note: string | null; image_urls: string[] | null; created_at: string; buildings: any }) => {
+    const bName = Array.isArray(r.buildings) ? r.buildings[0]?.name : r.buildings?.name;
+    return {
+      id: r.id,
+      type: r.type as RequestType,
+      status: r.status as RequestStatus,
+      buildingId: r.building_id,
+      buildingName: bName ?? "",
+      requestedAt: r.created_at,
+      note: r.note ?? undefined,
+      imageUrls: r.image_urls ?? [],
+    };
+  });
 }
 
 /**
@@ -61,7 +66,7 @@ export async function getInvestorRequests(
  */
 export async function createInvestorRequest(
   supabase: SupabaseClient,
-  params: { profileId: string; buildingId: string; type: string; note?: string }
+  params: { profileId: string; buildingId: string; type: string; note?: string; imageUrls?: string[] }
 ): Promise<{ id: string } | null> {
   const { data, error } = await supabase
     .from("investor_requests")
@@ -71,6 +76,7 @@ export async function createInvestorRequest(
       type: params.type,
       status: "Pending",
       note: params.note?.trim() || null,
+      image_urls: params.imageUrls ?? [],
     })
     .select("id")
     .single();
@@ -134,7 +140,7 @@ export async function getStaffRequests(
 
   const { data: rows, error } = await supabase
     .from("investor_requests")
-    .select("id, type, status, building_id, note, created_at, profile_id, buildings(name)")
+    .select("id, type, status, building_id, note, image_urls, created_at, profile_id, buildings(name)")
     .in("building_id", ids)
     .order("created_at", { ascending: false });
 
@@ -178,20 +184,25 @@ export async function getStaffRequests(
     status: string;
     building_id: string;
     note: string | null;
+    image_urls: string[] | null;
     created_at: string;
     profile_id: string;
-    buildings: { name: string } | null;
-  }) => ({
-    id: r.id,
-    type: r.type as RequestType,
-    status: r.status as RequestStatus,
-    buildingId: r.building_id,
-    buildingName: r.buildings?.name ?? "",
-    investorName: profileMap.get(r.profile_id) ?? "Investor",
-    requestedAt: r.created_at,
-    note: r.note ?? undefined,
-    investorUnits: unitMap.get(`${r.profile_id}:${r.building_id}`) ?? [],
-  }));
+    buildings: any;
+  }) => {
+    const bName = Array.isArray(r.buildings) ? r.buildings[0]?.name : r.buildings?.name;
+    return {
+      id: r.id,
+      type: r.type as RequestType,
+      status: r.status as RequestStatus,
+      buildingId: r.building_id,
+      buildingName: bName ?? "",
+      investorName: profileMap.get(r.profile_id) ?? "Investor",
+      requestedAt: r.created_at,
+      note: r.note ?? undefined,
+      imageUrls: r.image_urls ?? [],
+      investorUnits: unitMap.get(`${r.profile_id}:${r.building_id}`) ?? [],
+    };
+  });
 }
 
 /**

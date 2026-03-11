@@ -17,7 +17,21 @@ function formatMonthLabel(period: string): string {
 }
 
 function formatDuesAmount(cents: number, currency: string | null): string {
-  const sym = { EUR: "€", USD: "$", GBP: "£", TRY: "₺" }[currency ?? "EUR"] ?? (currency ?? "EUR") + " ";
+  const symbols: Record<string, string> = {
+    EUR: "€",
+    USD: "$",
+    GBP: "£",
+    TRY: "₺",
+    CHF: "Fr",
+    AUD: "A$",
+    CAD: "C$",
+    NOK: "kr",
+    SEK: "kr",
+    AED: "د.إ",
+    SAR: "﷼",
+    ALL: "L",
+  };
+  const sym = symbols[currency ?? "EUR"] ?? (currency ?? "EUR") + " ";
   return `${sym} ${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 }
 
@@ -70,6 +84,14 @@ export function DuesPaymentsClient({
     { value: "USD", label: "USD ($)" },
     { value: "GBP", label: "GBP (£)" },
     { value: "TRY", label: "TRY (₺)" },
+    { value: "CHF", label: "CHF (Fr)" },
+    { value: "AUD", label: "AUD (A$)" },
+    { value: "CAD", label: "CAD (C$)" },
+    { value: "NOK", label: "NOK (kr)" },
+    { value: "SEK", label: "SEK (kr)" },
+    { value: "AED", label: "AED (د.إ)" },
+    { value: "SAR", label: "SAR (﷼)" },
+    { value: "ALL", label: "ALL (L)" },
   ] as const;
 
   function updateParams(buildingId?: string) {

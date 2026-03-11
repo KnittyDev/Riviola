@@ -11,6 +11,10 @@ import {
 } from "@/lib/staffRequestsData";
 import type { StaffRequestView } from "@/lib/investorRequests";
 import { updateRequestStatusAction } from "./actions";
+import Image from "next/image";
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
 
 const STATUS_TABS: { value: RequestStatus | "All"; label: string }[] = [
   { value: "All", label: "All" },
@@ -37,6 +41,15 @@ export function StaffRequestsClient({ initialRequests }: Props) {
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "All">("All");
   const [typeFilter, setTypeFilter] = useState<string>("All");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxSlides, setLightboxSlides] = useState<{src: string; alt: string}[]>([]);
+
+  function openLightbox(urls: string[], index: number) {
+    setLightboxSlides(urls.map(url => ({ src: url, alt: "Request attachment" })));
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  }
 
   const filtered = initialRequests.filter((r) => {
     const matchStatus = statusFilter === "All" || r.status === statusFilter;
@@ -149,7 +162,21 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                           <span className="font-semibold text-gray-700">Note:</span> {req.note}
                         </p>
                       )}
-                      <p className="text-xs text-gray-400 mt-1">
+                      {req.imageUrls && req.imageUrls.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          {req.imageUrls.map((url, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => openLightbox(req.imageUrls!, i)}
+                              className="relative size-16 rounded-lg overflow-hidden border border-gray-200 hover:opacity-80 transition-opacity bg-gray-100"
+                            >
+                              <Image src={url} alt="Attachment" fill className="object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-xs text-gray-400 mt-3">
                         Requested {formatDate(req.requestedAt)}
                       </p>
                     </div>
@@ -192,6 +219,21 @@ export function StaffRequestsClient({ initialRequests }: Props) {
           </ul>
         )}
       </div>
+
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={lightboxSlides}
+        on={{
+          view: ({ index }) => setLightboxIndex(index),
+        }}
+        plugins={[Zoom]}
+        zoom={{
+          maxZoomPixelRatio: 4,
+          scrollToZoom: true,
+        }}
+      />
     </div>
   );
 }

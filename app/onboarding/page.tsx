@@ -58,6 +58,7 @@ export default function OnboardingPage() {
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedTimezone, setSelectedTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
@@ -75,6 +76,7 @@ export default function OnboardingPage() {
         company_name: companyName,
         location,
         email,
+        phone,
         use_cases: [...useCases],
         demo_date: selectedDate.toISOString().split('T')[0],
         demo_time: selectedTime,
@@ -124,7 +126,7 @@ export default function OnboardingPage() {
   };
 
   const canProceed1 = useCases.length > 0;
-  const canProceed2 = fullName.trim() && companyName.trim() && location.trim() && email.trim();
+  const canProceed2 = fullName.trim() && companyName.trim() && location.trim() && email.trim() && phone.trim();
 
   if (done) {
     return (
@@ -294,7 +296,7 @@ export default function OnboardingPage() {
                 Brief project details
               </h1>
               <p className="text-gray-500 mt-3 text-sm">
-                Three fields — that is all we need to tailor your experience.
+                Five fields — that is all we need to tailor your experience.
               </p>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm space-y-5 transition-shadow duration-300 hover:shadow-md">
@@ -349,6 +351,22 @@ export default function OnboardingPage() {
                   placeholder="you@company.com"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
+              </div>
+              <div>
+                <label htmlFor="pphone" className="block text-sm font-semibold text-gray-700 mb-1">
+                  Phone
+                </label>
+                <input
+                  id="pphone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+90 5xx xxx xx xx"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
+                />
+                <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
+                  * Please do not remove or delete the country code (e.g., +90, +382).
+                </p>
               </div>
             </div>
             <div className="flex items-center justify-between mt-8">

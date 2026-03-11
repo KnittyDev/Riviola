@@ -25,6 +25,7 @@ export type Profile = {
   notify_payments: boolean | null;
   notify_milestones: boolean | null;
   notify_documents: boolean | null;
+  staff_agreement_accepted: boolean | null;
   created_at: string;
   updated_at: string;
 };
@@ -191,6 +192,7 @@ export type OnboardingSubmission = {
   company_name: string;
   location: string;
   email: string;
+  phone: string | null;
   use_cases: string[];
   demo_date: string | null;
   demo_time: string | null;

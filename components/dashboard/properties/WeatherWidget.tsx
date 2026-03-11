@@ -51,6 +51,8 @@ export function WeatherWidget({
                         targetCity
                     )}&count=1&language=en&format=json`
                 );
+                
+                if (!geoRes.ok) throw new Error("Geocoding failed");
                 const geoData = await geoRes.json();
 
                 if (geoData.results && geoData.results.length > 0) {
@@ -60,9 +62,13 @@ export function WeatherWidget({
                     const weatherRes = await fetch(
                         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
                     );
+                    
+                    if (!weatherRes.ok) throw new Error("Weather fetch failed");
                     const weatherData = await weatherRes.json();
 
                     const current = weatherData.current_weather;
+                    if (!current) throw new Error("No current weather data");
+
                     const mapped = weatherIconMap[current.weathercode] || {
                         icon: "la-cloud",
                         label: "Cloudy",
@@ -75,7 +81,8 @@ export function WeatherWidget({
                     });
                 }
             } catch (err) {
-                console.error("Weather fetch failed", err);
+                console.warn("WeatherWidget: Could not load weather.", err);
+                setData(null);
             } finally {
                 setLoading(false);
             }

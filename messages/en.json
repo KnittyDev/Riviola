@@ -1,0 +1,14 @@
+{
+  "Hero": {
+    "title": "High-end construction management for modern investors.",
+    "subtitle": "Track every beam, budget, and breakthrough in real-time."
+  },
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "financials": "Financials",
+    "requests": "Requests",
+    "documents": "Documents",
+    "settings": "Settings"
+  }
+}

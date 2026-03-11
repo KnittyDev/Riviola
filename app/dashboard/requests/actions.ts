@@ -8,7 +8,8 @@ export type CreateRequestResult = { id?: string; error?: string };
 export async function createInvestorRequestAction(
   buildingId: string,
   type: string,
-  note?: string
+  note?: string,
+  imageUrls?: string[]
 ): Promise<CreateRequestResult> {
   const supabase = await createClient();
   const {
@@ -21,6 +22,7 @@ export async function createInvestorRequestAction(
     buildingId,
     type,
     note,
+    imageUrls,
   });
   if (!result) return { error: "Failed to create request" };
   return { id: result.id };
