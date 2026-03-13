@@ -10,6 +10,30 @@ import { BuildingMilestonesLog } from "@/app/dashboard/staff/buildings/[id]/Buil
 import type { PlannedMilestoneDb } from "@/lib/supabase/types";
 import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
 
+const PREDEFINED_GREEN_FEATURES = [
+  { label: "Solar Panels", icon: "las la-solar-panel" },
+  { label: "EV Charging Stations", icon: "las la-charging-station" },
+  { label: "Rainwater Harvesting", icon: "las la-tint" },
+  { label: "Energy Efficient Lighting", icon: "las la-lightbulb" },
+  { label: "Waste & Recycling Management", icon: "las la-recycle" },
+  { label: "Smart Home Tech", icon: "las la-home" },
+  { label: "Natural Ventilation", icon: "las la-wind" },
+  { label: "Green Roof / Sky Garden", icon: "las la-leaf" },
+  { label: "Advanced Thermal Insulation", icon: "las la-thermometer-half" },
+  { label: "Eco-friendly Materials", icon: "las la-tree" },
+  { label: "Professional Garden Design", icon: "las la-seedling" },
+  { label: "Eco-friendly Infrastructure", icon: "las la-cog" },
+  { label: "Pet Friendly Spaces", icon: "las la-paw" },
+  { label: "Secure Bicycle Parking", icon: "las la-bicycle" },
+  { label: "High-efficiency HVAC", icon: "las la-fan" },
+  { label: "Water-saving Fixtures", icon: "las la-water" },
+];
+
+function getGreenFeatureIcon(label: string) {
+  const feat = PREDEFINED_GREEN_FEATURES.find(f => f.label === label);
+  return feat?.icon || "las la-check-circle";
+}
+
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
 
 function formatPlanDate(d: string, t: string) {
@@ -86,7 +110,7 @@ export default async function PropertyDetailPage({
     if (!user) notFound();
     const { data: building } = await supabase
       .from("buildings")
-      .select("id, name, location, country, city, image_url, progress, status, company_id, planned_milestones, current_milestone_id")
+      .select("id, name, location, country, city, image_url, progress, status, company_id, planned_milestones, current_milestone_id, sustainability_score, sustainability_features")
       .eq("id", id)
       .single();
     if (!building) notFound();
@@ -199,6 +223,69 @@ export default async function PropertyDetailPage({
             );
           })()}
         </div>
+
+        {/* Sustainability Dashboard */}
+        {(building as any).sustainability_score > 0 && (
+          <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6 mb-8 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <div className="size-12 rounded-2xl bg-[#134e4a] text-white flex items-center justify-center shrink-0 shadow-lg shadow-[#134e4a]/20">
+                  <i className="las la-leaf text-2xl" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">Sustainability Dashboard</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">Project environmental impact & green certificate</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6 divide-px divide-emerald-200">
+                <div className="text-center">
+                  <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1">Green Score</p>
+                  <div className="relative inline-flex items-center justify-center">
+                    <svg className="size-16 transform -rotate-90">
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="currentColor"
+                        strokeWidth="6"
+                        fill="transparent"
+                        className="text-emerald-100"
+                      />
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="currentColor"
+                        strokeWidth="6"
+                        fill="transparent"
+                        strokeDasharray={175.92}
+                        strokeDashoffset={175.92 - (175.92 * (building as any).sustainability_score) / 100}
+                        className="text-[#134e4a]"
+                      />
+                    </svg>
+                    <span className="absolute text-lg font-black text-[#134e4a]">{(building as any).sustainability_score}</span>
+                  </div>
+                </div>
+                
+                {Array.isArray((building as any).sustainability_features) && (building as any).sustainability_features.length > 0 && (
+                  <div className="pl-6 border-l border-emerald-200">
+                    <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-2">Eco Features</p>
+                    <div className="flex flex-wrap gap-2 max-w-md">
+                      {(building as any).sustainability_features.map((feature: string, i: number) => (
+                        <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[11px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                          <i className={`${getGreenFeatureIcon(feature)} text-emerald-600 text-sm`} />
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <BuildingMilestonesLog
           milestones={plannedMilestonesToLog((building as { planned_milestones?: PlannedMilestoneDb[] }).planned_milestones ?? [])}
           currentMilestoneId={(building as { current_milestone_id?: string | null }).current_milestone_id ?? null}

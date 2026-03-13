@@ -64,6 +64,8 @@ export type Building = {
   planned_milestones: PlannedMilestoneDb[];
   next_milestone_id: string | null;
   current_milestone_id: string | null;
+  sustainability_score: number;
+  sustainability_features: string[];
   created_at: string;
   updated_at: string;
 };

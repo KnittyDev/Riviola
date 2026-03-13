@@ -61,6 +61,8 @@ export default async function EditBuildingPage({
         defaultCity={building.city}
         defaultPlannedMilestones={plannedMilestones}
         defaultCurrentMilestoneId={building.current_milestone_id ?? null}
+        defaultSustainabilityScore={building.sustainability_score ?? 0}
+        defaultSustainabilityFeatures={building.sustainability_features ?? []}
       />
     </div>
   );

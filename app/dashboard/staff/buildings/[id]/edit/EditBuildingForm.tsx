@@ -28,6 +28,8 @@ type Props = {
   defaultCity?: string | null;
   defaultPlannedMilestones?: PlannedMilestone[];
   defaultCurrentMilestoneId?: string | null;
+  defaultSustainabilityScore?: number;
+  defaultSustainabilityFeatures?: string[];
   /** Base path for redirect/cancel (e.g. /dashboard/staff or /demo/staff). Defaults to /dashboard/staff. */
   basePath?: string;
 };
@@ -83,6 +85,25 @@ const statusOptions: Array<{
     },
   ];
 
+const PREDEFINED_GREEN_FEATURES = [
+  { id: "solar", label: "Solar Panels", icon: "las la-solar-panel" },
+  { id: "ev", label: "EV Charging Stations", icon: "las la-charging-station" },
+  { id: "rainwater", label: "Rainwater Harvesting", icon: "las la-tint" },
+  { id: "led", label: "Energy Efficient Lighting", icon: "las la-lightbulb" },
+  { id: "waste", label: "Waste & Recycling Management", icon: "las la-recycle" },
+  { id: "smart", label: "Smart Home Tech", icon: "las la-home" },
+  { id: "ventilation", label: "Natural Ventilation", icon: "las la-wind" },
+  { id: "garden", label: "Green Roof / Sky Garden", icon: "las la-leaf" },
+  { id: "insulation", label: "Advanced Thermal Insulation", icon: "las la-thermometer-half" },
+  { id: "materials", label: "Eco-friendly Materials", icon: "las la-tree" },
+  { id: "garden_design", label: "Professional Garden Design", icon: "las la-seedling" },
+  { id: "eco_infra", label: "Eco-friendly Infrastructure", icon: "las la-cog" },
+  { id: "pet_friendly", label: "Pet Friendly Spaces", icon: "las la-paw" },
+  { id: "bike", label: "Secure Bicycle Parking", icon: "las la-bicycle" },
+  { id: "hvac", label: "High-efficiency HVAC", icon: "las la-fan" },
+  { id: "water", label: "Water-saving Fixtures", icon: "las la-water" },
+];
+
 function newId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -104,6 +125,8 @@ export function EditBuildingForm({
   defaultCity = "",
   defaultPlannedMilestones = [],
   defaultCurrentMilestoneId = null,
+  defaultSustainabilityScore = 0,
+  defaultSustainabilityFeatures = [],
   basePath = DEFAULT_BASE,
 }: Props) {
   const router = useRouter();
@@ -118,6 +141,13 @@ export function EditBuildingForm({
   const [city, setCity] = useState<string>(defaultCity ?? "");
   const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>(defaultPlannedMilestones);
   const [currentMilestoneId, setCurrentMilestoneId] = useState<string | null>(defaultCurrentMilestoneId ?? null);
+  const [sustainabilityFeatures, setSustainabilityFeatures] = useState<string[]>(defaultSustainabilityFeatures);
+
+  const sustainabilityScore = useMemo(() => {
+    // Each feature contributes a certain amount to the total score, capped at 100.
+    // Simple logic: 7 points per feature (predefined or custom).
+    return Math.min(100, sustainabilityFeatures.length * 7);
+  }, [sustainabilityFeatures]);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -144,6 +174,14 @@ export function EditBuildingForm({
 
   function removeBlock(index: number) {
     setBlocks((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function toggleFeature(label: string) {
+    if (sustainabilityFeatures.includes(label)) {
+      setSustainabilityFeatures((prev) => prev.filter((f) => f !== label));
+    } else {
+      setSustainabilityFeatures((prev) => [...prev, label]);
+    }
   }
 
   function updateBlock(index: number, value: string) {
@@ -182,6 +220,8 @@ export function EditBuildingForm({
       blocks: blocks.length ? blocks : ["Block A"],
       planned_milestones: plannedMilestones,
       current_milestone_id: currentMilestoneId,
+      sustainability_score: sustainabilityScore,
+      sustainability_features: sustainabilityFeatures,
     };
     if (imageUrl !== undefined) payload.image_url = imageUrl;
     const { error: updateError } = await supabase.from("buildings").update(payload).eq("id", id);
@@ -498,6 +538,63 @@ export function EditBuildingForm({
               );
             })
           )}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-[#134e4a]/20 p-5 bg-emerald-50/20">
+        <div className="flex items-start gap-4">
+          <div className="size-10 rounded-xl bg-[#134e4a] text-white flex items-center justify-center shrink-0">
+            <i className="las la-leaf text-xl" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-gray-900">Sustainability Dashboard (Green Score)</p>
+            <p className="text-xs text-gray-500 mt-0.5">Showcase your project's environmental impact to global investors.</p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+              Overall Green Score (Auto-calculated)
+            </label>
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-[#134e4a] transition-all duration-500"
+                  style={{ width: `${sustainabilityScore}%` }}
+                />
+              </div>
+              <span className="shrink-0 size-12 flex items-center justify-center rounded-xl bg-white border-2 border-[#134e4a] text-lg font-bold text-[#134e4a] shadow-sm">
+                {sustainabilityScore}
+              </span>
+            </div>
+            <p className="text-[10px] text-gray-400 mt-2 italic">The score is calculated based on the green features you select below.</p>
+          </div>
+
+          <div>
+            <span className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-4">Add Project Sustainability Features</span>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-2 max-h-[320px] overflow-y-auto pr-1">
+              {PREDEFINED_GREEN_FEATURES.map((feat) => {
+                const isSelected = sustainabilityFeatures.includes(feat.label);
+                return (
+                  <button
+                    key={feat.id}
+                    type="button"
+                    onClick={() => toggleFeature(feat.label)}
+                    className={`flex items-center gap-2 p-2.5 rounded-xl border-2 text-left transition-all ${isSelected
+                      ? "border-[#134e4a] bg-[#134e4a]/10 text-[#134e4a] font-bold"
+                      : "border-gray-100 bg-white text-gray-500 hover:border-gray-200"
+                      }`}
+                  >
+                    <span className={`size-7 rounded-lg flex items-center justify-center ${isSelected ? 'bg-[#134e4a] text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-gray-100'}`}>
+                      <i className={`${feat.icon} text-base`} />
+                    </span>
+                    <span className="text-[11px] leading-tight truncate">{feat.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
