@@ -26,6 +26,7 @@ export type Profile = {
   notify_milestones: boolean | null;
   notify_documents: boolean | null;
   staff_agreement_accepted: boolean | null;
+  stripe_customer_id: string | null;
   created_at: string;
   updated_at: string;
 };

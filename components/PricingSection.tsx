@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const ANNUAL_DISCOUNT = 0.35; // 35% off when billed annually
+
 
 const FULL_PROCESS_FEATURE = "We will take care of the entire process for you.";
 const FULL_PROCESS_MODAL_TEXT =
@@ -12,7 +12,8 @@ const tiers = [
   {
     name: "Essence",
     description: "Perfect for single buildings or small portfolios.",
-    monthlyPrice: 109,
+    monthlyPrice: 99,
+    annualPrice: 719,
     includedTierName: null as string | null,
     features: [
       "Up to 2 Buildings / Projects",
@@ -31,7 +32,8 @@ const tiers = [
   {
     name: "Signature",
     description: "Optimized for professional property management firms.",
-    monthlyPrice: 199,
+    monthlyPrice: 149,
+    annualPrice: 999,
     includedTierName: "Essence",
     features: [
       "We will take care of the entire process for you.",
@@ -48,7 +50,8 @@ const tiers = [
   {
     name: "Ultra Deluxe",
     description: "Enterprise-grade features for large-scale operations.",
-    monthlyPrice: 249,
+    monthlyPrice: 199,
+    annualPrice: 1299,
     includedTierName: "Signature",
     features: [
       "We will take care of the entire process for you.",
@@ -94,7 +97,7 @@ export function PricingSection() {
                 : "text-gray-500 hover:text-[#134e4a]"
                 }`}
             >
-              Annual (Save 35%)
+              Annual (Save 40%)
             </button>
           </div>
         </div>
@@ -102,9 +105,9 @@ export function PricingSection() {
           {tiers.map((tier) => {
             const isAnnual = billing === "annual";
             const displayPrice = isAnnual
-              ? Math.round(tier.monthlyPrice * (1 - ANNUAL_DISCOUNT))
+              ? tier.annualPrice
               : tier.monthlyPrice;
-            const periodText = isAnnual ? "/mo, billed annually" : "/mo";
+            const periodText = isAnnual ? "/year" : "/mo";
 
             return (
               <div
@@ -131,7 +134,7 @@ export function PricingSection() {
                 </div>
                 {isAnnual && (
                   <p className="text-sm text-gray-500 -mt-4 mb-2">
-                    {Math.round(tier.monthlyPrice * 12 * (1 - ANNUAL_DISCOUNT))}€ total per year
+                    {Math.round(tier.annualPrice / 12)}€/mo equivalent
                   </p>
                 )}
                 <ul className="space-y-4 mb-8">

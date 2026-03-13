@@ -1,121 +1,97 @@
-// Mock data – in a real app this would come from API
-const subscription = {
-  status: "active" as const,
-  tier: "Professional",
-  daysRemaining: 42,
-  renewalDate: "2025-04-15",
-  price: "199",
-  currency: "€",
-  billing: "annual" as const,
-  features: [
-    { label: "Unlimited buildings", icon: "las la-building", desc: "Add and manage all your projects" },
-    { label: "Unlimited investor accounts", icon: "las la-user-friends", desc: "Create accounts for every investor" },
-    { label: "Request management", icon: "las la-tasks", desc: "Handle site tours, utilities & more" },
-    { label: "Priority support", icon: "las la-headset", desc: "Faster response from our team" },
-  ],
-};
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { SubscriptionClient } from "./SubscriptionClient";
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
+export const dynamic = "force-dynamic";
 
-export default function StaffSubscriptionPage() {
+/**
+ * Stripe Price IDs – replace with your real IDs from Stripe Dashboard → Products.
+ * Each product should have a monthly and yearly price.
+ */
+const PRICING_TIERS = [
+  {
+    name: "Essence",
+    description: "Perfect for single buildings or small portfolios.",
+    monthlyPriceId: process.env.STRIPE_ESSENCE_MONTHLY_PRICE_ID ?? "",
+    annualPriceId: process.env.STRIPE_ESSENCE_ANNUAL_PRICE_ID ?? "",
+    monthlyPrice: 99,
+    annualPrice: 719,
+    features: [
+      "Up to 2 Buildings / Projects",
+      "Basic Investor Tracking",
+      "Document Management",
+      "Standard Financial Reporting",
+      "Investor Portal Access",
+    ],
+    recommended: false,
+  },
+  {
+    name: "Signature",
+    description: "Optimized for professional property management firms.",
+    monthlyPriceId: process.env.STRIPE_SIGNATURE_MONTHLY_PRICE_ID ?? "",
+    annualPriceId: process.env.STRIPE_SIGNATURE_ANNUAL_PRICE_ID ?? "",
+    monthlyPrice: 149,
+    annualPrice: 999,
+    features: [
+      "All Essence features",
+      "Up to 10 Buildings / Projects",
+      "Automated Dues Collection",
+      "Advanced Financial Analytics",
+      "Auto Invoice Generation",
+      "Request & Maintenance Tracking",
+    ],
+    recommended: true,
+  },
+  {
+    name: "Ultra Deluxe",
+    description: "Enterprise-grade features for large-scale operations.",
+    monthlyPriceId: process.env.STRIPE_ULTRA_DELUXE_MONTHLY_PRICE_ID ?? "",
+    annualPriceId: process.env.STRIPE_ULTRA_DELUXE_ANNUAL_PRICE_ID ?? "",
+    monthlyPrice: 199,
+    annualPrice: 1299,
+    features: [
+      "All Signature features",
+      "Unlimited Buildings & Projects",
+      "Full Customization",
+      "Priority Support & Dedicated Manager",
+      "White-label Investor Reports",
+      "Bulk Payment Processing",
+    ],
+    recommended: false,
+  },
+];
+
+export default async function StaffSubscriptionPage() {
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.user) redirect("/login");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
+
+  if (!profile || (profile.role !== "staff" && profile.role !== "admin")) {
+    redirect("/dashboard");
+  }
+
+  // Fetch active subscription
+  const { data: subRows } = await supabase
+    .from("subscriptions")
+    .select(
+      "plan_name, billing_interval, status, current_period_start, current_period_end, cancel_at_period_end, stripe_price_id"
+    )
+    .eq("profile_id", session.user.id)
+    .in("status", ["active", "trialing", "past_due"])
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  const subscription = subRows?.[0] ?? null;
+
   return (
-    <div className="max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-      <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-        Subscription
-      </h1>
-      <p className="text-gray-500 text-sm mt-1">
-        Plan and billing
-      </p>
-
-      <div className="mt-8">
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Plan
-              </p>
-              <p className="text-lg font-semibold text-gray-900 mt-0.5">
-                {subscription.tier}
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                {subscription.price}{subscription.currency}
-                <span className="text-gray-400">/{subscription.billing === "annual" ? "year" : "month"}</span>
-              </p>
-            </div>
-            <span
-              className={`shrink-0 px-2.5 py-1 rounded-md text-xs font-medium ${
-                subscription.status === "active"
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "bg-amber-50 text-amber-600"
-              }`}
-            >
-              {subscription.status === "active" ? "Active" : "Inactive"}
-            </span>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs text-gray-400">Days left</p>
-              <p className="text-xl font-semibold text-gray-900 mt-0.5">
-                {subscription.daysRemaining}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-400">Renewal</p>
-              <p className="text-sm font-medium text-gray-900 mt-0.5">
-                {formatDate(subscription.renewalDate)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
-            Included in your plan
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {subscription.features.map((feature, i) => (
-              <div
-                key={i}
-                className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-4"
-              >
-                <div className="size-10 shrink-0 rounded-lg bg-[#134e4a]/10 flex items-center justify-center text-[#134e4a]">
-                  <i className={`las ${feature.icon} text-lg`} aria-hidden />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {feature.label}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {feature.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 flex gap-3">
-          <button
-            type="button"
-            className="px-4 py-2 rounded-lg bg-[#134e4a] text-white text-sm font-medium hover:bg-[#115e59] transition-colors"
-          >
-            Manage
-          </button>
-          <button
-            type="button"
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors"
-          >
-            Upgrade
-          </button>
-        </div>
-      </div>
-    </div>
+    <SubscriptionClient subscription={subscription} tiers={PRICING_TIERS} />
   );
 }
