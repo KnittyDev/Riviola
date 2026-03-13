@@ -8,13 +8,20 @@ type ActionResult = { ok?: boolean; url?: string; error?: string };
 
 /* ─── helpers ───────────────────────────────────────────────── */
 
-function resolvePlanName(sub: Stripe.Subscription): string {
+async function resolvePlanName(sub: Stripe.Subscription): Promise<string> {
   const item = sub.items?.data?.[0];
-  const product = item?.price?.product;
-  const productName =
-    typeof product === "object" && product !== null
-      ? (product as Stripe.Product).name
-      : null;
+  const price = item?.price;
+  if (!price) return "Essence";
+
+  let product = price.product;
+  
+  // If product is only an ID, we need to fetch it to get the name
+  if (typeof product === "string") {
+    const stripe = getStripe();
+    product = await stripe.products.retrieve(product);
+  }
+
+  const productName = (product as Stripe.Product)?.name;
   if (productName) {
     const lower = productName.toLowerCase();
     if (lower.includes("ultra") || lower.includes("deluxe")) return "Ultra Deluxe";
@@ -31,41 +38,52 @@ function resolveBillingInterval(sub: Stripe.Subscription): string {
 }
 
 async function upsertSubscriptionFromStripe(
-  sub: Stripe.Subscription,
+  subscription: Stripe.Subscription,
   customerId: string,
   profileId: string
 ) {
   const supabase = createServiceRoleClient();
+  const subAny = subscription as any;
 
-  const planName = resolvePlanName(sub);
-  const billingInterval = resolveBillingInterval(sub);
+  const planName = await resolvePlanName(subscription);
+  const billingInterval = resolveBillingInterval(subscription);
 
-  // Stripe returns seconds-since-epoch numbers for current_period_*.
-  const currentPeriodStartIso =
-    typeof sub.current_period_start === "number"
-      ? new Date(sub.current_period_start * 1000).toISOString()
-      : null;
-  const currentPeriodEndIso =
-    typeof sub.current_period_end === "number"
-      ? new Date(sub.current_period_end * 1000).toISOString()
-      : null;
+  // Use subscription's created date as start date
+  const startDate = new Date(subscription.created * 1000);
+  const currentPeriodStartIso = startDate.toISOString();
 
-  await supabase.from("subscriptions").upsert(
+  // Calculate end date based on billing interval
+  const endDate = new Date(startDate);
+  if (billingInterval === "annual") {
+    endDate.setFullYear(endDate.getFullYear() + 1);
+  } else {
+    endDate.setMonth(endDate.getMonth() + 1);
+  }
+  const currentPeriodEndIso = endDate.toISOString();
+
+  console.log(`[Subscription Sync] Custom Dates - Interval: ${billingInterval}, Start: ${currentPeriodStartIso}, End: ${currentPeriodEndIso}`);
+
+  const { error: upsertError } = await supabase.from("subscriptions").upsert(
     {
       profile_id: profileId,
       stripe_customer_id: customerId,
-      stripe_subscription_id: sub.id,
-      stripe_price_id: sub.items?.data?.[0]?.price?.id ?? null,
+      stripe_subscription_id: subscription.id,
+      stripe_price_id: subscription.items?.data?.[0]?.price?.id ?? null,
       plan_name: planName,
       billing_interval: billingInterval,
-      status: sub.status,
+      status: subscription.status,
       current_period_start: currentPeriodStartIso,
       current_period_end: currentPeriodEndIso,
-      cancel_at_period_end: sub.cancel_at_period_end ?? false,
+      cancel_at_period_end: subscription.cancel_at_period_end ?? false,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "stripe_subscription_id" }
   );
+
+  if (upsertError) {
+    console.error("[Subscription Sync] Upsert Error:", upsertError.message);
+  }
+
 }
 
 /* ─── Create Checkout ───────────────────────────────────────── */
@@ -150,9 +168,7 @@ export async function confirmCheckoutSessionAction(
     return { error: "Subscription data missing." };
   }
 
-  const sub = await stripe.subscriptions.retrieve(subId, {
-    expand: ["items.data.price.product"],
-  });
+  const sub = await stripe.subscriptions.retrieve(subId);
 
   await upsertSubscriptionFromStripe(sub, customerId, session.user.id);
 
@@ -181,8 +197,7 @@ export async function syncSubscriptionAction(): Promise<ActionResult> {
   const subscriptions = await stripe.subscriptions.list({
     customer: profile.stripe_customer_id,
     status: "all",
-    limit: 5,
-    expand: ["data.items.data.price.product"],
+    limit: 1,
   });
 
   if (!subscriptions.data.length) {
@@ -195,8 +210,9 @@ export async function syncSubscriptionAction(): Promise<ActionResult> {
     return { ok: true };
   }
 
-  // Upsert the latest subscription
-  const latestSub = subscriptions.data[0];
+  // Retrieve the specific subscription
+  const latestSub = await stripe.subscriptions.retrieve(subscriptions.data[0].id);
+
   await upsertSubscriptionFromStripe(
     latestSub,
     profile.stripe_customer_id,

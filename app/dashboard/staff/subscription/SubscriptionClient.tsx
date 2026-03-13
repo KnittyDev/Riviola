@@ -69,35 +69,42 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
   const synced = useRef(false);
 
   useEffect(() => {
-    const sessionId = searchParams.get("session_id");
+    const sessionId = searchParams?.get("session_id");
     if (sessionId) {
-      // Confirm checkout and save subscription to Supabase (no webhook)
-      confirmCheckoutSessionAction(sessionId).then((result) => {
-        if (result.ok) {
-          toast.success("Subscription activated! Welcome aboard.");
-        } else {
-          toast.error(result.error ?? "Could not confirm payment.");
-        }
-        router.replace("/dashboard/staff/subscription", { scroll: false });
-        router.refresh();
-      });
+      setLoading("confirming");
+      confirmCheckoutSessionAction(sessionId)
+        .then((result) => {
+          if (result.ok) {
+            toast.success("Subscription activated! Welcome aboard.");
+            // Hard redirect to clear search params and force server refetch
+            window.location.href = "/dashboard/staff/subscription";
+          } else {
+            toast.error(result.error ?? "Could not confirm payment.");
+            setLoading(null);
+            router.replace("/dashboard/staff/subscription", { scroll: false });
+          }
+        })
+        .catch(() => {
+          setLoading(null);
+          toast.error("An error occurred during confirmation.");
+        });
       return;
     }
 
-    if (searchParams.get("canceled") === "1") {
+    if (searchParams?.get("canceled") === "1") {
       toast.error("Checkout was canceled.");
       router.replace("/dashboard/staff/subscription", { scroll: false });
       return;
     }
 
-    // Sync subscription status from Stripe on every page load (no webhook)
-    if (!synced.current) {
+    // Sync subscription status from Stripe on page load if not confirmed yet
+    if (subscription === null && !synced.current) {
       synced.current = true;
       syncSubscriptionAction().then(() => {
         router.refresh();
       });
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, subscription]);
 
   async function handleSubscribe(priceId: string) {
     setLoading(priceId);
@@ -123,6 +130,17 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
 
   const isActive =
     subscription?.status === "active" || subscription?.status === "trialing";
+
+  // ─── Global loading state for confirmation ────────────────────────
+  if (loading === "confirming") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+        <div className="w-12 h-12 border-4 border-[#134e4a] border-t-transparent rounded-full animate-spin mb-4" />
+        <h2 className="text-xl font-bold text-gray-900">Confirming your subscription...</h2>
+        <p className="text-gray-500 mt-2 text-sm">Please wait while we set things up for you.</p>
+      </div>
+    );
+  }
 
   // ─── Active subscription view ──────────────────────────────────────
   if (subscription && isActive) {
