@@ -6,6 +6,8 @@ export const REQUEST_TYPES = [
   "Gas connection",
   "Handover inspection",
   "Document request",
+  "Maintenance request",
+  "Repair request",
 ] as const;
 
 export type RequestType = (typeof REQUEST_TYPES)[number];
@@ -19,6 +21,8 @@ export const requestTypeIcons: Record<RequestType, string> = {
   "Gas connection": "las la-fire",
   "Handover inspection": "las la-clipboard-check",
   "Document request": "las la-file-alt",
+  "Maintenance request": "las la-tools",
+  "Repair request": "las la-wrench",
 };
 
 export const requestTypeColors: Record<RequestType, string> = {
@@ -29,6 +33,8 @@ export const requestTypeColors: Record<RequestType, string> = {
   "Gas connection": "bg-orange-100 text-orange-700",
   "Handover inspection": "bg-emerald-100 text-emerald-700",
   "Document request": "bg-gray-100 text-gray-700",
+  "Maintenance request": "bg-rose-100 text-rose-700",
+  "Repair request": "bg-red-100 text-red-700",
 };
 
 export interface InvestorRequest {

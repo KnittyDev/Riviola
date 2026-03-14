@@ -74,6 +74,11 @@ export function InvestorRequestsClient({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxSlides, setLightboxSlides] = useState<{src: string; alt: string}[]>([]);
+  
+  // Filters
+  const [statusFilter, setStatusFilter] = useState<RequestStatus | "All">("All");
+  const [typeFilter, setTypeFilter] = useState<RequestType | "All">("All");
+  const [buildingFilter, setBuildingFilter] = useState<string>("All");
 
   function openLightbox(urls: string[], index: number) {
     setLightboxSlides(urls.map(url => ({ src: url, alt: "Request attachment" })));
@@ -159,8 +164,14 @@ export function InvestorRequestsClient({
     router.refresh();
   }
 
-  const requests = initialRequests;
-  const pendingCount = requests.filter((r) => r.status === "Pending").length;
+  const filteredRequests = initialRequests.filter((req) => {
+    const matchStatus = statusFilter === "All" || req.status === statusFilter;
+    const matchType = typeFilter === "All" || req.type === typeFilter;
+    const matchBuilding = buildingFilter === "All" || req.buildingId === buildingFilter;
+    return matchStatus && matchType && matchBuilding;
+  });
+
+  const pendingCount = filteredRequests.filter((r) => r.status === "Pending").length;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -299,36 +310,79 @@ export function InvestorRequestsClient({
 
       {pendingCount > 0 && (
         <p className="text-sm text-[#134e4a] font-medium mb-4">
-          You have {pendingCount} pending request{pendingCount !== 1 ? "s" : ""}.
+          Showing {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""} ({pendingCount} pending).
         </p>
       )}
 
+      {/* Filters UI */}
+      <div className="mb-6 flex flex-wrap gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+        <div className="flex-1 min-w-[140px]">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Type</label>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as any)}
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-[#134e4a] outline-none transition-colors"
+          >
+            <option value="All">All Types</option>
+            {REQUEST_TYPES.map(t => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex-1 min-w-[140px]">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Building</label>
+          <select
+            value={buildingFilter}
+            onChange={(e) => setBuildingFilter(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-[#134e4a] outline-none transition-colors"
+          >
+            <option value="All">All Buildings</option>
+            {buildingsForDropdown.map(b => (
+              <option key={b.building_id} value={b.building_id}>{b.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex-1 min-w-[140px]">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Status</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as any)}
+            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-[#134e4a] outline-none transition-colors"
+          >
+            <option value="All">All Statuses</option>
+            {Object.keys(STATUS_LABELS).map(s => (
+              <option key={s} value={s}>{STATUS_LABELS[s as RequestStatus]}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        {requests.length === 0 ? (
+        {filteredRequests.length === 0 ? (
           <div className="p-12 text-center">
             <i
-              className="las la-paper-plane text-4xl text-gray-300 mb-4"
+              className="las la-filter text-4xl text-gray-300 mb-4"
               aria-hidden
             />
             <p className="text-gray-500 font-medium">
-              You haven't submitted any requests yet.
-            </p>
-            <p className="text-sm text-gray-400 mt-1 mb-6">
-              Use "New request" to ask for a site tour, utility connection,
-              documents or other support.
+              No requests found matching your filters.
             </p>
             <button
-              type="button"
-              onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] transition-colors"
+              onClick={() => {
+                setTypeFilter("All");
+                setBuildingFilter("All");
+                setStatusFilter("All");
+              }}
+              className="mt-2 text-sm text-[#134e4a] font-bold hover:underline"
             >
-              <i className="las la-plus" aria-hidden />
-              New request
+              Clear all filters
             </button>
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
-            {requests.map((req) => (
+            {filteredRequests.map((req) => (
               <li
                 key={req.id}
                 className="px-4 sm:px-6 py-4 hover:bg-gray-50/80 transition-colors"
