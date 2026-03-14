@@ -35,6 +35,18 @@ function formatDuesAmount(cents: number, currency: string | null): string {
   return `${sym} ${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 }
 
+function isOverdue(period: string, paid: boolean, endDay: number | undefined): boolean {
+  if (paid) return false;
+  if (!endDay) return false;
+  
+  const now = new Date();
+  const [y, m] = period.split("-").map(Number);
+  // The deadline is the endDay of that specific month
+  const deadline = new Date(y, m - 1, endDay, 23, 59, 59);
+  
+  return now > deadline;
+}
+
 type Building = { id: string; name: string };
 
 type Props = {
@@ -175,6 +187,14 @@ export function DuesPaymentsClient({
     return !!paidByPeriod[period]?.[unitId]?.paid_at;
   }
 
+  const hasAnyOverdue = useMemo(() => {
+    const endDay = settings?.payment_window_end_day;
+    if (!endDay) return false;
+    return units.some(u => 
+      periods.some(p => isOverdue(p, isPaid(u.id, p), endDay))
+    );
+  }, [units, periods, settings, paidByPeriod]);
+
   function getExpectedDues(unit: UnitForDues): string {
     if (!settings) return "—";
     
@@ -217,7 +237,41 @@ export function DuesPaymentsClient({
             </option>
           ))}
         </select>
+        
+        {/* Status Legend */}
+        <div className="flex flex-wrap items-center gap-4 bg-white/50 px-4 py-2 rounded-xl border border-gray-100 shadow-sm ml-auto">
+          <div className="flex items-center gap-1.5">
+            <div className="size-5 rounded-md bg-[#134e4a]/10 text-[#134e4a] flex items-center justify-center border border-[#134e4a]/20">
+              <i className="las la-check text-xs font-bold" />
+            </div>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Paid</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="size-5 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 animate-pulse">
+              <i className="las la-exclamation-triangle text-xs" />
+            </div>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Overdue</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="size-5 rounded-md bg-gray-50 text-gray-400 flex items-center justify-center border border-gray-100">
+              <i className="las la-clock text-xs" />
+            </div>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Pending</span>
+          </div>
+        </div>
       </div>
+
+      {hasAnyOverdue && (
+        <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center gap-3 animate-pulse shadow-sm shadow-rose-100">
+          <div className="size-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+            <i className="las la-exclamation-circle text-2xl" />
+          </div>
+          <div>
+            <p className="text-rose-900 font-bold text-sm uppercase tracking-tight">Overdue Payments Detected</p>
+            <p className="text-rose-700 text-xs">Some investors have unpaid dues past the monthly deadline. Please check the table below.</p>
+          </div>
+        </div>
+      )}
 
       {selectedBuildingId && (
         <>
@@ -428,22 +482,47 @@ export function DuesPaymentsClient({
                         <td className="px-4 py-3 text-sm font-bold text-gray-900">{getExpectedDues(u)}</td>
                         {periods.map((p) => {
                           const paid = isPaid(u.id, p);
+                          const overdue = isOverdue(p, paid, settings?.payment_window_end_day);
                           const key = `${u.id}-${p}`;
+                          
                           return (
-                            <td key={p} className="px-2 py-3 text-center">
-                              <label className="inline-flex items-center justify-center gap-1 cursor-pointer">
-                                <input
-                                  type="checkbox"
-                                  checked={paid}
-                                  disabled={togglingKey === key}
-                                  onChange={() => handleTogglePaid(u.id, p, paid)}
-                                  className="h-4 w-4 rounded border-gray-300 accent-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 focus:ring-offset-0"
-                                  title={paid ? "Paid – click to unmark" : "Unpaid – click to mark paid"}
-                                />
-                                <span className="text-xs font-medium text-gray-600 sr-only sm:not-sr-only">
-                                  {paid ? "Paid" : "—"}
+                            <td 
+                              key={p} 
+                              className={`px-2 py-3 text-center transition-colors ${overdue ? "bg-rose-50/50" : ""}`}
+                            >
+                              <div className="flex flex-col items-center gap-1">
+                                <label className="relative inline-flex items-center justify-center cursor-pointer group">
+                                  <input
+                                    type="checkbox"
+                                    checked={paid}
+                                    disabled={togglingKey === key}
+                                    onChange={() => handleTogglePaid(u.id, p, paid)}
+                                    className="peer h-6 w-6 rounded-lg border-gray-300 accent-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 focus:ring-offset-0 opacity-0 absolute z-10 cursor-pointer"
+                                    title={paid ? "Paid – click to unmark" : "Unpaid – click to mark paid"}
+                                  />
+                                  <div className={`size-7 rounded-lg flex items-center justify-center border-2 transition-all
+                                    ${paid 
+                                      ? "bg-[#134e4a] border-[#134e4a] text-white shadow-sm shadow-[#134e4a]/20" 
+                                      : overdue
+                                        ? "bg-rose-50 border-rose-300 text-rose-600 animate-pulse shadow-sm shadow-rose-200"
+                                        : "bg-white border-gray-200 text-gray-300 group-hover:border-gray-300"
+                                    }`}
+                                  >
+                                    {paid ? (
+                                      <i className="las la-check text-sm font-bold" />
+                                    ) : overdue ? (
+                                      <i className="las la-exclamation-triangle text-sm" />
+                                    ) : (
+                                      <i className="las la-clock text-sm" />
+                                    )}
+                                  </div>
+                                </label>
+                                <span className={`text-[9px] font-bold uppercase tracking-tighter ${
+                                  paid ? "text-[#134e4a]" : overdue ? "text-rose-600" : "text-gray-400"
+                                }`}>
+                                  {paid ? "Paid" : overdue ? "Overdue" : "Pending"}
                                 </span>
-                              </label>
+                              </div>
                             </td>
                           );
                         })}

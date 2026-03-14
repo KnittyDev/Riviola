@@ -32,6 +32,8 @@ export default async function StaffPage() {
     getCompanyInvestorProperties(serviceClient, companyId),
   ]);
 
+  const totalInvestorsCount = new Set(investorProperties.map(p => p.profile_id)).size;
+
   // Build a time-series of investor portfolio value (EUR) based on when units were registered
   const byMonth = new Map<string, number>(); // key = YYYY-MM
   for (const row of investorProperties) {
@@ -159,7 +161,7 @@ export default async function StaffPage() {
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Investor accounts
           </p>
-          <p className="text-2xl font-extrabold text-gray-900">—</p>
+          <p className="text-2xl font-extrabold text-gray-900">{totalInvestorsCount}</p>
         </div>
       </div>
 
