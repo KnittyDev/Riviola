@@ -108,6 +108,9 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   m²
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Delivery
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">
@@ -148,6 +151,15 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   <td className="px-6 py-4 text-sm text-gray-700">{row.unit}</td>
                   <td className="px-6 py-4 text-sm text-gray-700">
                     {row.area_m2 != null ? `${row.area_m2}` : "—"}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                      row.investor_type === "renter" 
+                        ? "bg-amber-50 text-amber-700 border-amber-100" 
+                        : "bg-blue-50 text-blue-700 border-blue-100"
+                    }`}>
+                      {row.investor_type || "buyer"}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">
                     {row.delivery_period || "—"}

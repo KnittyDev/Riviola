@@ -1,67 +1,30 @@
 "use client";
 
 import { useState } from "react";
-
-
-
-const FULL_PROCESS_FEATURE = "We will take care of the entire process for you.";
-const FULL_PROCESS_MODAL_TEXT =
-  "We manage and take responsibility for the entire process on your behalf. We handle all documentation for your construction projects, register investors, buyers, and renters, and communicate with investors. We take care of all issues. We manage the maintenance fees for apartment buildings and residential units.";
+import { useTranslations } from "next-intl";
 
 const tiers = [
   {
-    name: "Essence",
-    description: "Perfect for single buildings or small portfolios.",
+    id: "essence",
     monthlyPrice: 99,
     annualPrice: 719,
-    includedTierName: null as string | null,
-    features: [
-      "Up to 2 Buildings / Projects",
-      "Basic Investor Tracking",
-      "Document Management",
-      "Basic Financial Reporting",
-      "Standard Financial Reporting",
-      "Investor Portal Access",
-      "We manage 50% of the process.",
-      "0% commission on all payments made and transferred",
-    ],
-    cta: "Choose Essence",
+    includedTierId: null,
     variant: "secondary" as const,
     recommended: false,
   },
   {
-    name: "Signature",
-    description: "Optimized for professional property management firms.",
+    id: "signature",
     monthlyPrice: 149,
     annualPrice: 999,
-    includedTierName: "Essence",
-    features: [
-      "We will take care of the entire process for you.",
-      "Up to 10 Buildings / Projects",
-      "Automated Dues Collection",
-      "Advanced Financial Analytics",
-      "Auto Invoice Generation",
-      "Request & Maintenance Tracking",
-    ],
-    cta: "Choose Signature",
+    includedTierId: "essence",
     variant: "primary" as const,
     recommended: true,
   },
   {
-    name: "Ultra Deluxe",
-    description: "Enterprise-grade features for large-scale operations.",
+    id: "ultraDeluxe",
     monthlyPrice: 199,
     annualPrice: 1299,
-    includedTierName: "Signature",
-    features: [
-      "We will take care of the entire process for you.",
-      "Unlimited Buildings & Projects",
-      "Full Customization",
-      "Priority Support & Dedicated Manager",
-      "White-label Investor Reports",
-      "Bulk Payment Processing",
-    ],
-    cta: "Choose Ultra Deluxe",
+    includedTierId: "signature",
     variant: "outline" as const,
     recommended: false,
   },
@@ -70,13 +33,14 @@ const tiers = [
 export function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const t = useTranslations("Pricing");
 
   return (
     <section id="pricing" className="pt-20 pb-32 bg-white overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <h2 className="text-4xl font-extrabold text-gray-900 mb-6 tracking-tight">
-            Pricing
+            {t("title")}
           </h2>
           <div className="inline-flex p-1 bg-gray-100 rounded-2xl">
             <button
@@ -87,7 +51,7 @@ export function PricingSection() {
                 : "text-gray-500 hover:text-[#134e4a]"
                 }`}
             >
-              Monthly Billing
+              {t("billingMonthly")}
             </button>
             <button
               type="button"
@@ -97,7 +61,7 @@ export function PricingSection() {
                 : "text-gray-500 hover:text-[#134e4a]"
                 }`}
             >
-              Annual (Save 40%)
+              {t("billingAnnual")} <span className="opacity-60">{t("billingAnnualSaving")}</span>
             </button>
           </div>
         </div>
@@ -107,11 +71,11 @@ export function PricingSection() {
             const displayPrice = isAnnual
               ? tier.annualPrice
               : tier.monthlyPrice;
-            const periodText = isAnnual ? "/year" : "/mo";
+            const periodText = isAnnual ? t("periodYear") : t("periodMo");
 
             return (
               <div
-                key={tier.name}
+                key={tier.id}
                 className={`p-8 rounded-[32px] border-2 transition-all relative ${tier.recommended
                   ? "border-[#134e4a] bg-white shadow-2xl md:-mt-4 md:mb-4"
                   : "border-teal-400 bg-[#f9fafb]/50 hover:border-[#134e4a] hover:bg-white hover:shadow-2xl"
@@ -119,13 +83,13 @@ export function PricingSection() {
               >
                 {tier.recommended && (
                   <div className="absolute -top-4 right-8 bg-[#134e4a] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
-                    Recommended
+                    {t("tierRecommended")}
                   </div>
                 )}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {tier.name}
+                  {t(`tiers.${tier.id}.name`)}
                 </h3>
-                <p className="text-gray-500 text-sm mb-4">{tier.description}</p>
+                <p className="text-gray-500 text-sm mb-4">{t(`tiers.${tier.id}.description`)}</p>
                 <div className="text-4xl font-extrabold text-[#134e4a] mb-6">
                   {displayPrice}€
                   <span className="text-base text-gray-400 font-medium">
@@ -134,41 +98,42 @@ export function PricingSection() {
                 </div>
                 {isAnnual && (
                   <p className="text-sm text-gray-500 -mt-4 mb-2">
-                    {Math.round(tier.annualPrice / 12)}€/mo equivalent
+                    {Math.round(tier.annualPrice / 12)}€{t("moEquivalent")}
                   </p>
                 )}
                 <ul className="space-y-4 mb-8">
-                  {tier.includedTierName && (
+                  {tier.includedTierId && (
                     <li className="flex items-center gap-3 text-sm text-gray-600">
                       <i className="las la-check-double text-teal-500 text-lg shrink-0" aria-hidden />
                       <span className="flex-1 font-medium text-gray-700">
-                        All {tier.includedTierName} features included
+                        {t("includedTier", { tier: t(`tiers.${tier.includedTierId}.name`) })}
                       </span>
                     </li>
                   )}
-                  {tier.features.map((feature) => {
-                    const isFullProcess = feature === FULL_PROCESS_FEATURE;
-                    return (
-                      <li
-                        key={feature}
-                        className="flex items-center gap-3 text-sm text-gray-600"
+                  {tier.id !== 'essence' && (
+                    <li className="flex items-center gap-3 text-sm text-gray-600">
+                      <i className="las la-check-circle text-teal-500 text-lg shrink-0" aria-hidden />
+                      <span className="flex-1">{t("fullProcessFeature")}</span>
+                      <button
+                        type="button"
+                        onClick={() => setInfoModalOpen(true)}
+                        className="shrink-0 w-5 h-5 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center hover:bg-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 animate-pulse hover:animate-none"
+                        aria-label="What does full process care mean?"
+                        title="More info"
                       >
-                        <i className="las la-check-circle text-teal-500 text-lg shrink-0" aria-hidden />
-                        <span className="flex-1">{feature}</span>
-                        {isFullProcess && (
-                          <button
-                            type="button"
-                            onClick={() => setInfoModalOpen(true)}
-                            className="shrink-0 w-5 h-5 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center hover:bg-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 animate-pulse hover:animate-none"
-                            aria-label="What does full process care mean?"
-                            title="More info"
-                          >
-                            <span className="text-xs font-bold">?</span>
-                          </button>
-                        )}
-                      </li>
-                    );
-                  })}
+                        <span className="text-xs font-bold">?</span>
+                      </button>
+                    </li>
+                  )}
+                  {(t.raw(`tiers.${tier.id}.features`) as string[]).map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-3 text-sm text-gray-600"
+                    >
+                      <i className="las la-check-circle text-teal-500 text-lg shrink-0" aria-hidden />
+                      <span className="flex-1">{feature}</span>
+                    </li>
+                  ))}
                 </ul>
                 <button
                   type="button"
@@ -179,7 +144,7 @@ export function PricingSection() {
                       : "border-2 border-[#134e4a] text-[#134e4a] hover:bg-teal-50"
                     }`}
                 >
-                  {tier.cta}
+                  {t(`tiers.${tier.id}.cta`)}
                 </button>
               </div>
             );
@@ -202,7 +167,7 @@ export function PricingSection() {
           <div className="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border border-gray-100">
             <div className="flex items-start justify-between gap-4">
               <h3 id="full-process-modal-title" className="text-lg font-bold text-gray-900">
-                Full process care
+                {t("fullProcessModalTitle")}
               </h3>
               <button
                 type="button"
@@ -214,7 +179,7 @@ export function PricingSection() {
               </button>
             </div>
             <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-              {FULL_PROCESS_MODAL_TEXT}
+              {t("fullProcessModalText")}
             </p>
           </div>
         </div>

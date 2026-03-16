@@ -1,7 +1,10 @@
 {
   "Hero": {
-    "title": "High-end construction management for modern investors.",
-    "subtitle": "Track every beam, budget, and breakthrough in real-time."
+    "badge": "Next-Gen Infrastructure",
+    "title": "Architecture of <gradient>Excellence</gradient> <br></br> and Transparency.",
+    "subtitle": "High-end construction management for modern investors. Track every beam, budget, and breakthrough in real-time.",
+    "buttonLaunch": "Launch Project",
+    "buttonDemo": "View Demo"
   },
   "Navigation": {
     "dashboard": "Dashboard",
@@ -9,6 +12,133 @@
     "financials": "Financials",
     "requests": "Requests",
     "documents": "Documents",
-    "settings": "Settings"
+    "settings": "Settings",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "Marquee": {
+    "title": "Trusted by Global Leaders in Infrastructure"
+  },
+  "Features": {
+    "title": "Everything you need to <gradient>run properties</gradient> — simplified.",
+    "subtitle": "Ditch the scattered tools. Riviola brings your entire operation into a single, high-performance ecosystem.",
+    "cta": "Start Free Exploration",
+    "seeHowItWorks": "See how it works",
+    "items": {
+      "hub": {
+        "title": "Properties Hub",
+        "description": "The heartbeat of your operation. Manage units, leases, and real-time availability from a high-level command center."
+      },
+      "investor": {
+        "title": "Investor Portal",
+        "description": "Premium reporting for stakeholders. Track allocations and distributions with zero friction."
+      },
+      "payments": {
+        "title": "Dues & Payments",
+        "description": "Automate the pulse of your cashflow with smart invoicing and reconciliation."
+      },
+      "docs": {
+        "title": "Secure Vault",
+        "description": "Compliance made effortless. Store blueprints and contracts securely."
+      },
+      "insights": {
+        "title": "Financial Insights",
+        "description": "Deep-dive analytics and custom reporting boards."
+      },
+      "maintenance": {
+        "title": "Smart Requests",
+        "description": "Track maintenance from request to resolution instantly."
+      },
+      "photos": {
+        "title": "Visual Updates",
+        "description": "Weekly progress photos delivered to every stakeholder."
+      }
+    }
+  },
+  "Pricing": {
+    "title": "Pricing",
+    "billingMonthly": "Monthly Billing",
+    "billingAnnual": "Annual Billing",
+    "billingAnnualSaving": "(Save 40%)",
+    "tierRecommended": "Recommended",
+    "periodMo": "/mo",
+    "periodYear": "/year",
+    "moEquivalent": "€/mo equivalent",
+    "includedTier": "All {tier} features included",
+    "fullProcessFeature": "We will take care of the entire process for you.",
+    "fullProcessModalTitle": "Full process care",
+    "fullProcessModalText": "We manage and take responsibility for the entire process on your behalf. We handle all documentation for your construction projects, register investors, buyers, and renters, and communicate with investors. We take care of all issues. We manage the maintenance fees for apartment buildings and residential units.",
+    "tiers": {
+      "essence": {
+        "name": "Essence",
+        "description": "Perfect for single buildings or small portfolios.",
+        "cta": "Choose Essence",
+        "features": [
+          "Up to 2 Buildings / Projects",
+          "Basic Investor Tracking",
+          "Document Management",
+          "Basic Financial Reporting",
+          "Standard Financial Reporting",
+          "Investor Portal Access",
+          "We manage 50% of the process.",
+          "0% commission on all payments made and transferred"
+        ]
+      },
+      "signature": {
+        "name": "Signature",
+        "description": "Optimized for professional property management firms.",
+        "cta": "Choose Signature",
+        "features": [
+          "Up to 10 Buildings / Projects",
+          "Automated Dues Collection",
+          "Advanced Financial Analytics",
+          "Auto Invoice Generation",
+          "Request & Maintenance Tracking",
+          "0% commission on all payments"
+        ]
+      },
+      "ultraDeluxe": {
+        "name": "Ultra Deluxe",
+        "description": "Enterprise-grade features for large-scale operations.",
+        "cta": "Choose Ultra Deluxe",
+        "features": [
+          "Unlimited Buildings & Projects",
+          "Full Customization",
+          "Priority Support & Dedicated Manager",
+          "White-label Investor Reports",
+          "Bulk Payment Processing",
+          "0% commission on all payments"
+        ]
+      }
+    }
+  },
+  "CTA": {
+    "title": "Set the foundation for your next project today.",
+    "buttonConsultation": "Schedule a Consultation",
+    "buttonTrial": "Start Free Trial"
+  },
+  "Footer": {
+    "subtitle": "High-end construction management for modern investors. Track every beam, budget, and breakthrough in real-time.",
+    "product": "Product",
+    "legal": "Legal",
+    "account": "Account",
+    "rights": "All rights reserved.",
+    "links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "demo": "View Demo",
+      "getStarted": "Get Started",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookie Policy",
+      "signIn": "Sign In",
+      "contact": "Contact",
+      "privacyShort": "Privacy",
+      "termsShort": "Terms",
+      "cookiesShort": "Cookies"
+    }
   }
 }

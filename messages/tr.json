@@ -1,0 +1,143 @@
+{
+  "Hero": {
+    "badge": "Yeni Nesil Altyapı",
+    "title": "Mükemmeliyet ve <gradient>Şeffaflık</gradient> <br></br> Mimarisi.",
+    "subtitle": "Modern yatırımcılar için üst düzey inşaat yönetimi. Her kirişi, bütçeyi ve ilerlemeyi gerçek zamanlı olarak takip edin.",
+    "buttonLaunch": "Projeyi Başlat",
+    "buttonDemo": "Demoyu Gör"
+  },
+  "Navigation": {
+    "dashboard": "Panel",
+    "properties": "Mülkler",
+    "financials": "Finansallar",
+    "requests": "Talepler",
+    "documents": "Belgeler",
+    "settings": "Ayarlar",
+    "features": "Özellikler",
+    "pricing": "Fiyatlandırma",
+    "contact": "İletişim",
+    "signIn": "Giriş Yap",
+    "getStarted": "Hemen Başla"
+  },
+  "Marquee": {
+    "title": "Küresel Altyapı Liderlerinin Güveni"
+  },
+  "Features": {
+    "title": "Gayrimenkul yönetimi için ihtiyacınız olan <gradient>her şey</gradient> — basitleştirildi.",
+    "subtitle": "Karmaşık araçları bırakın. Riviola, tüm operasyonunuzu tek bir yüksek performanslı ekosisteme taşır.",
+    "cta": "Ücretsiz Keşfe Başlayın",
+    "seeHowItWorks": "Nasıl çalıştığını görün",
+    "items": {
+      "hub": {
+        "title": "Mülk Merkezi",
+        "description": "Operasyonunuzun kalbi. Üniteleri, kiralamaları ve gerçek zamanlı doluluğu yönetin."
+      },
+      "investor": {
+        "title": "Yatırımcı Portalı",
+        "description": "Paydaşlar için premium raporlama. Tahsisatları ve dağıtımları sıfır sürtünme ile takip edin."
+      },
+      "payments": {
+        "title": "Aidat & Ödemeler",
+        "description": "Akıllı faturalama ile nakit akışınızı otomatikleştirin."
+      },
+      "docs": {
+        "title": "Güvenli Depo",
+        "description": "Uyumluluk zahmetsiz hale geldi. Planları ve sözleşmeleri güvenle saklayın."
+      },
+      "insights": {
+        "title": "Finansal Analizler",
+        "description": "Derinlemesine analizler ve özel raporlama panoları."
+      },
+      "maintenance": {
+        "title": "Akıllı Talepler",
+        "description": "Bakım taleplerini anında takip edin."
+      },
+      "photos": {
+        "title": "Görsel Güncellemeler",
+        "description": "Haftalık ilerleme fotoğrafları tüm paydaşlara ulaşsın."
+      }
+    }
+  },
+  "Pricing": {
+    "title": "Fiyatlandırma",
+    "billingMonthly": "Aylık Ödeme",
+    "billingAnnual": "Yıllık Ödeme",
+    "billingAnnualSaving": "(%40 Tasarruf Edin)",
+    "tierRecommended": "Önerilen",
+    "periodMo": "/ay",
+    "periodYear": "/yıl",
+    "moEquivalent": "€/ay eşdeğeri",
+    "includedTier": "Tüm {tier} özellikleri dahil",
+    "fullProcessFeature": "Tüm süreçle biz ilgileniyoruz.",
+    "fullProcessModalTitle": "Tam süreç yönetimi",
+    "fullProcessModalText": "Sizin adınıza tüm süreci biz yönetiyor ve sorumluluk alıyoruz. İnşaat projeleriniz için tüm belgeleri yönetiyor, yatırımcıları, alıcıları ve kiracıları kaydediyor ve yatırımcılarla iletişim kuruyoruz. Tüm sorunlarla biz ilgileniyoruz. Apartman ve konut birimleri için yönetim aidatlarını takip ediyoruz.",
+    "tiers": {
+      "essence": {
+        "name": "Essence",
+        "description": "Tek binalar veya küçük portföyler için ideal.",
+        "cta": "Essence'ı Seç",
+        "features": [
+          "2 Binaya / Projeye Kadar",
+          "Temel Yatırımcı Takibi",
+          "Dijital Belge Yönetimi",
+          "Temel Finansal Raporlama",
+          "Yatırımcı Portalı Erişimi",
+          "Sürecin %50'sini biz yönetiyoruz.",
+          "Ödemelerde %0 komisyon"
+        ]
+      },
+      "signature": {
+        "name": "Signature",
+        "description": "Profesyonel mülk yönetim firmaları için optimize edilmiş.",
+        "cta": "Signature'ı Seç",
+        "features": [
+          "10 Binaya / Projeye Kadar",
+          "Otomatik Aidat Tahsilatı",
+          "Gelişmiş Finansal Analitikler",
+          "Otomatik Fatura Oluşturma",
+          "Arıza ve Bakım Takibi",
+          "%0 Komisyon ile Ödeme Alma"
+        ]
+      },
+      "ultraDeluxe": {
+        "name": "Ultra Deluxe",
+        "description": "Büyük ölçekli operasyonlar için kurumsal özellikler.",
+        "cta": "Ultra Deluxe'u Seç",
+        "features": [
+          "Sınırsız Bina ve Proje",
+          "Tam Sistem Özelleştirme",
+          "Öncelikli Destek ve Özel Yönetici",
+          "Yatırımcı Raporları (White-label)",
+          "Toplu Ödeme İşleme",
+          "%0 Komisyon ile Ödeme Alma"
+        ]
+      }
+    }
+  },
+  "CTA": {
+    "title": "Gelecek projenizin temellerini bugünden atın.",
+    "buttonConsultation": "Danışmanlık Randevusu Al",
+    "buttonTrial": "Ücretsiz Denemeye Başla"
+  },
+  "Footer": {
+    "subtitle": "Modern yatırımcılar için üst düzey inşaat yönetimi. Her kirişi, bütçeyi ve ilerlemeyi gerçek zamanlı olarak takip edin.",
+    "product": "Ürün",
+    "legal": "Yasal",
+    "account": "Hesap",
+    "rights": "Tüm hakları saklıdır.",
+    "links": {
+      "features": "Özellikler",
+      "pricing": "Fiyatlandırma",
+      "demo": "Demoyu Gör",
+      "getStarted": "Başla",
+      "privacy": "Gizlilik Politikası",
+      "terms": "Kullanım Koşulları",
+      "cookies": "Çerez Politikası",
+      "signIn": "Giriş Yap",
+      "contact": "İletişim",
+      "privacyShort": "Gizlilik",
+      "termsShort": "Koşullar",
+      "cookiesShort": "Çerezler"
+    }
+  }
+}

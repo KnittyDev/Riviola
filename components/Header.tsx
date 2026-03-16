@@ -1,13 +1,17 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
-
-const navLinks = [
-  { href: "#features", label: "Features" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#cta", label: "Contact" },
-];
+import { LocaleSwitcher } from "./LocaleSwitcher";
+import { useTranslations } from "next-intl";
 
 export function Header() {
+  const t = useTranslations("Navigation");
+
+  const navLinks = [
+    { href: "#features", label: t("features") },
+    { href: "#pricing", label: t("pricing") },
+    { href: "#cta", label: t("contact") },
+  ];
+
   return (
     <header className="fixed top-0 z-[100] w-full bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
@@ -36,17 +40,19 @@ export function Header() {
           ))}
         </nav>
         <div className="flex items-center gap-4">
+          <LocaleSwitcher />
+          <div className="h-4 w-[1px] bg-gray-200 mx-1 hidden sm:block" />
           <Link
             href="/login"
             className="px-5 py-2.5 text-sm font-bold text-gray-900 hover:text-[#134e4a] transition-colors"
           >
-            Sign In
+            {t("signIn")}
           </Link>
           <Link
             href="/onboarding"
             className="px-6 py-2.5 bg-[#134e4a] text-white rounded-full text-sm font-bold shadow-lg shadow-[#134e4a]/20 hover:bg-[#115e59] hover:scale-105 transition-all"
           >
-            Get Started
+            {t("getStarted")}
           </Link>
         </div>
       </div>

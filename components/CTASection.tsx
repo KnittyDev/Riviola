@@ -1,4 +1,9 @@
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+
 export function CTASection() {
+  const t = useTranslations("CTA");
+
   return (
     <section id="cta" className="w-full bg-white py-16 mb-24 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-8 md:px-12 lg:px-20">
@@ -10,21 +15,21 @@ export function CTASection() {
           </div>
           <div className="relative z-10 max-w-2xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight">
-              Set the foundation for your next project today.
+              {t("title")}
             </h2>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <a
+              <Link
                 href="/onboarding"
                 className="h-16 px-10 rounded-2xl bg-white text-[#134e4a] font-extrabold text-lg shadow-xl shadow-black/20 hover:scale-105 transition-transform flex items-center justify-center"
               >
-                Schedule a Consultation
-              </a>
-              <a
+                {t("buttonConsultation")}
+              </Link>
+              <Link
                 href="/onboarding"
                 className="h-16 px-10 rounded-2xl bg-teal-800 text-white font-extrabold text-lg border border-teal-700 hover:bg-teal-700 transition-colors flex items-center justify-center"
               >
-                Start Free Trial
-              </a>
+                {t("buttonTrial")}
+              </Link>
             </div>
           </div>
         </div>

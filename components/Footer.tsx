@@ -1,25 +1,28 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
-
-const productLinks = [
-  { href: "/#features", label: "Features" },
-  { href: "/#pricing", label: "Pricing" },
-  { href: "/demo", label: "View Demo" },
-  { href: "/onboarding", label: "Get Started" },
-];
-
-const legalLinks = [
-  { href: "/privacy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms of Service" },
-  { href: "/cookies", label: "Cookie Policy" },
-];
-
-const accountLinks = [
-  { href: "/login", label: "Sign In" },
-  { href: "/#cta", label: "Contact" },
-];
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+  const t = useTranslations("Footer");
+
+  const productLinks = [
+    { href: "/#features", label: t("links.features") },
+    { href: "/#pricing", label: t("links.pricing") },
+    { href: "/demo", label: t("links.demo") },
+    { href: "/onboarding", label: t("links.getStarted") },
+  ];
+
+  const legalLinks = [
+    { href: "/privacy", label: t("links.privacy") },
+    { href: "/terms", label: t("links.terms") },
+    { href: "/cookies", label: t("links.cookies") },
+  ];
+
+  const accountLinks = [
+    { href: "/login", label: t("links.signIn") },
+    { href: "/#cta", label: t("links.contact") },
+  ];
+
   return (
     <footer className="bg-[#f9fafb] py-16 lg:py-20 border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-6">
@@ -38,13 +41,12 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
-              High-end construction management for modern investors. Track every
-              beam, budget, and breakthrough in real-time.
+              {t("subtitle")}
             </p>
           </div>
           <div>
             <h4 className="font-bold text-gray-900 text-sm uppercase tracking-wider mb-5">
-              Product
+              {t("product")}
             </h4>
             <ul className="space-y-3 text-sm text-gray-600">
               {productLinks.map((link) => (
@@ -61,7 +63,7 @@ export function Footer() {
           </div>
           <div>
             <h4 className="font-bold text-gray-900 text-sm uppercase tracking-wider mb-5">
-              Legal
+              {t("legal")}
             </h4>
             <ul className="space-y-3 text-sm text-gray-600">
               {legalLinks.map((link) => (
@@ -78,7 +80,7 @@ export function Footer() {
           </div>
           <div>
             <h4 className="font-bold text-gray-900 text-sm uppercase tracking-wider mb-5">
-              Account
+              {t("account")}
             </h4>
             <ul className="space-y-3 text-sm text-gray-600">
               {accountLinks.map((link) => (
@@ -96,17 +98,17 @@ export function Footer() {
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t border-gray-200 gap-4">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Riviola. All rights reserved.
+            © {new Date().getFullYear()} Riviola. {t("rights")}
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500">
             <Link href="/privacy" className="hover:text-[#134e4a] transition-colors">
-              Privacy
+              {t("links.privacyShort")}
             </Link>
             <Link href="/terms" className="hover:text-[#134e4a] transition-colors">
-              Terms
+              {t("links.termsShort")}
             </Link>
             <Link href="/cookies" className="hover:text-[#134e4a] transition-colors">
-              Cookies
+              {t("links.cookiesShort")}
             </Link>
           </div>
         </div>
