@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 const LOGOS = [
   "LUMINA GROUP",
@@ -9,8 +9,8 @@ const LOGOS = [
   "CORE INVEST",
 ];
 
-export function MarqueeSection() {
-  const t = useTranslations("Marquee");
+export async function MarqueeSection() {
+  const t = await getTranslations("Marquee");
   const duplicated = [...LOGOS, ...LOGOS];
 
   return (

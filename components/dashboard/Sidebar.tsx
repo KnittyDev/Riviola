@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 const allNavItems = [
   { href: "/dashboard", label: "Dashboard", icon: "las la-th-large" },

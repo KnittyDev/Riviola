@@ -1,10 +1,10 @@
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { LocaleSwitcher } from "./LocaleSwitcher";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export function Header() {
-  const t = useTranslations("Navigation");
+export async function Header() {
+  const t = await getTranslations("Navigation");
 
   const navLinks = [
     { href: "#features", label: t("features") },

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { StaffSidebar } from "@/components/dashboard/StaffSidebar";
@@ -25,7 +25,8 @@ export function DashboardLayoutClient({
   email?: string | null;
 }) {
   const pathname = usePathname();
-  const isStaff = pathname?.startsWith("/dashboard/staff") && (role === "staff" || role === "admin");
+  const lowerRole = (role || "investor").toLowerCase();
+  const isStaff = pathname?.toLowerCase().includes("/staff") && (lowerRole === "staff" || lowerRole === "admin");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (

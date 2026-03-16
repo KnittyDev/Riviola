@@ -1,29 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+
+const PRICE_DATA = {
+  en: {
+    essence: { monthly: 99, annual: 719 },
+    signature: { monthly: 149, annual: 999 },
+    ultraDeluxe: { monthly: 199, annual: 1299 },
+    symbol: "€"
+  },
+  tr: {
+    essence: { monthly: 4000, annual: 28800 },
+    signature: { monthly: 5000, annual: 36000 },
+    ultraDeluxe: { monthly: 7000, annual: 50400 },
+    symbol: "₺"
+  }
+};
 
 const tiers = [
   {
     id: "essence",
-    monthlyPrice: 99,
-    annualPrice: 719,
     includedTierId: null,
     variant: "secondary" as const,
     recommended: false,
   },
   {
     id: "signature",
-    monthlyPrice: 149,
-    annualPrice: 999,
     includedTierId: "essence",
     variant: "primary" as const,
     recommended: true,
   },
   {
     id: "ultraDeluxe",
-    monthlyPrice: 199,
-    annualPrice: 1299,
     includedTierId: "signature",
     variant: "outline" as const,
     recommended: false,
@@ -34,6 +43,10 @@ export function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const t = useTranslations("Pricing");
+  const locale = useLocale() as "en" | "tr";
+
+  const prices = PRICE_DATA[locale] || PRICE_DATA.en;
+  const currencySymbol = prices.symbol;
 
   return (
     <section id="pricing" className="pt-20 pb-32 bg-white overflow-hidden scroll-mt-20">
@@ -68,9 +81,10 @@ export function PricingSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {tiers.map((tier) => {
             const isAnnual = billing === "annual";
+            const tierPrices = (prices as any)[tier.id];
             const displayPrice = isAnnual
-              ? tier.annualPrice
-              : tier.monthlyPrice;
+              ? tierPrices.annual
+              : tierPrices.monthly;
             const periodText = isAnnual ? t("periodYear") : t("periodMo");
 
             return (
@@ -91,14 +105,14 @@ export function PricingSection() {
                 </h3>
                 <p className="text-gray-500 text-sm mb-4">{t(`tiers.${tier.id}.description`)}</p>
                 <div className="text-4xl font-extrabold text-[#134e4a] mb-6">
-                  {displayPrice}€
+                  {displayPrice}{currencySymbol}
                   <span className="text-base text-gray-400 font-medium">
                     {" "}{periodText}
                   </span>
                 </div>
                 {isAnnual && (
                   <p className="text-sm text-gray-500 -mt-4 mb-2">
-                    {Math.round(tier.annualPrice / 12)}€{t("moEquivalent")}
+                    {Math.round(tierPrices.annual / 12)}{currencySymbol}{t("moEquivalent")}
                   </p>
                 )}
                 <ul className="space-y-4 mb-8">

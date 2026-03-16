@@ -4,7 +4,10 @@
     "title": "Mükemmeliyet ve <gradient>Şeffaflık</gradient> <br></br> Mimarisi.",
     "subtitle": "Modern yatırımcılar için üst düzey inşaat yönetimi. Her kirişi, bütçeyi ve ilerlemeyi gerçek zamanlı olarak takip edin.",
     "buttonLaunch": "Projeyi Başlat",
-    "buttonDemo": "Demoyu Gör"
+    "buttonDemo": "Demoyu Gör",
+    "activeProjects": "Aktif Projeler",
+    "activeProjectsNew": "+48 YENİ",
+    "managedAssets": "Yönetilen Varlıklar"
   },
   "Navigation": {
     "dashboard": "Panel",

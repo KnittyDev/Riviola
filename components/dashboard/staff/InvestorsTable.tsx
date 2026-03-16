@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CompanyInvestorPropertyRow } from "@/lib/companyInvestors";
-import { updateInvestorAction } from "@/app/dashboard/staff/investors/actions";
+import { updateInvestorAction } from "@/app/[locale]/dashboard/staff/investors/actions";
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[#134e4a] focus:ring-1 focus:ring-[#134e4a]/20 outline-none text-sm";

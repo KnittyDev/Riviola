@@ -1,8 +1,8 @@
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export function CTASection() {
-  const t = useTranslations("CTA");
+export async function CTASection() {
+  const t = await getTranslations("CTA");
 
   return (
     <section id="cta" className="w-full bg-white py-16 mb-24 scroll-mt-20">

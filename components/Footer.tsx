@@ -1,9 +1,9 @@
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export function Footer() {
-  const t = useTranslations("Footer");
+export async function Footer() {
+  const t = await getTranslations("Footer");
 
   const productLinks = [
     { href: "/#features", label: t("links.features") },

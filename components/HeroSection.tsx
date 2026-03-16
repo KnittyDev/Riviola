@@ -79,9 +79,9 @@ export async function HeroSection() {
                   <div className="w-full h-full bg-[#2dd4bf]/20 flex items-center justify-center"><i className="las la-user text-xs text-[#134e4a]" /></div>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-[#134e4a] uppercase tracking-wider">+48 NEW</span>
+              <span className="text-[10px] font-bold text-[#134e4a] uppercase tracking-wider">{t("activeProjectsNew")}</span>
             </div>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest text-left">Active Projects</p>
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest text-left">{t("activeProjects")}</p>
             <p className="text-[#134e4a] text-2xl font-black text-left">250+</p>
           </div>
 
@@ -93,7 +93,7 @@ export async function HeroSection() {
               </div>
               <span className="text-teal-600 text-xs font-bold">+12.5%</span>
             </div>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1 text-left">Managed Assets</p>
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1 text-left">{t("managedAssets")}</p>
             <p className="text-[#134e4a] text-3xl font-black text-left">€18.2M</p>
           </div>
         </div>

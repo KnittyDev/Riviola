@@ -4,7 +4,10 @@
     "title": "Architecture of <gradient>Excellence</gradient> <br></br> and Transparency.",
     "subtitle": "High-end construction management for modern investors. Track every beam, budget, and breakthrough in real-time.",
     "buttonLaunch": "Launch Project",
-    "buttonDemo": "View Demo"
+    "buttonDemo": "View Demo",
+    "activeProjects": "Active Projects",
+    "activeProjectsNew": "+48 NEW",
+    "managedAssets": "Managed Assets"
   },
   "Navigation": {
     "dashboard": "Dashboard",

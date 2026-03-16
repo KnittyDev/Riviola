@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 const features = [
   { id: "hub", iconClass: "las la-building", size: "large", gradient: "from-emerald-500/10 to-teal-500/10" },
@@ -11,8 +11,8 @@ const features = [
   { id: "photos", iconClass: "las la-camera-retro", size: "small" },
 ];
 
-export function FeaturesSection() {
-  const t = useTranslations("Features");
+export async function FeaturesSection() {
+  const t = await getTranslations("Features");
 
   return (
     <section id="features" className="relative bg-[#fcfdfe] pt-32 pb-20 overflow-hidden border-y border-gray-100 scroll-mt-20">
