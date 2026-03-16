@@ -8,8 +8,11 @@ import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjec
 import { getStaffRecentDuesPayments, getStaffOverdueDues } from "@/lib/duesPayments";
 import type { Building } from "@/lib/supabase/types";
 import { getCompanyInvestorProperties } from "@/lib/companyInvestors";
+import { getTranslations } from "next-intl/server";
 
-export default async function StaffPage() {
+export default async function StaffPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations("Staff");
   const supabase = await createClient();
   const companyId = await getStaffCompanyId(supabase);
   if (!companyId) redirect("/dashboard/staff");
@@ -85,7 +88,7 @@ export default async function StaffPage() {
         }
       }
       const label = d
-        .toLocaleDateString("en-GB", {
+        .toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
           month: "short",
           year: "2-digit",
         })
@@ -105,9 +108,9 @@ export default async function StaffPage() {
             <i className="las la-camera text-2xl" aria-hidden />
           </div>
           <div>
-            <h2 className="text-lg font-bold">Add weekly photo</h2>
+            <h2 className="text-lg font-bold">{t("addPhoto")}</h2>
             <p className="text-sm text-white/90 mt-0.5">
-              Upload weekly progress photos for projects.
+              {t("addPhotoSubtitle")}
             </p>
           </div>
           <i className="las la-plus-circle text-2xl ml-auto opacity-80 group-hover:opacity-100" aria-hidden />
@@ -120,9 +123,9 @@ export default async function StaffPage() {
             <i className="las la-user-plus text-2xl" aria-hidden />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Create investor account</h2>
+            <h2 className="text-lg font-bold text-gray-900">{t("createInvestor")}</h2>
             <p className="text-sm text-gray-500 mt-0.5">
-              Create login accounts for investors.
+              {t("createInvestorSubtitle")}
             </p>
           </div>
           <i className="las la-arrow-right text-xl text-gray-400 ml-auto group-hover:text-[#134e4a]" aria-hidden />
@@ -131,35 +134,35 @@ export default async function StaffPage() {
 
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          Overview
+          {t("overview")}
         </h1>
         <p className="text-gray-500 mt-1">
-          Manage your buildings and create investor accounts.
+          {t("overviewSubtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Buildings
+            {t("stats.buildings")}
           </p>
           <p className="text-2xl font-extrabold text-gray-900">{list.length}</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Active projects
+            {t("stats.activeProjects")}
           </p>
           <p className="text-2xl font-extrabold text-[#134e4a]">{activeCount}</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Completed
+            {t("stats.completed")}
           </p>
           <p className="text-2xl font-extrabold text-emerald-600">{completedCount}</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Investor accounts
+            {t("stats.investorAccounts")}
           </p>
           <p className="text-2xl font-extrabold text-gray-900">{totalInvestorsCount}</p>
         </div>

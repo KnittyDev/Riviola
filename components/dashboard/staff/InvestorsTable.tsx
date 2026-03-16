@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CompanyInvestorPropertyRow } from "@/lib/companyInvestors";
 import { updateInvestorAction } from "@/app/[locale]/dashboard/staff/investors/actions";
+import { useTranslations } from "next-intl";
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[#134e4a] focus:ring-1 focus:ring-[#134e4a]/20 outline-none text-sm";
@@ -25,7 +26,20 @@ const CURRENCIES = [
   { value: "ALL", label: "ALL" },
 ];
 
-export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] }) {
+export type BuildingSummary = {
+  id: string;
+  name: string;
+  blocks: string[];
+};
+
+export function InvestorsTable({ 
+  rows, 
+  buildings = [] 
+}: { 
+  rows: CompanyInvestorPropertyRow[];
+  buildings?: BuildingSummary[];
+}) {
+  const t = useTranslations("Investors");
   const router = useRouter();
   const [editing, setEditing] = useState<CompanyInvestorPropertyRow | null>(null);
   const [editPhone, setEditPhone] = useState("");
@@ -46,7 +60,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
     const fullName = (form.querySelector("[name=fullName]") as HTMLInputElement)?.value?.trim() ?? "";
     const email = (form.querySelector("[name=email]") as HTMLInputElement)?.value?.trim() ?? "";
     const phone = editPhone.trim() || null;
-    const block = (form.querySelector("[name=block]") as HTMLInputElement)?.value?.trim() ?? "";
+    const block = (form.querySelector("[name=block]") as HTMLSelectElement)?.value?.trim() ?? "";
     const unit = (form.querySelector("[name=unit]") as HTMLInputElement)?.value?.trim() ?? "";
     const areaM2Raw = (form.querySelector("[name=areaM2]") as HTMLInputElement)?.value?.trim() ?? "";
     const deliveryPeriod = (form.querySelector("[name=deliveryPeriod]") as HTMLInputElement)?.value?.trim() ?? "";
@@ -79,8 +93,13 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
       router.refresh();
       return;
     }
-    setError(result.error);
+    setError(result.error || "Something went wrong");
   }
+
+  // Find the blocks of the building currently being edited
+  const currentBuildingBlocks = editing 
+    ? (buildings.find(b => b.id === editing.building_id)?.blocks ?? [])
+    : [];
 
   return (
     <>
@@ -90,31 +109,31 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/80">
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Investor
+                  {t("table.investor")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Phone
+                  {t("table.phone")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Project
+                  {t("table.project")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Block
+                  {t("table.block")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Unit
+                  {t("table.unit")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  m²
+                  {t("table.m2")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Type
+                  {t("table.type")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Delivery
+                  {t("table.delivery")}
                 </th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">
-                  Edit
+                  {t("table.edit")}
                 </th>
               </tr>
             </thead>
@@ -142,7 +161,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   <td className="px-6 py-4">
                     <Link
                       href={`/dashboard/staff/buildings/${row.building_id}`}
-                      className="text-sm font-medium text-gray-900 text-[#134e4a] hover:underline"
+                      className="text-sm font-medium text-[#134e4a] hover:underline"
                     >
                       {row.building_name}
                     </Link>
@@ -155,10 +174,10 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
                       row.investor_type === "renter" 
-                        ? "bg-amber-50 text-amber-700 border-amber-100" 
+                         ? "bg-amber-50 text-amber-700 border-amber-100" 
                         : "bg-blue-50 text-blue-700 border-blue-100"
                     }`}>
-                      {row.investor_type || "buyer"}
+                      {row.investor_type === "renter" ? t("table.types.renter") : t("table.types.buyer")}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-700">
@@ -170,7 +189,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                       onClick={() => setEditing(row)}
                       className="text-sm font-medium text-[#134e4a] hover:underline"
                     >
-                      Edit
+                      {t("table.edit")}
                     </button>
                   </td>
                 </tr>
@@ -194,7 +213,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
           >
             <div className="p-6 border-b border-gray-200">
               <h2 id="edit-investor-title" className="text-lg font-bold text-gray-900">
-                Edit investor
+                {t("modal.editTitle")}
               </h2>
               <p className="text-sm text-gray-500 mt-0.5">
                 {editing.building_name} – {editing.block} / {editing.unit}
@@ -207,7 +226,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                 </p>
               )}
               <div>
-                <label className={labelClass}>Full name</label>
+                <label className={labelClass}>{t("modal.fullName")}</label>
                 <input
                   name="fullName"
                   type="text"
@@ -216,7 +235,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                 />
               </div>
               <div>
-                <label className={labelClass}>Email</label>
+                <label className={labelClass}>{t("modal.email")}</label>
                 <input
                   name="email"
                   type="email"
@@ -225,7 +244,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                 />
               </div>
               <div>
-                <label className={labelClass}>Phone</label>
+                <label className={labelClass}>{t("modal.phone")}</label>
                 <input
                   name="phone"
                   type="tel"
@@ -235,33 +254,46 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   className={inputClass}
                 />
                 <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
-                  * Please do not remove or delete the country code (e.g., +90, +382).
+                  {t("modal.phoneNote")}
                 </p>
               </div>
               <div>
-                <label className={labelClass}>Investor type</label>
+                <label className={labelClass}>{t("modal.investorType")}</label>
                 <select
                   name="investorType"
                   defaultValue={editing.investor_type ?? "buyer"}
                   className={inputClass}
                 >
-                  <option value="buyer">Buyer (sees Financials)</option>
-                  <option value="renter">Renter (no Financials)</option>
+                  <option value="buyer">{t("modal.investorTypeOptions.buyer")}</option>
+                  <option value="renter">{t("modal.investorTypeOptions.renter")}</option>
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Block</label>
-                  <input
-                    name="block"
-                    type="text"
-                    defaultValue={editing.block}
-                    required
-                    className={inputClass}
-                  />
+                  <label className={labelClass}>{t("modal.block")}</label>
+                  {currentBuildingBlocks.length > 0 ? (
+                    <select
+                      name="block"
+                      defaultValue={editing.block}
+                      required
+                      className={inputClass}
+                    >
+                      {currentBuildingBlocks.map(b => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      name="block"
+                      type="text"
+                      defaultValue={editing.block}
+                      required
+                      className={inputClass}
+                    />
+                  )}
                 </div>
                 <div>
-                  <label className={labelClass}>Unit</label>
+                  <label className={labelClass}>{t("modal.unit")}</label>
                   <input
                     name="unit"
                     type="text"
@@ -273,7 +305,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Area (m²)</label>
+                  <label className={labelClass}>{t("modal.area")}</label>
                   <input
                     name="areaM2"
                     type="number"
@@ -284,7 +316,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Delivery period</label>
+                  <label className={labelClass}>{t("modal.deliveryPeriod")}</label>
                   <input
                     name="deliveryPeriod"
                     type="text"
@@ -296,7 +328,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Purchase value</label>
+                  <label className={labelClass}>{t("modal.purchaseValue")}</label>
                   <input
                     name="purchaseValue"
                     type="number"
@@ -307,7 +339,7 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Currency</label>
+                  <label className={labelClass}>{t("modal.currency")}</label>
                   <select
                     name="purchaseCurrency"
                     defaultValue={editing.purchase_currency ?? "EUR"}
@@ -327,14 +359,14 @@ export function InvestorsTable({ rows }: { rows: CompanyInvestorPropertyRow[] })
                   disabled={loading}
                   className="px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] disabled:opacity-60"
                 >
-                  {loading ? "Saving…" : "Save"}
+                  {loading ? t("modal.saving") : t("modal.save")}
                 </button>
                 <button
                   type="button"
                   onClick={() => !loading && setEditing(null)}
                   className="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50"
                 >
-                  Cancel
+                  {t("modal.cancel")}
                 </button>
               </div>
             </form>

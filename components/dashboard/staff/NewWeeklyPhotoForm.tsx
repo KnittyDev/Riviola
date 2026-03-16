@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
+import { useTranslations } from "next-intl";
 
 export type BuildingOption = {
   id: string;
@@ -15,6 +16,7 @@ export type BuildingOption = {
 };
 
 export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] }) {
+  const t = useTranslations("WeeklyPhotos");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedBuildingId, setSelectedBuildingId] = useState("");
@@ -101,8 +103,9 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
 
     if (insertUpdateError || !updateRow?.id) {
       setIsSubmitting(false);
-      setSubmitError(insertUpdateError?.message ?? "Failed to create update.");
-      toast.error(insertUpdateError?.message ?? "Failed to create update.");
+      const msg = insertUpdateError?.message ?? t("errorGeneric");
+      setSubmitError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -119,8 +122,9 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
         .upload(path, file, { contentType: file.type, upsert: false });
       if (uploadError) {
         setIsSubmitting(false);
-        setSubmitError(uploadError.message);
-        toast.error(`Upload failed: ${uploadError.message}`);
+        const msg = t("errorUpload", { message: uploadError.message });
+        setSubmitError(msg);
+        toast.error(msg);
         return;
       }
       const { error: imgError } = await supabase
@@ -133,14 +137,15 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
         });
       if (imgError) {
         setIsSubmitting(false);
-        setSubmitError(imgError.message);
-        toast.error(`Failed to save image record: ${imgError.message}`);
+        const msg = t("errorRecord", { message: imgError.message });
+        setSubmitError(msg);
+        toast.error(msg);
         return;
       }
     }
 
     setIsSubmitting(false);
-    toast.success("Weekly update uploaded successfully.");
+    toast.success(t("success"));
     router.push("/dashboard/staff");
     router.refresh();
   };
@@ -160,10 +165,10 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
             href="/dashboard/staff"
             className="text-sm font-semibold text-gray-500 hover:text-[#134e4a] transition-colors flex items-center gap-1 mb-2"
           >
-            <i className="las la-arrow-left" aria-hidden /> Back to dashboard
+            <i className="las la-arrow-left" aria-hidden /> {t("back")}
           </Link>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-            Add Weekly Photo
+            {t("title")}
           </h1>
         </div>
       </div>
@@ -171,7 +176,7 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
           <label className="block text-sm font-bold text-gray-700 mb-2">
-            Select Building
+            {t("selectBuilding")}
           </label>
           <select
             value={selectedBuildingId}
@@ -179,7 +184,7 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors bg-white text-sm"
             required
           >
-            <option value="">Select a project...</option>
+            <option value="">{t("selectProject")}</option>
             {buildings.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.name} — {b.location || "—"}
@@ -192,7 +197,7 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up">
             <div className="flex items-center justify-between mb-4">
               <label className="text-sm font-bold text-gray-700">
-                Which block(s) is this for?
+                {t("blocksLabel")}
               </label>
               <button
                 type="button"
@@ -200,8 +205,8 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
                 className="text-xs font-bold text-[#134e4a] hover:underline"
               >
                 {selectedBlocks.length === availableBlocks.length
-                  ? "Deselect All"
-                  : "Select All Blocks"}
+                  ? t("deselectAll")
+                  : t("selectAll")}
               </button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -230,38 +235,38 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Date Range (e.g. 13-20 Dec)
+                {t("dateRange")}
               </label>
               <input
                 type="text"
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                placeholder="13-20 Dec 2024"
+                placeholder={t("dateRangePlaceholder")}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Week Label
+                {t("weekLabel")}
               </label>
               <input
                 type="text"
                 value={weekLabel}
                 onChange={(e) => setWeekLabel(e.target.value)}
-                placeholder="Week 51"
+                placeholder={t("weekLabelPlaceholder")}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
               />
             </div>
           </div>
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
-              Progress Description
+              {t("description")}
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Provide a brief update on what's visible in the photos..."
+              placeholder={t("descriptionPlaceholder")}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm min-h-[100px] resize-none"
               required
             />
@@ -292,9 +297,9 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
           <div className="size-16 rounded-full bg-[#134e4a]/10 flex items-center justify-center mx-auto mb-4 text-[#134e4a] group-hover:bg-[#134e4a] group-hover:text-white transition-all">
             <i className="las la-cloud-upload-alt text-3xl" aria-hidden />
           </div>
-          <p className="font-bold text-gray-900 text-lg">Upload photos</p>
+          <p className="font-bold text-gray-900 text-lg">{t("uploadTitle")}</p>
           <p className="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
-            Click to browse or drag and drop your weekly update photos here.
+            {t("uploadSubtitle")}
           </p>
           <input
             type="file"
@@ -308,7 +313,7 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
             htmlFor="photo-upload"
             className="mt-6 inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-[#134e4a] text-white font-bold hover:bg-[#115e59] transition-all cursor-pointer shadow-md shadow-[#134e4a]/10 active:scale-95"
           >
-            Select Files
+            {t("selectFiles")}
           </label>
         </div>
 
@@ -326,10 +331,10 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
           {isSubmitting ? (
             <span className="flex items-center justify-center gap-2">
               <i className="las la-spinner animate-spin" aria-hidden />
-              Submitting...
+              {t("submitting")}
             </span>
           ) : (
-            "Upload Weekly Update"
+            t("submit")
           )}
         </button>
       </form>

@@ -11,6 +11,7 @@ import {
   Area,
   ComposedChart,
 } from "recharts";
+import { useTranslations, useLocale } from "next-intl";
 
 const PRIMARY = "#134e4a";
 
@@ -42,6 +43,7 @@ function formatEuro(value: number) {
 }
 
 export function StaffPerformanceChart({ data }: StaffPerformanceChartProps) {
+  const t = useTranslations("Staff.chart");
   const chartData = data && data.length > 0 ? data : FALLBACK_DATA;
   const totalValue = chartData.reduce((sum, d) => sum + d.value, 0);
   const maxValue = chartData.reduce((max, d) => (d.value > max ? d.value : max), 0) || 1;
@@ -49,7 +51,7 @@ export function StaffPerformanceChart({ data }: StaffPerformanceChartProps) {
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm h-full flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-gray-900">Investor Portfolio Value</h3>
+        <h3 className="text-lg font-bold text-gray-900">{t("title")}</h3>
         <p className="text-2xl font-extrabold text-gray-900 mt-1">
           {formatEuro(totalValue)}
         </p>
@@ -92,7 +94,7 @@ export function StaffPerformanceChart({ data }: StaffPerformanceChartProps) {
                     <p className="text-sm font-bold text-gray-900 mb-2">{label}</p>
                     {point && (
                       <p className="text-sm text-gray-700">
-                        Total value: {formatEuro(Number(point.value))}
+                        {t("totalValue")}: {formatEuro(Number(point.value))}
                       </p>
                     )}
                   </div>
@@ -109,7 +111,7 @@ export function StaffPerformanceChart({ data }: StaffPerformanceChartProps) {
                       className="inline-block size-2 rounded-full"
                       style={{ backgroundColor: PRIMARY }}
                     />
-                    Portfolio value
+                    {t("portfolioValue")}
                   </span>
                 </div>
               )}
@@ -124,7 +126,7 @@ export function StaffPerformanceChart({ data }: StaffPerformanceChartProps) {
             <Line
               type="monotone"
               dataKey="value"
-              name="Portfolio value"
+              name={t("portfolioValue")}
               stroke={PRIMARY}
               strokeWidth={2.5}
               strokeLinecap="round"

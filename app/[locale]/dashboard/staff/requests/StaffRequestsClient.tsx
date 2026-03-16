@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations, useLocale } from "next-intl";
 import {
   REQUEST_TYPES,
   requestTypeIcons,
@@ -16,18 +17,8 @@ import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 
-const STATUS_TABS: { value: RequestStatus | "All"; label: string }[] = [
-  { value: "All", label: "All" },
-  { value: "Pending", label: "Pending" },
-  { value: "In progress", label: "In progress" },
-  { value: "Done", label: "Done" },
-  { value: "Cancelled", label: "Cancelled" },
-];
-
-const STATUS_OPTIONS: RequestStatus[] = ["Pending", "In progress", "Done", "Cancelled"];
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-GB", {
+function formatDate(dateStr: string, locale: string) {
+  return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -37,6 +28,8 @@ function formatDate(dateStr: string) {
 type Props = { initialRequests: StaffRequestView[] };
 
 export function StaffRequestsClient({ initialRequests }: Props) {
+  const t = useTranslations("Requests");
+  const locale = useLocale();
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "All">("All");
   const [typeFilter, setTypeFilter] = useState<string>("All");
@@ -44,6 +37,16 @@ export function StaffRequestsClient({ initialRequests }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxSlides, setLightboxSlides] = useState<{src: string; alt: string}[]>([]);
+
+  const STATUS_TABS: { value: RequestStatus | "All"; label: string }[] = [
+    { value: "All", label: t("all") },
+    { value: "Pending", label: t("pending") },
+    { value: "In progress", label: t("inProgress") },
+    { value: "Done", label: t("done") },
+    { value: "Cancelled", label: t("cancelled") },
+  ];
+
+  const STATUS_OPTIONS: RequestStatus[] = ["Pending", "In progress", "Done", "Cancelled"];
 
   function openLightbox(urls: string[], index: number) {
     setLightboxSlides(urls.map(url => ({ src: url, alt: "Request attachment" })));
@@ -68,10 +71,10 @@ export function StaffRequestsClient({ initialRequests }: Props) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Investor requests
+          {t("title")}
         </h1>
         <p className="text-gray-500 mt-1">
-          Site tours, information, utility connections (water, electricity, gas) and other requests from investors.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -97,10 +100,10 @@ export function StaffRequestsClient({ initialRequests }: Props) {
           onChange={(e) => setTypeFilter(e.target.value)}
           className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
         >
-          <option value="All">All types</option>
+          <option value="All">{t("allTypes")}</option>
           {REQUEST_TYPES.map((type) => (
             <option key={type} value={type}>
-              {type}
+              {t(`types.${type}`)}
             </option>
           ))}
         </select>
@@ -110,7 +113,7 @@ export function StaffRequestsClient({ initialRequests }: Props) {
         {filtered.length === 0 ? (
           <div className="p-12 text-center">
             <i className="las la-inbox text-4xl text-gray-300 mb-4" aria-hidden />
-            <p className="text-gray-500 font-medium">No requests match the filters.</p>
+            <p className="text-gray-500 font-medium">{t("noMatch")}</p>
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
@@ -127,14 +130,23 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                       <i className={`las ${requestTypeIcons[req.type]} text-lg`} aria-hidden />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-bold text-gray-900">{req.type}</p>
-                      <p className="text-sm text-gray-600 mt-0.5">
-                        <span className="font-semibold text-gray-900">{req.investorName}</span>
-                        {" · "}
+                      <p className="font-bold text-gray-900">{t(`types.${req.type}`)}</p>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-1 mt-0.5">
+                        <p className="text-sm font-semibold text-gray-900">{req.investorName}</p>
+                        {req.investorPhone && (
+                          <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                            <i className="las la-phone text-gray-400" aria-hidden />
+                            <a href={`tel:${req.investorPhone}`} className="hover:text-[#134e4a] transition-colors">
+                              {req.investorPhone}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
                         {req.buildingName}
                       </p>
                       <div className="mt-2">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Project / Block · Unit</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t("projectBlockUnit")}</p>
                         {req.investorUnits.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {req.investorUnits.map((u, i) => (
@@ -142,24 +154,24 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                                 key={`${u.block}-${u.unit}-${i}`}
                                 className="inline-flex flex-wrap items-center gap-x-2 gap-y-0.5 rounded-lg bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700"
                               >
-                                <span><span className="text-gray-500">Block:</span> {u.block}</span>
-                                <span><span className="text-gray-500">Unit:</span> {u.unit}</span>
+                                <span><span className="text-gray-500">{t("block")}:</span> {u.block}</span>
+                                <span><span className="text-gray-500">{t("unit")}:</span> {u.unit}</span>
                                 {u.area_m2 != null && (
-                                  <span><span className="text-gray-500">m²:</span> {u.area_m2}</span>
+                                  <span><span className="text-gray-500">{t("m2")}:</span> {u.area_m2}</span>
                                 )}
                                 {u.delivery_period && (
-                                  <span><span className="text-gray-500">Delivery:</span> {u.delivery_period}</span>
+                                  <span><span className="text-gray-500">{t("delivery")}:</span> {u.delivery_period}</span>
                                 )}
                               </span>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-gray-400">No unit assigned to the requester in this building.</p>
+                          <p className="text-sm text-gray-400">{t("noUnit")}</p>
                         )}
                       </div>
                       {req.note && (
                         <p className="text-sm text-gray-500 mt-1.5">
-                          <span className="font-semibold text-gray-700">Note:</span> {req.note}
+                          <span className="font-semibold text-gray-700">{t("note")}:</span> {req.note}
                         </p>
                       )}
                       {req.imageUrls && req.imageUrls.length > 0 && (
@@ -177,14 +189,14 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                         </div>
                       )}
                       <p className="text-xs text-gray-400 mt-3">
-                        Requested {formatDate(req.requestedAt)}
+                        {t("requestedAt", { date: formatDate(req.requestedAt, locale) })}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0 flex-wrap sm:pt-0.5">
                     {req.status === "Cancelled" ? (
                       <span className="rounded-lg border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-500 cursor-default">
-                        Cancelled
+                        {t("cancelled")}
                       </span>
                     ) : (
                       <select
@@ -201,7 +213,7 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                       >
                         {STATUS_OPTIONS.filter((s) => s !== "Cancelled").map((s) => (
                           <option key={s} value={s}>
-                            {s}
+                            {s === "Pending" ? t("pending") : s === "In progress" ? t("inProgress") : t("done")}
                           </option>
                         ))}
                       </select>
@@ -210,7 +222,7 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                       href={`/dashboard/staff/buildings/${req.buildingId}`}
                       className="text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
                     >
-                      View building
+                      {t("viewBuilding")}
                     </Link>
                   </div>
                 </div>

@@ -2,14 +2,15 @@
 
 import { Link, usePathname } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const allNavItems = [
-  { href: "/dashboard", label: "Dashboard", icon: "las la-th-large" },
-  { href: "/dashboard/properties", label: "My Properties", icon: "las la-building" },
-  { href: "/dashboard/requests", label: "Requests", icon: "las la-tasks" },
-  { href: "/dashboard/financials", label: "Financials", icon: "las la-wallet", buyerOnly: true },
-  { href: "/dashboard/fees", label: "Fees & Payments", icon: "las la-receipt" },
-  // { href: "/dashboard/documents", label: "Documents", icon: "las la-file-alt" },
+  { href: "/dashboard", labelKey: "dashboard", icon: "las la-th-large" },
+  { href: "/dashboard/properties", labelKey: "myProperties", icon: "las la-building" },
+  { href: "/dashboard/requests", labelKey: "requests", icon: "las la-tasks" },
+  { href: "/dashboard/financials", labelKey: "financials", icon: "las la-wallet", buyerOnly: true },
+  { href: "/dashboard/fees", labelKey: "feesAndPayments", icon: "las la-receipt" },
+  // { href: "/dashboard/documents", labelKey: "documents", icon: "las la-file-alt" },
 ];
 
 interface SidebarProps {
@@ -29,6 +30,7 @@ export function Sidebar({
   open = false,
   onClose,
 }: SidebarProps) {
+  const t = useTranslations("Sidebar");
   const pathname = usePathname();
   const navItems = investorType === "renter"
     ? allNavItems.filter((item) => !("buyerOnly" in item && item.buyerOnly))
@@ -62,7 +64,7 @@ export function Sidebar({
               Riviola
             </h1>
             <p className="text-gray-500 text-xs font-medium">
-              Investor Management
+              {t("investorManagement")}
             </p>
           </div>
         </Link>
@@ -70,7 +72,7 @@ export function Sidebar({
             type="button"
             onClick={onClose}
             className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 lg:hidden"
-            aria-label="Close menu"
+            aria-label={t("closeMenu")}
           >
             <i className="las la-times text-xl" aria-hidden />
           </button>
@@ -90,7 +92,7 @@ export function Sidebar({
               }`}
             >
               <i className={`${item.icon} text-lg`} aria-hidden />
-              <span className="text-sm font-semibold">{item.label}</span>
+              <span className="text-sm font-semibold">{t(item.labelKey)}</span>
             </Link>
           );
         })}
@@ -116,12 +118,12 @@ export function Sidebar({
             <p className="text-sm font-bold truncate text-gray-900">
               {fullName}
             </p>
-            <p className="text-xs text-gray-500 truncate">Investor Account</p>
+            <p className="text-xs text-gray-500 truncate">{t("investorAccount")}</p>
           </div>
           <Link
             href="/dashboard/settings"
             className="p-2 rounded-lg text-gray-400 hover:text-[#134e4a] hover:bg-gray-50 transition-colors"
-            aria-label="Profile settings"
+            aria-label={t("profileSettings")}
           >
             <i className="las la-cog text-sm" aria-hidden />
           </Link>

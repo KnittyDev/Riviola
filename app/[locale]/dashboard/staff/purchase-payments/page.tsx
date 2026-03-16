@@ -3,6 +3,7 @@ import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { getStaffCompanyId } from "@/lib/buildings";
 import { getBuyerUnitsWithInstallments } from "@/lib/purchaseInstallments";
 import { PurchasePaymentsClient } from "./PurchasePaymentsClient";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,7 @@ export default async function StaffPurchasePaymentsPage({
 }: {
   searchParams: Promise<{ building?: string; block?: string; unit?: string }>;
 }) {
+  const t = await getTranslations("Purchase");
   const supabase = await createClient();
   const {
     data: { session },
@@ -29,7 +31,7 @@ export default async function StaffPurchasePaymentsPage({
   if (!companyId) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <p className="text-gray-500">No company assigned. You cannot manage purchase payments.</p>
+        <p className="text-gray-500">{t("noUnitsSubtitle")}</p>
       </div>
     );
   }

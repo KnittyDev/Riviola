@@ -1,0 +1,39 @@
+  ,
+  "Staff": {
+    "title": "Staff Dashboard",
+    "addPhoto": "Add weekly photo",
+    "addPhotoSubtitle": "Upload weekly progress photos for projects.",
+    "createInvestor": "Create investor account",
+    "createInvestorSubtitle": "Create login accounts for investors.",
+    "overview": "Overview",
+    "overviewSubtitle": "Manage your buildings and create investor accounts.",
+    "stats": {
+      "buildings": "Buildings",
+      "activeProjects": "Active projects",
+      "completed": "Completed",
+      "investorAccounts": "Investor accounts"
+    },
+    "alerts": {
+      "title": "Dues & Alerts",
+      "overdue": "Overdue dues",
+      "recent": "Recent payments",
+      "noItems": "No recent payments or overdue dues.",
+      "trackingInfo": "Dues are tracked in Dues payments.",
+      "dueOn": "due {date}",
+      "paidOn": "paid {date}"
+    },
+    "chart": {
+      "title": "Investor Portfolio Value",
+      "totalValue": "Total value",
+      "portfolioValue": "Portfolio value"
+    },
+    "projects": {
+      "title": "Active Projects",
+      "viewAll": "View All Projects",
+      "noBuildings": "No buildings yet.",
+      "addBuilding": "Add building",
+      "completed": "Completed",
+      "percentComplete": "{percent}% complete"
+    }
+  }
+}

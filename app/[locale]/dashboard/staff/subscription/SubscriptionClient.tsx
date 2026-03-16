@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "@/lib/toast";
 import {
   createSubscriptionCheckoutAction,
@@ -36,9 +38,9 @@ type Props = {
   tiers: PricingTier[];
 };
 
-function formatDate(dateStr: string | null): string {
+function formatDate(dateStr: string | null, locale: string): string {
   if (!dateStr) return "—";
-  return new Date(dateStr).toLocaleDateString("en-GB", {
+  return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -60,6 +62,8 @@ const statusColors: Record<string, { bg: string; text: string }> = {
 };
 
 export function SubscriptionClient({ subscription, tiers }: Props) {
+  const t = useTranslations("Subscription");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
@@ -75,24 +79,24 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
       confirmCheckoutSessionAction(sessionId)
         .then((result) => {
           if (result.ok) {
-            toast.success("Subscription activated! Welcome aboard.");
+            toast.success(t("activated"));
             // Hard redirect to clear search params and force server refetch
             window.location.href = "/dashboard/staff/subscription";
           } else {
-            toast.error(result.error ?? "Could not confirm payment.");
+            toast.error(result.error ?? t("confirmError"));
             setLoading(null);
             router.replace("/dashboard/staff/subscription", { scroll: false });
           }
         })
         .catch(() => {
           setLoading(null);
-          toast.error("An error occurred during confirmation.");
+          toast.error(t("genericError"));
         });
       return;
     }
 
     if (searchParams?.get("canceled") === "1") {
-      toast.error("Checkout was canceled.");
+      toast.error(t("canceled"));
       router.replace("/dashboard/staff/subscription", { scroll: false });
       return;
     }
@@ -104,7 +108,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
         router.refresh();
       });
     }
-  }, [searchParams, router, subscription]);
+  }, [searchParams, router, subscription, t]);
 
   async function handleSubscribe(priceId: string) {
     setLoading(priceId);
@@ -113,7 +117,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     if (result.url) {
       window.location.href = result.url;
     } else {
-      toast.error(result.error ?? "Could not start checkout.");
+      toast.error(result.error ?? t("startError"));
     }
   }
 
@@ -124,7 +128,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     if (result.url) {
       window.location.href = result.url;
     } else {
-      toast.error(result.error ?? "Could not open billing portal.");
+      toast.error(result.error ?? t("portalError"));
     }
   }
 
@@ -136,8 +140,8 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
         <div className="w-12 h-12 border-4 border-[#134e4a] border-t-transparent rounded-full animate-spin mb-4" />
-        <h2 className="text-xl font-bold text-gray-900">Confirming your subscription...</h2>
-        <p className="text-gray-500 mt-2 text-sm">Please wait while we set things up for you.</p>
+        <h2 className="text-xl font-bold text-gray-900">{t("confirming")}</h2>
+        <p className="text-gray-500 mt-2 text-sm">{t("confirmingWait")}</p>
       </div>
     );
   }
@@ -154,10 +158,10 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     return (
       <div className="max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Subscription
+          {t("title")}
         </h1>
         <p className="text-gray-500 text-sm mt-1">
-          Plan and billing
+          {t("subtitle")}
         </p>
 
         <div className="mt-8 space-y-6">
@@ -165,7 +169,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Current Plan
+                  {t("currentPlan")}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <p className="text-xl font-bold text-gray-900">
@@ -174,18 +178,17 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
                   <span
                     className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${statusColor.bg} ${statusColor.text}`}
                   >
-                    {subscription.status}
+                    {t(`statuses.${subscription.status as keyof typeof statusColors}`)}
                   </span>
                 </div>
                 <p className="text-gray-500 text-sm mt-1">
-                  Billed{" "}
                   {subscription.billing_interval === "annual"
-                    ? "annually"
-                    : "monthly"}
+                    ? t("billedAnnually")
+                    : t("billedMonthly")}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">Days left</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">{t("daysLeft")}</p>
                 <p className="text-2xl font-black text-[#134e4a] mt-0.5">
                   {hasPeriodEnd && days != null ? days : "—"}
                 </p>
@@ -195,12 +198,12 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
             {subscription.cancel_at_period_end && (
               <div className="mt-4 p-3 bg-amber-50 rounded-lg text-sm text-amber-700 flex items-center gap-2 border border-amber-100">
                 <i className="las la-exclamation-triangle text-lg" />
-                <p>Cancels on <b>{formatDate(subscription.current_period_end)}</b></p>
+                <p>{t("cancelsOn", { date: formatDate(subscription.current_period_end, locale) })}</p>
               </div>
             )}
 
             <div className="mt-6 pt-6 border-t border-gray-100">
-              <p className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-4">Included Features</p>
+              <p className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-4">{t("includedFeatures")}</p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
                 {currentTier?.features.map((f, idx) => (
                   <li key={idx} className="flex items-start gap-2.5 text-sm text-gray-600">
@@ -211,7 +214,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
                   </li>
                 ))}
                 {!currentTier && (
-                  <p className="text-sm text-gray-400 italic">Plan details loading...</p>
+                  <p className="text-sm text-gray-400 italic">{t("loadingDetails")}</p>
                 )}
               </ul>
             </div>
@@ -219,9 +222,9 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
 
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
             <div>
-              <p className="text-xs text-gray-400">Next billing date</p>
+              <p className="text-xs text-gray-400">{t("nextBillingDate")}</p>
               <p className="text-sm font-bold text-gray-900">
-                {hasPeriodEnd ? formatDate(subscription.current_period_end) : "—"}
+                {hasPeriodEnd ? formatDate(subscription.current_period_end, locale) : "—"}
               </p>
             </div>
             <button
@@ -230,7 +233,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
               disabled={loading === "manage"}
               className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 text-xs font-extrabold hover:bg-gray-50 disabled:opacity-50 transition-colors shadow-sm uppercase tracking-wider"
             >
-              {loading === "manage" ? "Opening…" : "Billing Portal"}
+              {loading === "manage" ? t("opening") : t("billingPortal")}
             </button>
           </div>
         </div>
@@ -243,10 +246,10 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
       <div className="text-center mb-10">
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Choose your plan
+          {t("choosePlan")}
         </h1>
         <p className="text-gray-500 text-sm mt-1">
-          Select a subscription to unlock all features.
+          {t("choosePlanSubtitle")}
         </p>
 
         <div className="inline-flex p-1 bg-gray-100 rounded-2xl mt-6">
@@ -259,7 +262,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
                 : "text-gray-500 hover:text-[#134e4a]"
             }`}
           >
-            Monthly
+            {t("monthly")}
           </button>
           <button
             type="button"
@@ -270,7 +273,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
                 : "text-gray-500 hover:text-[#134e4a]"
             }`}
           >
-            Annual (Save 40%)
+            {t("annual")}
           </button>
         </div>
       </div>
@@ -293,7 +296,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
             >
               {tier.recommended && (
                 <div className="absolute -top-3.5 right-6 bg-[#134e4a] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full">
-                  Recommended
+                  {t("recommended")}
                 </div>
               )}
               <h3 className="text-lg font-bold text-gray-900 mb-1">
@@ -336,7 +339,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
                     : "border-2 border-[#134e4a] text-[#134e4a] hover:bg-teal-50"
                 }`}
               >
-                {loading === priceId ? "Redirecting…" : `Choose ${tier.name}`}
+                {loading === priceId ? t("redirecting") : t("chooseTier", { tier: tier.name })}
               </button>
             </div>
           );

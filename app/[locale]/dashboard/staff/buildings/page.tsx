@@ -6,10 +6,12 @@ import { redirect } from "next/navigation";
 import { BuildingListMetaClient } from "./BuildingListMetaClient";
 import { DeleteBuildingButton } from "./DeleteBuildingButton";
 import type { Building, BuildingStatus } from "@/lib/supabase/types";
+import { getTranslations } from "next-intl/server";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80";
 
 export default async function StaffBuildingsPage() {
+  const t = await getTranslations("Buildings");
   const supabase = await createClient();
   const companyId = await getStaffCompanyId(supabase);
   if (!companyId) redirect("/dashboard/staff");
@@ -38,35 +40,35 @@ export default async function StaffBuildingsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Buildings</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{t("title")}</h1>
         <div className="flex gap-2">
           <Link
             href="/dashboard/staff/buildings/new"
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
           >
             <i className="las la-plus" aria-hidden />
-            Add building
+            {t("addBuilding")}
           </Link>
           <Link
             href="/dashboard/staff/weekly-photos/new"
             className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors"
           >
             <i className="las la-camera" aria-hidden />
-            Add weekly photo
+            {t("addWeeklyPhoto")}
           </Link>
         </div>
       </div>
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {list.length === 0 ? (
           <div className="p-12 text-center">
-            <p className="text-gray-500 font-medium">No buildings yet.</p>
-            <p className="text-sm text-gray-400 mt-1 mb-6">Add a building to get started.</p>
+            <p className="text-gray-500 font-medium">{t("noBuildings")}</p>
+            <p className="text-sm text-gray-400 mt-1 mb-6">{t("noBuildingsSubtitle")}</p>
             <Link
               href="/dashboard/staff/buildings/new"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
             >
               <i className="las la-plus" aria-hidden />
-              Add building
+              {t("addBuilding")}
             </Link>
           </div>
         ) : (
@@ -93,7 +95,7 @@ export default async function StaffBuildingsPage() {
                     <p className="font-bold text-gray-900 hover:text-[#134e4a]">{b.name}</p>
                     <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
                       <i className="las la-map-marker-alt text-gray-400" aria-hidden />
-                      {b.location || "—"} · {b.units} units
+                      {b.location || "—"} · {t("unitsCount", { count: b.units })}
                     </p>
                   </div>
                 </Link>
@@ -101,22 +103,22 @@ export default async function StaffBuildingsPage() {
                   <BuildingListMetaClient progress={b.progress} status={b.status as BuildingStatus} />
                   <span className="text-xs text-gray-500">
                     {(weeklyCountByBuilding[b.id] ?? 0) === 0
-                      ? "No weekly photos"
-                      : `${weeklyCountByBuilding[b.id]} weekly update${(weeklyCountByBuilding[b.id] ?? 0) === 1 ? "" : "s"}`}
+                      ? t("noWeeklyPhotos")
+                      : t("weeklyUpdateCount", { count: weeklyCountByBuilding[b.id] ?? 0 })}
                   </span>
                   <Link
                     href={`/dashboard/staff/buildings/${b.id}`}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
                   >
                     <i className="las la-eye text-sm" aria-hidden />
-                    See
+                    {t("see")}
                   </Link>
                   <Link
                     href={`/dashboard/staff/buildings/${b.id}/edit`}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
                   >
                     <i className="las la-pen text-sm" aria-hidden />
-                    Edit
+                    {t("edit")}
                   </Link>
                   <DeleteBuildingButton buildingId={b.id} />
                 </div>

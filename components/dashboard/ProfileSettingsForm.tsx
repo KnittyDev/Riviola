@@ -5,6 +5,7 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile, ProfileUpdate, ProfileRole } from "@/lib/supabase/types";
+import { useTranslations } from "next-intl";
 
 const LANGUAGE_OPTIONS = [
   { value: "en" as const, label: "English" },
@@ -26,17 +27,12 @@ const CURRENCY_OPTIONS = [
   { value: "ALL" as const, label: "ALL (L)" },
 ];
 
-const ROLE_LABELS: Record<ProfileRole, string> = {
-  investor: "Investor",
-  staff: "Staff",
-  admin: "Admin",
-};
-
 function normalizePhone(s: string): string {
   return (s ?? "").replace(/\D/g, "").trim();
 }
 
 export function ProfileSettingsForm() {
+  const t = useTranslations("Settings");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [initialProfile, setInitialProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +41,12 @@ export function ProfileSettingsForm() {
   const [error, setError] = useState<string | null>(null);
 
   const [companyName, setCompanyName] = useState<string | null>(null);
+
+  const ROLE_LABELS: Record<ProfileRole, string> = {
+    investor: t("roles.investor"),
+    staff: t("roles.staff"),
+    admin: t("roles.admin"),
+  };
 
   const form = useMemo(() => {
     if (!profile) return null;
@@ -65,7 +67,7 @@ export function ProfileSettingsForm() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) {
         setLoading(false);
-        setError("Not signed in.");
+        setError(t("notSignedIn"));
         return;
       }
       supabase
@@ -94,12 +96,12 @@ export function ProfileSettingsForm() {
           }
         });
     });
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!saved) return;
-    const t = window.setTimeout(() => setSaved(false), 2000);
-    return () => clearTimeout(t);
+    const tv = window.setTimeout(() => setSaved(false), 2000);
+    return () => clearTimeout(tv);
   }, [saved]);
 
   const hasChanges = useMemo(() => {
@@ -175,10 +177,10 @@ export function ProfileSettingsForm() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 animate-fade-in">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-            Profile settings
+            {t("title")}
           </h1>
           <p className="text-gray-500 mt-2">
-            Update your profile details and preferences.
+            {t("subtitle")}
           </p>
         </div>
         <button
@@ -188,7 +190,7 @@ export function ProfileSettingsForm() {
           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
         >
           <i className="las la-save text-lg" aria-hidden />
-          {saved ? "Saved" : saving ? "Saving..." : "Save changes"}
+          {saved ? t("saved") : saving ? t("saving") : t("save")}
         </button>
       </div>
 
@@ -200,25 +202,25 @@ export function ProfileSettingsForm() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-7 bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-1">Profile</h2>
-          <p className="text-sm text-gray-500 mb-6">These details appear on your account.</p>
+          <h2 className="text-lg font-bold text-gray-900 mb-1">{t("sections.profile.title")}</h2>
+          <p className="text-sm text-gray-500 mb-6">{t("sections.profile.subtitle")}</p>
 
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="fullName">
-                Full name
+                {t("sections.profile.fullName")}
               </label>
               <input
                 id="fullName"
                 value={form.full_name}
                 onChange={(e) => update("full_name", e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
-                placeholder="Your name"
+                placeholder={t("sections.profile.fullNamePlaceholder")}
               />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="email">
-                Email
+                {t("sections.profile.email")}
               </label>
               <input
                 id="email"
@@ -227,13 +229,13 @@ export function ProfileSettingsForm() {
                 readOnly
                 aria-readonly="true"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 outline-none"
-                placeholder="name@example.com"
+                placeholder={t("sections.profile.emailPlaceholder")}
               />
-              <p className="text-xs text-gray-400 mt-1">Email is managed by your account.</p>
+              <p className="text-xs text-gray-400 mt-1">{t("sections.profile.emailNote")}</p>
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="phone">
-                Phone
+                {t("sections.profile.phone")}
               </label>
               <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-xl [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-4 [&_.react-international-phone-input]:!py-3 [&_.react-international-phone-input]:!text-sm">
                 <PhoneInput
@@ -246,32 +248,32 @@ export function ProfileSettingsForm() {
             </div>
             {(profile?.role === "staff" || profile?.role === "admin") && (
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Company</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">{t("sections.profile.company")}</label>
                 <p className="text-sm text-gray-700 py-2">
                   {companyName ?? "—"}
                 </p>
-                <p className="text-xs text-gray-400">Your company is linked via your account; staff panel shows this company.</p>
+                <p className="text-xs text-gray-400">{t("sections.profile.companyNote")}</p>
               </div>
             )}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Role</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("sections.profile.role")}</label>
               <p className="text-sm text-gray-700 py-2">
                 {profile ? ROLE_LABELS[profile.role] : "—"}
               </p>
-              <p className="text-xs text-gray-400">Your role determines which dashboard you can access.</p>
+              <p className="text-xs text-gray-400">{t("sections.profile.roleNote")}</p>
             </div>
           </div>
         </div>
 
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-1">Preferences</h2>
-            <p className="text-sm text-gray-500 mb-6">Control how Riviola behaves for you.</p>
+            <h2 className="text-lg font-bold text-gray-900 mb-1">{t("sections.preferences.title")}</h2>
+            <p className="text-sm text-gray-500 mb-6">{t("sections.preferences.subtitle")}</p>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="language">
-                  Language
+                  {t("sections.preferences.language")}
                 </label>
                 <select
                   id="language"
@@ -288,7 +290,7 @@ export function ProfileSettingsForm() {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="currency">
-                  Currency
+                  {t("sections.preferences.currency")}
                 </label>
                 {profile?.role === "investor" ? (
                   <div className="py-2">
@@ -296,7 +298,7 @@ export function ProfileSettingsForm() {
                       {form.currency}
                     </p>
                     <p className="text-xs text-gray-400 mt-0.5">
-                      Your currency is managed by staff and cannot be changed here.
+                      {t("sections.preferences.currencyNote")}
                     </p>
                   </div>
                 ) : (
@@ -318,6 +320,7 @@ export function ProfileSettingsForm() {
                           | "SEK"
                           | "AED"
                           | "SAR"
+                          | "ALL"
                       )
                     }
                     className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
@@ -334,25 +337,25 @@ export function ProfileSettingsForm() {
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-1">Notifications</h2>
-            <p className="text-sm text-gray-500 mb-6">Choose what we should email you about.</p>
+            <h2 className="text-lg font-bold text-gray-900 mb-1">{t("sections.notifications.title")}</h2>
+            <p className="text-sm text-gray-500 mb-6">{t("sections.notifications.subtitle")}</p>
 
             <div className="space-y-3">
               {[
                 {
                   key: "notify_payments" as const,
-                  title: "Payments & fees",
-                  desc: "Aidat due dates, confirmations, and failed payments.",
+                  title: t("sections.notifications.payments.title"),
+                  desc: t("sections.notifications.payments.desc"),
                 },
                 {
                   key: "notify_milestones" as const,
-                  title: "Milestones",
-                  desc: "Updates when progress milestones are logged.",
+                  title: t("sections.notifications.milestones.title"),
+                  desc: t("sections.notifications.milestones.desc"),
                 },
                 {
                   key: "notify_documents" as const,
-                  title: "Documents",
-                  desc: "New invoices and shared files.",
+                  title: t("sections.notifications.documents.title"),
+                  desc: t("sections.notifications.documents.desc"),
                 },
               ].map((n) => (
                 <label

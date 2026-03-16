@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const DEFAULT_PLACEHOLDER = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80";
 const DEFAULT_BASE = "/dashboard/staff";
@@ -22,6 +23,7 @@ export function ActiveProjectsSection({
   buildings?: BuildingItem[];
   basePath?: string;
 }) {
+  const t = useTranslations("Staff.projects");
   const list = buildings ?? [];
   const activeBuildings = list.filter((b) => b.status === "In progress");
   const displayBuildings = activeBuildings.length > 0 ? activeBuildings : list;
@@ -29,22 +31,22 @@ export function ActiveProjectsSection({
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-gray-900">Active Projects</h3>
+        <h3 className="text-lg font-bold text-gray-900">{t("title")}</h3>
         <Link
           href={`${basePath}/buildings`}
           className="text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
         >
-          View All Projects
+          {t("viewAll")}
         </Link>
       </div>
       {list.length === 0 ? (
         <div className="rounded-2xl border border-gray-200 bg-gray-50/50 p-8 text-center">
-          <p className="text-gray-500 font-medium">No buildings yet.</p>
+          <p className="text-gray-500 font-medium">{t("noBuildings")}</p>
           <Link
             href={`${basePath}/buildings/new`}
             className="inline-flex items-center gap-2 mt-2 text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
           >
-            Add building
+            {t("addBuilding")}
           </Link>
         </div>
       ) : (
@@ -69,14 +71,14 @@ export function ActiveProjectsSection({
                       : "bg-[#134e4a] text-white"
                     }`}
                 >
-                  {b.status === "Completed" ? "Completed" : b.name.toUpperCase()}
+                  {b.status === "Completed" ? t("completed") : b.name.toUpperCase()}
                 </div>
               </div>
               <div className="p-3">
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-bold text-gray-900 truncate">{b.name}</p>
-                    <p className="text-xs text-gray-500">{b.progress}% complete</p>
+                    <p className="text-xs text-gray-500">{t("percentComplete", { percent: b.progress })}</p>
                   </div>
                   <div className="shrink-0 flex items-center justify-center size-8 rounded-lg bg-gray-50 group-hover:bg-[#134e4a] group-hover:text-white transition-colors">
                     <i className="las la-arrow-right text-xs" aria-hidden />

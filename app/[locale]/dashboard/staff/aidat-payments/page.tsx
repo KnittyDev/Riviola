@@ -12,6 +12,7 @@ import {
   markDuesPaidAction,
   unmarkDuesPaidAction,
 } from "./actions";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,7 @@ export default async function StaffAidatPaymentsPage({
 }: {
   searchParams: Promise<{ building?: string; period?: string }>;
 }) {
+  const t = await getTranslations("Dues");
   const supabase = await createClient();
   const {
     data: { session },
@@ -38,7 +40,7 @@ export default async function StaffAidatPaymentsPage({
   if (!companyId) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <p className="text-gray-500">No company assigned. You cannot manage dues.</p>
+        <p className="text-gray-500">{t("noBuildings")}</p>
       </div>
     );
   }

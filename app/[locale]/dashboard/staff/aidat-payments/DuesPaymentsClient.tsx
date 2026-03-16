@@ -4,19 +4,21 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "@/lib/toast";
 import type { UnitForDues } from "@/lib/duesPayments";
+import { useTranslations, useLocale } from "next-intl";
+
 // Actions are now passed as props to allow demo/production swapping
 type ActionResult = { ok?: boolean; error?: string };
 type MarkAction = (unitId: string, period: string) => Promise<ActionResult>;
 type UnmarkAction = (unitId: string, period: string) => Promise<ActionResult>;
 type SettingsAction = (buildingId: string, input: any) => Promise<ActionResult>;
 
-function formatMonthLabel(period: string): string {
+function formatMonthLabel(period: string, locale: string): string {
   const [y, m] = period.split("-").map(Number);
   const date = new Date(y, m - 1, 1);
-  return date.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+  return date.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", { month: "short", year: "numeric" });
 }
 
-function formatDuesAmount(cents: number, currency: string | null): string {
+function formatDuesAmount(cents: number, currency: string | null, locale: string): string {
   const symbols: Record<string, string> = {
     EUR: "€",
     USD: "$",
@@ -32,7 +34,12 @@ function formatDuesAmount(cents: number, currency: string | null): string {
     ALL: "L",
   };
   const sym = symbols[currency ?? "EUR"] ?? (currency ?? "EUR") + " ";
-  return `${sym} ${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+  const amount = (cents / 100).toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 2 });
+  
+  if (locale === "tr") {
+    return `${amount} ${sym}`;
+  }
+  return `${sym}${amount}`;
 }
 
 function isOverdue(period: string, paid: boolean, endDay: number | undefined): boolean {
@@ -71,7 +78,6 @@ export function DuesPaymentsClient({
   settings,
   units,
   paidByPeriod,
-  // Add as props
   markDuesPaidFn,
   unmarkDuesPaidFn,
   setSettingsFn,
@@ -80,6 +86,8 @@ export function DuesPaymentsClient({
   unmarkDuesPaidFn: UnmarkAction;
   setSettingsFn: SettingsAction;
 }) {
+  const t = useTranslations("Dues");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showSettingsForm, setShowSettingsForm] = useState(false);
@@ -163,7 +171,7 @@ export function DuesPaymentsClient({
       toast.error(result.error);
       return;
     }
-    toast.success("Payment window saved.");
+    toast.success(t("saved"));
     setShowSettingsForm(false);
     router.refresh();
   }
@@ -179,7 +187,7 @@ export function DuesPaymentsClient({
       toast.error(result.error);
       return;
     }
-    toast.success(currentlyPaid ? "Unmarked as paid." : "Marked as paid.");
+    toast.success(currentlyPaid ? t("unmarkPaid") : t("markPaid"));
     router.refresh();
   }
 
@@ -210,22 +218,28 @@ export function DuesPaymentsClient({
     }
     
     if (expectedCents == null) return "—";
-    return formatDuesAmount(expectedCents, settings.currency);
+    return formatDuesAmount(expectedCents, settings.currency, locale);
+  }
+
+  function getOrdinal(n: number) {
+    const key = (n % 10).toString();
+    if (n >= 11 && n <= 13) return t("ordinal.other");
+    return t(`ordinal.${key}` as any, { defaultValue: t("ordinal.other") });
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Dues payments
+          {t("title")}
         </h1>
         <p className="text-gray-500 mt-1">
-          Set the payment window per building and track monthly dues by unit.
+          {t("subtitle")}
         </p>
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-        <label className="text-sm font-semibold text-gray-700 shrink-0">Building</label>
+        <label className="text-sm font-semibold text-gray-700 shrink-0">{t("building")}</label>
         <select
           value={selectedBuildingId}
           onChange={(e) => updateParams(e.target.value)}
@@ -244,19 +258,19 @@ export function DuesPaymentsClient({
             <div className="size-5 rounded-md bg-[#134e4a]/10 text-[#134e4a] flex items-center justify-center border border-[#134e4a]/20">
               <i className="las la-check text-xs font-bold" />
             </div>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Paid</span>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t("paid")}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="size-5 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 animate-pulse">
               <i className="las la-exclamation-triangle text-xs" />
             </div>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Overdue</span>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t("overdue")}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="size-5 rounded-md bg-gray-50 text-gray-400 flex items-center justify-center border border-gray-100">
               <i className="las la-clock text-xs" />
             </div>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Pending</span>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t("pending")}</span>
           </div>
         </div>
       </div>
@@ -267,8 +281,8 @@ export function DuesPaymentsClient({
             <i className="las la-exclamation-circle text-2xl" />
           </div>
           <div>
-            <p className="text-rose-900 font-bold text-sm uppercase tracking-tight">Overdue Payments Detected</p>
-            <p className="text-rose-700 text-xs">Some investors have unpaid dues past the monthly deadline. Please check the table below.</p>
+            <p className="text-rose-900 font-bold text-sm uppercase tracking-tight">{t("overdueDetected")}</p>
+            <p className="text-rose-700 text-xs">{t("overdueSubtitle")}</p>
           </div>
         </div>
       )}
@@ -279,17 +293,30 @@ export function DuesPaymentsClient({
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <p className="text-sm text-gray-700">
                 {settings ? (
-                  <>
-                    Payment must be made between the <strong>{settings.payment_window_start_day}</strong>
-                    {settings.payment_window_start_day === 1 ? "st" : settings.payment_window_start_day === 2 ? "nd" : settings.payment_window_start_day === 3 ? "rd" : "th"} and{" "}
-                    <strong>{settings.payment_window_end_day}</strong>
-                    {settings.payment_window_end_day === 1 ? "st" : settings.payment_window_end_day === 2 ? "nd" : settings.payment_window_end_day === 3 ? "rd" : "th"} of each month.
+                  <span key="window-info">
+                    {t.rich("paymentWindowInfo", {
+                      start: (
+                        <strong key="start">
+                          {settings.payment_window_start_day}{getOrdinal(settings.payment_window_start_day)}
+                        </strong>
+                      ) as any,
+                      end: (
+                        <strong key="end">
+                          {settings.payment_window_end_day}{getOrdinal(settings.payment_window_end_day)}
+                        </strong>
+                      ) as any
+                    })}
                     {settings.amount_cents != null && (
-                      <> Amount: <strong>{formatDuesAmount(settings.amount_cents, settings.currency)}</strong> per month.</>
+                      <span key="amount-info">
+                        {" "}
+                        {t.rich("amountPerMonth", {
+                          amount: <strong key="amt">{formatDuesAmount(settings.amount_cents, settings.currency, locale)}</strong> as any,
+                        })}
+                      </span>
                     )}
-                  </>
+                  </span>
                 ) : (
-                  "Set the payment window and amount for this building (e.g. 4th–12th of each month)."
+                  t("setWindowAmount")
                 )}
               </p>
               <button
@@ -317,13 +344,13 @@ export function DuesPaymentsClient({
                 }}
                 className="shrink-0 text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
               >
-                {showSettingsForm ? "Cancel" : "Edit window"}
+                {showSettingsForm ? t("cancel") : t("editWindow")}
               </button>
             </div>
             {showSettingsForm && (
               <div className="mt-4 flex flex-wrap items-end gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Start day (1–31)</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("startDay")}</label>
                   <input
                     type="number"
                     min={1}
@@ -334,7 +361,7 @@ export function DuesPaymentsClient({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">End day (1–31)</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("endDay")}</label>
                   <input
                     type="number"
                     min={1}
@@ -345,7 +372,7 @@ export function DuesPaymentsClient({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Amount (per month)</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("amount")}</label>
                   <input
                     type="number"
                     min={0}
@@ -357,7 +384,7 @@ export function DuesPaymentsClient({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Currency</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("currency")}</label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
@@ -373,18 +400,18 @@ export function DuesPaymentsClient({
                 <div className="w-full mt-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-xs font-semibold text-gray-500">
-                      Area Pricing Tiers (optional overrides based on m²)
+                      {t("areaPricing")}
                     </label>
                     <button
                       type="button"
                       onClick={addPricingTier}
                       className="text-xs font-semibold text-[#134e4a] hover:underline"
                     >
-                      + Add Tier
+                      {t("addTier")}
                     </button>
                   </div>
                   {areaPricing.length === 0 ? (
-                    <p className="text-xs text-gray-400 italic">No area pricing tiers. Uses fallback amount.</p>
+                    <p className="text-xs text-gray-400 italic">{t("noTiers")}</p>
                   ) : (
                     <div className="space-y-2">
                       {areaPricing.map((tier) => (
@@ -392,32 +419,32 @@ export function DuesPaymentsClient({
                           <input
                             type="number"
                             min={0}
-                            placeholder="Min m²"
+                            placeholder={t("minM2")}
                             value={tier.min}
                             onChange={(e) => updatePricingTier(tier.id, "min", e.target.value)}
                             className="w-20 rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
-                            title="Minimum Area (m²)"
+                            title={t("minM2")}
                           />
                           <span className="text-gray-400 text-sm">-</span>
                           <input
                             type="number"
                             min={0}
-                            placeholder="Max m²"
+                            placeholder={t("maxM2")}
                             value={tier.max}
                             onChange={(e) => updatePricingTier(tier.id, "max", e.target.value)}
                             className="w-20 rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
-                            title="Maximum Area (m²)"
+                            title={t("maxM2")}
                           />
                           <span className="text-gray-400 text-sm">m² →</span>
                           <input
                             type="number"
                             min={0}
                             step={0.01}
-                            placeholder="Amount"
+                            placeholder={t("amountShort")}
                             value={tier.amount}
                             onChange={(e) => updatePricingTier(tier.id, "amount", e.target.value)}
                             className="w-24 rounded-lg border border-gray-200 px-3 py-1.5 text-sm"
-                            title="Pricing Amount"
+                            title={t("amountShort")}
                           />
                           <button
                             type="button"
@@ -440,7 +467,7 @@ export function DuesPaymentsClient({
                     disabled={savingSettings}
                     className="px-6 py-2.5 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] disabled:opacity-50 transition-colors"
                   >
-                    {savingSettings ? "Saving…" : "Save all settings"}
+                    {savingSettings ? t("saving") : t("saveSettings")}
                   </button>
                 </div>
               </div>
@@ -449,8 +476,8 @@ export function DuesPaymentsClient({
 
           {units.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
-              <p className="text-gray-500 font-medium">No units in this building.</p>
-              <p className="text-sm text-gray-400 mt-1">Assign investors to units to track dues.</p>
+              <p className="text-gray-500 font-medium">{t("noUnits")}</p>
+              <p className="text-sm text-gray-400 mt-1">{t("assignInvestors")}</p>
             </div>
           ) : (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
@@ -458,17 +485,17 @@ export function DuesPaymentsClient({
                 <table className="w-full text-left">
                   <thead>
                     <tr className="border-b border-gray-200 bg-gray-50/80">
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">Block</th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">Unit</th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[10rem]">Investor</th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[6rem]">Dues Amount</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">{t("block")}</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[4rem]">{t("unit")}</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[10rem]">{t("investor")}</th>
+                      <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[6rem]">{t("duesAmount")}</th>
                       {periods.map((p) => (
                         <th
                           key={p}
                           className="px-2 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center min-w-[3.5rem]"
-                          title={formatMonthLabel(p)}
+                          title={formatMonthLabel(p, locale)}
                         >
-                          {formatMonthLabel(p)}
+                          {formatMonthLabel(p, locale)}
                         </th>
                       ))}
                     </tr>
@@ -520,7 +547,7 @@ export function DuesPaymentsClient({
                                 <span className={`text-[9px] font-bold uppercase tracking-tighter ${
                                   paid ? "text-[#134e4a]" : overdue ? "text-rose-600" : "text-gray-400"
                                 }`}>
-                                  {paid ? "Paid" : overdue ? "Overdue" : "Pending"}
+                                  {paid ? t("paid") : overdue ? t("overdue") : t("pending")}
                                 </span>
                               </div>
                             </td>
@@ -538,8 +565,8 @@ export function DuesPaymentsClient({
 
       {buildings.length === 0 && (
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
-          <p className="text-gray-500 font-medium">No buildings.</p>
-          <p className="text-sm text-gray-400 mt-1">Add buildings to your company to track dues.</p>
+          <p className="text-gray-500 font-medium">{t("noBuildings")}</p>
+          <p className="text-sm text-gray-400 mt-1">{t("addBuildings")}</p>
         </div>
       )}
     </div>

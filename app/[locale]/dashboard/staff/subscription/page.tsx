@@ -1,67 +1,12 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SubscriptionClient } from "./SubscriptionClient";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Stripe Price IDs – replace with your real IDs from Stripe Dashboard → Products.
- * Each product should have a monthly and yearly price.
- */
-const PRICING_TIERS = [
-  {
-    name: "Essence",
-    description: "Perfect for single buildings or small portfolios.",
-    monthlyPriceId: process.env.STRIPE_ESSENCE_MONTHLY_PRICE_ID ?? "",
-    annualPriceId: process.env.STRIPE_ESSENCE_ANNUAL_PRICE_ID ?? "",
-    monthlyPrice: 99,
-    annualPrice: 719,
-    features: [
-      "Up to 2 Buildings / Projects",
-      "Basic Investor Tracking",
-      "Document Management",
-      "Standard Financial Reporting",
-      "Investor Portal Access",
-    ],
-    recommended: false,
-  },
-  {
-    name: "Signature",
-    description: "Optimized for professional property management firms.",
-    monthlyPriceId: process.env.STRIPE_SIGNATURE_MONTHLY_PRICE_ID ?? "",
-    annualPriceId: process.env.STRIPE_SIGNATURE_ANNUAL_PRICE_ID ?? "",
-    monthlyPrice: 149,
-    annualPrice: 999,
-    features: [
-      "All Essence features",
-      "Up to 10 Buildings / Projects",
-      "Automated Dues Collection",
-      "Advanced Financial Analytics",
-      "Auto Invoice Generation",
-      "Request & Maintenance Tracking",
-    ],
-    recommended: true,
-  },
-  {
-    name: "Ultra Deluxe",
-    description: "Enterprise-grade features for large-scale operations.",
-    monthlyPriceId: process.env.STRIPE_ULTRA_DELUXE_MONTHLY_PRICE_ID ?? "",
-    annualPriceId: process.env.STRIPE_ULTRA_DELUXE_ANNUAL_PRICE_ID ?? "",
-    monthlyPrice: 199,
-    annualPrice: 1299,
-    features: [
-      "All Signature features",
-      "Unlimited Buildings & Projects",
-      "Full Customization",
-      "Priority Support & Dedicated Manager",
-      "White-label Investor Reports",
-      "Bulk Payment Processing",
-    ],
-    recommended: false,
-  },
-];
-
 export default async function StaffSubscriptionPage() {
+  const tPricing = await getTranslations("Pricing");
   const supabase = await createClient();
   const {
     data: { session },
@@ -78,6 +23,42 @@ export default async function StaffSubscriptionPage() {
     redirect("/dashboard");
   }
 
+  /**
+   * Stripe Price IDs – replace with your real IDs from Stripe Dashboard → Products.
+   */
+  const pricingTiers = [
+    {
+      name: tPricing("tiers.essence.name"),
+      description: tPricing("tiers.essence.description"),
+      monthlyPriceId: process.env.STRIPE_ESSENCE_MONTHLY_PRICE_ID ?? "",
+      annualPriceId: process.env.STRIPE_ESSENCE_ANNUAL_PRICE_ID ?? "",
+      monthlyPrice: 99,
+      annualPrice: 719,
+      features: (tPricing.raw("tiers.essence.features") as string[]).filter(f => !f.toLowerCase().includes("commission")),
+      recommended: false,
+    },
+    {
+      name: tPricing("tiers.signature.name"),
+      description: tPricing("tiers.signature.description"),
+      monthlyPriceId: process.env.STRIPE_SIGNATURE_MONTHLY_PRICE_ID ?? "",
+      annualPriceId: process.env.STRIPE_SIGNATURE_ANNUAL_PRICE_ID ?? "",
+      monthlyPrice: 149,
+      annualPrice: 999,
+      features: (tPricing.raw("tiers.signature.features") as string[]).filter(f => !f.toLowerCase().includes("commission")),
+      recommended: true,
+    },
+    {
+      name: tPricing("tiers.ultraDeluxe.name"),
+      description: tPricing("tiers.ultraDeluxe.description"),
+      monthlyPriceId: process.env.STRIPE_ULTRA_DELUXE_MONTHLY_PRICE_ID ?? "",
+      annualPriceId: process.env.STRIPE_ULTRA_DELUXE_ANNUAL_PRICE_ID ?? "",
+      monthlyPrice: 199,
+      annualPrice: 1299,
+      features: (tPricing.raw("tiers.ultraDeluxe.features") as string[]).filter(f => !f.toLowerCase().includes("commission")),
+      recommended: false,
+    },
+  ];
+
   // Fetch active subscription
   const { data: subRows } = await supabase
     .from("subscriptions")
@@ -92,6 +73,6 @@ export default async function StaffSubscriptionPage() {
   const subscription = subRows?.[0] ?? null;
 
   return (
-    <SubscriptionClient subscription={subscription} tiers={PRICING_TIERS} />
+    <SubscriptionClient subscription={subscription} tiers={pricingTiers} />
   );
 }

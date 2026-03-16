@@ -24,6 +24,7 @@ export type StaffRequestUnit = {
 /** UI-shaped request for staff list (includes investor name and their units in that building). */
 export type StaffRequestView = InvestorRequestView & {
   investorName: string;
+  investorPhone?: string;
   investorUnits: StaffRequestUnit[];
 };
 
@@ -150,14 +151,17 @@ export async function getStaffRequests(
   }
 
   const profileIds = [...new Set((rows ?? []).map((r: { profile_id: string }) => r.profile_id))];
-  const profileMap = new Map<string, string>();
+  const profileMap = new Map<string, { fullName: string; phone: string | null }>();
   if (profileIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, full_name")
+      .select("id, full_name, phone")
       .in("id", profileIds);
-    (profiles ?? []).forEach((p: { id: string; full_name: string | null }) => {
-      profileMap.set(p.id, p.full_name?.trim() ?? "Investor");
+    (profiles ?? []).forEach((p: { id: string; full_name: string | null; phone: string | null }) => {
+      profileMap.set(p.id, {
+        fullName: p.full_name?.trim() ?? "Investor",
+        phone: p.phone?.trim() || null,
+      });
     });
   }
 
@@ -190,13 +194,15 @@ export async function getStaffRequests(
     buildings: any;
   }) => {
     const bName = Array.isArray(r.buildings) ? r.buildings[0]?.name : r.buildings?.name;
+    const profile = profileMap.get(r.profile_id);
     return {
       id: r.id,
       type: r.type as RequestType,
       status: r.status as RequestStatus,
       buildingId: r.building_id,
       buildingName: bName ?? "",
-      investorName: profileMap.get(r.profile_id) ?? "Investor",
+      investorName: profile?.fullName ?? "Investor",
+      investorPhone: profile?.phone ?? undefined,
       requestedAt: r.created_at,
       note: r.note ?? undefined,
       imageUrls: r.image_urls ?? [],

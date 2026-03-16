@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import type { StaffRecentPaymentItem, StaffOverdueDueItem } from "@/lib/duesPayments";
+import { useTranslations, useLocale } from "next-intl";
 
-function formatPaidAt(paidAt: string): string {
+function formatPaidAt(paidAt: string, locale: string): string {
   try {
     const d = new Date(paidAt);
-    const dateStr = d.toLocaleDateString("en-GB", {
+    const dateStr = d.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
       day: "numeric",
       month: "short",
       year: "numeric",
     });
-    const timeStr = d.toLocaleTimeString("en-GB", {
+    const timeStr = d.toLocaleTimeString(locale === "tr" ? "tr-TR" : "en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
@@ -28,13 +29,15 @@ type Props = {
 };
 
 export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
+  const t = useTranslations("Staff.alerts");
+  const locale = useLocale();
   const totalAlerts = overdueDues.length;
   const hasItems = recentPayments.length > 0 || overdueDues.length > 0;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
       <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-        <h3 className="text-lg font-bold text-gray-900">Dues & Alerts</h3>
+        <h3 className="text-lg font-bold text-gray-900">{t("title")}</h3>
         {totalAlerts > 0 && (
           <span className="flex items-center justify-center size-6 rounded-full bg-red-500 text-white text-xs font-bold">
             {totalAlerts}
@@ -45,7 +48,7 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
         {overdueDues.length > 0 && (
           <div className="px-6 py-3">
             <p className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-2">
-              Overdue dues
+              {t("overdue")}
             </p>
             <ul className="space-y-2">
               {overdueDues.map((item) => (
@@ -61,7 +64,7 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
                       {item.buildingName} · {item.unit}
                     </p>
                     <p className="text-xs text-red-600 font-medium">
-                      {item.period} — due {item.dueDate}
+                      {item.period} — {t("dueOn", { date: item.dueDate })}
                       {item.investorName ? ` · ${item.investorName}` : ""}
                     </p>
                   </div>
@@ -73,7 +76,7 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
         {recentPayments.length > 0 && (
           <div className="px-6 py-3 border-t border-gray-100">
             <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-2">
-              Recent payments
+              {t("recent")}
             </p>
             <ul className="space-y-2">
               {recentPayments.map((item) => (
@@ -89,7 +92,7 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
                       {item.buildingName} · {item.unit}
                     </p>
                     <p className="text-xs text-emerald-700">
-                      {item.period} — paid {formatPaidAt(item.paid_at)}
+                      {item.period} — {t("paidOn", { date: formatPaidAt(item.paid_at, locale) })}
                       {item.investorName ? ` · ${item.investorName}` : ""}
                     </p>
                   </div>
@@ -100,8 +103,8 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
         )}
         {!hasItems && (
           <div className="px-6 py-8 text-center text-gray-500 text-sm">
-            <p>No recent payments or overdue dues.</p>
-            <p className="mt-1 text-xs">Dues are tracked in Dues payments.</p>
+            <p>{t("noItems")}</p>
+            <p className="mt-1 text-xs">{t("trackingInfo")}</p>
           </div>
         )}
       </div>
@@ -110,7 +113,7 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
           href="/dashboard/staff/aidat-payments"
           className="block w-full py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors text-center"
         >
-          Dues payments
+          {useTranslations("Navigation")("financials")}
         </Link>
       </div>
     </div>

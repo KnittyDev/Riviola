@@ -2,16 +2,17 @@
 
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
-  { href: "/dashboard/staff", label: "Overview", icon: "las la-th-large" },
-  { href: "/dashboard/staff/buildings", label: "Buildings", icon: "las la-building" },
-  { href: "/dashboard/staff/investors", label: "Investors", icon: "las la-user-friends" },
-  { href: "/dashboard/staff/requests", label: "Requests", icon: "las la-tasks" },
-  { href: "/dashboard/staff/aidat-payments", label: "Dues Payments", icon: "las la-receipt" },
-  { href: "/dashboard/staff/purchase-payments", label: "Purchase Payments", icon: "las la-wallet" },
-  { href: "/dashboard/staff/subscription", label: "Subscription", icon: "las la-credit-card" },
+  { href: "/dashboard/staff", labelKey: "overview", icon: "las la-th-large" },
+  { href: "/dashboard/staff/buildings", labelKey: "buildings", icon: "las la-building" },
+  { href: "/dashboard/staff/investors", labelKey: "investors", icon: "las la-user-friends" },
+  { href: "/dashboard/staff/requests", labelKey: "requests", icon: "las la-tasks" },
+  { href: "/dashboard/staff/aidat-payments", labelKey: "duesPayments", icon: "las la-receipt" },
+  { href: "/dashboard/staff/purchase-payments", labelKey: "purchasePayments", icon: "las la-wallet" },
+  { href: "/dashboard/staff/subscription", labelKey: "subscription", icon: "las la-credit-card" },
 ];
 
 interface StaffSidebarProps {
@@ -25,6 +26,7 @@ interface StaffSidebarProps {
 const LOGO_SIZE = 40;
 
 export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, fullName = "Staff", open = false, onClose }: StaffSidebarProps) {
+  const t = useTranslations("Sidebar");
   const pathname = usePathname();
   const router = useRouter();
 
@@ -77,7 +79,7 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
               {companyName}
             </h1>
             <p className="text-gray-500 text-xs font-medium">
-              Company panel
+              {t("companyPanel")}
             </p>
           </div>
         </Link>
@@ -85,7 +87,7 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
             type="button"
             onClick={onClose}
             className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 lg:hidden"
-            aria-label="Close menu"
+            aria-label={t("closeMenu")}
           >
             <i className="las la-times text-xl" aria-hidden />
           </button>
@@ -104,7 +106,7 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
                 }`}
             >
               <i className={`${item.icon} text-lg`} aria-hidden />
-              <span className="text-sm font-semibold">{item.label}</span>
+              <span className="text-sm font-semibold">{t(item.labelKey)}</span>
             </Link>
           );
         })}
@@ -126,7 +128,7 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
             href="/dashboard/staff/settings"
             onClick={onClose}
             className="p-2 rounded-lg text-gray-400 hover:text-[#134e4a] hover:bg-gray-50 transition-colors"
-            aria-label="Profile settings"
+            aria-label={t("profileSettings")}
           >
             <i className="las la-cog text-sm" aria-hidden />
           </Link>
@@ -137,7 +139,7 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-semibold transition-colors"
         >
           <i className="las la-sign-out-alt text-lg" aria-hidden />
-          Logout
+          {t("logout")}
         </button>
       </div>
     </aside>

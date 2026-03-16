@@ -10,6 +10,7 @@ import {
   unmarkInstallmentPaidAction,
   deletePurchasePlanAction,
 } from "./actions";
+import { useTranslations, useLocale } from "next-intl";
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: "€",
@@ -26,16 +27,16 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   ALL: "L",
 };
 
-function formatAmount(value: number, currency: string): string {
+function formatAmount(value: number, currency: string, locale: string): string {
   const sym = CURRENCY_SYMBOLS[currency] ?? currency + " ";
-  const formatted = value.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const formatted = value.toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   return sym === "€" || sym === "£" || sym === "₺" ? `${formatted} ${sym}` : `${sym}${formatted}`;
 }
 
-function formatDate(dateStr: string | null): string {
+function formatDate(dateStr: string | null, locale: string): string {
   if (!dateStr) return "—";
   try {
-    return new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
   } catch {
     return "—";
   }
@@ -62,6 +63,8 @@ export function PurchasePaymentsClient({
   units,
   unitsInBlock,
 }: Props) {
+  const t = useTranslations("Purchase");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [addingPlanFor, setAddingPlanFor] = useState<string | null>(null);
@@ -70,10 +73,34 @@ export function PurchasePaymentsClient({
   const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "pending" | "unconfigured">("all");
 
   const STATUS_LABELS = {
-    all: "All Records",
-    paid: "Paid Only",
-    pending: "Pending Only",
-    unconfigured: "Not Configured",
+    all: t("status.all"),
+    paid: t("status.paid"),
+    pending: t("status.pending"),
+    unconfigured: t("status.unconfigured"),
+  };
+
+  const getOrdinal = (n: number) => {
+    if (locale === "tr") return ".";
+    const lastDigit = n % 10;
+    if (n >= 11 && n <= 13) return "th";
+    if (lastDigit === 1) return "st";
+    if (lastDigit === 2) return "nd";
+    if (lastDigit === 3) return "rd";
+    return "th";
+  };
+
+  const formatLabel = (label: string) => {
+    const l = label.toLowerCase();
+    if (l === "full payment") return t("labels.full");
+    if (l === "down payment") return t("labels.down");
+    if (l.includes("installment")) {
+      const numMatch = l.match(/\d+/);
+      if (numMatch) {
+        const n = parseInt(numMatch[0]);
+        return t("labels.installment", { n, suffix: getOrdinal(n) });
+      }
+    }
+    return label;
   };
 
   function updateParams(opts: { building?: string; block?: string; unit?: string }) {
@@ -113,7 +140,7 @@ export function PurchasePaymentsClient({
       toast.error(result.error);
       return;
     }
-    toast.success("Payment plan created.");
+    toast.success(t("planCreated"));
     setAddingPlanFor(null);
     router.refresh();
   }
@@ -128,18 +155,18 @@ export function PurchasePaymentsClient({
       toast.error(result.error);
       return;
     }
-    toast.success(isPaid ? "Unmarked as paid." : "Marked as paid.");
+    toast.success(isPaid ? t("unmarkedPaid") : t("markedPaid"));
     router.refresh();
   }
 
   async function handleDeletePlan(investorPropertyId: string) {
-    if (!confirm("Delete this payment plan? Installment records will be removed.")) return;
+    if (!confirm(t("confirmDelete"))) return;
     const result = await deletePurchasePlanAction(investorPropertyId);
     if (result.error) {
       toast.error(result.error);
       return;
     }
-    toast.success("Plan deleted.");
+    toast.success(t("planDeleted"));
     router.refresh();
   }
 
@@ -218,17 +245,17 @@ export function PurchasePaymentsClient({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Purchase Payments
+          {t("title")}
         </h1>
         <p className="text-gray-500 mt-1">
-          Monitor all units and payments in a unified list. Create or manage plans via the modal.
+          {t("subtitle")}
         </p>
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <label className="text-sm font-semibold text-gray-700 shrink-0">Project</label>
+            <label className="text-sm font-semibold text-gray-700 shrink-0">{t("project")}</label>
             <select
               value={selectedBuildingId}
               onChange={(e) => updateParams({ building: e.target.value })}
@@ -243,7 +270,7 @@ export function PurchasePaymentsClient({
           </div>
           {units.length > 0 && blocks.length > 0 && (
             <div className="flex items-center gap-3">
-              <label className="text-sm font-semibold text-gray-700 shrink-0">Block</label>
+              <label className="text-sm font-semibold text-gray-700 shrink-0">{t("block")}</label>
               <select
                 value={selectedBlock}
                 onChange={(e) => updateParams({ block: e.target.value })}
@@ -251,7 +278,7 @@ export function PurchasePaymentsClient({
               >
                 {blocks.map((bl) => (
                   <option key={bl} value={bl}>
-                    {bl}
+                     {bl}
                   </option>
                 ))}
               </select>
@@ -263,7 +290,7 @@ export function PurchasePaymentsClient({
            <i className="las la-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#134e4a] transition-colors text-lg" />
            <input
              type="text"
-             placeholder="Search unit, investor or payment..."
+             placeholder={t("searchPlaceholder")}
              value={searchQuery}
              onChange={(e) => setSearchQuery(e.target.value)}
              className="w-full bg-white border border-gray-200 rounded-2xl pl-12 pr-10 py-3 text-sm font-bold placeholder:text-gray-400 focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/10 outline-none shadow-sm transition-all"
@@ -297,27 +324,27 @@ export function PurchasePaymentsClient({
       {!selectedBuildingId ? (
                 <div className="bg-gray-50 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
                 <i className="las la-building text-5xl text-gray-300 mb-4" />
-                <p className="text-gray-500 font-bold">Please select a building to get started.</p>
+                <p className="text-gray-500 font-bold">{t("selectBuilding")}</p>
               </div>
       ) : units.length === 0 ? (
         <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-20 text-center text-gray-500">
           <i className="las la-search text-5xl text-gray-200 mb-4" />
-          <p className="font-bold text-lg text-gray-900 mb-1">No units found</p>
-          <p>We couldn't find any buyer units in this project.</p>
+          <p className="font-bold text-lg text-gray-900 mb-1">{t("noUnitsFound")}</p>
+          <p>{t("noUnitsSubtitle")}</p>
         </div>
       ) : (
         <div className="space-y-8 animate-fade-in-up">
           <section className="space-y-4">
             <header className="flex flex-wrap items-center gap-4">
               <h2 className="text-2xl font-black text-gray-900 border-l-4 border-[#134e4a] pl-4">
-                All Units in Block {selectedBlock || "—"}
+                {t("unitsInBlock", { block: selectedBlock || "—" })}
               </h2>
               <div className="flex items-center gap-2 rounded-full bg-[#134e4a]/10 px-4 py-1.5 text-xs font-black text-[#134e4a] uppercase tracking-widest">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#134e4a] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#134e4a]"></span>
                 </span>
-                {unitsInBlock.length} Units Active
+                {t("unitsActive", { count: unitsInBlock.length })}
               </div>
             </header>
 
@@ -326,12 +353,12 @@ export function PurchasePaymentsClient({
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50/80 border-b border-gray-200 text-[10px] font-black text-gray-500 uppercase tracking-[0.1em]">
-                      <th className="px-8 py-5">Unit / Investor</th>
-                      <th className="px-8 py-5">Payment / Plan</th>
-                      <th className="px-8 py-5">Due Date</th>
-                      <th className="px-8 py-5">Amount</th>
-                      <th className="px-8 py-5 text-center">Status</th>
-                      <th className="px-8 py-5 text-right">Actions</th>
+                      <th className="px-8 py-5">{t("table.unitInvestor")}</th>
+                      <th className="px-8 py-5">{t("table.paymentPlan")}</th>
+                      <th className="px-8 py-5">{t("table.dueDate")}</th>
+                      <th className="px-8 py-5">{t("table.amount")}</th>
+                      <th className="px-8 py-5 text-center">{t("table.status")}</th>
+                      <th className="px-8 py-5 text-right">{t("table.actions")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 italic-none">
@@ -340,12 +367,12 @@ export function PurchasePaymentsClient({
                         <td colSpan={6} className="px-8 py-20 text-center">
                           <div className="flex flex-col items-center gap-2">
                             <i className="las la-filter text-4xl text-gray-200" />
-                            <p className="text-gray-900 font-bold">No records found matching filters.</p>
+                            <p className="text-gray-900 font-bold">{t("noRecordsFound")}</p>
                             <button 
                                 onClick={() => { setSearchQuery(""); setStatusFilter("all"); }}
                                 className="text-[#134e4a] text-xs font-bold hover:underline mt-2"
                             >
-                                Clear all filters
+                                {t("clearFilters")}
                             </button>
                           </div>
                         </td>
@@ -365,7 +392,7 @@ export function PurchasePaymentsClient({
                                 </div>
                                 <div>
                                   <p className="text-sm font-black text-gray-900">{u.unit}</p>
-                                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{u.full_name ?? "No Investor"}</p>
+                                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{u.full_name ?? t("noInvestor")}</p>
                                 </div>
                               </div>
                             </td>
@@ -375,26 +402,26 @@ export function PurchasePaymentsClient({
                                   <i className={`las ${isPlaceholder ? "la-lock" : "la-wallet"}`} />
                                 </div>
                                 <span className={`text-sm font-bold ${isPlaceholder ? "text-gray-400 italic" : "text-gray-900"}`}>
-                                  {isPlaceholder ? "No plan configured" : inst.label}
+                                  {isPlaceholder ? t("noPlan") : formatLabel(inst.label)}
                                 </span>
                               </div>
                             </td>
                             <td className="px-8 py-5 text-sm font-bold text-gray-600 uppercase">
-                              {isPlaceholder ? "—" : formatDate(inst.due_date)}
+                              {isPlaceholder ? "—" : formatDate(inst.due_date, locale)}
                             </td>
                             <td className="px-8 py-5 text-sm font-black text-gray-900">
-                              {isPlaceholder ? "—" : formatAmount(Number(inst.amount), inst.currency)}
+                              {isPlaceholder ? "—" : formatAmount(Number(inst.amount), inst.currency, locale)}
                             </td>
                             <td className="px-8 py-5">
                               <div className="flex justify-center">
                                   {isPlaceholder ? (
                                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-wider">
-                                          <i className="las la-clock" /> Not Set
+                                          <i className="las la-clock" /> {t("notSet")}
                                       </span>
                                   ) : (
                                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${inst.paid_at ? "bg-emerald-500/10 text-emerald-700 border border-emerald-500/20" : "bg-amber-500/10 text-amber-700 border border-amber-500/20"}`}>
                                           <span className={`size-1.5 rounded-full ${inst.paid_at ? "bg-emerald-500" : "bg-amber-500"}`} />
-                                          {inst.paid_at ? "Paid" : "Pending"}
+                                          {inst.paid_at ? t("paid") : t("pending")}
                                       </span>
                                   )}
                               </div>
@@ -406,7 +433,7 @@ export function PurchasePaymentsClient({
                                           onClick={() => setAddingPlanFor(u.id)}
                                           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-[11px] font-black uppercase tracking-widest hover:bg-[#115e59] shadow-lg shadow-[#134e4a]/20 transition-all hover:-translate-y-0.5"
                                       >
-                                          <i className="las la-plus" /> Set Plan
+                                          <i className="las la-plus" /> {t("setPlan")}
                                       </button>
                                   ) : (
                                       <div className="flex items-center gap-3">
@@ -415,14 +442,14 @@ export function PurchasePaymentsClient({
                                             onClick={() => handleMarkPaid(inst.id, !!inst.paid_at)}
                                             className={`text-[11px] font-black uppercase tracking-widest transition-all ${inst.paid_at ? "text-gray-400 hover:text-gray-600" : "text-[#134e4a] hover:underline"}`}
                                         >
-                                            {togglingId === inst.id ? "..." : inst.paid_at ? "Unmark" : "Mark Paid"}
+                                            {togglingId === inst.id ? "..." : inst.paid_at ? t("unmark") : t("markPaid")}
                                         </button>
                                         
                                         {(inst.label.toLowerCase().includes("down") || inst.label.includes("1")) && (
                                             <button 
                                               onClick={() => handleDeletePlan(u.id)}
                                               className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all"
-                                              title="Delete whole plan"
+                                              title={t("deletePlan")}
                                             >
                                               <i className="las la-trash-alt" />
                                             </button>
@@ -440,7 +467,7 @@ export function PurchasePaymentsClient({
               </div>
             </div>
             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center py-4">
-               End of block data • Riviola Premium Real Estate Management
+               {t("footer")}
             </p>
           </section>
         </div>
@@ -466,6 +493,7 @@ function PlanModal({
   onClose: () => void;
   onCreate: any;
 }) {
+  const t = useTranslations("Purchase.modal");
   const [planType, setPlanType] = useState<"full" | "installments">("full");
   const [totalAmount, setTotalAmount] = useState(unit.purchase_value != null ? String(unit.purchase_value) : "");
   const [currency, setCurrency] = useState(unit.purchase_currency ?? "EUR");
@@ -491,10 +519,10 @@ function PlanModal({
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden animate-in zoom-in-95 duration-300 ring-1 ring-black/5">
         <div className="px-10 py-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <div>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tight">Set Payment Plan</h3>
+            <h3 className="text-2xl font-black text-gray-900 tracking-tight">{t("title")}</h3>
             <div className="mt-1 flex items-center gap-2">
                 <span className="px-2 py-0.5 rounded-lg bg-[#134e4a] text-white text-[10px] font-black uppercase tracking-wider">{unit.unit}</span>
-                <span className="text-sm text-gray-500 font-bold tracking-tight">{unit.full_name ?? "Independent Unit"}</span>
+                <span className="text-sm text-gray-500 font-bold tracking-tight">{unit.full_name ?? t("independentUnit")}</span>
             </div>
           </div>
           <button onClick={onClose} className="size-10 rounded-2xl hover:bg-white hover:shadow-md flex items-center justify-center transition-all group">
@@ -505,18 +533,18 @@ function PlanModal({
         <form onSubmit={handleSubmit} className="p-10 space-y-6">
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Plan Structure</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">{t("planStructure")}</label>
               <select
                 value={planType}
                 onChange={(e) => setPlanType(e.target.value as any)}
                 className="w-full rounded-2xl border border-gray-200 px-5 py-4 text-sm font-bold bg-gray-50/50 focus:bg-white focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/10 outline-none transition-all cursor-pointer"
               >
-                <option value="full">Full Payment</option>
-                <option value="installments">Down + Installments</option>
+                <option value="full">{t("fullPayment")}</option>
+                <option value="installments">{t("downInstallments")}</option>
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Currency</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">{t("currency")}</label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
@@ -531,7 +559,7 @@ function PlanModal({
 
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Total Contract Value</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">{t("contractValue")}</label>
               <div className="relative">
                  <input
                     type="number"
@@ -544,7 +572,7 @@ function PlanModal({
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Start Date</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">{t("startDate")}</label>
               <input
                 type="date"
                 value={dueDate}
@@ -557,7 +585,7 @@ function PlanModal({
           {planType === "installments" && (
             <div className="grid grid-cols-2 gap-6 animate-in slide-in-from-top-4 duration-300">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Down Payment</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">{t("downPayment")}</label>
                 <input
                   type="number"
                   value={downPayment}
@@ -567,7 +595,7 @@ function PlanModal({
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Installment Count</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">{t("installmentCount")}</label>
                 <input
                   type="number"
                   value={installmentCount}
@@ -585,7 +613,7 @@ function PlanModal({
                onClick={onClose}
                className="flex-1 py-4.5 rounded-[1.5rem] border-2 border-gray-100 text-gray-500 text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all"
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               type="submit"
@@ -595,9 +623,9 @@ function PlanModal({
               {loading ? (
                   <div className="flex items-center justify-center gap-2">
                      <i className="las la-spinner animate-spin text-lg" />
-                     Processing
+                     {t("processing")}
                   </div>
-              ) : "Initialize Plan"}
+              ) : t("initialize")}
             </button>
           </div>
         </form>
