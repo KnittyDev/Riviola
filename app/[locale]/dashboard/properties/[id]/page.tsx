@@ -5,8 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getPropertyDetail } from "@/lib/propertyDetailData";
 import { WeeklyPhotoUpdates } from "@/components/WeeklyPhotoUpdates";
 import { WeatherWidget } from "@/components/dashboard/properties/WeatherWidget";
-import { BuildingProgressClient } from "@/app/dashboard/staff/buildings/[id]/BuildingOverridesClient";
-import { BuildingMilestonesLog } from "@/app/dashboard/staff/buildings/[id]/BuildingMilestonesLog";
+import { BuildingProgressClient } from "@/app/[locale]/dashboard/staff/buildings/[id]/BuildingOverridesClient";
+import { BuildingMilestonesLog } from "@/app/[locale]/dashboard/staff/buildings/[id]/BuildingMilestonesLog";
 import type { PlannedMilestoneDb } from "@/lib/supabase/types";
 import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
 
@@ -226,62 +226,53 @@ export default async function PropertyDetailPage({
 
         {/* Sustainability Dashboard */}
         {(building as any).sustainability_score > 0 && (
-          <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6 mb-8 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-start gap-4">
-                <div className="size-12 rounded-2xl bg-[#134e4a] text-white flex items-center justify-center shrink-0 shadow-lg shadow-[#134e4a]/20">
-                  <i className="las la-leaf text-2xl" />
+          <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 mb-6 shadow-sm">
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Icon + title */}
+              <div className="flex items-center gap-2.5 shrink-0">
+                <div className="size-8 rounded-xl bg-[#134e4a] text-white flex items-center justify-center shadow-md shadow-[#134e4a]/20">
+                  <i className="las la-leaf text-base" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Sustainability Dashboard</h2>
-                  <p className="text-sm text-gray-500 mt-0.5">Project environmental impact & green certificate</p>
+                  <p className="text-sm font-bold text-gray-900 leading-tight">Sustainability Dashboard</p>
+                  <p className="text-[11px] text-gray-500 leading-tight">Environmental impact & green certificate</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-6 divide-px divide-emerald-200">
-                <div className="text-center">
-                  <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1">Green Score</p>
-                  <div className="relative inline-flex items-center justify-center">
-                    <svg className="size-16 transform -rotate-90">
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="28"
-                        stroke="currentColor"
-                        strokeWidth="6"
-                        fill="transparent"
-                        className="text-emerald-100"
-                      />
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="28"
-                        stroke="currentColor"
-                        strokeWidth="6"
-                        fill="transparent"
-                        strokeDasharray={175.92}
-                        strokeDashoffset={175.92 - (175.92 * (building as any).sustainability_score) / 100}
-                        className="text-[#134e4a]"
-                      />
-                    </svg>
-                    <span className="absolute text-lg font-black text-[#134e4a]">{(building as any).sustainability_score}</span>
-                  </div>
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-10 bg-emerald-200 shrink-0" />
+
+              {/* Score ring */}
+              <div className="flex items-center gap-2 shrink-0">
+                <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Green Score</p>
+                <div className="relative inline-flex items-center justify-center">
+                  <svg className="size-10 transform -rotate-90">
+                    <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-emerald-100" />
+                    <circle
+                      cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="transparent"
+                      strokeDasharray={100.53}
+                      strokeDashoffset={100.53 - (100.53 * (building as any).sustainability_score) / 100}
+                      className="text-[#134e4a]"
+                    />
+                  </svg>
+                  <span className="absolute text-[11px] font-black text-[#134e4a]">{(building as any).sustainability_score}</span>
                 </div>
-                
-                {Array.isArray((building as any).sustainability_features) && (building as any).sustainability_features.length > 0 && (
-                  <div className="pl-6 border-l border-emerald-200">
-                    <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-2">Eco Features</p>
-                    <div className="flex flex-wrap gap-2 max-w-md">
-                      {(building as any).sustainability_features.map((feature: string, i: number) => (
-                        <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[11px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
-                          <i className={`${getGreenFeatureIcon(feature)} text-emerald-600 text-sm`} />
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {/* Eco features */}
+              {Array.isArray((building as any).sustainability_features) && (building as any).sustainability_features.length > 0 && (
+                <>
+                  <div className="hidden sm:block w-px h-10 bg-emerald-200 shrink-0" />
+                  <div className="flex flex-wrap gap-1.5 min-w-0">
+                    {(building as any).sustainability_features.map((feature: string, i: number) => (
+                      <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[10px] font-bold shadow-sm">
+                        <i className={`${getGreenFeatureIcon(feature)} text-emerald-600 text-xs`} />
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

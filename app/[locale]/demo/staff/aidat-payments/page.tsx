@@ -1,6 +1,6 @@
 import { staffBuildings } from "@/lib/staffBuildingsData";
 import { demoInvestors } from "@/lib/demoInvestorsData";
-import { DuesPaymentsClient } from "@/app/dashboard/staff/aidat-payments/DuesPaymentsClient";
+import { DuesPaymentsClient } from "@/app/[locale]/dashboard/staff/aidat-payments/DuesPaymentsClient";
 import {
     setBuildingDuesSettingsAction,
     markDuesPaidAction,
@@ -47,6 +47,7 @@ export default async function StaffAidatPaymentsPage({
         payment_window_end_day: 15,
         amount_cents: 45000, // 450.00 EUR
         currency: "EUR",
+        area_pricing: null,
     };
 
     // Generate some random "paid" statuses to make it look real

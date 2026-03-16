@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { buildingBlocks, buildingFloors, getBuildingById } from "@/lib/staffBuildingsData";
 import { notFound } from "next/navigation";
-import { EditBuildingForm } from "@/app/dashboard/staff/buildings/[id]/edit/EditBuildingForm";
+import { EditBuildingForm } from "@/app/[locale]/dashboard/staff/buildings/[id]/edit/EditBuildingForm";
 
 export default async function EditBuildingPage({
   params,
@@ -33,6 +33,7 @@ export default async function EditBuildingPage({
         defaultLocation={building.location}
         defaultUnits={building.units}
         defaultStatus={building.status}
+        defaultProgress={building.progress}
         defaultBlocks={buildingBlocks[building.id] ?? ["Block A"]}
         defaultFloors={buildingFloors[building.id] ?? 1}
         basePath="/demo/staff"
