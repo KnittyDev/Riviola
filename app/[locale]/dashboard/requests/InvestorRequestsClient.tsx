@@ -17,6 +17,7 @@ import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
+import { useTranslations, useLocale } from "next-intl";
 
 export type BuildingForDropdown = {
   building_id: string;
@@ -24,32 +25,12 @@ export type BuildingForDropdown = {
   location: string | null;
 };
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-GB", {
+function formatDate(dateStr: string, locale: string) {
+  return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
   });
-}
-
-const STATUS_LABELS: Record<RequestStatus, string> = {
-  Pending: "Pending",
-  "In progress": "In progress",
-  Done: "Done",
-  Cancelled: "Cancelled",
-};
-
-function getStatusBadgeClass(status: RequestStatus): string {
-  switch (status) {
-    case "Done":
-      return "bg-emerald-50 text-emerald-700";
-    case "In progress":
-      return "bg-amber-50 text-amber-700";
-    case "Cancelled":
-      return "bg-gray-100 text-gray-500";
-    default:
-      return "bg-gray-100 text-gray-600";
-  }
 }
 
 type Props = {
@@ -61,6 +42,8 @@ export function InvestorRequestsClient({
   initialRequests,
   buildingsForDropdown,
 }: Props) {
+  const t = useTranslations("RequestsPage");
+  const locale = useLocale();
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
   const [type, setType] = useState<RequestType>("Information");
@@ -79,6 +62,26 @@ export function InvestorRequestsClient({
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "All">("All");
   const [typeFilter, setTypeFilter] = useState<RequestType | "All">("All");
   const [buildingFilter, setBuildingFilter] = useState<string>("All");
+
+  const STATUS_LABELS: Record<RequestStatus, string> = {
+    Pending: t("statuses.Pending"),
+    "In progress": t("statuses.In progress"),
+    Done: t("statuses.Done"),
+    Cancelled: t("statuses.Cancelled"),
+  };
+
+  function getStatusBadgeClass(status: RequestStatus): string {
+    switch (status) {
+      case "Done":
+        return "bg-emerald-50 text-emerald-700";
+      case "In progress":
+        return "bg-amber-50 text-amber-700";
+      case "Cancelled":
+        return "bg-gray-100 text-gray-500";
+      default:
+        return "bg-gray-100 text-gray-600";
+    }
+  }
 
   function openLightbox(urls: string[], index: number) {
     setLightboxSlides(urls.map(url => ({ src: url, alt: "Request attachment" })));
@@ -133,7 +136,7 @@ export function InvestorRequestsClient({
       setError(result.error);
       return;
     }
-    toast.success("Request submitted successfully.");
+    toast.success(t("toasts.success"));
     setType("Information");
     setBuildingId("");
     setNote("");
@@ -160,7 +163,7 @@ export function InvestorRequestsClient({
       toast.error(result.error);
       return;
     }
-    toast.success("Request cancelled.");
+    toast.success(t("toasts.cancelled"));
     router.refresh();
   }
 
@@ -178,11 +181,10 @@ export function InvestorRequestsClient({
       <div className="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-            My requests
+            {t("title")}
           </h1>
           <p className="text-gray-500 mt-1">
-            Submit and track site tours, utility connections, documents and other
-            requests.
+            {t("subtitle")}
           </p>
         </div>
         <button
@@ -191,14 +193,14 @@ export function InvestorRequestsClient({
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] transition-colors shrink-0"
         >
           <i className="las la-plus text-lg" aria-hidden />
-          New request
+          {t("newRequest")}
         </button>
       </div>
 
       {showForm && (
         <div className="mb-8 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
           <h2 className="text-lg font-bold text-gray-900 mb-4">
-            Submit a new request
+            {t("form.title")}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -206,7 +208,7 @@ export function InvestorRequestsClient({
                 htmlFor="request-type"
                 className="block text-sm font-semibold text-gray-700 mb-1"
               >
-                Request type
+                {t("form.typeLabel")}
               </label>
               <select
                 id="request-type"
@@ -215,9 +217,9 @@ export function InvestorRequestsClient({
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none bg-white text-sm"
                 required
               >
-                {REQUEST_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+                {REQUEST_TYPES.map((t_key) => (
+                  <option key={t_key} value={t_key}>
+                    {t(`types.${t_key}`)}
                   </option>
                 ))}
               </select>
@@ -227,7 +229,7 @@ export function InvestorRequestsClient({
                 htmlFor="request-building"
                 className="block text-sm font-semibold text-gray-700 mb-1"
               >
-                Property / building
+                {t("form.buildingLabel")}
               </label>
               <select
                 id="request-building"
@@ -236,7 +238,7 @@ export function InvestorRequestsClient({
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none bg-white text-sm"
                 required
               >
-                <option value="">Select property</option>
+                <option value="">{t("form.buildingPlaceholder")}</option>
                 {buildingsForDropdown.map((b) => (
                   <option key={b.building_id} value={b.building_id}>
                     {b.name} – {b.location ?? ""}
@@ -249,35 +251,42 @@ export function InvestorRequestsClient({
                 htmlFor="request-note"
                 className="block text-sm font-semibold text-gray-700 mb-1"
               >
-                Note (optional)
+                {t("form.noteLabel")}
               </label>
               <textarea
                 id="request-note"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="e.g. Preferred date for site tour, or details for utility connection"
+                placeholder={t("form.notePlaceholder")}
                 rows={3}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none bg-white text-sm resize-none"
               />
             </div>
             <div>
               <label
-                htmlFor="request-images"
                 className="block text-sm font-semibold text-gray-700 mb-1"
               >
-                Attach photos (optional)
+                {t("form.attachLabel")}
               </label>
-              <input
-                id="request-images"
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#134e4a]/10 file:text-[#134e4a] hover:file:bg-[#134e4a]/20 transition-colors"
-              />
-              {files.length > 0 && (
-                <p className="text-xs text-gray-500 mt-2">{files.length} file(s) selected</p>
-              )}
+              <div className="flex items-center gap-4">
+                <label
+                  htmlFor="request-images"
+                  className="px-4 py-2.5 rounded-xl bg-[#134e4a]/10 text-[#134e4a] text-sm font-semibold hover:bg-[#134e4a]/20 transition-colors cursor-pointer"
+                >
+                  {t("form.chooseFile")}
+                </label>
+                <input
+                  id="request-images"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {files.length > 0 && (
+                  <p className="text-xs text-gray-500">{t("form.filesSelected", { count: files.length })}</p>
+                )}
+              </div>
             </div>
             {error && (
               <p className="text-sm text-red-600 font-medium">{error}</p>
@@ -288,7 +297,7 @@ export function InvestorRequestsClient({
                 disabled={submitting || !buildingId.trim()}
                 className="px-5 py-2.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] disabled:opacity-50 transition-colors"
               >
-                {submitting ? "Submitting…" : "Submit request"}
+                {submitting ? t("form.submitting") : t("form.submitButton")}
               </button>
               <button
                 type="button"
@@ -301,7 +310,7 @@ export function InvestorRequestsClient({
                 }}
                 className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                {t("form.cancelButton")}
               </button>
             </div>
           </form>
@@ -310,34 +319,34 @@ export function InvestorRequestsClient({
 
       {pendingCount > 0 && (
         <p className="text-sm text-[#134e4a] font-medium mb-4">
-          Showing {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""} ({pendingCount} pending).
+          {t("filters.summary", { count: filteredRequests.length, pending: pendingCount })}
         </p>
       )}
 
       {/* Filters UI */}
       <div className="mb-6 flex flex-wrap gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
         <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Type</label>
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">{t("filters.type")}</label>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as any)}
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-[#134e4a] outline-none transition-colors"
           >
-            <option value="All">All Types</option>
-            {REQUEST_TYPES.map(t => (
-              <option key={t} value={t}>{t}</option>
+            <option value="All">{t("filters.allTypes")}</option>
+            {REQUEST_TYPES.map(t_key => (
+              <option key={t_key} value={t_key}>{t(`types.${t_key}`)}</option>
             ))}
           </select>
         </div>
 
         <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Building</label>
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">{t("filters.building")}</label>
           <select
             value={buildingFilter}
             onChange={(e) => setBuildingFilter(e.target.value)}
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-[#134e4a] outline-none transition-colors"
           >
-            <option value="All">All Buildings</option>
+            <option value="All">{t("filters.allBuildings")}</option>
             {buildingsForDropdown.map(b => (
               <option key={b.building_id} value={b.building_id}>{b.name}</option>
             ))}
@@ -345,13 +354,13 @@ export function InvestorRequestsClient({
         </div>
 
         <div className="flex-1 min-w-[140px]">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Status</label>
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">{t("filters.status")}</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-[#134e4a] outline-none transition-colors"
           >
-            <option value="All">All Statuses</option>
+            <option value="All">{t("filters.allStatuses")}</option>
             {Object.keys(STATUS_LABELS).map(s => (
               <option key={s} value={s}>{STATUS_LABELS[s as RequestStatus]}</option>
             ))}
@@ -367,7 +376,7 @@ export function InvestorRequestsClient({
               aria-hidden
             />
             <p className="text-gray-500 font-medium">
-              No requests found matching your filters.
+              {t("filters.emptyTitle")}
             </p>
             <button
               onClick={() => {
@@ -377,7 +386,7 @@ export function InvestorRequestsClient({
               }}
               className="mt-2 text-sm text-[#134e4a] font-bold hover:underline"
             >
-              Clear all filters
+              {t("filters.clearFilters")}
             </button>
           </div>
         ) : (
@@ -398,7 +407,7 @@ export function InvestorRequestsClient({
                       />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-gray-900">{req.type}</p>
+                      <p className="font-bold text-gray-900">{t(`types.${req.type}`)}</p>
                       <p className="text-sm text-gray-500 mt-0.5">
                         {req.buildingName}
                       </p>
@@ -422,7 +431,7 @@ export function InvestorRequestsClient({
                         </div>
                       )}
                       <p className="text-xs text-gray-400 mt-1">
-                        Submitted {formatDate(req.requestedAt)}
+                        {t("list.submitted", { date: formatDate(req.requestedAt, locale) })}
                       </p>
                     </div>
                   </div>
@@ -439,7 +448,7 @@ export function InvestorRequestsClient({
                         disabled={cancellingId === req.id}
                         className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-50"
                       >
-                        {cancellingId === req.id ? "Cancelling…" : "Cancel request"}
+                        {cancellingId === req.id ? t("list.cancelling") : t("list.cancelButton")}
                       </button>
                     )}
                   </div>
@@ -463,14 +472,10 @@ export function InvestorRequestsClient({
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="cancel-modal-title" className="text-lg font-bold text-gray-900 mb-2">
-              Cancel request?
+              {t("modals.cancel.title")}
             </h2>
             <p className="text-gray-600 text-sm mb-6">
-              Are you sure you want to cancel this request?{" "}
-              <span className="font-semibold text-gray-900">
-                {requestToCancel.type}
-              </span>{" "}
-              for {requestToCancel.buildingName} will be cancelled.
+              {t("modals.cancel.body", { type: requestToCancel.type, building: requestToCancel.buildingName })}
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -478,7 +483,7 @@ export function InvestorRequestsClient({
                 onClick={() => setRequestToCancel(null)}
                 className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors"
               >
-                Keep request
+                {t("modals.cancel.keep")}
               </button>
               <button
                 type="button"
@@ -486,7 +491,7 @@ export function InvestorRequestsClient({
                 disabled={cancellingId === requestToCancel.id}
                 className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-semibold text-sm hover:bg-red-700 disabled:opacity-50 transition-colors"
               >
-                {cancellingId === requestToCancel.id ? "Cancelling…" : "Yes, cancel"}
+                {cancellingId === requestToCancel.id ? t("list.cancelling") : t("modals.cancel.confirm")}
               </button>
             </div>
           </div>

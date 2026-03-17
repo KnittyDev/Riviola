@@ -746,6 +746,136 @@
       "title": "Activity log"
     }
   },
+  "RequestsPage": {
+    "title": "My requests",
+    "subtitle": "Submit and track site tours, utility connections, documents and other requests.",
+    "newRequest": "New request",
+    "form": {
+      "title": "Submit a new request",
+      "typeLabel": "Request type",
+      "buildingLabel": "Property / building",
+      "buildingPlaceholder": "Select property",
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "e.g. Preferred date for site tour, or details for utility connection",
+      "attachLabel": "Attach photos (optional)",
+      "filesSelected": "{count} file(s) selected",
+      "submitButton": "Submit request",
+      "submitting": "Submitting…",
+      "cancelButton": "Cancel",
+      "chooseFile": "Choose file"
+    },
+    "types": {
+      "Site tour": "Site tour",
+      "Information": "Information",
+      "Water connection": "Water connection",
+      "Electricity connection": "Electricity connection",
+      "Gas connection": "Gas connection",
+      "Handover inspection": "Handover inspection",
+      "Document request": "Document request",
+      "Maintenance request": "Maintenance request",
+      "Repair request": "Repair request"
+    },
+    "filters": {
+      "summary": "Showing {count} requests ({pending} pending).",
+      "type": "Type",
+      "building": "Building",
+      "status": "Status",
+      "allTypes": "All Types",
+      "allBuildings": "All Buildings",
+      "allStatuses": "All Statuses",
+      "emptyTitle": "No requests found matching your filters.",
+      "clearFilters": "Clear all filters"
+    },
+    "list": {
+      "submitted": "Submitted {date}",
+      "cancelButton": "Cancel request",
+      "cancelling": "Cancelling…"
+    },
+    "modals": {
+      "cancel": {
+        "title": "Cancel request?",
+        "body": "Are you sure you want to cancel this request? {type} for {building} will be cancelled.",
+        "keep": "Keep request",
+        "confirm": "Yes, cancel"
+      }
+    },
+    "statuses": {
+      "Pending": "Pending",
+      "In progress": "In progress",
+      "Done": "Done",
+      "Cancelled": "Cancelled"
+    },
+    "toasts": {
+      "success": "Request submitted successfully.",
+      "cancelled": "Request cancelled."
+    }
+  },
+  "FinancialsPage": {
+    "title": "Financials & Installments",
+    "subtitle": "Track payment milestones and outstanding balances for your properties.",
+    "exportButton": "Export Report",
+    "progress": {
+      "title": "Total Progress",
+      "paid": "Paid",
+      "remaining": "Remaining",
+      "contractValue": "Total Contract Value",
+      "paidToDate": "Paid to Date",
+      "balance": "Remaining Balance"
+    },
+    "table": {
+      "title": "Payments",
+      "payment": "Payment",
+      "dueDate": "Due Date",
+      "amount": "Amount",
+      "status": "Status",
+      "empty": "No payments yet.",
+      "statuses": {
+        "paid": "Paid",
+        "pending": "Pending"
+      }
+    }
+  },
+  "FeesPage": {
+    "title": "Fees & Payments",
+    "subtitle": "Track and pay apartment and building fees — common charges (aidat) and related expenses.",
+    "stats": {
+      "totalDue": "Total due",
+      "itemsToPay": "{count} item(s) to pay",
+      "paidMonth": "Paid this month",
+      "payments": "{count} payment(s)",
+      "nextDue": "Next due date",
+      "commonCharges": "Common charges (Aidat)",
+      "noUpcoming": "No upcoming dues"
+    },
+    "table": {
+      "title": "All fees and expenses",
+      "downloadInvoice": "Download Invoice",
+      "building": "Building / Unit",
+      "type": "Type",
+      "period": "Period",
+      "dueDate": "Due date",
+      "amount": "Amount",
+      "status": "Status",
+      "invoice": "Invoice",
+      "action": "Action",
+      "empty": "No dues recorded yet. Dues appear here once your building manager configures payment windows for your units.",
+      "commonChargesLabel": "Common charges (Aidat)"
+    },
+    "actions": {
+      "pay": "Pay",
+      "sending": "Sending…",
+      "paid": "Paid",
+      "paidOn": "Paid on {date}, {time}",
+      "due": "Due",
+      "overdue": "Overdue"
+    },
+    "footer": "Click \"Pay\" to pay with Stripe. Amount must be set by your building manager for the Pay button to work.",
+    "toasts": {
+      "success": "Payment completed. Thank you.",
+      "error": "Could not confirm payment.",
+      "startError": "Payment could not be started."
+    }
+  },
   "Weather": {
     "clear_sky": "Clear sky",
     "mainly_clear": "Mainly clear",

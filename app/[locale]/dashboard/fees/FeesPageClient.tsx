@@ -9,49 +9,30 @@ import {
   confirmDuesPaymentFromSessionAction,
 } from "./actions";
 import { downloadDuesPdf } from "@/lib/duesPdf";
+import { useTranslations, useLocale } from "next-intl";
 
 type FeeStatus = "paid" | "due" | "overdue";
 
-function formatPaidAt(paidAt: string | null): string {
-  if (!paidAt) return "Paid";
+function formatPaidAt(paidAt: string | null, locale: string, t: any): string {
+  if (!paidAt) return t("actions.paid");
   try {
     const d = new Date(paidAt);
-    const dateStr = d.toLocaleDateString("en-GB", {
+    const lang = locale === "tr" ? "tr-TR" : "en-GB";
+    const dateStr = d.toLocaleDateString(lang, {
       day: "numeric",
       month: "short",
       year: "numeric",
     });
-    const timeStr = d.toLocaleTimeString("en-GB", {
+    const timeStr = d.toLocaleTimeString(lang, {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
     });
-    return `Paid on ${dateStr}, ${timeStr}`;
+    return t("actions.paidOn", { date: dateStr, time: timeStr });
   } catch {
-    return "Paid";
+    return t("actions.paid");
   }
 }
-
-const statusConfig: Record<
-  FeeStatus,
-  { label: string; className: string; dotClass: string }
-> = {
-  paid: {
-    label: "Paid",
-    className: "bg-emerald-100 text-emerald-700",
-    dotClass: "bg-emerald-600",
-  },
-  due: {
-    label: "Due",
-    className: "bg-amber-100 text-amber-700",
-    dotClass: "bg-amber-500",
-  },
-  overdue: {
-    label: "Overdue",
-    className: "bg-red-100 text-red-700",
-    dotClass: "bg-red-600",
-  },
-};
 
 type Props = {
   fees: InvestorDuesFeeItem[];
@@ -59,18 +40,41 @@ type Props = {
 };
 
 export function FeesPageClient({ fees, company }: Props) {
+  const t = useTranslations("FeesPage");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [payingId, setPayingId] = useState<string | null>(null);
+
+  const statusConfig: Record<
+    FeeStatus,
+    { label: string; className: string; dotClass: string }
+  > = {
+    paid: {
+      label: t("actions.paid"),
+      className: "bg-emerald-100 text-emerald-700",
+      dotClass: "bg-emerald-600",
+    },
+    due: {
+      label: t("actions.due"),
+      className: "bg-amber-100 text-amber-700",
+      dotClass: "bg-amber-500",
+    },
+    overdue: {
+      label: t("actions.overdue"),
+      className: "bg-red-100 text-red-700",
+      dotClass: "bg-red-600",
+    },
+  };
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
     if (sessionId) {
       confirmDuesPaymentFromSessionAction(sessionId).then((result) => {
         if (result.ok) {
-          toast.success("Payment completed. Thank you.");
+          toast.success(t("toasts.success"));
         } else {
-          toast.error(result.error ?? "Could not confirm payment.");
+          toast.error(result.error ?? t("toasts.error"));
         }
         router.replace("/dashboard/fees", { scroll: false });
         router.refresh();
@@ -78,10 +82,10 @@ export function FeesPageClient({ fees, company }: Props) {
       return;
     }
     if (searchParams.get("success") === "1") {
-      toast.success("Payment completed. Thank you.");
+      toast.success(t("toasts.success"));
       router.replace("/dashboard/fees", { scroll: false });
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, t]);
 
   const currencySymbols: Record<string, string> = {
     EUR: "€", USD: "$", GBP: "£", TRY: "₺", CHF: "Fr", AUD: "A$",
@@ -96,9 +100,10 @@ export function FeesPageClient({ fees, company }: Props) {
       const cur = f.currency ?? "EUR";
       totalByCurrency[cur] = (totalByCurrency[cur] ?? 0) + (f.amountCents ?? 0) / 100;
     });
+    const lang = locale === "tr" ? "tr-TR" : "en-US";
     const parts = Object.entries(totalByCurrency).map(([cur, total]) => {
       const sym = currencySymbols[cur] ?? cur + " ";
-      return `${sym} ${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+      return `${sym} ${total.toLocaleString(lang, { minimumFractionDigits: 2 })}`;
     });
     return parts.length > 0 ? parts.join(" + ") : "€ 0.00";
   }
@@ -129,7 +134,7 @@ export function FeesPageClient({ fees, company }: Props) {
     );
     setPayingId(null);
     if (!result.ok) {
-      toast.error(result.error ?? "Payment could not be started.");
+      toast.error(result.error ?? t("toasts.startError"));
       return;
     }
     if (result.url) {
@@ -142,40 +147,40 @@ export function FeesPageClient({ fees, company }: Props) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-fade-in">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-            Fees & Payments
+            {t("title")}
           </h1>
           <p className="text-gray-500 text-base">
-            Track and pay apartment and building fees — common charges (aidat) and related expenses.
+            {t("subtitle")}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up">
-          <p className="text-sm font-medium text-gray-500 mb-1">Total due</p>
+          <p className="text-sm font-medium text-gray-500 mb-1">{t("stats.totalDue")}</p>
           <p className="text-2xl font-bold text-gray-900">
             {totalDueFormatted}
           </p>
           <p className="text-xs text-amber-600 font-medium mt-1">
-            {unpaidItems.length} item(s) to pay
+            {t("stats.itemsToPay", { count: unpaidItems.length })}
           </p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up delay-100">
-          <p className="text-sm font-medium text-gray-500 mb-1">Paid this month</p>
+          <p className="text-sm font-medium text-gray-500 mb-1">{t("stats.paidMonth")}</p>
           <p className="text-2xl font-bold text-emerald-600">
             {paidThisMonthFormatted}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {paidThisMonth.length} payment(s)
+            {t("stats.payments", { count: paidThisMonth.length })}
           </p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm animate-fade-in-up delay-150">
-          <p className="text-sm font-medium text-gray-500 mb-1">Next due date</p>
+          <p className="text-sm font-medium text-gray-500 mb-1">{t("stats.nextDue")}</p>
           <p className="text-2xl font-bold text-gray-900">
             {nextDue ? nextDue.dueDate : "—"}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {nextDue ? "Common charges (Aidat)" : "No upcoming dues"}
+            {nextDue ? (locale === "tr" ? "Aidat" : "Common charges (Aidat)") : t("stats.noUpcoming")}
           </p>
         </div>
       </div>
@@ -183,17 +188,17 @@ export function FeesPageClient({ fees, company }: Props) {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden animate-fade-in-up" style={{ animationDelay: "100ms" }}>
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <h3 className="text-lg font-bold text-gray-900">
-            All fees and expenses
+            {t("table.title")}
           </h3>
           <div className="flex gap-2 items-center">
             <button
               type="button"
               onClick={() => downloadDuesPdf(fees, company)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
-              title="Download dues summary (Invoice)"
+              title={t("table.downloadInvoice")}
             >
               <i className="las la-file-invoice text-lg" aria-hidden />
-              Download Invoice
+              {t("table.downloadInvoice")}
             </button>
           </div>
         </div>
@@ -202,28 +207,28 @@ export function FeesPageClient({ fees, company }: Props) {
             <thead>
               <tr className="bg-gray-50/80 border-b border-gray-200">
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Building / Unit
+                  {t("table.building")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Type
+                  {t("table.type")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Period
+                  {t("table.period")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Due date
+                  {t("table.dueDate")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Amount
+                  {t("table.amount")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Status
+                  {t("table.status")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Invoice
+                  {t("table.invoice")}
                 </th>
                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">
-                  Action
+                  {t("table.action")}
                 </th>
               </tr>
             </thead>
@@ -231,7 +236,7 @@ export function FeesPageClient({ fees, company }: Props) {
               {fees.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                    No dues recorded yet. Dues appear here once your building manager configures payment windows for your units.
+                    {t("table.empty")}
                   </td>
                 </tr>
               ) : (
@@ -253,7 +258,7 @@ export function FeesPageClient({ fees, company }: Props) {
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm font-medium text-gray-900">
-                          Common charges (Aidat)
+                          {t("table.commonChargesLabel")}
                         </p>
                         <p className="text-xs text-gray-500">{row.description}</p>
                       </td>
@@ -281,16 +286,16 @@ export function FeesPageClient({ fees, company }: Props) {
                           type="button"
                           onClick={() => downloadDuesPdf([row], company)}
                           className="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#134e4a] text-xs font-medium transition-colors"
-                          title={`Download invoice: ${row.period} – ${row.building}`}
+                          title={`${t("table.invoice")}: ${row.period} – ${row.building}`}
                         >
                           <i className="las la-file-invoice text-base" aria-hidden />
-                          Invoice
+                          {t("table.invoice")}
                         </button>
                       </td>
                       <td className="px-6 py-4 text-right">
                         {row.status === "paid" ? (
                           <span className="text-xs text-gray-500 font-medium" title={row.paid_at ?? undefined}>
-                            {formatPaidAt(row.paid_at)}
+                            {formatPaidAt(row.paid_at, locale, t)}
                             {row.payment_number && (
                               <span className="block mt-0.5 font-mono text-[#134e4a]">
                                 {row.payment_number}
@@ -305,7 +310,7 @@ export function FeesPageClient({ fees, company }: Props) {
                             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors disabled:opacity-60"
                           >
                             <i className="las la-credit-card text-base" aria-hidden />
-                            {payingId === row.id ? "Sending…" : "Pay"}
+                            {payingId === row.id ? t("actions.sending") : t("actions.pay")}
                           </button>
                         )}
                       </td>
@@ -319,7 +324,7 @@ export function FeesPageClient({ fees, company }: Props) {
       </div>
 
       <p className="text-sm text-gray-500 mt-6">
-        Click &quot;Pay&quot; to pay with Stripe. Amount must be set by your building manager for the Pay button to work.
+        {t("footer")}
       </p>
     </div>
   );

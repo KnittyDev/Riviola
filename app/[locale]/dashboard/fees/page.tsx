@@ -5,7 +5,8 @@ import { FeesPageClient } from "./FeesPageClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function FeesPage() {
+export default async function FeesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const supabase = await createClient();
   const {
     data: { session },
@@ -13,7 +14,7 @@ export default async function FeesPage() {
   if (!session?.user) redirect("/login");
 
   const [fees, company] = await Promise.all([
-    getInvestorDuesFees(supabase, session.user.id),
+    getInvestorDuesFees(supabase, session.user.id, locale),
     getCompanyForInvestorProfile(supabase, session.user.id),
   ]);
 

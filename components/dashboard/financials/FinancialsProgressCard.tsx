@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations, useLocale } from "next-intl";
+
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: "€",
   USD: "$",
@@ -15,9 +17,10 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   ALL: "L",
 };
 
-function formatAmount(value: number, currency: string): string {
+function formatAmount(value: number, currency: string, locale: string) {
   const sym = CURRENCY_SYMBOLS[currency] ?? currency + " ";
-  return `${value.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}${sym === "€" || sym === "£" || sym === "₺" ? " " + sym : sym}`;
+  const lang = locale === "tr" ? "tr-TR" : "en-US";
+  return `${value.toLocaleString(lang, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}${sym === "€" || sym === "£" || sym === "₺" ? " " + sym : sym}`;
 }
 
 export type TotalByCurrency = Record<string, number>;
@@ -31,6 +34,8 @@ export function FinancialsProgressCard({
   totalByCurrency = {},
   paidByCurrency = {},
 }: FinancialsProgressCardProps) {
+  const t = useTranslations("FinancialsPage.progress");
+  const locale = useLocale();
   const safeTotal = totalByCurrency ?? {};
   const safePaid = paidByCurrency ?? {};
 
@@ -38,7 +43,7 @@ export function FinancialsProgressCard({
   const totalContractDisplay =
     totalEntries.length === 0
       ? "—"
-      : totalEntries.map(([c, v]) => formatAmount(v, c)).join(" · ");
+      : totalEntries.map(([c, v]) => formatAmount(v, c, locale)).join(" · ");
 
   const primaryCurrency = totalEntries[0];
   const primaryTotal = primaryCurrency ? safeTotal[primaryCurrency[0]] ?? 0 : 0;
@@ -53,7 +58,7 @@ export function FinancialsProgressCard({
       ? "—"
       : totalEntries.map(([c]) => {
           const paid = safePaid[c] ?? 0;
-          return formatAmount(paid, c);
+          return formatAmount(paid, c, locale);
         }).join(" · ");
 
   const remainingByCurrency: TotalByCurrency = {};
@@ -64,7 +69,7 @@ export function FinancialsProgressCard({
   const remainingDisplay =
     totalEntries.length === 0
       ? "—"
-      : totalEntries.map(([c]) => formatAmount(remainingByCurrency[c] ?? 0, c)).join(" · ");
+      : totalEntries.map(([c]) => formatAmount(remainingByCurrency[c] ?? 0, c, locale)).join(" · ");
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 animate-fade-in-up">
@@ -73,11 +78,11 @@ export function FinancialsProgressCard({
           <div className="flex justify-between items-end">
             <div>
               <p className="text-gray-500 text-sm font-medium uppercase tracking-wider mb-1">
-                Total Progress
+                {t("title")}
               </p>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-gray-900">{progressPercent}%</span>
-                <span className="text-sm text-gray-500">Paid</span>
+                <span className="text-sm text-gray-500">{t("paid")}</span>
               </div>
             </div>
             <div className="text-right">
@@ -98,31 +103,31 @@ export function FinancialsProgressCard({
           </div>
           <div className="flex gap-4 text-xs text-gray-500 mt-1">
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#134e4a]" /> Paid
+              <span className="w-2 h-2 rounded-full bg-[#134e4a]" /> {t("paid")}
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-gray-200" /> Remaining
+              <span className="w-2 h-2 rounded-full bg-gray-200" /> {t("remaining")}
             </span>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
           <div className="flex flex-col gap-1">
             <p className="text-gray-500 text-sm font-medium">
-              Total Contract Value
+              {t("contractValue")}
             </p>
             <p className="text-gray-900 text-2xl font-bold tracking-tight">
               {totalContractDisplay}
             </p>
           </div>
           <div className="flex flex-col gap-1 md:border-l md:border-gray-200 md:pl-6">
-            <p className="text-gray-500 text-sm font-medium">Paid to Date</p>
+            <p className="text-gray-500 text-sm font-medium">{t("paidToDate")}</p>
             <p className="text-emerald-600 text-2xl font-bold tracking-tight">
               {paidDisplay}
             </p>
           </div>
           <div className="flex flex-col gap-1 md:border-l md:border-gray-200 md:pl-6">
             <p className="text-gray-500 text-sm font-medium">
-              Remaining Balance
+              {t("balance")}
             </p>
             <p className="text-gray-900 text-2xl font-bold tracking-tight">
               {remainingDisplay}

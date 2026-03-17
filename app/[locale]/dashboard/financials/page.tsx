@@ -4,11 +4,13 @@ import { getInvestorPropertiesWithBuilding } from "@/lib/investorProperties";
 import { getPurchaseInstallmentsForInvestor } from "@/lib/purchaseInstallments";
 import { FinancialsProgressCard } from "@/components/dashboard/financials/FinancialsProgressCard";
 import { MilestonesTable } from "@/components/dashboard/financials/MilestonesTable";
+import { getTranslations } from "next-intl/server";
 
 /** Total purchase value per currency (currency code -> sum). */
 export type TotalByCurrency = Record<string, number>;
 
 export default async function FinancialsPage() {
+  const t = await getTranslations("FinancialsPage");
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -43,11 +45,10 @@ export default async function FinancialsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-fade-in">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-            Financials & Installments
+            {t("title")}
           </h1>
           <p className="text-gray-500 text-base">
-            Track payment milestones and outstanding balances for your
-            properties.
+            {t("subtitle")}
           </p>
         </div>
         <button
@@ -55,7 +56,7 @@ export default async function FinancialsPage() {
           className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors shadow-sm"
         >
           <i className="las la-download text-lg" aria-hidden />
-          Export Report
+          {t("exportButton")}
         </button>
       </div>
 
@@ -63,7 +64,6 @@ export default async function FinancialsPage() {
         <FinancialsProgressCard
           totalByCurrency={totalByCurrency}
           paidByCurrency={paidByCurrency}
-          pendingByCurrency={pendingByCurrency}
         />
         <MilestonesTable installments={installments} />
       </div>

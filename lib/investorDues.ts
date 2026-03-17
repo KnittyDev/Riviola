@@ -44,7 +44,8 @@ function periodRange(startYYYYMM: string, endYYYYMM: string): string[] {
  */
 export async function getInvestorDuesFees(
   supabase: SupabaseClient,
-  profileId: string
+  profileId: string,
+  locale: string = "en"
 ): Promise<InvestorDuesFeeItem[]> {
   const now = new Date();
   const endNext = new Date(now.getFullYear(), now.getMonth() + 2, 0);
@@ -140,9 +141,15 @@ export async function getInvestorDuesFees(
     SAR: "﷼",
   };
 
+  const dayLang = locale === "tr" ? "tr-TR" : "en-GB";
+  const numLang = locale === "tr" ? "tr-TR" : "en-US";
+
   for (const { prop, periods } of propPeriodsList) {
     const buildingName = buildingMap.get(prop.building_id) ?? "Building";
-    const unitLabel = `Block ${prop.block}, Unit ${prop.unit}`;
+    const unitLabel = locale === "tr"
+      ? `${prop.block}. Blok, Daire ${prop.unit}`
+      : `Block ${prop.block}, Unit ${prop.unit}`;
+      
     const settings = settingsByBuilding.get(prop.building_id);
     let amountCents = settings?.amount_cents ?? null;
     
@@ -157,9 +164,12 @@ export async function getInvestorDuesFees(
     
     const currency = settings?.currency ?? "EUR";
     const sym = currencySymbol[currency] ?? currency + " ";
+    const amountVal = amountCents != null ? amountCents / 100 : null;
     const amountFormatted =
-      amountCents != null
-        ? `${sym} ${(amountCents / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+      amountVal != null
+        ? (locale === "tr" || sym === "€" || sym === "£" || sym === "₺"
+            ? `${amountVal.toLocaleString(numLang, { minimumFractionDigits: 2 })} ${sym}`
+            : `${sym}${amountVal.toLocaleString(numLang, { minimumFractionDigits: 2 })}`)
         : `${sym} —`;
 
     for (const period of periods) {
@@ -170,7 +180,7 @@ export async function getInvestorDuesFees(
       const [y, m] = period.split("-").map(Number);
       const endDay = settings?.end ?? 31;
       const dueDate = new Date(y, m - 1, Math.min(endDay, 28));
-      const dueDateStr = dueDate.toLocaleDateString("en-GB", {
+      const dueDateStr = dueDate.toLocaleDateString(dayLang, {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -183,7 +193,7 @@ export async function getInvestorDuesFees(
       if (isPaid) status = "paid";
       else if (dueTime < today) status = "overdue";
 
-      const periodLabel = new Date(y, m - 1, 1).toLocaleDateString("en-GB", {
+      const periodLabel = new Date(y, m - 1, 1).toLocaleDateString(dayLang, {
         month: "long",
         year: "numeric",
       });
@@ -195,7 +205,7 @@ export async function getInvestorDuesFees(
         building: buildingName,
         unit: unitLabel,
         type: "aidat",
-        description: "Monthly common charges (Aidat)",
+        description: locale === "tr" ? "Aylık aidat ödemesi" : "Monthly common charges (Aidat)",
         period: periodLabel,
         dueDate: dueDateStr,
         amountFormatted,

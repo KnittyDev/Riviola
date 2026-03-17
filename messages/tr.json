@@ -747,6 +747,136 @@
       "title": "Aktivite günlüğü"
     }
   },
+  "RequestsPage": {
+    "title": "Taleplerim",
+    "subtitle": "Saha gezileri, abonelik bağlantıları, belgeler ve diğer talepleri iletin ve takip edin.",
+    "newRequest": "Yeni Talep",
+    "form": {
+      "title": "Yeni talep gönder",
+      "typeLabel": "Talep türü",
+      "buildingLabel": "Mülk / Bina",
+      "buildingPlaceholder": "Mülk seçin",
+      "noteLabel": "Not (isteğe bağlı)",
+      "notePlaceholder": "Örn: Saha gezisi için tercih edilen tarih veya abonelik bağlantısı ayrıntıları",
+      "attachLabel": "Fotoğraf ekle (isteğe bağlı)",
+      "filesSelected": "{count} dosya seçildi",
+      "submitButton": "Talebi gönder",
+      "submitting": "Gönderiliyor…",
+      "cancelButton": "İptal",
+      "chooseFile": "Dosya Seç"
+    },
+    "types": {
+      "Site tour": "Saha gezisi",
+      "Information": "Bilgi talebi",
+      "Water connection": "Su aboneliği",
+      "Electricity connection": "Elektrik aboneliği",
+      "Gas connection": "Gaz aboneliği",
+      "Handover inspection": "Teslimat denetimi",
+      "Document request": "Belge talebi",
+      "Maintenance request": "Bakım talebi",
+      "Repair request": "Onarım talebi"
+    },
+    "filters": {
+      "summary": "{count} talep gösteriliyor ({pending} beklemede).",
+      "type": "Tür",
+      "building": "Bina",
+      "status": "Durum",
+      "allTypes": "Tüm Türler",
+      "allBuildings": "Tüm Binalar",
+      "allStatuses": "Tüm Durumlar",
+      "emptyTitle": "Filtrelerinize uygun talep bulunamadı.",
+      "clearFilters": "Tüm filtreleri temizle"
+    },
+    "list": {
+      "submitted": "{date} tarihinde gönderildi",
+      "cancelButton": "Talebi iptal et",
+      "cancelling": "İptal ediliyor…"
+    },
+    "modals": {
+      "cancel": {
+        "title": "Talep iptal edilsin mi?",
+        "body": "Bu talebi iptal etmek istediğinizden emin misiniz? {building} için {type} talebi iptal edilecek.",
+        "keep": "Talebi tut",
+        "confirm": "Evet, iptal et"
+      }
+    },
+    "statuses": {
+      "Pending": "Beklemede",
+      "In progress": "Devam Ediyor",
+      "Done": "Tamamlandı",
+      "Cancelled": "İptal Edildi"
+    },
+    "toasts": {
+      "success": "Talep başarıyla gönderildi.",
+      "cancelled": "Talep iptal edildi."
+    }
+  },
+  "FinancialsPage": {
+    "title": "Finansal Bilgiler ve Taksitler",
+    "subtitle": "Mülkleriniz için ödeme aşamalarını ve kalan bakiyeleri takip edin.",
+    "exportButton": "Raporu Dışa Aktar",
+    "progress": {
+      "title": "Toplam İlerleme",
+      "paid": "Ödenen",
+      "remaining": "Kalan",
+      "contractValue": "Toplam Sözleşme Değeri",
+      "paidToDate": "Bugüne Kadar Ödenen",
+      "balance": "Kalan Bakiye"
+    },
+    "table": {
+      "title": "Ödemeler",
+      "payment": "Ödeme",
+      "dueDate": "Vade Tarihi",
+      "amount": "Tutar",
+      "status": "Durum",
+      "empty": "Henüz ödeme yok.",
+      "statuses": {
+        "paid": "Ödendi",
+        "pending": "Beklemede"
+      }
+    }
+  },
+  "FeesPage": {
+    "title": "Aidat ve Ödemeler",
+    "subtitle": "Daire ve bina aidatlarını ve ilgili giderleri takip edin ve ödeyin.",
+    "stats": {
+      "totalDue": "Toplam borç",
+      "itemsToPay": "Ödenecek {count} kalem",
+      "paidMonth": "Bu ay ödenen",
+      "payments": "{count} ödeme",
+      "nextDue": "Sıradaki ödeme tarihi",
+      "commonCharges": "Aidat",
+      "noUpcoming": "Yaklaşan ödeme yok"
+    },
+    "table": {
+      "title": "Tüm aidat ve giderler",
+      "downloadInvoice": "Faturayı İndir",
+      "building": "Bina / Ünite",
+      "type": "Tür",
+      "period": "Dönem",
+      "dueDate": "Vade tarihi",
+      "amount": "Tutar",
+      "status": "Durum",
+      "invoice": "Fatura",
+      "action": "İşlem",
+      "empty": "Henüz kaydedilmiş aidat yok. Bina yöneticiniz üniteleriniz için ödeme dönemlerini yapılandırdığında aidatlar burada görünecektir.",
+      "commonChargesLabel": "Aidat"
+    },
+    "actions": {
+      "pay": "Öde",
+      "sending": "Gönderiliyor…",
+      "paid": "Ödendi",
+      "paidOn": "{date} {time} tarihinde ödendi",
+      "due": "Beklemede",
+      "overdue": "Gecikmiş"
+    },
+    "footer": "Stripe ile ödeme yapmak için \"Öde\"ye tıklayın. Öde butonunun çalışması için tutarın bina yöneticiniz tarafından belirlenmiş olması gerekir.",
+    "toasts": {
+      "success": "Ödeme tamamlandı. Teşekkürler.",
+      "error": "Ödeme onaylanamadı.",
+      "startError": "Ödeme başlatılamadı."
+    }
+  },
   "Weather": {
     "clear_sky": "Berrak gökyüzü",
     "mainly_clear": "Çoğunlukla açık",
