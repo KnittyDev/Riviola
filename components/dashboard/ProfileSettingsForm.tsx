@@ -5,7 +5,8 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile, ProfileUpdate, ProfileRole } from "@/lib/supabase/types";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, usePathname } from "@/i18n/routing";
 
 const LANGUAGE_OPTIONS = [
   { value: "en" as const, label: "English" },
@@ -33,6 +34,9 @@ function normalizePhone(s: string): string {
 
 export function ProfileSettingsForm() {
   const t = useTranslations("Settings");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [initialProfile, setInitialProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,13 +58,13 @@ export function ProfileSettingsForm() {
       full_name: profile.full_name ?? "",
       email: profile.email ?? "",
       phone: profile.phone ?? "",
-      language: profile.language ?? "en",
+      language: locale as "en" | "tr",
       currency: profile.currency ?? "EUR",
       notify_payments: profile.notify_payments ?? true,
       notify_milestones: profile.notify_milestones ?? true,
       notify_documents: profile.notify_documents ?? false,
     };
-  }, [profile]);
+  }, [profile, locale]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -152,6 +156,10 @@ export function ProfileSettingsForm() {
     setProfile(updated);
     setInitialProfile(updated);
     setSaved(true);
+
+    if (updatePayload.language && updatePayload.language !== locale) {
+      router.replace(pathname, { locale: updatePayload.language });
+    }
   }
 
   if (loading) {

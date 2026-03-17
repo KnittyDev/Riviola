@@ -103,6 +103,7 @@ export default async function PropertyDetailPage({
 }) {
   const { id, locale } = await params;
   const t = await getTranslations("PropertyDetail");
+  const tFeatures = await getTranslations("SustainabilityFeatures");
   let property = getPropertyDetail(id);
 
   if (!property) {
@@ -270,7 +271,7 @@ export default async function PropertyDetailPage({
                     {(building as any).sustainability_features.map((feature: string, i: number) => (
                       <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[10px] font-bold shadow-sm">
                         <i className={`${getGreenFeatureIcon(feature)} text-emerald-600 text-xs`} />
-                        {feature}
+                        {tFeatures(feature as any)}
                       </span>
                     ))}
                   </div>
