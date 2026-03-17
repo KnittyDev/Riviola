@@ -10,11 +10,12 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 const PRIMARY_COLOR = "#134e4a";
 
-function formatEuro(value: number) {
-  return new Intl.NumberFormat("de-DE", {
+function formatEuro(value: number, locale: string = "de-DE") {
+  return new Intl.NumberFormat(locale, {
     style: "decimal",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -40,8 +41,9 @@ export function PortfolioChart({
   paidAmountNumber,
   paidDuesChartData = [],
 }: PortfolioChartProps) {
+  const t = useTranslations("InvestorDashboard.portfolio");
   const isBuyer = investorType === "buyer";
-  const title = isBuyer ? "Asset Value" : "Payments Made";
+  const title = isBuyer ? t("assetValue") : t("paymentsMade");
   const displayValue = isBuyer ? assetValueFormatted : paidAmountFormatted;
   const currentValue = isBuyer ? assetValueNumber : paidAmountNumber;
 
@@ -50,16 +52,16 @@ export function PortfolioChart({
       if (currentValue <= 0) return [{ month: "—", value: 0 }];
       return [
         { month: "—", value: 0 },
-        { month: "Current", value: currentValue },
+        { month: t("current"), value: currentValue },
       ];
     }
     if (paidDuesChartData.length > 0) return paidDuesChartData;
     if (currentValue <= 0) return [{ month: "—", value: 0 }];
     return [
       { month: "—", value: 0 },
-      { month: "Current", value: currentValue },
+      { month: t("current"), value: currentValue },
     ];
-  }, [isBuyer, currentValue, paidDuesChartData]);
+  }, [isBuyer, currentValue, paidDuesChartData, t]);
 
   const maxChartValue = useMemo(() => {
     if (data.length === 0) return 1;
@@ -67,7 +69,7 @@ export function PortfolioChart({
     return max <= 0 ? 1 : max * 1.1;
   }, [data]);
 
-  const tooltipLabel = isBuyer ? "Value" : "Paid";
+  const tooltipValueLabel = isBuyer ? t("valueLabel") : t("paidLabel");
 
   return (
     <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
@@ -80,9 +82,9 @@ export function PortfolioChart({
             {displayValue === "—" ? "—" : displayValue}
           </h3>
           {isBuyer ? (
-            <p className="text-gray-400 text-sm mt-1">Total value of your properties</p>
+            <p className="text-gray-400 text-sm mt-1">{t("assetValueDesc")}</p>
           ) : (
-            <p className="text-gray-400 text-sm mt-1">Total dues paid to date</p>
+            <p className="text-gray-400 text-sm mt-1">{t("paymentsMadeDesc")}</p>
           )}
         </div>
       </div>
@@ -126,7 +128,7 @@ export function PortfolioChart({
                 border: "1px solid #e2e8f0",
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
-              formatter={(value?: number) => [value != null && value > 0 ? formatEuro(value) : "—", tooltipLabel]}
+              formatter={(value?: number) => [value != null && value > 0 ? formatEuro(value) : "—", tooltipValueLabel]}
               labelStyle={{ fontWeight: 700, color: "#134e4a" }}
             />
             <Area

@@ -7,37 +7,39 @@ import {
   type PropertyFull,
 } from "@/components/dashboard/properties/PropertyFullCard";
 import type { InvestorPropertyWithBuilding } from "@/lib/investorProperties";
+import { useTranslations } from "next-intl";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
-
-function toPropertyFull(p: InvestorPropertyWithBuilding): PropertyFull {
-  const areaStr =
-    p.area_m2 != null && p.area_m2 > 0 ? `${p.area_m2} m²` : "—";
-  return {
-    id: p.building_id,
-    imageSrc: p.building.image_url || PLACEHOLDER_IMAGE,
-    imageAlt: p.building.name,
-    badge: p.company_name || "Property",
-    status: "active",
-    title: `${p.building.name} · ${p.block} ${p.unit}`,
-    location: p.building.location || "—",
-    progress: p.building.progress,
-    area: areaStr,
-    deliveryDate: p.delivery_period?.trim() || "—",
-    updateTime: "—",
-    updateText: "Assigned unit. View details for updates.",
-  };
-}
 
 export function PropertiesPageClient({
   investorProperties,
 }: {
   investorProperties: InvestorPropertyWithBuilding[];
 }) {
+  const t = useTranslations("PropertiesPage");
   const [activeFilter, setActiveFilter] = useState("all");
   const [search, setSearch] = useState("");
 
-  const list = useMemo(() => investorProperties.map(toPropertyFull), [investorProperties]);
+  const list = useMemo(() => {
+    return investorProperties.map((p): PropertyFull => {
+      const areaStr =
+        p.area_m2 != null && p.area_m2 > 0 ? `${p.area_m2} m²` : "—";
+      return {
+        id: p.building_id,
+        imageSrc: p.building.image_url || PLACEHOLDER_IMAGE,
+        imageAlt: p.building.name,
+        badge: p.company_name || t("card.propertyBadge"),
+        status: "active",
+        title: `${p.building.name} · ${p.block} ${p.unit}`,
+        location: p.building.location || "—",
+        progress: p.building.progress,
+        area: areaStr,
+        deliveryDate: p.delivery_period?.trim() || "—",
+        updateTime: "—",
+        updateText: t("card.propertyBadge"),
+      };
+    });
+  }, [investorProperties, t]);
 
   const filtered = useMemo(() => {
     let result = list;
@@ -65,11 +67,11 @@ export function PropertiesPageClient({
       {filtered.length === 0 ? (
         <div className="animate-fade-in flex flex-col items-center justify-center py-24 text-center text-gray-400">
           <i className="las la-building text-6xl mb-4 opacity-30" aria-hidden />
-          <p className="text-lg font-semibold">No properties found.</p>
+          <p className="text-lg font-semibold">{t("empty.noFound")}</p>
           <p className="text-sm mt-1">
             {investorProperties.length === 0
-              ? "You don’t have any assigned units yet. Contact your project manager."
-              : "Try adjusting your search or filters."}
+              ? t("empty.noAssigned")
+              : t("empty.tryAdjusting")}
           </p>
         </div>
       ) : (

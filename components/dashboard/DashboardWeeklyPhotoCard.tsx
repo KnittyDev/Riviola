@@ -7,12 +7,14 @@ import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import type { InvestorWeeklyUpdateItem } from "@/lib/investorProperties";
+import { useTranslations } from "next-intl";
 
 interface DashboardWeeklyPhotoCardProps {
   weeklyUpdates?: InvestorWeeklyUpdateItem[];
 }
 
 export function DashboardWeeklyPhotoCard({ weeklyUpdates = [] }: DashboardWeeklyPhotoCardProps) {
+  const t = useTranslations("InvestorDashboard.weeklyPhoto");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const latest = weeklyUpdates[0];
   const firstBuildingId = latest?.building_id;
@@ -27,7 +29,7 @@ export function DashboardWeeklyPhotoCard({ weeklyUpdates = [] }: DashboardWeekly
           <div className="flex items-center gap-2 mb-2">
             <i className="las la-camera text-sm" aria-hidden />
             <span className="text-xs font-bold uppercase tracking-widest">
-              Weekly Photo
+              {t("title")}
             </span>
           </div>
           {latest ? (
@@ -41,7 +43,7 @@ export function DashboardWeeklyPhotoCard({ weeklyUpdates = [] }: DashboardWeekly
               )}
             </>
           ) : (
-            <h5 className="text-lg font-bold">No updates yet</h5>
+            <h5 className="text-lg font-bold">{t("noUpdates")}</h5>
           )}
         </div>
         {latest && slides.length > 0 ? (
@@ -50,7 +52,7 @@ export function DashboardWeeklyPhotoCard({ weeklyUpdates = [] }: DashboardWeekly
               type="button"
               onClick={() => setLightboxOpen(true)}
               className="relative mt-4 aspect-video rounded-xl overflow-hidden bg-black/20 group w-full text-left focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#134e4a]"
-              aria-label="Open weekly photo in full screen"
+              aria-label={t("openFullscreen")}
             >
               <Image
                 src={slides[0].src}
@@ -59,7 +61,7 @@ export function DashboardWeeklyPhotoCard({ weeklyUpdates = [] }: DashboardWeekly
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute bottom-2 left-2 right-2 bg-black/50 backdrop-blur-md px-2 py-1.5 rounded text-[10px] text-white/90 line-clamp-2">
-                {latest.description || "Weekly progress update"}
+                {latest.description || t("fallbackDescription")}
               </div>
             </button>
             {firstBuildingId && (
@@ -68,13 +70,13 @@ export function DashboardWeeklyPhotoCard({ weeklyUpdates = [] }: DashboardWeekly
                 className="mt-4 w-full border border-white/30 hover:bg-white/10 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
               >
                 <i className="las la-images" aria-hidden />
-                View Photo Gallery
+                {t("viewGallery")}
               </Link>
             )}
           </>
         ) : (
           <p className="mt-4 text-sm text-white/70">
-            When staff share weekly photos for your property, they will appear here.
+            {t("emptyText")}
           </p>
         )}
       </div>

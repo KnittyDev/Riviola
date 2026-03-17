@@ -139,6 +139,8 @@
       "cookies": "Cookie Policy",
       "signIn": "Sign In",
       "contact": "Contact",
+      "privacyShort": "Privacy",
+      "termsShort": "Terms",
       "cookiesShort": "Cookies"
     }
   },
@@ -519,5 +521,247 @@
       "staff": "Staff",
       "admin": "Admin"
     }
+  },
+  "StaffBuildingDetail": {
+    "backToBuildings": "Back to buildings",
+    "addWeeklyPhoto": "Add weekly photo",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to remove this building?",
+    "deleteSuccess": "Building removed.",
+    "location": "Location",
+    "units": "Units",
+    "progress": "Progress",
+    "currentMilestone": "Current milestone",
+    "nextMilestone": "Next milestone",
+    "sustainabilityTitle": "Sustainability Dashboard",
+    "sustainabilitySubtitle": "Project environmental impact & green certificate",
+    "greenScore": "Green Score",
+    "noMilestones": "No milestones for this building yet.",
+    "addMilestonesHint": "Add planned milestones when editing the building to see them here.",
+    "milestonesTitle": "Milestones",
+    "milestonesSubtitle": "Chronological list of milestones for this building.",
+    "current": "Current",
+    "milestoneLabel": "Milestone",
+    "weeklyUpdatesTitle": "Weekly photo updates",
+    "cityWeather": "{city} Weather"
+  },
+  "EditBuilding": {
+    "backToBuilding": "Back to building",
+    "title": "Edit building",
+    "subtitle": "Update building details. Changes will be visible to investors.",
+    "defaultBlock": "Block A",
+    "saveSuccess": "Building saved successfully.",
+    "saving": "Saving...",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "form": {
+      "nameLabel": "Building / project name",
+      "namePlaceholder": "e.g. Avala Resort",
+      "addressLabel": "Full address or detailed location",
+      "addressPlaceholder": "e.g. Adriatic Coast, Main Street 12",
+      "bannerLabel": "Banner photo",
+      "bannerSubtitle": "Banner image for the building detail page. Leave empty to keep current.",
+      "changePhoto": "Change photo",
+      "uploadPhoto": "Upload banner photo",
+      "removePhoto": "Remove photo",
+      "unitsLabel": "Number of units",
+      "unitsPlaceholder": "e.g. 24",
+      "blocksLabel": "Block names",
+      "blocksSubtitle": "Define the blocks or towers in this project (e.g. Block A, Tower East). These will be used when assigning investors to a unit.",
+      "blockPlaceholder": "e.g. Block A",
+      "removeBlock": "Remove block",
+      "newBlockName": "New block name",
+      "addBlock": "Add block",
+      "floorsLabel": "Number of floors",
+      "floorsPlaceholder": "e.g. 8",
+      "countryLabel": "Country",
+      "countryPlaceholder": "Select Country",
+      "cityLabel": "City",
+      "cityPlaceholder": "Select City",
+      "loadingCities": "Loading cities...",
+      "statusLabel": "Status",
+      "milestonePlan": "Milestone plan",
+      "milestoneSubtitle": "Add milestones and select which one is current.",
+      "addMilestone": "Add milestone",
+      "noMilestones": "No planned milestones yet. Add a few to build your timeline.",
+      "setAsCurrent": "Set as current milestone",
+      "current": "Current",
+      "milestoneTitle": "Title",
+      "milestoneTitlePlaceholder": "e.g. Final exterior painting",
+      "targetDate": "Target date & time",
+      "removeMilestone": "Remove milestone",
+      "sustainabilityDashboard": "Sustainability Dashboard (Green Score)",
+      "sustainabilitySubtitle": "Showcase your project's environmental impact to global investors.",
+      "greenScoreLabel": "Overall Green Score (Auto-calculated)",
+      "greenScoreHint": "The score is calculated based on the green features you select below.",
+      "addFeatures": "Add Project Sustainability Features"
+    }
+  },
+  "StatusOptions": {
+    "Planned": {
+      "label": "Planned",
+      "helper": "Preparing to start"
+    },
+    "In progress": {
+      "label": "In progress",
+      "helper": "Construction ongoing"
+    },
+    "At risk": {
+      "label": "At risk",
+      "helper": "Needs attention"
+    },
+    "On hold": {
+      "label": "On hold",
+      "helper": "Paused temporarily"
+    },
+    "Completed": {
+      "label": "Completed",
+      "helper": "Handover done"
+    },
+    "Cancelled": {
+      "label": "Cancelled",
+      "helper": "Stopped permanently"
+    }
+  },
+  "SustainabilityFeatures": {
+    "Solar Panels": "Solar Panels",
+    "EV Charging Stations": "EV Charging Stations",
+    "Rainwater Harvesting": "Rainwater Harvesting",
+    "Energy Efficient Lighting": "Energy Efficient Lighting",
+    "Waste & Recycling Management": "Waste & Recycling Management",
+    "Smart Home Tech": "Smart Home Tech",
+    "Natural Ventilation": "Natural Ventilation",
+    "Green Roof / Sky Garden": "Green Roof / Sky Garden",
+    "Advanced Thermal Insulation": "Advanced Thermal Insulation",
+    "Eco-friendly Materials": "Eco-friendly Materials",
+    "Professional Garden Design": "Professional Garden Design",
+    "Eco-friendly Infrastructure": "Eco-friendly Infrastructure",
+    "Pet Friendly Spaces": "Pet Friendly Spaces",
+    "Secure Bicycle Parking": "Secure Bicycle Parking",
+    "High-efficiency HVAC": "High-efficiency HVAC",
+    "Water-saving Fixtures": "Water-saving Fixtures"
+  },
+  "InvestorDashboard": {
+    "header": {
+      "title": "My Residences",
+      "subtitle": "Welcome back, your properties are appreciating on schedule.",
+      "notifications": "Notifications",
+      "logout": "Logout"
+    },
+    "portfolio": {
+      "assetValue": "Asset Value",
+      "paymentsMade": "Payments Made",
+      "assetValueDesc": "Total value of your properties",
+      "paymentsMadeDesc": "Total dues paid to date",
+      "valueLabel": "Value",
+      "paidLabel": "Paid",
+      "current": "Current"
+    },
+    "upcomingMilestones": {
+      "title": "Upcoming Milestones",
+      "live": "Live",
+      "updatedJustNow": "Updated just now",
+      "updatedAgo": "Updated {seconds}s ago",
+      "empty": "No upcoming milestones for your properties yet.",
+      "viewProperties": "View properties"
+    },
+    "myProperties": {
+      "title": "My Active Properties",
+      "totalValue": "Total value:",
+      "totalPaid": "Total paid:",
+      "viewAllAssets": "View All Assets",
+      "viewAllProperties": "View All Properties",
+      "propertyBadge": "Property",
+      "assignedUnitUpdate": "Assigned unit. View details for updates."
+    },
+    "propertyCard": {
+      "constructionProgress": "Construction Progress",
+      "area": "Area",
+      "viewDetails": "View details"
+    },
+    "weeklyPhoto": {
+      "title": "Weekly Photo",
+      "noUpdates": "No updates yet",
+      "openFullscreen": "Open weekly photo in full screen",
+      "fallbackDescription": "Weekly progress update",
+      "viewGallery": "View Photo Gallery",
+      "emptyText": "When staff share weekly photos for your property, they will appear here."
+    }
+  },
+  "PropertiesPage": {
+    "title": "My Properties",
+    "subtitleBuyer": "Manage and track all your real estate assets.",
+    "subtitleRenter": "Manage and track your rented units.",
+    "summary": {
+      "totalProperties": "Total Properties",
+      "underConstruction": "Under Construction",
+      "completed": "Completed",
+      "totalValue": "Total Value",
+      "totalPaid": "Total Paid"
+    },
+    "filter": {
+      "all": "All Properties",
+      "active": "Active",
+      "completed": "Completed",
+      "planning": "Planning",
+      "search": "Search properties..."
+    },
+    "card": {
+      "underConstruction": "Under Construction",
+      "planningPhase": "Planning Phase",
+      "completed": "Completed",
+      "constructionProgress": "Construction Progress",
+      "delivery": "Delivery:",
+      "viewDetails": "View details",
+      "propertyBadge": "Property"
+    },
+    "empty": {
+      "noFound": "No properties found.",
+      "noAssigned": "You don’t have any assigned units yet. Contact your project manager.",
+      "tryAdjusting": "Try adjusting your search or filters."
+    }
+  },
+  "PropertyDetail": {
+    "backToProperties": "Back to properties",
+    "propertyBadge": "Property",
+    "yourUnit": "Your unit:",
+    "progress": "Progress",
+    "value": "Value",
+    "area": "Area",
+    "delivery": "Delivery",
+    "currentMilestone": "Current milestone",
+    "nextMilestone": "Next milestone",
+    "milestoneFallback": "Milestone",
+    "sustainability": {
+      "title": "Sustainability Dashboard",
+      "subtitle": "Environmental impact & green certificate",
+      "greenScore": "Green Score"
+    },
+    "plans": {
+      "title": "Plans & schedule",
+      "inProgress": "In progress"
+    },
+    "activityLog": {
+      "title": "Activity log"
+    }
+  },
+  "Weather": {
+    "clear_sky": "Clear sky",
+    "mainly_clear": "Mainly clear",
+    "partly_cloudy": "Partly cloudy",
+    "overcast": "Overcast",
+    "fog": "Fog",
+    "light_drizzle": "Light drizzle",
+    "moderate_drizzle": "Moderate drizzle",
+    "dense_drizzle": "Dense drizzle",
+    "slight_rain": "Slight rain",
+    "moderate_rain": "Moderate rain",
+    "heavy_rain": "Heavy rain",
+    "slight_snow": "Slight snow",
+    "moderate_snow": "Moderate snow",
+    "heavy_snow": "Heavy snow",
+    "thunderstorm": "Thunderstorm",
+    "cloudy": "Cloudy"
   }
 }

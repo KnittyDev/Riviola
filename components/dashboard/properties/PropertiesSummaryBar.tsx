@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 type PropertiesSummaryBarProps = {
   totalCount?: number;
   underConstructionCount?: number;
@@ -15,10 +17,11 @@ export function PropertiesSummaryBar({
   totalValueLabel = "Total Value",
   totalValueDisplay = "—",
 }: PropertiesSummaryBarProps) {
+  const t = useTranslations("PropertiesPage.summary");
   const stats = [
-    { icon: "las la-building", label: "Total Properties", value: String(totalCount) },
-    { icon: "las la-hard-hat", label: "Under Construction", value: String(underConstructionCount) },
-    { icon: "las la-check-circle", label: "Completed", value: String(completedCount) },
+    { icon: "las la-building", label: t("totalProperties"), value: String(totalCount) },
+    { icon: "las la-hard-hat", label: t("underConstruction"), value: String(underConstructionCount) },
+    { icon: "las la-check-circle", label: t("completed"), value: String(completedCount) },
     { icon: "las la-euro-sign", label: totalValueLabel, value: totalValueDisplay },
   ];
   return (

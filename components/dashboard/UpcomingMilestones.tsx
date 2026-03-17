@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import type { InvestorUpcomingMilestoneItem } from "@/lib/investorProperties";
+import { useTranslations } from "next-intl";
 
 interface UpcomingMilestonesProps {
   milestones?: InvestorUpcomingMilestoneItem[];
 }
 
 export function UpcomingMilestones({ milestones: propMilestones = [] }: UpcomingMilestonesProps) {
+  const t = useTranslations("InvestorDashboard.upcomingMilestones");
   const [liveSeconds, setLiveSeconds] = useState(0);
 
   useEffect(() => {
@@ -29,18 +31,18 @@ export function UpcomingMilestones({ milestones: propMilestones = [] }: Upcoming
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h5 className="text-lg font-bold text-gray-900">
-                  Upcoming Milestones
+                  {t("title")}
                 </h5>
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-red-50 border border-red-100">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
                   </span>
-                  <span className="text-[10px] font-bold text-red-600 uppercase tracking-wider">Live</span>
+                  <span className="text-[10px] font-bold text-red-600 uppercase tracking-wider">{t("live")}</span>
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
-                {liveSeconds === 0 ? "Updated just now" : `Updated ${liveSeconds}s ago`}
+                {liveSeconds === 0 ? t("updatedJustNow") : t("updatedAgo", { seconds: liveSeconds })}
               </p>
             </div>
           </div>
@@ -58,7 +60,7 @@ export function UpcomingMilestones({ milestones: propMilestones = [] }: Upcoming
           )}
           <div className="space-y-0">
             {propMilestones.length === 0 ? (
-              <p className="text-sm text-gray-500 py-4">No upcoming milestones for your properties yet.</p>
+              <p className="text-sm text-gray-500 py-4">{t("empty")}</p>
             ) : (
               propMilestones.map((m, i) => (
                 <div key={`${m.date}-${m.title}-${i}`} className="relative flex gap-4 pb-5 last:pb-0">
@@ -110,7 +112,7 @@ export function UpcomingMilestones({ milestones: propMilestones = [] }: Upcoming
           href="/dashboard/properties"
           className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-[#134e4a] text-white text-sm font-bold hover:bg-[#115e59] transition-colors shadow-sm"
         >
-          View properties
+          {t("viewProperties")}
           <i className="las la-arrow-right text-base" aria-hidden />
         </Link>
       </div>

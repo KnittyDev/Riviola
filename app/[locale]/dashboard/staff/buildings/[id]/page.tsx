@@ -8,6 +8,7 @@ import { BuildingProgressClient, BuildingStatusBadgeClient } from "./BuildingOve
 import { DeleteBuildingButton } from "../DeleteBuildingButton";
 import { WeeklyPhotoUpdates } from "@/components/WeeklyPhotoUpdates";
 import { WeatherWidget } from "@/components/dashboard/properties/WeatherWidget";
+import { getTranslations } from "next-intl/server";
 import type { Building, BuildingStatus } from "@/lib/supabase/types";
 import type { PlannedMilestoneDb } from "@/lib/supabase/types";
 import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
@@ -39,14 +40,14 @@ function getGreenFeatureIcon(label: string) {
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
 
-function plannedMilestonesToLog(items: PlannedMilestoneDb[]): ProgressMilestoneLog[] {
+function plannedMilestonesToLog(items: PlannedMilestoneDb[], locale: string, defaultLabel: string): ProgressMilestoneLog[] {
   if (!Array.isArray(items) || items.length === 0) return [];
   return items
     .map((m) => {
-      const label = (m.title && m.title.trim()) || "Milestone";
+      const label = (m.title && m.title.trim()) || defaultLabel;
       const dateTime = m.dateTimeLocal ? (m.dateTimeLocal.includes("T") ? m.dateTimeLocal : `${m.dateTimeLocal}T00:00:00`) : undefined;
       const date = dateTime
-        ? new Date(dateTime).toLocaleDateString("en-GB", { month: "short", year: "numeric" })
+        ? new Date(dateTime).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", { month: "short", year: "numeric" })
         : "";
       return { id: m.id, label, date, dateTime };
     })
@@ -59,7 +60,8 @@ function plannedMilestonesToLog(items: PlannedMilestoneDb[]): ProgressMilestoneL
 /** Current = label for current_milestone_id. Next = label for the milestone after current in date order. */
 function getCurrentAndNextLabels(
   planned: PlannedMilestoneDb[],
-  currentMilestoneId: string | null
+  currentMilestoneId: string | null,
+  defaultLabel: string
 ): { current: string | null; next: string | null } {
   if (!Array.isArray(planned) || planned.length === 0) return { current: null, next: null };
   const sorted = [...planned].sort((a, b) => {
@@ -68,18 +70,21 @@ function getCurrentAndNextLabels(
     return da - db;
   });
   const idx = currentMilestoneId ? sorted.findIndex((m) => m.id === currentMilestoneId) : -1;
-  const current = idx >= 0 ? ((sorted[idx].title && sorted[idx].title.trim()) || "Milestone") : null;
+  const current = idx >= 0 ? ((sorted[idx].title && sorted[idx].title.trim()) || defaultLabel) : null;
   const nextItem = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
-  const next = nextItem ? ((nextItem.title && nextItem.title.trim()) || "Milestone") : null;
+  const next = nextItem ? ((nextItem.title && nextItem.title.trim()) || defaultLabel) : null;
   return { current, next };
 }
 
 export default async function StaffBuildingDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  const t = await getTranslations("StaffBuildingDetail");
+  const tStatus = await getTranslations("StatusOptions");
+  const tFeatures = await getTranslations("SustainabilityFeatures");
   const supabase = await createClient();
   const companyId = await getStaffCompanyId(supabase);
   if (!companyId) notFound();
@@ -132,7 +137,7 @@ export default async function StaffBuildingDetailPage({
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
       >
         <i className="las la-arrow-left" aria-hidden />
-        Back to buildings
+        {t("backToBuildings")}
       </Link>
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="relative w-full h-32 sm:h-36 bg-gray-100">
@@ -154,21 +159,21 @@ export default async function StaffBuildingDetailPage({
               className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl bg-[#134e4a] text-white text-xs sm:text-sm font-semibold hover:bg-[#115e59] transition-colors"
             >
               <i className="las la-camera text-sm sm:text-base" aria-hidden />
-              Add weekly photo
+              {t("addWeeklyPhoto")}
             </Link>
             <Link
               href={`/dashboard/staff/buildings/${id}/edit`}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl border border-gray-200 text-gray-700 text-xs sm:text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
             >
               <i className="las la-pen text-sm" aria-hidden />
-              Edit
+              {t("edit")}
             </Link>
             <DeleteBuildingButton buildingId={id} />
           </div>
         </div>
         <div className="p-6 space-y-4">
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Location</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("location")}</p>
             <p className="text-gray-900 font-medium flex items-center gap-1 mt-0.5">
               <i className="las la-map-marker-alt text-gray-400" aria-hidden />
               {building.location || "—"}
@@ -176,26 +181,31 @@ export default async function StaffBuildingDetailPage({
             <WeatherWidget city={building.city ?? undefined} country={building.country ?? undefined} mode="light" />
           </div>
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Units</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("units")}</p>
             <p className="text-gray-900 font-medium">{building.units}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Progress</p>
-            <div className="flex items-center gap-3">
-              <BuildingProgressClient progress={building.progress} />
-              <BuildingStatusBadgeClient status={building.status as BuildingStatus} />
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t("progress")}</p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                <BuildingProgressClient progress={building.progress} />
+                <BuildingStatusBadgeClient status={building.status} />
+              </div>
+              <p className="text-[10px] text-gray-400 font-medium italic">
+                {tStatus(`${building.status}.helper` as any)}
+              </p>
             </div>
           </div>
           {(() => {
-            const { current, next } = getCurrentAndNextLabels(building.planned_milestones ?? [], building.current_milestone_id);
+            const { current, next } = getCurrentAndNextLabels(building.planned_milestones ?? [], building.current_milestone_id, t("milestoneLabel"));
             return (
               <>
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Current milestone</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("currentMilestone")}</p>
                   <p className="text-gray-700 mt-0.5">{current ?? "—"}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Next milestone</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t("nextMilestone")}</p>
                   <p className="text-gray-700 mt-0.5">{next ?? "—"}</p>
                 </div>
               </>
@@ -214,8 +224,8 @@ export default async function StaffBuildingDetailPage({
                 <i className="las la-leaf text-base" />
               </div>
               <div>
-                <p className="text-sm font-bold text-gray-900 leading-tight">Sustainability Dashboard</p>
-                <p className="text-[11px] text-gray-500 leading-tight">Environmental impact & green certificate</p>
+                <p className="text-sm font-bold text-gray-900 leading-tight">{t("sustainabilityTitle")}</p>
+                <p className="text-[11px] text-gray-500 leading-tight">{t("sustainabilitySubtitle")}</p>
               </div>
             </div>
 
@@ -224,7 +234,7 @@ export default async function StaffBuildingDetailPage({
 
             {/* Score ring */}
             <div className="flex items-center gap-2 shrink-0">
-              <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Green Score</p>
+              <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">{t("greenScore")}</p>
               <div className="relative inline-flex items-center justify-center">
                 <svg className="size-10 transform -rotate-90">
                   <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-emerald-100" />
@@ -244,10 +254,10 @@ export default async function StaffBuildingDetailPage({
               <>
                 <div className="hidden sm:block w-px h-10 bg-emerald-200 shrink-0" />
                 <div className="flex flex-wrap gap-1.5 min-w-0">
-                  {building.sustainability_features.map((feature: string, i: number) => (
-                    <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[10px] font-bold shadow-sm">
-                      <i className={`${getGreenFeatureIcon(feature)} text-emerald-600 text-xs`} />
-                      {feature}
+                  {building.sustainability_features?.map((feat: string) => (
+                    <span key={feat} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[10px] font-bold shadow-sm transition-all hover:bg-emerald-50">
+                      <i className={`${getGreenFeatureIcon(feat)} text-emerald-600 text-[11px]`} />
+                      {tFeatures(feat as any)}
                     </span>
                   ))}
                 </div>
@@ -258,7 +268,7 @@ export default async function StaffBuildingDetailPage({
       )}
 
       <BuildingMilestonesLog
-        milestones={plannedMilestonesToLog(building.planned_milestones ?? [])}
+        milestones={plannedMilestonesToLog(building.planned_milestones ?? [], locale, t("milestoneLabel"))}
         currentMilestoneId={building.current_milestone_id ?? null}
       />
 

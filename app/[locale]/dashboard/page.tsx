@@ -35,7 +35,7 @@ function formatValueByCurrency(totalByCurrency: Record<string, number>): string 
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ params: { locale } }: { params: { locale: string } }) {
   const supabase = await createClient();
   const {
     data: { session },
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
       cumulative += byPeriod.get(p) ?? 0;
       const [y, m] = p.split("-").map(Number);
       const d = new Date(y, m - 1, 1);
-      const monthLabel = d.toLocaleDateString("en-GB", { month: "short", year: "2-digit" }).toUpperCase();
+      const monthLabel = d.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", { month: "short", year: "2-digit" }).toUpperCase();
       paidDuesChartData.push({ month: monthLabel, value: Math.round(cumulative * 100) / 100 });
     }
   }

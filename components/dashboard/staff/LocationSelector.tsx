@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type LocationSelectorProps = {
     selectedCountry: string;
@@ -15,6 +16,7 @@ export function LocationSelector({
     onCountryChange,
     onCityChange,
 }: LocationSelectorProps) {
+    const t = useTranslations("EditBuilding");
     const [countries, setCountries] = useState<string[]>([]);
     const [cities, setCities] = useState<string[]>([]);
     const [loadingCountries, setLoadingCountries] = useState(false);
@@ -79,7 +81,7 @@ export function LocationSelector({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
                 <label htmlFor="country-select" className={labelClass}>
-                    Country
+                    {t("form.countryLabel")}
                 </label>
                 <select
                     id="country-select"
@@ -91,7 +93,7 @@ export function LocationSelector({
                     disabled={loadingCountries}
                     className={inputClass}
                 >
-                    <option value="">Select Country</option>
+                    <option value="">{t("form.countryPlaceholder")}</option>
                     {countries.map((c) => (
                         <option key={c} value={c}>
                             {c}
@@ -102,7 +104,7 @@ export function LocationSelector({
 
             <div>
                 <label htmlFor="city-select" className={labelClass}>
-                    City
+                    {t("form.cityLabel")}
                 </label>
                 <select
                     id="city-select"
@@ -111,7 +113,7 @@ export function LocationSelector({
                     disabled={loadingCities || !selectedCountry}
                     className={inputClass}
                 >
-                    <option value="">{loadingCities ? "Loading cities..." : "Select City"}</option>
+                    <option value="">{loadingCities ? t("form.loadingCities") : t("form.cityPlaceholder")}</option>
                     {cities.map((city) => (
                         <option key={city} value={city}>
                             {city}

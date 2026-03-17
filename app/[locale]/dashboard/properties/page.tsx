@@ -4,10 +4,12 @@ import { getInvestorPropertiesWithBuilding } from "@/lib/investorProperties";
 import { getInvestorDuesFees } from "@/lib/investorDues";
 import { PropertiesSummaryBar } from "@/components/dashboard/properties/PropertiesSummaryBar";
 import { PropertiesPageClient } from "./PropertiesPageClient";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
-export default async function PropertiesPage() {
+export default async function PropertiesPage({ params }: { params: { locale: string } }) {
+  const t = await getTranslations("PropertiesPage");
   const supabase = await createClient();
   const {
     data: { session },
@@ -33,7 +35,7 @@ export default async function PropertiesPage() {
     getInvestorDuesFees(tokenClient, user.id),
   ]);
 
-  let totalValueLabel = "Total Value";
+  let totalValueLabel = t("summary.totalValue");
   let totalValueDisplay = "—";
   if (investorType === "buyer") {
     const byCurrency: Record<string, number> = {};
@@ -51,7 +53,7 @@ export default async function PropertiesPage() {
           .map(([c, v]) => `${new Intl.NumberFormat("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v)} ${sym[c] ?? c}`)
           .join(" · ");
   } else {
-    totalValueLabel = "Total Paid";
+    totalValueLabel = t("summary.totalPaid");
     const byCurrency: Record<string, number> = {};
     for (const f of duesFees) {
       if (f.status === "paid" && f.paid_at && f.amountCents != null) {
@@ -79,12 +81,12 @@ export default async function PropertiesPage() {
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="mb-8 animate-fade-in">
         <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
-          My Properties
+          {t("title")}
         </h2>
         <p className="text-gray-500 mt-1">
           {investorType === "buyer"
-            ? "Manage and track all your real estate assets."
-            : "Manage and track your rented units."}
+            ? t("subtitleBuyer")
+            : t("subtitleRenter")}
         </p>
       </div>
 

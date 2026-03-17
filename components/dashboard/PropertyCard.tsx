@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export interface PropertyCardProps {
   id?: string;
@@ -26,6 +27,7 @@ export function PropertyCard({
   updateTime,
   updateText,
 }: PropertyCardProps) {
+  const t = useTranslations("InvestorDashboard.propertyCard");
   return (
     <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm group">
       <div className="relative h-56 overflow-hidden">
@@ -47,7 +49,7 @@ export function PropertyCard({
         <div>
           <div className="flex justify-between items-end mb-2">
             <span className="text-sm font-bold text-gray-700">
-              Construction Progress
+              {t("constructionProgress")}
             </span>
             <span className="text-[#134e4a] font-bold">{progress}%</span>
           </div>
@@ -59,8 +61,8 @@ export function PropertyCard({
           </div>
         </div>
         {area != null && area !== "" && (
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Area</span>
+          <div className="flex justify-between items-center text-sm text-gray-600 mt-2">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("area")}</span>
             <span className="font-bold text-gray-900">{area}</span>
           </div>
         )}
@@ -69,7 +71,7 @@ export function PropertyCard({
             href={`/dashboard/properties/${id}`}
             className="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-[#134e4a] text-white text-sm font-bold hover:bg-[#115e59] transition-colors"
           >
-            View details
+            {t("viewDetails")}
             <i className="las la-arrow-right text-base" aria-hidden />
           </Link>
         )}

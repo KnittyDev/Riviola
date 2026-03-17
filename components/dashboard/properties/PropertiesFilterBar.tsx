@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface Props {
   activeFilter: string;
   onFilterChange: (f: string) => void;
@@ -9,13 +11,6 @@ interface Props {
   searchDisabled?: boolean;
 }
 
-const FILTERS = [
-  { key: "all", label: "All Properties" },
-  { key: "active", label: "Active" },
-  { key: "completed", label: "Completed" },
-  { key: "planning", label: "Planning" },
-];
-
 export function PropertiesFilterBar({
   activeFilter,
   onFilterChange,
@@ -23,6 +18,15 @@ export function PropertiesFilterBar({
   onSearchChange,
   searchDisabled = true,
 }: Props) {
+  const t = useTranslations("PropertiesPage.filter");
+
+  const FILTERS = [
+    { key: "all", label: t("all") },
+    { key: "active", label: t("active") },
+    { key: "completed", label: t("completed") },
+    { key: "planning", label: t("planning") },
+  ];
+
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-in">
       {/* Filter tabs */}
@@ -52,7 +56,7 @@ export function PropertiesFilterBar({
           />
           <input
             type="text"
-            placeholder="Search properties…"
+            placeholder={t("search")}
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#134e4a]/30 focus:border-[#134e4a] transition-all"

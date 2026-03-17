@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export type PropertyStatus = "active" | "completed" | "planning";
 
@@ -26,12 +27,6 @@ const STATUS_STYLES: Record<PropertyStatus, string> = {
   planning: "bg-amber-50 text-amber-700",
 };
 
-const STATUS_LABELS: Record<PropertyStatus, string> = {
-  active: "Under Construction",
-  completed: "Completed",
-  planning: "Planning Phase",
-};
-
 export function PropertyFullCard({
   property,
   delay = 0,
@@ -39,6 +34,14 @@ export function PropertyFullCard({
   property: PropertyFull;
   delay?: number;
 }) {
+  const t = useTranslations("PropertiesPage.card");
+
+  const STATUS_LABELS: Record<PropertyStatus, string> = {
+    active: t("underConstruction"),
+    completed: t("completed"),
+    planning: t("planningPhase"),
+  };
+
   return (
     <div
       className="animate-fade-in-up bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm group hover:shadow-md hover:-translate-y-1 transition-all duration-300"
@@ -96,7 +99,7 @@ export function PropertyFullCard({
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <span className="text-xs font-semibold text-gray-500">
-                Construction Progress
+                {t("constructionProgress")}
               </span>
               <span className="text-xs font-bold text-[#134e4a]">
                 {property.progress}%
@@ -115,7 +118,7 @@ export function PropertyFullCard({
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span className="flex items-center gap-1">
             <i className="las la-calendar-check text-[#134e4a]" aria-hidden />
-            Delivery: <span className="font-semibold text-gray-700 ml-1">{property.deliveryDate}</span>
+            {t("delivery")} <span className="font-semibold text-gray-700 ml-1">{property.deliveryDate}</span>
           </span>
         </div>
 
@@ -123,7 +126,7 @@ export function PropertyFullCard({
           href={`/dashboard/properties/${property.id}`}
           className="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-[#134e4a] text-white text-sm font-bold hover:bg-[#115e59] transition-colors"
         >
-          View details
+          {t("viewDetails")}
           <i className="las la-arrow-right text-base" aria-hidden />
         </Link>
       </div>

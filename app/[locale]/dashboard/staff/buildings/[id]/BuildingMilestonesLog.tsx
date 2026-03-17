@@ -1,12 +1,14 @@
 "use client";
 
 import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
+import { useTranslations, useLocale } from "next-intl";
 
-function formatMilestoneDateTime(dateTimeStr: string): { day: string; date: string; time: string } {
+function formatMilestoneDateTime(dateTimeStr: string, locale: string): { day: string; date: string; time: string } {
   const d = new Date(dateTimeStr);
-  const day = d.toLocaleDateString("en-GB", { weekday: "long" });
-  const date = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-  const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const resolvedLocale = locale === "tr" ? "tr-TR" : "en-GB";
+  const day = d.toLocaleDateString(resolvedLocale, { weekday: "long" });
+  const date = d.toLocaleDateString(resolvedLocale, { day: "numeric", month: "short", year: "numeric" });
+  const time = d.toLocaleTimeString(resolvedLocale, { hour: "2-digit", minute: "2-digit", hour12: false });
   return { day, date, time };
 }
 
@@ -16,14 +18,17 @@ interface BuildingMilestonesLogProps {
 }
 
 export function BuildingMilestonesLog({ milestones, currentMilestoneId = null }: BuildingMilestonesLogProps) {
+  const t = useTranslations("StaffBuildingDetail");
+  const locale = useLocale();
+
   if (milestones.length === 0) {
     return (
       <div className="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm p-10 text-center">
         <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-gray-100 text-gray-400 mb-4">
           <i className="las la-flag-checkered text-2xl" aria-hidden />
         </div>
-        <p className="text-gray-600 font-medium">No milestones for this building yet.</p>
-        <p className="text-sm text-gray-400 mt-1">Add planned milestones when editing the building to see them here.</p>
+        <p className="text-gray-600 font-medium">{t("noMilestones")}</p>
+        <p className="text-sm text-gray-400 mt-1">{t("addMilestonesHint")}</p>
       </div>
     );
   }
@@ -37,9 +42,9 @@ export function BuildingMilestonesLog({ milestones, currentMilestoneId = null }:
           </div>
           <div>
             <h3 className="text-lg font-bold text-gray-900">
-              Milestones
+              {t("milestonesTitle")}
             </h3>
-            <p className="text-sm text-gray-500 mt-0.5">Chronological list of milestones for this building.</p>
+            <p className="text-sm text-gray-500 mt-0.5">{t("milestonesSubtitle")}</p>
           </div>
         </div>
       </div>
@@ -48,7 +53,7 @@ export function BuildingMilestonesLog({ milestones, currentMilestoneId = null }:
       <div className="relative py-4 px-4 sm:px-6">
         <ul className="relative space-y-0">
           {milestones.map((m, index) => {
-            const detailed = m.dateTime ? formatMilestoneDateTime(m.dateTime) : null;
+            const detailed = m.dateTime ? formatMilestoneDateTime(m.dateTime, locale) : null;
             const isLast = index === milestones.length - 1;
             const isCurrent = currentMilestoneId != null && currentMilestoneId === m.id;
             return (
@@ -77,7 +82,7 @@ export function BuildingMilestonesLog({ milestones, currentMilestoneId = null }:
                           {isCurrent && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-[#134e4a] text-white">
                               <i className="las la-flag text-[10px]" aria-hidden />
-                              Current
+                              {t("current")}
                             </span>
                           )}
                         </div>

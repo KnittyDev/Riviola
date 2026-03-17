@@ -1,29 +1,33 @@
 "use client";
 
 import type { BuildingStatus } from "@/lib/supabase/types";
+import { useTranslations } from "next-intl";
 
 function statusConfig(status: BuildingStatus) {
   switch (status) {
     case "Planned":
-      return { label: "Planned", className: "bg-sky-100 text-sky-700" };
+      return { key: "planned", className: "bg-sky-100 text-sky-700" };
     case "In progress":
-      return { label: "In progress", className: "bg-amber-100 text-amber-700" };
+      return { key: "inProgress", className: "bg-amber-100 text-amber-700" };
     case "At risk":
-      return { label: "At risk", className: "bg-red-100 text-red-700" };
+      return { key: "atRisk", className: "bg-red-100 text-red-700" };
     case "On hold":
-      return { label: "On hold", className: "bg-gray-100 text-gray-700" };
+      return { key: "onHold", className: "bg-gray-100 text-gray-700" };
     case "Completed":
-      return { label: "Completed", className: "bg-emerald-100 text-emerald-700" };
+      return { key: "completed", className: "bg-emerald-100 text-emerald-700" };
     case "Cancelled":
-      return { label: "Cancelled", className: "bg-zinc-100 text-zinc-700" };
+      return { key: "cancelled", className: "bg-zinc-100 text-zinc-700" };
+    default:
+      return { key: "planned", className: "bg-sky-100 text-sky-700" };
   }
 }
 
 export function BuildingStatusBadgeClient({ status }: { status: BuildingStatus }) {
+  const t = useTranslations("Statuses");
   const cfg = statusConfig(status);
   return (
     <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${cfg.className}`}>
-      {cfg.label}
+      {t(cfg.key)}
     </span>
   );
 }

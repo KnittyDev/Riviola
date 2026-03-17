@@ -4,6 +4,7 @@ import { getStaffCompanyId } from "@/lib/buildings";
 import { notFound } from "next/navigation";
 import { EditBuildingForm } from "./EditBuildingForm";
 import type { Building } from "@/lib/supabase/types";
+import { getTranslations } from "next-intl/server";
 
 export default async function EditBuildingPage({
   params,
@@ -11,6 +12,7 @@ export default async function EditBuildingPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const t = await getTranslations("EditBuilding");
   const supabase = await createClient();
   const companyId = await getStaffCompanyId(supabase);
   if (!companyId) notFound();
@@ -27,7 +29,7 @@ export default async function EditBuildingPage({
 
   const blocks = Array.isArray(building.blocks) && building.blocks.length > 0
     ? building.blocks
-    : ["Block A"];
+    : [t("defaultBlock")];
   const plannedMilestones = Array.isArray(building.planned_milestones)
     ? building.planned_milestones
     : [];
@@ -39,13 +41,13 @@ export default async function EditBuildingPage({
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
       >
         <i className="las la-arrow-left" aria-hidden />
-        Back to building
+        {t("backToBuilding")}
       </Link>
       <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-        Edit building
+        {t("title")}
       </h1>
       <p className="text-gray-500 mt-1 mb-8">
-        Update building details. Changes will be visible to investors.
+        {t("subtitle")}
       </p>
       <EditBuildingForm
         id={building.id}

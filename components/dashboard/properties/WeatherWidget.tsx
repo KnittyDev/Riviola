@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 
 type WeatherData = {
     temp: number;
@@ -8,23 +9,23 @@ type WeatherData = {
     icon: string;
 };
 
-const weatherIconMap: Record<number, { icon: string; label: string }> = {
-    0: { icon: "la-sun", label: "Clear sky" },
-    1: { icon: "la-cloud-sun", label: "Mainly clear" },
-    2: { icon: "la-cloud-sun", label: "Partly cloudy" },
-    3: { icon: "la-cloud", label: "Overcast" },
-    45: { icon: "la-smog", label: "Fog" },
-    48: { icon: "la-smog", label: "Fog" },
-    51: { icon: "la-cloud-rain", label: "Light drizzle" },
-    53: { icon: "la-cloud-rain", label: "Moderate drizzle" },
-    55: { icon: "la-cloud-rain", label: "Dense drizzle" },
-    61: { icon: "la-cloud-showers-heavy", label: "Slight rain" },
-    63: { icon: "la-cloud-showers-heavy", label: "Moderate rain" },
-    65: { icon: "la-cloud-showers-heavy", label: "Heavy rain" },
-    71: { icon: "la-snowflake", label: "Slight snow" },
-    73: { icon: "la-snowflake", label: "Moderate snow" },
-    75: { icon: "la-snowflake", label: "Heavy snow" },
-    95: { icon: "la-bolt", label: "Thunderstorm" },
+const weatherIconMap: Record<number, { icon: string; labelKey: string }> = {
+    0: { icon: "la-sun", labelKey: "clear_sky" },
+    1: { icon: "la-cloud-sun", labelKey: "mainly_clear" },
+    2: { icon: "la-cloud-sun", labelKey: "partly_cloudy" },
+    3: { icon: "la-cloud", labelKey: "overcast" },
+    45: { icon: "la-smog", labelKey: "fog" },
+    48: { icon: "la-smog", labelKey: "fog" },
+    51: { icon: "la-cloud-rain", labelKey: "light_drizzle" },
+    53: { icon: "la-cloud-rain", labelKey: "moderate_drizzle" },
+    55: { icon: "la-cloud-rain", labelKey: "dense_drizzle" },
+    61: { icon: "la-cloud-showers-heavy", labelKey: "slight_rain" },
+    63: { icon: "la-cloud-showers-heavy", labelKey: "moderate_rain" },
+    65: { icon: "la-cloud-showers-heavy", labelKey: "heavy_rain" },
+    71: { icon: "la-snowflake", labelKey: "slight_snow" },
+    73: { icon: "la-snowflake", labelKey: "moderate_snow" },
+    75: { icon: "la-snowflake", labelKey: "heavy_snow" },
+    95: { icon: "la-bolt", labelKey: "thunderstorm" },
 };
 
 export function WeatherWidget({
@@ -36,6 +37,9 @@ export function WeatherWidget({
     country?: string;
     mode?: "light" | "dark";
 }) {
+    const t = useTranslations("StaffBuildingDetail");
+    const tWeather = useTranslations("Weather");
+    const locale = useLocale();
     const [data, setData] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -49,7 +53,7 @@ export function WeatherWidget({
                 const geoRes = await fetch(
                     `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
                         targetCity
-                    )}&count=1&language=en&format=json`
+                    )}&count=1&language=${locale}&format=json`
                 );
                 
                 if (!geoRes.ok) throw new Error("Geocoding failed");
@@ -71,12 +75,12 @@ export function WeatherWidget({
 
                     const mapped = weatherIconMap[current.weathercode] || {
                         icon: "la-cloud",
-                        label: "Cloudy",
+                        labelKey: "cloudy",
                     };
 
                     setData({
                         temp: Math.round(current.temperature),
-                        label: mapped.label,
+                        label: tWeather(mapped.labelKey),
                         icon: mapped.icon,
                     });
                 }
@@ -89,7 +93,7 @@ export function WeatherWidget({
         }
 
         fetchWeather(city);
-    }, [city, country]);
+    }, [city, country, locale, tWeather]);
 
     if (!city || (!data && !loading)) return null;
 
@@ -118,7 +122,7 @@ export function WeatherWidget({
                     className={`text-[10px] font-bold uppercase tracking-widest leading-none mb-1 ${isLight ? "text-gray-400" : "text-white/70"
                         }`}
                 >
-                    {city} Weather
+                    {t("cityWeather", { city })}
                 </p>
                 <p className={`font-black text-lg leading-none ${isLight ? "text-gray-900" : "text-white"}`}>
                     {loading ? "..." : `${data?.temp ?? "--"}°C`}

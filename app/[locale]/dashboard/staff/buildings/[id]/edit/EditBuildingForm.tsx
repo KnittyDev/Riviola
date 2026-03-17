@@ -10,6 +10,7 @@ import type { BuildingStatus } from "@/lib/supabase/types";
 import type { PlannedMilestone } from "@/lib/staffBuildingOverrides";
 import { computeProgressFromMilestones } from "@/lib/buildings";
 import { LocationSelector } from "@/components/dashboard/staff/LocationSelector";
+import { useTranslations } from "next-intl";
 
 const BANNER_BUCKET = "building_banners";
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
@@ -34,74 +35,23 @@ type Props = {
   basePath?: string;
 };
 
-const statusOptions: Array<{
-  value: BuildingStatus;
-  label: string;
-  helper: string;
-  icon: string;
-  toneClass: string;
-}> = [
-    {
-      value: "Planned",
-      label: "Planned",
-      helper: "Preparing to start",
-      icon: "las la-calendar",
-      toneClass: "bg-sky-100 text-sky-700",
-    },
-    {
-      value: "In progress",
-      label: "In progress",
-      helper: "Construction ongoing",
-      icon: "las la-hourglass-half",
-      toneClass: "bg-amber-100 text-amber-700",
-    },
-    {
-      value: "At risk",
-      label: "At risk",
-      helper: "Needs attention",
-      icon: "las la-exclamation-triangle",
-      toneClass: "bg-red-100 text-red-700",
-    },
-    {
-      value: "On hold",
-      label: "On hold",
-      helper: "Paused temporarily",
-      icon: "las la-pause-circle",
-      toneClass: "bg-gray-100 text-gray-700",
-    },
-    {
-      value: "Completed",
-      label: "Completed",
-      helper: "Handover done",
-      icon: "las la-check-circle",
-      toneClass: "bg-emerald-100 text-emerald-700",
-    },
-    {
-      value: "Cancelled",
-      label: "Cancelled",
-      helper: "Stopped permanently",
-      icon: "las la-times-circle",
-      toneClass: "bg-zinc-100 text-zinc-700",
-    },
-  ];
-
 const PREDEFINED_GREEN_FEATURES = [
-  { id: "solar", label: "Solar Panels", icon: "las la-solar-panel" },
-  { id: "ev", label: "EV Charging Stations", icon: "las la-charging-station" },
-  { id: "rainwater", label: "Rainwater Harvesting", icon: "las la-tint" },
-  { id: "led", label: "Energy Efficient Lighting", icon: "las la-lightbulb" },
-  { id: "waste", label: "Waste & Recycling Management", icon: "las la-recycle" },
-  { id: "smart", label: "Smart Home Tech", icon: "las la-home" },
-  { id: "ventilation", label: "Natural Ventilation", icon: "las la-wind" },
-  { id: "garden", label: "Green Roof / Sky Garden", icon: "las la-leaf" },
-  { id: "insulation", label: "Advanced Thermal Insulation", icon: "las la-thermometer-half" },
-  { id: "materials", label: "Eco-friendly Materials", icon: "las la-tree" },
-  { id: "garden_design", label: "Professional Garden Design", icon: "las la-seedling" },
-  { id: "eco_infra", label: "Eco-friendly Infrastructure", icon: "las la-cog" },
-  { id: "pet_friendly", label: "Pet Friendly Spaces", icon: "las la-paw" },
-  { id: "bike", label: "Secure Bicycle Parking", icon: "las la-bicycle" },
-  { id: "hvac", label: "High-efficiency HVAC", icon: "las la-fan" },
-  { id: "water", label: "Water-saving Fixtures", icon: "las la-water" },
+  { id: "solar", labelKey: "Solar Panels", icon: "las la-solar-panel" },
+  { id: "ev", labelKey: "EV Charging Stations", icon: "las la-charging-station" },
+  { id: "rainwater", labelKey: "Rainwater Harvesting", icon: "las la-tint" },
+  { id: "led", labelKey: "Energy Efficient Lighting", icon: "las la-lightbulb" },
+  { id: "waste", labelKey: "Waste & Recycling Management", icon: "las la-recycle" },
+  { id: "smart", labelKey: "Smart Home Tech", icon: "las la-home" },
+  { id: "ventilation", labelKey: "Natural Ventilation", icon: "las la-wind" },
+  { id: "garden", labelKey: "Green Roof / Sky Garden", icon: "las la-leaf" },
+  { id: "insulation", labelKey: "Advanced Thermal Insulation", icon: "las la-thermometer-half" },
+  { id: "materials", labelKey: "Eco-friendly Materials", icon: "las la-tree" },
+  { id: "garden_design", labelKey: "Professional Garden Design", icon: "las la-seedling" },
+  { id: "eco_infra", labelKey: "Eco-friendly Infrastructure", icon: "las la-cog" },
+  { id: "pet_friendly", labelKey: "Pet Friendly Spaces", icon: "las la-paw" },
+  { id: "bike", labelKey: "Secure Bicycle Parking", icon: "las la-bicycle" },
+  { id: "hvac", labelKey: "High-efficiency HVAC", icon: "las la-fan" },
+  { id: "water", labelKey: "Water-saving Fixtures", icon: "las la-water" },
 ];
 
 function newId() {
@@ -129,13 +79,62 @@ export function EditBuildingForm({
   defaultSustainabilityFeatures = [],
   basePath = DEFAULT_BASE,
 }: Props) {
+  const t = useTranslations("EditBuilding");
+  const tStatus = useTranslations("StatusOptions");
+  const tFeatures = useTranslations("SustainabilityFeatures");
   const router = useRouter();
+
+  const statusOptions = useMemo(() => [
+    {
+      value: "Planned" as BuildingStatus,
+      label: tStatus("Planned.label"),
+      helper: tStatus("Planned.helper"),
+      icon: "las la-calendar",
+      toneClass: "bg-sky-100 text-sky-700",
+    },
+    {
+      value: "In progress" as BuildingStatus,
+      label: tStatus("In progress.label"),
+      helper: tStatus("In progress.helper"),
+      icon: "las la-hourglass-half",
+      toneClass: "bg-amber-100 text-amber-700",
+    },
+    {
+      value: "At risk" as BuildingStatus,
+      label: tStatus("At risk.label"),
+      helper: tStatus("At risk.helper"),
+      icon: "las la-exclamation-triangle",
+      toneClass: "bg-red-100 text-red-700",
+    },
+    {
+      value: "On hold" as BuildingStatus,
+      label: tStatus("On hold.label"),
+      helper: tStatus("On hold.helper"),
+      icon: "las la-pause-circle",
+      toneClass: "bg-gray-100 text-gray-700",
+    },
+    {
+      value: "Completed" as BuildingStatus,
+      label: tStatus("Completed.label"),
+      helper: tStatus("Completed.helper"),
+      icon: "las la-check-circle",
+      toneClass: "bg-emerald-100 text-emerald-700",
+    },
+    {
+      value: "Cancelled" as BuildingStatus,
+      label: tStatus("Cancelled.label"),
+      helper: tStatus("Cancelled.helper"),
+      icon: "las la-times-circle",
+      toneClass: "bg-zinc-100 text-zinc-700",
+    },
+  ], [tStatus]);
+
   const [name, setName] = useState<string>(defaultName);
   const [location, setLocation] = useState<string>(defaultLocation);
   const [status, setStatus] = useState<BuildingStatus>(defaultStatus);
   const [units, setUnits] = useState<number>(defaultUnits);
   const [floors, setFloors] = useState<number>(defaultFloors);
-  const [blocks, setBlocks] = useState<string[]>(defaultBlocks.length ? defaultBlocks : ["Block A"]);
+  const [blocks, setBlocks] = useState<string[]>(defaultBlocks.length ? defaultBlocks : [t("defaultBlock")]);
   const [newBlockName, setNewBlockName] = useState("");
   const [country, setCountry] = useState<string>(defaultCountry ?? "");
   const [city, setCity] = useState<string>(defaultCity ?? "");
@@ -164,10 +163,10 @@ export function EditBuildingForm({
   }, [bannerFile]);
 
   function addBlock() {
-    const name =
-      newBlockName.trim() || `Block ${String.fromCharCode(65 + blocks.length)}`;
-    if (!blocks.includes(name)) {
-      setBlocks((prev) => [...prev, name]);
+    const nameStr =
+      newBlockName.trim() || `${t("defaultBlock")} ${String.fromCharCode(65 + blocks.length)}`;
+    if (!blocks.includes(nameStr)) {
+      setBlocks((prev) => [...prev, nameStr]);
       setNewBlockName("");
     }
   }
@@ -217,7 +216,7 @@ export function EditBuildingForm({
       progress,
       units,
       floors,
-      blocks: blocks.length ? blocks : ["Block A"],
+      blocks: blocks.length ? blocks : [t("defaultBlock")],
       planned_milestones: plannedMilestones,
       current_milestone_id: currentMilestoneId,
       sustainability_score: sustainabilityScore,
@@ -230,7 +229,7 @@ export function EditBuildingForm({
       setError(updateError.message);
       return;
     }
-    toast.success("Building saved successfully.");
+    toast.success(t("saveSuccess"));
     router.push(`${basePath}/buildings/${id}`);
     router.refresh();
   }
@@ -248,7 +247,7 @@ export function EditBuildingForm({
       )}
       <div>
         <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
-          Building / project name
+          {t("form.nameLabel")}
         </label>
         <input
           id="name"
@@ -256,7 +255,7 @@ export function EditBuildingForm({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Avala Resort"
+          placeholder={t("form.namePlaceholder")}
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
       </div>
@@ -268,7 +267,7 @@ export function EditBuildingForm({
       />
       <div>
         <label htmlFor="location" className="block text-sm font-semibold text-gray-700 mb-1">
-          Full address or detailed location
+          {t("form.addressLabel")}
         </label>
         <input
           id="location"
@@ -276,14 +275,14 @@ export function EditBuildingForm({
           type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          placeholder="e.g. Adriatic Coast, Main Street 12"
+          placeholder={t("form.addressPlaceholder")}
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
       </div>
       <div>
-        <span className="block text-sm font-semibold text-gray-700 mb-1">Banner photo</span>
+        <span className="block text-sm font-semibold text-gray-700 mb-1">{t("form.bannerLabel")}</span>
         <p className="text-xs text-gray-500 mb-2">
-          Banner image for the building detail page. Leave empty to keep current.
+          {t("form.bannerSubtitle")}
         </p>
         <div className="rounded-xl border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50/50">
           <input
@@ -307,7 +306,7 @@ export function EditBuildingForm({
                 type="button"
                 onClick={() => setBannerFile(null)}
                 className="absolute top-2 right-2 size-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70"
-                aria-label="Remove photo"
+                aria-label={t("form.removePhoto")}
               >
                 <i className="las la-times text-lg" aria-hidden />
               </button>
@@ -318,13 +317,13 @@ export function EditBuildingForm({
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] cursor-pointer transition-colors"
           >
             <i className="las la-camera text-lg" aria-hidden />
-            {bannerPreview || defaultImageUrl ? "Change photo" : "Upload banner photo"}
+            {bannerPreview || defaultImageUrl ? t("form.changePhoto") : t("form.uploadPhoto")}
           </label>
         </div>
       </div>
       <div>
         <label htmlFor="units" className="block text-sm font-semibold text-gray-700 mb-1">
-          Number of units
+          {t("form.unitsLabel")}
         </label>
         <input
           id="units"
@@ -333,7 +332,7 @@ export function EditBuildingForm({
           min={1}
           value={units}
           onChange={(e) => setUnits(Number(e.target.value))}
-          placeholder="e.g. 24"
+          placeholder={t("form.unitsPlaceholder")}
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
         />
       </div>
@@ -341,9 +340,9 @@ export function EditBuildingForm({
       <hr className="border-gray-200" />
 
       <div>
-        <span className="block text-sm font-semibold text-gray-700 mb-1">Block names</span>
+        <span className="block text-sm font-semibold text-gray-700 mb-1">{t("form.blocksLabel")}</span>
         <p className="text-xs text-gray-500 mb-3">
-          Define the blocks or towers in this project (e.g. Block A, Tower East). These will be used when assigning investors to a unit.
+          {t("form.blocksSubtitle")}
         </p>
         <ul className="space-y-2 mb-3">
           {blocks.map((block, index) => (
@@ -353,14 +352,14 @@ export function EditBuildingForm({
                 value={block}
                 onChange={(e) => updateBlock(index, e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
-                placeholder="e.g. Block A"
+                placeholder={t("form.blockPlaceholder")}
               />
               <button
                 type="button"
                 onClick={() => removeBlock(index)}
                 disabled={blocks.length <= 1}
                 className="shrink-0 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:pointer-events-none transition-colors"
-                aria-label="Remove block"
+                aria-label={t("form.removeBlock")}
               >
                 <i className="las la-times text-lg" aria-hidden />
               </button>
@@ -373,7 +372,7 @@ export function EditBuildingForm({
             value={newBlockName}
             onChange={(e) => setNewBlockName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addBlock())}
-            placeholder="New block name"
+            placeholder={t("form.newBlockName")}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
           />
           <button
@@ -381,7 +380,7 @@ export function EditBuildingForm({
             onClick={addBlock}
             className="shrink-0 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
           >
-            Add block
+            {t("form.addBlock")}
           </button>
         </div>
       </div>
@@ -389,7 +388,7 @@ export function EditBuildingForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="floors" className="block text-sm font-semibold text-gray-700 mb-1">
-            Number of floors
+            {t("form.floorsLabel")}
           </label>
           <input
             id="floors"
@@ -399,13 +398,13 @@ export function EditBuildingForm({
             max={99}
             value={floors}
             onChange={(e) => setFloors(Number(e.target.value))}
-            placeholder="e.g. 8"
+            placeholder={t("form.floorsPlaceholder")}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
           />
         </div>
         <div>
           <label htmlFor="unitsGrid" className="block text-sm font-semibold text-gray-700 mb-1">
-            Number of units
+            {t("form.unitsLabel")}
           </label>
           <input
             id="unitsGrid"
@@ -413,13 +412,13 @@ export function EditBuildingForm({
             min={1}
             value={units}
             onChange={(e) => setUnits(Number(e.target.value))}
-            placeholder="e.g. 24"
+            placeholder={t("form.unitsPlaceholder")}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors"
           />
         </div>
       </div>
       <div>
-        <span className="block text-sm font-semibold text-gray-700 mb-3">Status</span>
+        <span className="block text-sm font-semibold text-gray-700 mb-3">{t("form.statusLabel")}</span>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {statusOptions.map((opt) => (
             <button
@@ -451,8 +450,8 @@ export function EditBuildingForm({
       <div className="rounded-2xl border border-gray-200 p-5 bg-gray-50/40">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-gray-900">Milestone plan</p>
-            <p className="text-xs text-gray-500 mt-1">Add milestones and select which one is current.</p>
+            <p className="text-sm font-semibold text-gray-900">{t("form.milestonePlan")}</p>
+            <p className="text-xs text-gray-500 mt-1">{t("form.milestoneSubtitle")}</p>
           </div>
           <button
             type="button"
@@ -464,14 +463,14 @@ export function EditBuildingForm({
             }
             className="shrink-0 px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors"
           >
-            <i className="las la-plus text-base" aria-hidden /> Add milestone
+            <i className="las la-plus text-base" aria-hidden /> {t("form.addMilestone")}
           </button>
         </div>
 
         <div className="mt-4 space-y-3">
           {sortedPlanned.length === 0 ? (
             <div className="rounded-xl bg-white border border-gray-200 p-4 text-sm text-gray-500">
-              No planned milestones yet. Add a few to build your timeline.
+              {t("form.noMilestones")}
             </div>
           ) : (
             sortedPlanned.map((m) => {
@@ -486,14 +485,14 @@ export function EditBuildingForm({
                         ? "border-[#134e4a] bg-[#134e4a]/5 text-[#134e4a]"
                         : "border-gray-200 text-gray-600 hover:bg-gray-50"
                         }`}
-                      aria-label="Set as current milestone"
+                      aria-label={t("form.setAsCurrent")}
                     >
                       <i className="las la-flag text-sm" aria-hidden />
-                      Current
+                      {t("form.current")}
                     </button>
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Title</label>
+                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t("form.milestoneTitle")}</label>
                         <input
                           type="text"
                           value={m.title}
@@ -503,12 +502,12 @@ export function EditBuildingForm({
                               prev.map((x) => (x.id === m.id ? { ...x, title: value } : x))
                             );
                           }}
-                          placeholder="e.g. Final exterior painting"
+                          placeholder={t("form.milestoneTitlePlaceholder")}
                           className="w-full px-3 py-2 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Target date & time</label>
+                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t("form.targetDate")}</label>
                         <input
                           type="datetime-local"
                           value={m.dateTimeLocal}
@@ -529,7 +528,7 @@ export function EditBuildingForm({
                         if (currentMilestoneId === m.id) setCurrentMilestoneId(null);
                       }}
                       className="shrink-0 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                      aria-label="Remove milestone"
+                      aria-label={t("form.removeMilestone")}
                     >
                       <i className="las la-times text-lg" aria-hidden />
                     </button>
@@ -547,18 +546,18 @@ export function EditBuildingForm({
             <i className="las la-leaf text-xl" />
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">Sustainability Dashboard (Green Score)</p>
-            <p className="text-xs text-gray-500 mt-0.5">Showcase your project's environmental impact to global investors.</p>
+            <p className="text-sm font-bold text-gray-900">{t("form.sustainabilityDashboard")}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{t("form.sustainabilitySubtitle")}</p>
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="mt-6 space-y-8">
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-              Overall Green Score (Auto-calculated)
+              {t("form.greenScoreLabel")}
             </label>
             <div className="flex items-center gap-4">
-              <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden text-center">
                 <div 
                   className="h-full bg-[#134e4a] transition-all duration-500"
                   style={{ width: `${sustainabilityScore}%` }}
@@ -568,28 +567,28 @@ export function EditBuildingForm({
                 {sustainabilityScore}
               </span>
             </div>
-            <p className="text-[10px] text-gray-400 mt-2 italic">The score is calculated based on the green features you select below.</p>
+            <p className="text-[10px] text-gray-400 mt-2 italic">{t("form.greenScoreHint")}</p>
           </div>
 
-          <div>
-            <span className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-4">Add Project Sustainability Features</span>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-2 max-h-[320px] overflow-y-auto pr-1">
+          <div className="border-t border-[#134e4a]/10 pt-6">
+            <span className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-4">{t("form.addFeatures")}</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 pr-1">
               {PREDEFINED_GREEN_FEATURES.map((feat) => {
-                const isSelected = sustainabilityFeatures.includes(feat.label);
+                const isSelected = sustainabilityFeatures.includes(feat.labelKey);
                 return (
                   <button
                     key={feat.id}
                     type="button"
-                    onClick={() => toggleFeature(feat.label)}
-                    className={`flex items-center gap-2 p-2.5 rounded-xl border-2 text-left transition-all ${isSelected
+                    onClick={() => toggleFeature(feat.labelKey)}
+                    className={`flex items-start gap-2 p-2.5 rounded-xl border-2 text-left transition-all ${isSelected
                       ? "border-[#134e4a] bg-[#134e4a]/10 text-[#134e4a] font-bold"
                       : "border-gray-100 bg-white text-gray-500 hover:border-gray-200"
                       }`}
                   >
-                    <span className={`size-7 rounded-lg flex items-center justify-center ${isSelected ? 'bg-[#134e4a] text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-gray-100'}`}>
+                    <span className={`size-7 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#134e4a] text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-gray-100'}`}>
                       <i className={`${feat.icon} text-base`} />
                     </span>
-                    <span className="text-[11px] leading-tight truncate">{feat.label}</span>
+                    <span className="text-[11px] leading-tight mt-0.5">{tFeatures(feat.labelKey)}</span>
                   </button>
                 );
               })}
@@ -604,13 +603,13 @@ export function EditBuildingForm({
           disabled={saving}
           className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-50 transition-colors"
         >
-          {saving ? "Saving..." : "Save changes"}
+          {saving ? t("saving") : t("saveChanges")}
         </button>
         <Link
           href={`${basePath}/buildings/${id}`}
           className="px-6 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
         >
-          Cancel
+          {t("cancel")}
         </Link>
       </div>
     </form>

@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
+import { useTranslations } from "next-intl";
 import type { WeeklyPhotoUpdate } from "@/lib/propertyDetailData";
 
 interface WeeklyPhotoUpdatesProps {
@@ -12,6 +13,7 @@ interface WeeklyPhotoUpdatesProps {
 }
 
 export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
+  const t = useTranslations("StaffBuildingDetail");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -37,7 +39,7 @@ export function WeeklyPhotoUpdates({ weeklyUpdates }: WeeklyPhotoUpdatesProps) {
     >
       <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
         <i className="las la-image text-[#134e4a] text-xl" aria-hidden />
-        <h2 className="text-lg font-bold text-gray-900">Weekly photo updates</h2>
+        <h2 className="text-lg font-bold text-gray-900">{t("weeklyUpdatesTitle")}</h2>
       </div>
       <div className="p-6 space-y-6 max-w-4xl">
         {weeklyUpdates.map((w) => (
