@@ -3,7 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import { createInvestorAction } from "@/app/[locale]/dashboard/staff/investors/actions";
+import { useTranslations } from "next-intl";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
@@ -48,10 +51,12 @@ function formatAmount(value: number, currency: string): string {
     ALL: "L",
   };
   const sym = symbols[currency] ?? currency + " ";
-  return `${sym} ${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `${sym}${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) {
+  const t = useTranslations("Investors.newAccount");
+  const tModal = useTranslations("Investors.modal");
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -110,7 +115,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         investorType,
       });
       if (!result) {
-        setError("Sunucu yanıt vermedi. Tekrar deneyin.");
+        setError(t("serverError"));
         return;
       }
       if (result.ok) {
@@ -122,11 +127,11 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
       const message =
         typeof result.error === "string"
           ? result.error
-          : (result as { message?: string }).message ?? "Hesap oluşturulamadı. Tekrar deneyin.";
+          : (result as { message?: string }).message ?? t("fallbackError");
       setError(message);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Bir hata oluştu. Tekrar deneyin.";
+        err instanceof Error ? err.message : t("genericError");
       setError(message);
     } finally {
       setLoading(false);
@@ -140,13 +145,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
       >
         <i className="las la-arrow-left" aria-hidden />
-        Back to overview
+        {t("back")}
       </Link>
       <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-        Create investor account
+        {t("title")}
       </h1>
       <p className="text-gray-500 mt-1 mb-8">
-        Create a login account for an investor and assign them to a project, block, unit and payment plan.
+        {t("subtitle")}
       </p>
       <form
         className="space-y-6 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
@@ -163,18 +168,18 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         )}
         {success && (
           <p className="text-green-700 text-sm p-3 rounded-xl bg-green-50 border border-green-100">
-            Hesap oluşturuldu. Yönlendiriliyorsunuz…
+            {t("successRedirect")}
           </p>
         )}
         <div>
           <label htmlFor="name" className={labelClass}>
-            Full name
+            {t("fullName")}
           </label>
           <input
             id="name"
             name="name"
             type="text"
-            placeholder="e.g. John Smith"
+            placeholder={t("fullNamePlaceholder")}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             required
@@ -183,13 +188,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         </div>
         <div>
           <label htmlFor="email" className={labelClass}>
-            Email
+            {t("email")}
           </label>
           <input
             id="email"
             name="email"
             type="email"
-            placeholder="investor@example.com"
+            placeholder={t("emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -198,13 +203,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         </div>
         <div>
           <label htmlFor="password" className={labelClass}>
-            Temporary password
+            {t("password")}
           </label>
           <input
             id="password"
             name="password"
             type="password"
-            placeholder="Initial password (can be changed later)"
+            placeholder={t("passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -214,24 +219,27 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         </div>
         <div>
           <label htmlFor="phone" className={labelClass}>
-            Phone
+            {t("phone")}
           </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            placeholder="e.g. +90 555 123 4567"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className={inputClass}
-          />
+          <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-xl [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-4 [&_.react-international-phone-input]:!py-3 [&_.react-international-phone-input]:!text-sm">
+            <PhoneInput
+              defaultCountry="tr"
+              value={phone}
+              onChange={(value) => setPhone(value)}
+              inputProps={{ 
+                id: "phone", 
+                name: "phone", 
+                placeholder: t("phonePlaceholder") 
+              }}
+            />
+          </div>
           <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
-            * Please do not remove or delete the country code (e.g., +90, +382).
+            {t("phoneNote")}
           </p>
         </div>
         <div>
           <label htmlFor="investorType" className={labelClass}>
-            Investor type
+            {t("investorType")}
           </label>
           <select
             id="investorType"
@@ -240,8 +248,8 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             onChange={(e) => setInvestorType(e.target.value as "renter" | "buyer")}
             className={inputClass}
           >
-            <option value="buyer">Buyer (sees Financials)</option>
-            <option value="renter">Renter (no Financials)</option>
+            <option value="buyer">{tModal("investorTypeOptions.buyer")}</option>
+            <option value="renter">{tModal("investorTypeOptions.renter")}</option>
           </select>
         </div>
 
@@ -249,7 +257,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
 
         <div>
           <label htmlFor="building" className={labelClass}>
-            Project / building
+            {t("project")}
           </label>
           <select
             id="building"
@@ -261,7 +269,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             }}
             className={inputClass}
           >
-            <option value="">Select project</option>
+            <option value="">{t("selectProject")}</option>
             {buildings.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.name} – {b.location || "—"}
@@ -274,7 +282,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
           <>
             <div>
               <label htmlFor="block" className={labelClass}>
-                Block name
+                {t("block")}
               </label>
               <select
                 id="block"
@@ -284,7 +292,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                 required
                 className={inputClass}
               >
-                <option value="">Select block</option>
+                <option value="">{t("selectBlock")}</option>
                 {blocks.map((b) => (
                   <option key={b} value={b}>
                     {b}
@@ -295,10 +303,10 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="floor" className={labelClass}>
-                  Floor
+                  {t("floor")}
                 </label>
                 <select id="floor" name="floor" className={inputClass}>
-                  <option value="">Select floor</option>
+                  <option value="">{t("selectFloor")}</option>
                   {floorOptions.map((f) => (
                     <option key={f} value={f}>
                       {f}
@@ -308,13 +316,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
               </div>
               <div>
                 <label htmlFor="unit" className={labelClass}>
-                  Unit / apartment
+                  {t("unit")}
                 </label>
                 <input
                   id="unit"
                   name="unit"
                   type="text"
-                  placeholder="e.g. 402"
+                  placeholder={t("unitPlaceholder")}
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
                   required
@@ -325,7 +333,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="areaM2" className={labelClass}>
-                  Area (m²)
+                  {t("area")}
                 </label>
                 <input
                   id="areaM2"
@@ -333,7 +341,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                   type="number"
                   min={0}
                   step={0.01}
-                  placeholder="e.g. 85"
+                  placeholder={t("areaPlaceholder")}
                   value={areaM2}
                   onChange={(e) => setAreaM2(e.target.value)}
                   className={inputClass}
@@ -341,13 +349,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
               </div>
               <div>
                 <label htmlFor="deliveryPeriod" className={labelClass}>
-                  Delivery period
+                  {t("deliveryPeriod")}
                 </label>
                 <input
                   id="deliveryPeriod"
                   name="deliveryPeriod"
                   type="text"
-                  placeholder="e.g. Q3 2026, Q4 2026"
+                  placeholder={t("deliveryPeriodPlaceholder")}
                   value={deliveryPeriod}
                   onChange={(e) => setDeliveryPeriod(e.target.value)}
                   className={inputClass}
@@ -360,9 +368,9 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         <hr className="border-gray-200" />
 
         <div>
-          <span className={labelClass}>Amount to pay (total)</span>
+          <span className={labelClass}>{t("amountTitle")}</span>
           <p className="text-xs text-gray-500 mb-2">
-            Total amount the investor has paid or will pay for this unit.
+            {t("amountSubtitle")}
           </p>
           <div className="flex flex-wrap gap-3 items-end">
             <div className="flex-1 min-w-[10rem]">
@@ -372,7 +380,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                 type="number"
                 min={0}
                 step={0.01}
-                placeholder="e.g. 150000"
+                placeholder={t("amountPlaceholder")}
                 value={totalAmount}
                 onChange={(e) => setTotalAmount(e.target.value)}
                 className={inputClass}
@@ -398,9 +406,9 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         </div>
 
         <div>
-          <span className={labelClass}>Payment plan</span>
+          <span className={labelClass}>{t("paymentPlan")}</span>
           <p className="text-xs text-gray-500 mb-3">
-            Full payment at once or pay in installments (enter a custom number).
+            {t("paymentPlanSubtitle")}
           </p>
           <div className="space-y-2">
             <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
@@ -412,7 +420,7 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                 onChange={() => setPaymentPlanType("full")}
                 className="rounded-full border-gray-300 accent-[#134e4a] focus:ring-[#134e4a] focus:ring-offset-0"
               />
-              <span className="text-sm font-medium text-gray-900">Full payment (one-time)</span>
+              <span className="text-sm font-medium text-gray-900">{t("fullPayment")}</span>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
               <input
@@ -423,13 +431,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
                 onChange={() => setPaymentPlanType("installments")}
                 className="rounded-full border-gray-300 accent-[#134e4a] focus:ring-[#134e4a] focus:ring-offset-0"
               />
-              <span className="text-sm font-medium text-gray-900">Installments</span>
+              <span className="text-sm font-medium text-gray-900">{t("installments")}</span>
             </label>
           </div>
           {paymentPlanType === "installments" && (
             <div className="mt-4 pl-9">
               <label htmlFor="installmentCount" className={labelClass}>
-                Number of installments
+                {t("installmentCount")}
               </label>
               <input
                 id="installmentCount"
@@ -446,21 +454,23 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
 
           {/* Payment preview */}
           <div className="mt-4 p-4 rounded-xl bg-teal-50 border border-teal-100">
-            <p className="text-sm font-semibold text-teal-900 mb-1">Preview</p>
+            <p className="text-sm font-semibold text-teal-900 mb-1">{t("preview")}</p>
             {!isValidTotal ? (
-              <p className="text-sm text-teal-700">Enter total amount above to see preview.</p>
+              <p className="text-sm text-teal-700">{t("previewHint")}</p>
             ) : paymentPlanType === "full" ? (
               <p className="text-sm text-teal-800">
-                One-time payment: <strong>{formatAmount(totalNum!, currency)}</strong>
+                {t("onetimePayment", { amount: formatAmount(totalNum!, currency) })}
               </p>
             ) : (
               <div className="text-sm text-teal-800 space-y-0.5">
                 <p>
-                  <strong>{installmentCount}</strong> installments of{" "}
-                  <strong>{formatAmount(installmentPreview!, currency)}</strong> each
+                  {t("installmentsOf", { 
+                    count: installmentCount, 
+                    amount: formatAmount(installmentPreview!, currency) 
+                  })}
                 </p>
                 <p>
-                  Total: <strong>{formatAmount(totalNum!, currency)}</strong>
+                  {t("totalPreview", { amount: formatAmount(totalNum!, currency) })}
                 </p>
               </div>
             )}
@@ -473,13 +483,13 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             disabled={loading}
             className="px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-60 disabled:pointer-events-none transition-colors"
           >
-            {loading ? "Oluşturuluyor…" : "Create account"}
+            {loading ? t("creating") : t("create")}
           </button>
           <Link
             href="/dashboard/staff"
             className="px-6 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            {t("cancel")}
           </Link>
         </div>
       </form>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CompanyInvestorPropertyRow } from "@/lib/companyInvestors";
 import { updateInvestorAction } from "@/app/[locale]/dashboard/staff/investors/actions";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import { useTranslations } from "next-intl";
 
 const inputClass =
@@ -47,8 +49,7 @@ export function InvestorsTable({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (editing) setEditPhone(editing.phone ?? "");
-    else setEditPhone("");
+    setEditPhone(editing?.phone ?? "");
   }, [editing]);
 
   async function handleSave(e: React.FormEvent) {
@@ -186,7 +187,10 @@ export function InvestorsTable({
                   <td className="px-6 py-4">
                     <button
                       type="button"
-                      onClick={() => setEditing(row)}
+                      onClick={() => {
+                        setEditPhone(row.phone ?? "");
+                        setEditing(row);
+                      }}
                       className="text-sm font-medium text-[#134e4a] hover:underline"
                     >
                       {t("table.edit")}
@@ -245,14 +249,18 @@ export function InvestorsTable({
               </div>
               <div>
                 <label className={labelClass}>{t("modal.phone")}</label>
-                <input
-                  name="phone"
-                  type="tel"
-                  value={editPhone}
-                  onChange={(e) => setEditPhone(e.target.value)}
-                  placeholder="+90 5xx xxx xx xx"
-                  className={inputClass}
-                />
+                <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-lg [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-3 [&_.react-international-phone-input]:!py-2 [&_.react-international-phone-input]:!text-sm">
+                  <PhoneInput
+                    defaultCountry="tr"
+                    value={editPhone}
+                    onChange={(value) => setEditPhone(value)}
+                    inputProps={{ 
+                      id: "phone", 
+                      name: "phone", 
+                      placeholder: t("modal.phonePlaceholder") || "+90 5xx xxx xx xx" 
+                    }}
+                  />
+                </div>
                 <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
                   {t("modal.phoneNote")}
                 </p>
