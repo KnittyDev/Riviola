@@ -1,11 +1,14 @@
+"use client";
 import Link from "next/link";
-import Image from "next/image";
 import { staffBuildings } from "@/lib/staffBuildingsData";
 import { StaffPerformanceChart } from "@/components/dashboard/staff/StaffPerformanceChart";
 import { CriticalAlerts } from "@/components/dashboard/staff/CriticalAlerts";
 import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjectsSection";
+import { useTranslations } from "next-intl";
 
 export default function StaffPage() {
+  const t = useTranslations("Demo.staff");
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -17,9 +20,9 @@ export default function StaffPage() {
             <i className="las la-camera text-2xl" aria-hidden />
           </div>
           <div>
-            <h2 className="text-lg font-bold">Add weekly photo</h2>
+            <h2 className="text-lg font-bold">{t("actions.addPhoto.title")}</h2>
             <p className="text-sm text-white/90 mt-0.5">
-              Upload weekly progress photos for projects.
+              {t("actions.addPhoto.description")}
             </p>
           </div>
           <i className="las la-plus-circle text-2xl ml-auto opacity-80 group-hover:opacity-100" aria-hidden />
@@ -32,9 +35,9 @@ export default function StaffPage() {
             <i className="las la-user-plus text-2xl" aria-hidden />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Create investor account</h2>
+            <h2 className="text-lg font-bold text-gray-900">{t("actions.createAccount.title")}</h2>
             <p className="text-sm text-gray-500 mt-0.5">
-              Create login accounts for investors.
+              {t("actions.createAccount.description")}
             </p>
           </div>
           <i className="las la-arrow-right text-xl text-gray-400 ml-auto group-hover:text-[#134e4a]" aria-hidden />
@@ -43,35 +46,35 @@ export default function StaffPage() {
 
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          Overview
+          {t("overview.title")}
         </h1>
         <p className="text-gray-500 mt-1">
-          Manage your buildings and create investor accounts.
+          {t("overview.subtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Buildings
+            {t("overview.stats.buildings")}
           </p>
           <p className="text-2xl font-extrabold text-gray-900">3</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Active projects
+            {t("overview.stats.activeProjects")}
           </p>
           <p className="text-2xl font-extrabold text-[#134e4a]">2</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Completed
+            {t("overview.stats.completed")}
           </p>
           <p className="text-2xl font-extrabold text-emerald-600">1</p>
         </div>
         <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-            Investor accounts
+            {t("overview.stats.investors")}
           </p>
           <p className="text-2xl font-extrabold text-gray-900">44</p>
         </div>

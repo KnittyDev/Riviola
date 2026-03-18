@@ -965,5 +965,132 @@
     "errorNotChecked": "Lütfen sözleşmeyi okuyup onay kutusunu işaretleyin.",
     "successToast": "Sözleşme başarıyla kabul edildi.",
     "errorToast": "Sözleşme durumu güncellenemedi."
+  },
+  "Demo": {
+    "notice": "Personel paneli demosu — veriler yalnızca görüntüleme amaçlıdır",
+    "label": "Demo",
+    "companyName": "Örnek İnşaat (Demo)",
+    "nav": {
+      "overview": "Genel Bakış",
+      "buildings": "Binalar",
+      "investors": "Yatırımcılar",
+      "requests": "Talepler",
+      "dues": "Aidat Ödemeleri",
+      "subscription": "Abonelik"
+    },
+    "backToLanding": "Ana sayfaya dön",
+    "staff": {
+      "actions": {
+        "addPhoto": {
+          "title": "Haftalık fotoğraf ekle",
+          "description": "Projeler için haftalık ilerleme fotoğrafları yükleyin."
+        },
+        "createAccount": {
+          "title": "Yatırımcı hesabı oluştur",
+          "description": "Yatırımcılar için giriş hesapları oluşturun."
+        }
+      },
+      "overview": {
+        "title": "Genel Bakış",
+        "subtitle": "Binalarınızı yönetin ve yatırımcı hesapları oluşturun.",
+        "stats": {
+          "buildings": "Binalar",
+          "activeProjects": "Aktif projeler",
+          "completed": "Tamamlanan",
+          "investors": "Yatırımcı hesapları"
+        }
+      }
+    },
+    "investors": {
+      "title": "Yatırımcılar",
+      "create": "Yatırımcı hesabı oluştur"
+    },
+    "requests": {
+      "title": "Yatırımcı talepleri",
+      "subtitle": "Saha turları, bilgi alma, abonelik bağlantıları (su, elektrik, gaz) ve yatırımcılardan gelen diğer talepler.",
+      "status": {
+        "all": "Hepsi",
+        "Pending": "Beklemede",
+        "In progress": "Devam Ediyor",
+        "Done": "Tamamlandı",
+        "Cancelled": "İptal Edildi"
+      },
+      "types": {
+        "all": "Tüm türler",
+        "Site tour": "Saha turu",
+        "Information": "Bilgi alma",
+        "Water connection": "Su bağlantısı",
+        "Electricity connection": "Elektrik bağlantısı",
+        "Gas connection": "Gaz bağlantısı",
+        "Handover inspection": "Teslimat denetimi",
+        "Document request": "Belge talebi",
+        "Maintenance request": "Bakım talebi",
+        "Repair request": "Onarım talebi"
+      },
+      "empty": "Filtrelere uygun talep bulunamadı.",
+      "requestedOn": "{date} tarihinde talep edildi",
+      "viewBuilding": "Binayı görüntüle"
+    },
+    "buildings": {
+      "title": "Binalar",
+      "addPhoto": "Haftalık fotoğraf ekle",
+      "units": "{count} ünite",
+      "see": "Gör",
+      "edit": "Düzenle",
+      "status": {
+        "Planned": "Planlanan",
+        "In progress": "Devam Ediyor",
+        "At risk": "Risk Altında",
+        "On hold": "Askıda",
+        "Completed": "Tamamlandı",
+        "Cancelled": "İptal Edildi"
+      },
+      "editPage": {
+        "back": "Binaya geri dön",
+        "title": "Binayı düzenle",
+        "subtitle": "Bina detaylarını güncelleyin. Değişiklikler yatırımcılar tarafından görülebilecektir."
+      },
+      "addPage": {
+        "back": "Genel bakışa dön",
+        "title": "Bina ekle",
+        "description": "Yeni bir proje veya bina kaydı oluşturun. Blok isimlerini, kat sayılarını ve üniteleri belirleyerek yatırımcıların belirli ünitelere atanmasını sağlayın.",
+        "form": {
+          "name": "Bina / Proje adı",
+          "namePlaceholder": "Örn: Avala Resort",
+          "address": "Tam adres veya detaylı konum",
+          "addressPlaceholder": "Örn: Adriyatik Kıyısı, Ana Cadde 12",
+          "status": "Durum",
+          "statusHint": "Bu bina/projenin mevcut durumunu belirleyin.",
+          "statusOptions": {
+            "Planned": { "label": "Planlanan", "helper": "Başlamaya hazırlanıyor" },
+            "In progress": { "label": "Devam Ediyor", "helper": "İnşaat devam ediyor" },
+            "At risk": { "label": "Risk Altında", "helper": "Dikkat gerektiriyor" },
+            "On hold": { "label": "Askıda", "helper": "Geçici olarak durduruldu" },
+            "Completed": { "label": "Tamamlandı", "helper": "Teslimat yapıldı" },
+            "Cancelled": { "label": "İptal Edildi", "helper": "Kalıcı olarak durduruldu" }
+          },
+          "blocks": "Blok isimleri",
+          "blocksHint": "Bu projedeki blokları veya kuleleri tanımlayın (Örn: A Blok, Doğu Kulesi). Bunlar yatırımcıları bir üniteye atarken kullanılacaktır.",
+          "newBlockPlaceholder": "Yeni blok adı",
+          "addBlock": "Blok ekle",
+          "floors": "Kat sayısı",
+          "floorsPlaceholder": "Örn: 8",
+          "units": "Ünite sayısı",
+          "unitsPlaceholder": "Örn: 24",
+          "milestones": {
+            "title": "Kilometre taşı planı",
+            "subtitle": "Gelecek kilometre taşlarını ekleyin ve hangisinin bir sonraki olduğunu işaretleyin.",
+            "add": "Kilometre taşı ekle",
+            "empty": "Henüz planlanmış kilometre taşı yok.",
+            "next": "Sıradaki",
+            "milestoneTitle": "Başlık",
+            "milestoneTitlePlaceholder": "Örn: Çatı yapısı",
+            "targetDate": "Hedef tarih ve saat"
+          },
+          "submit": "Bina ekle",
+          "cancel": "İptal"
+        }
+      }
+    }
   }
 }

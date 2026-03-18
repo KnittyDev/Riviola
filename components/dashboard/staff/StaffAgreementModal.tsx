@@ -105,7 +105,7 @@ export function StaffAgreementModal({ userId }: { userId: string }) {
           </section>
         </div>
 
-        {/* Footer ok */}
+        {/* Footer */}
         <div className="p-8 border-t border-gray-100 bg-gray-50/50">
           <label className="flex items-start gap-3 cursor-pointer group mb-6">
             <div className="relative flex items-center">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buildingBlocks, buildingFloors, getBuildingById } from "@/lib/staffBuildingsData";
 import { notFound } from "next/navigation";
 import { EditBuildingForm } from "@/app/[locale]/dashboard/staff/buildings/[id]/edit/EditBuildingForm";
+import { getTranslations } from "next-intl/server";
 
 export default async function EditBuildingPage({
   params,
@@ -12,6 +13,8 @@ export default async function EditBuildingPage({
   const building = getBuildingById(id);
   if (!building) notFound();
 
+  const t = await getTranslations("Demo.buildings.editPage");
+
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <Link
@@ -19,13 +22,13 @@ export default async function EditBuildingPage({
         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#134e4a] mb-6"
       >
         <i className="las la-arrow-left" aria-hidden />
-        Back to building
+        {t("back")}
       </Link>
       <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-        Edit building
+        {t("title")}
       </h1>
       <p className="text-gray-500 mt-1 mb-8">
-        Update building details. Changes will be visible to investors.
+        {t("subtitle")}
       </p>
       <EditBuildingForm
         id={building.id}

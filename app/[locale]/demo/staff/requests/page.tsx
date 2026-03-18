@@ -13,28 +13,23 @@ import {
   type RequestStatus,
   type InvestorRequest,
 } from "@/lib/staffRequestsData";
-
-const STATUS_TABS: { value: RequestStatus | "All"; label: string }[] = [
-  { value: "All", label: "All" },
-  { value: "Pending", label: "Pending" },
-  { value: "In progress", label: "In progress" },
-  { value: "Done", label: "Done" },
-];
-
-const STATUS_OPTIONS: RequestStatus[] = ["Pending", "In progress", "Done"];
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
+import { useTranslations, useLocale } from "next-intl";
 
 export default function StaffRequestsPage() {
+  const t = useTranslations("Demo.requests");
+  const locale = useLocale();
   const [requests, setRequests] = useState<InvestorRequest[]>([]);
   const [statusFilter, setStatusFilter] = useState<RequestStatus | "All">("All");
   const [typeFilter, setTypeFilter] = useState<string>("All");
+
+  const STATUS_TABS: { value: RequestStatus | "All"; label: string }[] = [
+    { value: "All", label: t("status.all") },
+    { value: "Pending", label: t("status.Pending") },
+    { value: "In progress", label: t("status.In progress") },
+    { value: "Done", label: t("status.Done") },
+  ];
+
+  const STATUS_OPTIONS: RequestStatus[] = ["Pending", "In progress", "Done"];
 
   useEffect(() => {
     setRequests(getAllRequests());
@@ -51,14 +46,22 @@ export default function StaffRequestsPage() {
     setRequests(getAllRequests());
   }
 
+  function formatDate(dateStr: string) {
+    return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Investor requests
+          {t("title")}
         </h1>
         <p className="text-gray-500 mt-1">
-          Site tours, information, utility connections (water, electricity, gas) and other requests from investors.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -84,10 +87,10 @@ export default function StaffRequestsPage() {
           onChange={(e) => setTypeFilter(e.target.value)}
           className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
         >
-          <option value="All">All types</option>
+          <option value="All">{t("types.all")}</option>
           {REQUEST_TYPES.map((type) => (
             <option key={type} value={type}>
-              {type}
+              {t(`types.${type}`)}
             </option>
           ))}
         </select>
@@ -97,7 +100,7 @@ export default function StaffRequestsPage() {
         {filtered.length === 0 ? (
           <div className="p-12 text-center">
             <i className="las la-inbox text-4xl text-gray-300 mb-4" aria-hidden />
-            <p className="text-gray-500 font-medium">No requests match the filters.</p>
+            <p className="text-gray-500 font-medium">{t("empty")}</p>
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
@@ -114,7 +117,7 @@ export default function StaffRequestsPage() {
                       <i className={`las ${requestTypeIcons[req.type]} text-lg`} aria-hidden />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-gray-900">{req.type}</p>
+                      <p className="font-bold text-gray-900">{t(`types.${req.type}`)}</p>
                       <p className="text-sm text-gray-500 mt-0.5">
                         {req.investorName} · {req.buildingName}
                       </p>
@@ -122,7 +125,7 @@ export default function StaffRequestsPage() {
                         <p className="text-xs text-gray-400 mt-1 line-clamp-1">{req.note}</p>
                       )}
                       <p className="text-xs text-gray-400 mt-1">
-                        Requested {formatDate(req.requestedAt)}
+                        {t("requestedOn", { date: formatDate(req.requestedAt) })}
                       </p>
                     </div>
                   </div>
@@ -140,7 +143,7 @@ export default function StaffRequestsPage() {
                     >
                       {STATUS_OPTIONS.map((s) => (
                         <option key={s} value={s}>
-                          {s}
+                          {t(`status.${s}`)}
                         </option>
                       ))}
                     </select>
@@ -148,7 +151,7 @@ export default function StaffRequestsPage() {
                       href={`/demo/staff/buildings/${req.buildingId}`}
                       className="text-sm font-semibold text-[#134e4a] hover:text-[#115e59]"
                     >
-                      View building
+                      {t("viewBuilding")}
                     </Link>
                   </div>
                 </div>

@@ -1,19 +1,9 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const BASE = "/demo/staff";
-const companyName = "Example Construction (Demo)";
-
-const navItems = [
-  { href: `${BASE}`, label: "Overview", icon: "las la-th-large" },
-  { href: `${BASE}/buildings`, label: "Buildings", icon: "las la-building" },
-  { href: `${BASE}/investors`, label: "Investors", icon: "las la-user-friends" },
-  { href: `${BASE}/requests`, label: "Requests", icon: "las la-tasks" },
-  { href: `${BASE}/aidat-payments`, label: "Dues Payments", icon: "las la-receipt" },
-  { href: `${BASE}/subscription`, label: "Subscription", icon: "las la-credit-card" },
-];
 
 interface DemoStaffSidebarProps {
   open?: boolean;
@@ -22,6 +12,16 @@ interface DemoStaffSidebarProps {
 
 export function DemoStaffSidebar({ open = false, onClose }: DemoStaffSidebarProps) {
   const pathname = usePathname();
+  const t = useTranslations("Demo");
+
+  const navItems = [
+    { href: `${BASE}`, label: t("nav.overview"), icon: "las la-th-large" },
+    { href: `${BASE}/buildings`, label: t("nav.buildings"), icon: "las la-building" },
+    { href: `${BASE}/investors`, label: t("nav.investors"), icon: "las la-user-friends" },
+    { href: `${BASE}/requests`, label: t("nav.requests"), icon: "las la-tasks" },
+    { href: `${BASE}/aidat-payments`, label: t("nav.dues"), icon: "las la-receipt" },
+    { href: `${BASE}/subscription`, label: t("nav.subscription"), icon: "las la-credit-card" },
+  ];
 
   return (
     <>
@@ -43,9 +43,9 @@ export function DemoStaffSidebar({ open = false, onClose }: DemoStaffSidebarProp
             </div>
             <div>
               <h1 className="text-gray-900 text-base font-bold leading-tight">
-                {companyName}
+                {t("companyName")}
               </h1>
-              <p className="text-gray-500 text-xs font-medium">Demo</p>
+              <p className="text-gray-500 text-xs font-medium">{t("label")}</p>
             </div>
           </Link>
           <button
@@ -79,7 +79,7 @@ export function DemoStaffSidebar({ open = false, onClose }: DemoStaffSidebarProp
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-semibold transition-colors"
           >
             <i className="las la-arrow-left text-lg" aria-hidden />
-            Back to landing
+            {t("backToLanding")}
           </Link>
         </div>
       </aside>

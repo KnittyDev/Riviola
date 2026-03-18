@@ -964,5 +964,132 @@
     "errorNotChecked": "Please read and check the acceptance box.",
     "successToast": "Agreement accepted successfully.",
     "errorToast": "Failed to update agreement status."
+  },
+  "Demo": {
+    "notice": "Staff panel demo — data is for display only",
+    "label": "Demo",
+    "companyName": "Example Construction (Demo)",
+    "nav": {
+      "overview": "Overview",
+      "buildings": "Buildings",
+      "investors": "Investors",
+      "requests": "Requests",
+      "dues": "Dues Payments",
+      "subscription": "Subscription"
+    },
+    "backToLanding": "Back to landing",
+    "staff": {
+      "actions": {
+        "addPhoto": {
+          "title": "Add weekly photo",
+          "description": "Upload weekly progress photos for projects."
+        },
+        "createAccount": {
+          "title": "Create investor account",
+          "description": "Create login accounts for investors."
+        }
+      },
+      "overview": {
+        "title": "Overview",
+        "subtitle": "Manage your buildings and create investor accounts.",
+        "stats": {
+          "buildings": "Buildings",
+          "activeProjects": "Active projects",
+          "completed": "Completed",
+          "investors": "Investor accounts"
+        }
+      }
+    },
+    "investors": {
+      "title": "Investors",
+      "create": "Create investor account"
+    },
+    "requests": {
+      "title": "Investor requests",
+      "subtitle": "Site tours, information, utility connections (water, electricity, gas) and other requests from investors.",
+      "status": {
+        "all": "All",
+        "Pending": "Pending",
+        "In progress": "In progress",
+        "Done": "Done",
+        "Cancelled": "Cancelled"
+      },
+      "types": {
+        "all": "All types",
+        "Site tour": "Site tour",
+        "Information": "Information",
+        "Water connection": "Water connection",
+        "Electricity connection": "Electricity connection",
+        "Gas connection": "Gas connection",
+        "Handover inspection": "Handover inspection",
+        "Document request": "Document request",
+        "Maintenance request": "Maintenance request",
+        "Repair request": "Repair request"
+      },
+      "empty": "No requests match the filters.",
+      "requestedOn": "Requested {date}",
+      "viewBuilding": "View building"
+    },
+    "buildings": {
+      "title": "Buildings",
+      "addPhoto": "Add weekly photo",
+      "units": "{count} units",
+      "see": "See",
+      "edit": "Edit",
+      "status": {
+        "Planned": "Planned",
+        "In progress": "In progress",
+        "At risk": "At risk",
+        "On hold": "On hold",
+        "Completed": "Completed",
+        "Cancelled": "Cancelled"
+      },
+      "editPage": {
+        "back": "Back to building",
+        "title": "Edit building",
+        "subtitle": "Update building details. Changes will be visible to investors."
+      },
+      "addPage": {
+        "back": "Back to overview",
+        "title": "Add building",
+        "description": "Create a new project or building record. Set block names, floors and units so investors can be assigned to specific units.",
+        "form": {
+          "name": "Building / project name",
+          "namePlaceholder": "e.g. Avala Resort",
+          "address": "Full address or detailed location",
+          "addressPlaceholder": "e.g. Adriatic Coast, Main Street 12",
+          "status": "Status",
+          "statusHint": "Set the current state of this building/project.",
+          "statusOptions": {
+            "Planned": { "label": "Planned", "helper": "Preparing to start" },
+            "In progress": { "label": "In progress", "helper": "Construction ongoing" },
+            "At risk": { "label": "At risk", "helper": "Needs attention" },
+            "On hold": { "label": "On hold", "helper": "Paused temporarily" },
+            "Completed": { "label": "Completed", "helper": "Handover done" },
+            "Cancelled": { "label": "Cancelled", "helper": "Stopped permanently" }
+          },
+          "blocks": "Block names",
+          "blocksHint": "Define the blocks or towers in this project (e.g. Block A, Tower East). These will be used when assigning investors to a unit.",
+          "newBlockPlaceholder": "New block name",
+          "addBlock": "Add block",
+          "floors": "Number of floors",
+          "floorsPlaceholder": "e.g. 8",
+          "units": "Number of units",
+          "unitsPlaceholder": "e.g. 24",
+          "milestones": {
+            "title": "Milestone plan",
+            "subtitle": "Add upcoming milestones and mark which one is next.",
+            "add": "Add milestone",
+            "empty": "No planned milestones yet.",
+            "next": "Next",
+            "milestoneTitle": "Title",
+            "milestoneTitlePlaceholder": "e.g. Roofing structure",
+            "targetDate": "Target date & time"
+          },
+          "submit": "Add building",
+          "cancel": "Cancel"
+        }
+      }
+    }
   }
 }
