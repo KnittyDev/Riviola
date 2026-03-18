@@ -10,90 +10,35 @@ import { BuildingMilestonesLog } from "@/app/[locale]/dashboard/staff/buildings/
 import type { PlannedMilestoneDb } from "@/lib/supabase/types";
 import type { ProgressMilestoneLog } from "@/lib/staffBuildingsData";
 import { getTranslations } from "next-intl/server";
-
-const PREDEFINED_GREEN_FEATURES = [
-  { label: "Solar Panels", icon: "las la-solar-panel" },
-  { label: "EV Charging Stations", icon: "las la-charging-station" },
-  { label: "Rainwater Harvesting", icon: "las la-tint" },
-  { label: "Energy Efficient Lighting", icon: "las la-lightbulb" },
-  { label: "Waste & Recycling Management", icon: "las la-recycle" },
-  { label: "Smart Home Tech", icon: "las la-home" },
-  { label: "Natural Ventilation", icon: "las la-wind" },
-  { label: "Green Roof / Sky Garden", icon: "las la-leaf" },
-  { label: "Advanced Thermal Insulation", icon: "las la-thermometer-half" },
-  { label: "Eco-friendly Materials", icon: "las la-tree" },
-  { label: "Professional Garden Design", icon: "las la-seedling" },
-  { label: "Eco-friendly Infrastructure", icon: "las la-cog" },
-  { label: "Pet Friendly Spaces", icon: "las la-paw" },
-  { label: "Secure Bicycle Parking", icon: "las la-bicycle" },
-  { label: "High-efficiency HVAC", icon: "las la-fan" },
-  { label: "Water-saving Fixtures", icon: "las la-water" },
-];
-
-function getGreenFeatureIcon(label: string) {
-  const feat = PREDEFINED_GREEN_FEATURES.find(f => f.label === label);
-  return feat?.icon || "las la-check-circle";
-}
+import { SustainabilityFeaturesClient } from "@/components/dashboard/properties/SustainabilityFeaturesClient";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80";
 
-function formatPlanDate(d: string, t: string, locale: string) {
-  const date = new Date(d + "T" + t);
-  return date.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function getCurrentAndNextLabels(planned: PlannedMilestoneDb[], currentId: string | null, fallback: string) {
+  if (planned.length === 0) return { current: null, next: null };
+  const currentIndex = planned.findIndex((m) => m.id === currentId);
+  
+  const currentObj = currentIndex !== -1 ? planned[currentIndex] : null;
+  const nextObj = currentIndex !== -1 && currentIndex < planned.length - 1 
+    ? planned[currentIndex + 1] 
+    : (currentIndex === -1 ? planned[0] : null);
+
+  return {
+    current: currentObj ? { title: currentObj.title, date: currentObj.dateTimeLocal } : null,
+    next: nextObj ? { title: nextObj.title, date: nextObj.dateTimeLocal } : null,
+  };
 }
 
-function formatLogDate(d: string, t: string, locale: string) {
-  const date = new Date(d + "T" + t);
-  return date.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function formatLogTime(t: string) {
-  return t;
-}
-
-function plannedMilestonesToLog(items: PlannedMilestoneDb[], locale: string, fallbackLabel: string): ProgressMilestoneLog[] {
-  if (!Array.isArray(items) || items.length === 0) return [];
-  return items
-    .map((m) => {
-      const label = (m.title && m.title.trim()) || fallbackLabel;
-      const dateTime = m.dateTimeLocal ? (m.dateTimeLocal.includes("T") ? m.dateTimeLocal : `${m.dateTimeLocal}T00:00:00`) : undefined;
-      const date = dateTime
-        ? new Date(dateTime).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", { month: "short", year: "numeric" })
-        : "";
-      return { id: m.id, label, date, dateTime };
-    })
-    .sort((a, b) => {
-      if (!a.dateTime || !b.dateTime) return 0;
-      return new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime();
-    });
-}
-
-function getCurrentAndNextLabels(
-  planned: PlannedMilestoneDb[],
-  currentMilestoneId: string | null,
-  fallbackLabel: string
-): { current: string | null; next: string | null } {
-  if (!Array.isArray(planned) || planned.length === 0) return { current: null, next: null };
-  const sorted = [...planned].sort((a, b) => {
-    const da = a.dateTimeLocal ? new Date(a.dateTimeLocal).getTime() : 0;
-    const db = b.dateTimeLocal ? new Date(b.dateTimeLocal).getTime() : 0;
-    return da - db;
-  });
-  const idx = currentMilestoneId ? sorted.findIndex((m) => m.id === currentMilestoneId) : -1;
-  const current = idx >= 0 ? ((sorted[idx].title && sorted[idx].title.trim()) || fallbackLabel) : null;
-  const nextItem = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
-  const next = nextItem ? ((nextItem.title && nextItem.title.trim()) || fallbackLabel) : null;
-  return { current, next };
+function plannedMilestonesToLog(planned: PlannedMilestoneDb[], locale: string, fallback: string): ProgressMilestoneLog[] {
+  return planned.map((m) => ({
+    id: m.id,
+    title: m.title || fallback,
+    label: m.title || fallback,
+    date: m.dateTimeLocal || "",
+    dateTime: m.dateTimeLocal, // Matches the formal property in BuildingMilestonesLog
+    target_date: m.dateTimeLocal,
+    status: "Upcoming" as any,
+  }));
 }
 
 export default async function PropertyDetailPage({
@@ -112,27 +57,32 @@ export default async function PropertyDetailPage({
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) notFound();
+    
     const { data: building } = await supabase
       .from("buildings")
-      .select("id, name, location, country, city, image_url, progress, status, company_id, planned_milestones, current_milestone_id, sustainability_score, sustainability_features")
+      .select("id, name, location, country, city, image_url, progress, status, company_id, planned_milestones, current_milestone_id, sustainability_score, sustainability_features, units")
       .eq("id", id)
       .single();
+      
     if (!building) notFound();
+    
     const { data: assignment } = await supabase
       .from("investor_properties")
       .select("block, unit, area_m2, delivery_period, purchase_value, purchase_currency")
       .eq("building_id", id)
       .eq("profile_id", user.id)
       .maybeSingle();
+      
     if (!assignment) notFound();
 
     const { data: company } = (building as { company_id?: string }).company_id
       ? await supabase
-        .from("companies")
-        .select("name")
-        .eq("id", (building as { company_id: string }).company_id)
-        .single()
+          .from("companies")
+          .select("name")
+          .eq("id", (building as { company_id: string }).company_id)
+          .single()
       : { data: null };
+      
     const companyName = company?.name ?? "";
 
     const { data: updatesRows } = await supabase
@@ -140,153 +90,287 @@ export default async function PropertyDetailPage({
       .select("id, week_label, date_range, description, building_weekly_update_images(storage_path, alt, sort_order)")
       .eq("building_id", id)
       .order("created_at", { ascending: false });
-    const weeklyUpdates = (updatesRows ?? []).map((u: { id: string; week_label: string | null; date_range: string; description: string; building_weekly_update_images: Array<{ storage_path: string; alt: string | null; sort_order: number }> }) => {
+      
+    const weeklyUpdates = (updatesRows ?? []).map((u: any) => {
       const images = (u.building_weekly_update_images ?? [])
-        .sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order)
-        .map((img: { storage_path: string; alt: string | null }) => {
+        .sort((a: any, b: any) => a.sort_order - b.sort_order)
+        .map((img: any) => {
           const { data: urlData } = supabase.storage.from("weekly_photos").getPublicUrl(img.storage_path);
           return { url: urlData.publicUrl, alt: img.alt ?? "" };
         });
       return { id: u.id, weekLabel: u.week_label ?? "", range: u.date_range, description: u.description ?? "", images };
     });
 
+    const planned = (building as any).planned_milestones ?? [];
+    const currentId = (building as any).current_milestone_id ?? null;
+    const { current, next } = getCurrentAndNextLabels(planned, currentId, t("milestoneFallback"));
+
+    const formatDateHuman = (dateStr: string | null) => {
+      if (!dateStr) return null;
+      try {
+        const d = new Date(dateStr);
+        const resolvedLocale = locale === "tr" ? "tr-TR" : "en-GB";
+        const datePart = d.toLocaleDateString(resolvedLocale, {
+          weekday: "long",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+        const timePart = dateStr.includes("T") ? ` • ${dateStr.split("T")[1].substring(0, 5)}` : "";
+        return `${datePart}${timePart}`;
+      } catch {
+        return dateStr;
+      }
+    };
+
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:px-8">
         <Link
           href="/dashboard/properties"
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-[#134e4a] text-sm font-medium mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-[#134e4a] text-sm font-semibold mb-6 transition-all hover:-translate-x-1"
         >
           <i className="las la-arrow-left" aria-hidden />
           {t("backToProperties")}
         </Link>
-        <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white mb-8">
-          <div className="relative h-64 md:h-80">
+
+        {/* Hero Section */}
+        <div className="relative rounded-t-[2.5rem] lg:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl shadow-gray-200/50 border border-gray-100 min-h-[300px] lg:h-[450px] group">
+          <div className="absolute inset-0">
             <Image
-              src={(building as { image_url?: string | null }).image_url || PLACEHOLDER_IMAGE}
-              alt={(building as { name: string }).name}
+              src={(building as any).image_url || PLACEHOLDER_IMAGE}
+              alt={(building as any).name}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-              <span className="inline-block px-3 py-1 bg-white/90 text-gray-900 text-xs font-bold rounded-lg uppercase tracking-wider mb-2">
-                {companyName || t("propertyBadge")}
-              </span>
-              <h1 className="text-2xl md:text-3xl font-extrabold">
-                {(building as { name: string }).name}
-              </h1>
-              <p className="text-white/90 text-sm mt-1 flex items-center gap-1">
-                <i className="las la-map-marker-alt" aria-hidden />
-                {(building as { location: string | null }).location || "—"}
-              </p>
-              <p className="text-white/90 text-sm mt-2 font-medium">
-                {t("yourUnit")} {assignment.block} · {assignment.unit}
-              </p>
-              <WeatherWidget
-                city={(building as { city?: string | null }).city ?? undefined}
-                country={(building as { country?: string | null }).country ?? undefined}
-              />
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent hidden lg:block" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:hidden" />
           </div>
-          <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100">
-            <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("progress")}</p>
-              <div className="mt-1">
-                <BuildingProgressClient progress={(building as { progress: number }).progress} />
-              </div>
-            </div>
-            {(assignment as { area_m2?: number | null })?.area_m2 != null && (assignment as { area_m2: number }).area_m2 > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("area")}</p>
-                <p className="text-gray-900 font-bold mt-1">{(assignment as { area_m2: number }).area_m2} m²</p>
-              </div>
-            )}
-            {(assignment as { delivery_period?: string | null })?.delivery_period?.trim() && (
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("delivery")}</p>
-                <p className="text-gray-900 font-bold mt-1">{(assignment as { delivery_period: string }).delivery_period}</p>
-              </div>
-            )}
+
+          <div className="absolute top-6 left-6 lg:top-8 lg:left-8 flex flex-wrap gap-2 z-20">
+            <span className="px-4 py-1.5 bg-white/95 backdrop-blur-md text-[#134e4a] text-[10px] lg:text-[11px] font-black uppercase tracking-widest rounded-full shadow-xl border border-white/20">
+              {companyName || t("propertyBadge")}
+            </span>
+            <span className="px-4 py-1.5 bg-[#134e4a]/90 backdrop-blur-md text-white text-[10px] lg:text-[11px] font-black uppercase tracking-widest rounded-full shadow-xl border border-white/20">
+              {(building as any).status}
+            </span>
           </div>
-          {(() => {
-            const planned = (building as { planned_milestones?: PlannedMilestoneDb[] }).planned_milestones ?? [];
-            const currentId = (building as { current_milestone_id?: string | null }).current_milestone_id ?? null;
-            const { current, next } = getCurrentAndNextLabels(planned, currentId, t("milestoneFallback"));
-            return (
-              <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-100 pt-4">
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("currentMilestone")}</p>
-                  <p className="text-gray-700 mt-0.5">{current ?? "—"}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("nextMilestone")}</p>
-                  <p className="text-gray-700 mt-0.5">{next ?? "—"}</p>
+
+          {/* Mobile Weather Overlay */}
+          <div className="absolute bottom-6 left-6 z-30 lg:hidden">
+            <WeatherWidget
+              city={(building as any).city ?? undefined}
+              country={(building as any).country ?? undefined}
+              mode="dark"
+            />
+          </div>
+
+          {/* Desktop Info Overlay */}
+          <div className="absolute bottom-10 left-10 right-10 z-30 hidden lg:block">
+            <div className="bg-white/95 backdrop-blur-md py-5 px-10 rounded-[2rem] shadow-2xl border border-white/20 flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl font-black text-gray-900 leading-tight">
+                  {(building as any).name}
+                </h1>
+                <p className="text-gray-500 mt-0.5 flex items-center gap-1.5 font-medium text-[13px]">
+                  <i className="las la-map-marker-alt text-[#134e4a]" aria-hidden />
+                  {(building as any).location || "—"}
+                </p>
+              </div>
+
+              <div className="w-px h-10 bg-gray-200/50 mx-4" />
+
+              <div className="flex-shrink-0">
+                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">{t("yourUnit")}</p>
+                <div className="flex items-center gap-2.5">
+                  <div className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-xl shadow-sm">
+                    <p className="text-[11px] font-black text-gray-900">{assignment.block}</p>
+                  </div>
+                  <i className="las la-angle-right text-gray-300 text-[10px]" />
+                  <div className="bg-[#134e4a] px-3 py-1 rounded-xl shadow-md">
+                    <p className="text-[11px] font-black text-white">{assignment.unit}</p>
+                  </div>
                 </div>
               </div>
-            );
-          })()}
+
+              <div className="w-px h-10 bg-gray-200/50 mx-4" />
+
+              <div className="flex-shrink-0">
+                <WeatherWidget
+                  city={(building as any).city ?? undefined}
+                  country={(building as any).country ?? undefined}
+                  mode="light"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Sustainability Dashboard */}
-        {(building as any).sustainability_score > 0 && (
-          <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 mb-6 shadow-sm">
-            <div className="flex flex-wrap items-center gap-4">
-              {/* Icon + title */}
-              <div className="flex items-center gap-2.5 shrink-0">
-                <div className="size-8 rounded-xl bg-[#134e4a] text-white flex items-center justify-center shadow-md shadow-[#134e4a]/20">
-                  <i className="las la-leaf text-base" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900 leading-tight">{t("sustainability.title")}</p>
-                  <p className="text-[11px] text-gray-500 leading-tight">{t("sustainability.subtitle")}</p>
-                </div>
-              </div>
+        {/* Mobile Info Section (Separate from Banner) */}
+        <div className="lg:hidden bg-white px-6 py-8 rounded-b-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 border-t-0 mb-12">
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 leading-tight">
+                {(building as any).name}
+              </h1>
+              <p className="text-gray-500 mt-2 flex items-center gap-1.5 font-medium">
+                <i className="las la-map-marker-alt text-[#134e4a] text-lg" aria-hidden />
+                {(building as any).location || "—"}
+              </p>
+            </div>
 
-              {/* Divider */}
-              <div className="hidden sm:block w-px h-10 bg-emerald-200 shrink-0" />
-
-              {/* Score ring */}
-              <div className="flex items-center gap-2 shrink-0">
-                <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">{t("sustainability.greenScore")}</p>
-                <div className="relative inline-flex items-center justify-center">
-                  <svg className="size-10 transform -rotate-90">
-                    <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-emerald-100" />
-                    <circle
-                      cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="4" fill="transparent"
-                      strokeDasharray={100.53}
-                      strokeDashoffset={100.53 - (100.53 * (building as any).sustainability_score) / 100}
-                      className="text-[#134e4a]"
-                    />
-                  </svg>
-                  <span className="absolute text-[11px] font-black text-[#134e4a]">{(building as any).sustainability_score}</span>
+            <div className="p-6 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">{t("yourUnit")}</p>
+              <div className="flex items-center gap-4">
+                <div className="bg-white border border-gray-200 px-4 py-2 rounded-xl shadow-sm">
+                  <p className="text-lg font-black text-gray-900">{assignment.block}</p>
+                </div>
+                <i className="las la-arrow-right text-gray-300" />
+                <div className="bg-[#134e4a] px-4 py-2 rounded-xl shadow-md shadow-[#134e4a]/10">
+                  <p className="text-lg font-black text-white">{assignment.unit}</p>
                 </div>
               </div>
-
-              {/* Eco features */}
-              {Array.isArray((building as any).sustainability_features) && (building as any).sustainability_features.length > 0 && (
-                <>
-                  <div className="hidden sm:block w-px h-10 bg-emerald-200 shrink-0" />
-                  <div className="flex flex-wrap gap-1.5 min-w-0">
-                    {(building as any).sustainability_features.map((feature: string, i: number) => (
-                      <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-emerald-100 text-emerald-800 text-[10px] font-bold shadow-sm">
-                        <i className={`${getGreenFeatureIcon(feature)} text-emerald-600 text-xs`} />
-                        {tFeatures(feature as any)}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
             </div>
           </div>
-        )}
+        </div>
 
-        <BuildingMilestonesLog
-          milestones={plannedMilestonesToLog((building as { planned_milestones?: PlannedMilestoneDb[] }).planned_milestones ?? [], locale, t("milestoneFallback"))}
-          currentMilestoneId={(building as { current_milestone_id?: string | null }).current_milestone_id ?? null}
-        />
+        {/* Stats Bar */}
+        <div className="bg-white border-t border-gray-100 p-6 lg:p-10 grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 rounded-[2rem] mb-12">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("progress")}</p>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-black text-[#134e4a] min-w-[32px]">{(building as any).progress}%</span>
+              <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden shadow-inner relative">
+                <div
+                  className="h-full bg-[#134e4a] rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${(building as any).progress}%` }}
+                />
+              </div>
+              <span className="text-[10px] font-bold text-gray-300">100%</span>
+            </div>
+          </div>
+          {assignment.area_m2 > 0 && (
+            <div className="space-y-1">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("area")}</p>
+              <div className="flex items-center gap-2">
+                <i className="las la-expand-arrows-alt text-[#134e4a] text-lg" />
+                <p className="text-xl font-black text-gray-900">{assignment.area_m2} m²</p>
+              </div>
+            </div>
+          )}
+          {assignment.purchase_value > 0 && (
+            <div className="space-y-1">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("value")}</p>
+              <div className="flex items-center gap-2">
+                <i className="las la-wallet text-[#134e4a] text-lg" />
+                <p className="text-xl font-black text-gray-900">
+                  {new Intl.NumberFormat(locale === "tr" ? "tr-TR" : "en-GB", {
+                    style: "currency",
+                    currency: assignment.purchase_currency,
+                    maximumFractionDigits: 0,
+                  }).format(assignment.purchase_value)}
+                </p>
+              </div>
+            </div>
+          )}
+          {assignment.delivery_period?.trim() && (
+            <div className="space-y-1">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("delivery")}</p>
+              <div className="flex items-center gap-2">
+                <i className="las la-truck-loading text-[#134e4a] text-lg" />
+                <p className="text-xl font-black text-gray-900">{assignment.delivery_period}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Secondary Info Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <div className="lg:col-span-2 bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                  <i className="las la-calendar-check text-[#134e4a]" />
+                  {t("plans.title")}
+                </h2>
+                <p className="text-sm text-gray-500 font-medium">Tracking the roadmap</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="p-4 rounded-2xl bg-[#134e4a]/5 border border-[#134e4a]/10 hover:shadow-md transition-shadow">
+                <p className="text-[10px] font-bold text-[#134e4a] uppercase tracking-widest">{t("currentMilestone")}</p>
+                <p className="text-sm font-black text-gray-900 mt-1">{(current as any)?.title ?? "—"}</p>
+                {(current as any)?.date && (
+                  <p className="text-xs font-semibold text-[#134e4a] mt-1 italic">
+                    {formatDateHuman((current as any).date)}
+                  </p>
+                )}
+              </div>
+              <div className="p-4 rounded-2xl bg-[#134e4a]/5 border border-[#134e4a]/10 hover:shadow-md transition-shadow">
+                <p className="text-[10px] font-bold text-[#134e4a] uppercase tracking-widest">{t("nextMilestone")}</p>
+                <p className="text-sm font-black text-gray-900 mt-1">{(next as any)?.title ?? "—"}</p>
+                {(next as any)?.date && (
+                  <p className="text-xs font-semibold text-[#134e4a] mt-1 italic">
+                    {formatDateHuman((next as any).date)}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <BuildingMilestonesLog
+              milestones={plannedMilestonesToLog(planned, locale, t("milestoneFallback"))}
+              currentMilestoneId={currentId}
+            />
+          </div>
+
+          <div className="flex flex-col gap-8">
+            {(building as any).sustainability_score > 0 && (
+              <div className="bg-[#134e4a] rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-[#134e4a]/20">
+                <div className="absolute -top-12 -right-12 size-48 bg-white/10 rounded-full blur-3xl" />
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="size-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+                    <i className="las la-leaf text-3xl" />
+                  </div>
+                  <h3 className="text-xl font-black">{t("sustainability.title")}</h3>
+                  <p className="text-white/70 text-sm mt-1 mb-8">{t("sustainability.subtitle")}</p>
+                  
+                  <div className="relative inline-flex items-center justify-center mb-8">
+                    <svg className="size-24 transform -rotate-90">
+                      <circle cx="48" cy="48" r="42" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-white/10" />
+                      <circle
+                        cx="48" cy="48" r="42" stroke="currentColor" strokeWidth="8" fill="transparent"
+                        strokeDasharray={263.89}
+                        strokeDashoffset={263.89 - (263.89 * (building as any).sustainability_score) / 100}
+                        strokeLinecap="round"
+                        className="text-white"
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center leading-none">
+                      <span className="text-3xl font-black">{(building as any).sustainability_score}</span>
+                      <span className="text-[10px] font-bold uppercase opacity-60">Score</span>
+                    </div>
+                  </div>
+
+                  <SustainabilityFeaturesClient features={(building as any).sustainability_features || []} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Photo Updates */}
         {weeklyUpdates.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="size-10 rounded-xl bg-[#134e4a] text-white flex items-center justify-center">
+                <i className="las la-camera text-xl" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black text-gray-900 tracking-tight">Weekly Progress</h2>
+                <p className="text-sm text-gray-500 font-medium">Visual site reports</p>
+              </div>
+            </div>
             <WeeklyPhotoUpdates weeklyUpdates={weeklyUpdates} />
           </div>
         )}
@@ -294,145 +378,236 @@ export default async function PropertyDetailPage({
     );
   }
 
+  // --- MOCK DATA BRANCH ---
+  if (!property) notFound();
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      {/* Back link */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:px-8">
       <Link
         href="/dashboard/properties"
-        className="inline-flex items-center gap-2 text-gray-500 hover:text-[#134e4a] text-sm font-medium mb-6 transition-colors"
+        className="inline-flex items-center gap-2 text-gray-500 hover:text-[#134e4a] text-sm font-semibold mb-6 transition-all hover:-translate-x-1"
       >
         <i className="las la-arrow-left" aria-hidden />
         {t("backToProperties")}
       </Link>
 
-      {/* Hero */}
-      <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white mb-8">
-        <div className="relative h-64 md:h-80">
+      <div className="relative rounded-t-[2.5rem] lg:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl shadow-gray-200/50 border border-gray-100 min-h-[300px] lg:h-[450px] group">
+        <div className="absolute inset-0">
           <Image
             src={property.imageSrc}
             alt={property.imageAlt}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <span className="inline-block px-3 py-1 bg-white/90 text-gray-900 text-xs font-bold rounded-lg uppercase tracking-wider mb-2">
-              {property.badge}
-            </span>
-            <h1 className="text-2xl md:text-3xl font-extrabold">
-              {property.title}
-            </h1>
-            <p className="text-white/90 text-sm mt-1 flex items-center gap-1">
-              <i className="las la-map-marker-alt" aria-hidden />
-              {property.location}
-            </p>
-            <WeatherWidget city={property.city} country={property.country} />
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent hidden lg:block" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:hidden" />
         </div>
-        <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-gray-100">
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("progress")}</p>
-            <p className="text-xl font-bold text-[#134e4a]">{property.progress}%</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("value")}</p>
-            <p className="text-xl font-bold text-gray-900">{property.value}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("area")}</p>
-            <p className="text-xl font-bold text-gray-900">{property.area}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t("delivery")}</p>
-            <p className="text-xl font-bold text-gray-900">{property.deliveryDate}</p>
+
+        <div className="absolute top-6 left-6 lg:top-8 lg:left-8 flex flex-wrap gap-2 z-20">
+          <span className="px-4 py-1.5 bg-white/95 backdrop-blur-md text-[#134e4a] text-[10px] lg:text-[11px] font-black uppercase tracking-widest rounded-full shadow-xl border border-white/20">
+            {(property as any).type || t("propertyBadge")}
+          </span>
+          <span className="px-4 py-1.5 bg-[#134e4a]/90 backdrop-blur-md text-white text-[10px] lg:text-[11px] font-black uppercase tracking-widest rounded-full shadow-xl border border-white/20">
+            {property.badge}
+          </span>
+        </div>
+
+        {/* Mobile Weather Overlay */}
+        <div className="absolute bottom-6 left-6 z-30 lg:hidden">
+          <WeatherWidget city={property.city} country={property.country} mode="dark" />
+        </div>
+
+        {/* Desktop Info Overlay */}
+        <div className="absolute bottom-10 left-10 right-10 z-30 hidden lg:block">
+          <div className="bg-white/95 backdrop-blur-md py-5 px-10 rounded-[2rem] shadow-2xl border border-white/20 flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <h1 className="text-2xl font-black text-gray-900 leading-tight">
+                {property.title}
+              </h1>
+              <p className="text-gray-500 mt-0.5 flex items-center gap-1.5 font-medium text-[13px]">
+                <i className="las la-map-marker-alt text-[#134e4a]" aria-hidden />
+                {property.location}
+              </p>
+            </div>
+
+            <div className="w-px h-10 bg-gray-200/50 mx-4" />
+
+            <div className="flex-shrink-0">
+              <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">{t("yourUnit")}</p>
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-xl shadow-sm">
+                  <p className="text-[11px] font-black text-gray-900">Unit 402</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-px h-10 bg-gray-200/50 mx-4" />
+
+            <div className="flex-shrink-0">
+              <WeatherWidget city={property.city} country={property.country} mode="light" />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Plans */}
-        <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <i className="las la-calendar-check text-[#134e4a] text-xl" aria-hidden />
-            <h2 className="text-lg font-bold text-gray-900">{t("plans.title")}</h2>
+      {/* Mobile Info Section (Separate from Banner) */}
+      <div className="lg:hidden bg-white px-6 py-8 rounded-b-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 border-t-0 mb-12">
+        <div className="space-y-8">
+          <div>
+            <h1 className="text-3xl font-black text-gray-900 leading-tight">
+              {property.title}
+            </h1>
+            <p className="text-gray-500 mt-2 flex items-center gap-1.5 font-medium">
+              <i className="las la-map-marker-alt text-[#134e4a] text-lg" aria-hidden />
+              {property.location}
+            </p>
           </div>
-          <div className="p-6">
-            <div className="relative">
-              <div className="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200" />
-              <ul className="space-y-0">
-                {property.plans.map((plan, i) => (
-                  <li key={i} className="relative flex gap-4 pb-6 last:pb-0">
-                    <div
-                      className={`relative z-10 shrink-0 mt-0.5 size-6 rounded-full flex items-center justify-center ${plan.status === "completed"
-                          ? "bg-emerald-500"
-                          : plan.status === "in-progress"
-                             ? "bg-amber-500 ring-4 ring-amber-500/20"
-                            : "bg-gray-200"
-                        }`}
-                    >
-                      {plan.status === "completed" && (
-                        <i className="las la-check text-white text-xs" aria-hidden />
-                      )}
+
+          <div className="p-6 rounded-2xl bg-gray-50 border border-gray-100">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">{t("yourUnit")}</p>
+            <div className="flex items-center gap-4">
+              <div className="bg-white border border-gray-200 px-4 py-2 rounded-xl shadow-sm">
+                <p className="text-lg font-black text-gray-900">Unit 402</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border-t border-gray-100 p-6 lg:p-10 grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 rounded-[2rem] mb-12">
+        <div className="space-y-2">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("progress")}</p>
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-black text-[#134e4a] min-w-[32px]">{property.progress}%</span>
+            <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden shadow-inner relative">
+              <div 
+                className="h-full bg-[#134e4a] rounded-full transition-all duration-1000 ease-out" 
+                style={{ width: `${property.progress}%` }} 
+              />
+            </div>
+            <span className="text-[10px] font-bold text-gray-300">100%</span>
+          </div>
+        </div>
+        <div className="space-y-1">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("area")}</p>
+          <div className="flex items-center gap-2">
+            <i className="las la-expand-arrows-alt text-[#134e4a] text-lg" />
+            <p className="text-xl font-black text-gray-900">{property.area}</p>
+          </div>
+        </div>
+        <div className="space-y-1">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("value")}</p>
+          <div className="flex items-center gap-2">
+            <i className="las la-wallet text-[#134e4a] text-lg" />
+            <p className="text-xl font-black text-gray-900">{property.value}</p>
+          </div>
+        </div>
+        <div className="space-y-1">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t("delivery")}</p>
+          <div className="flex items-center gap-2">
+            <i className="las la-truck-loading text-[#134e4a] text-lg" />
+            <p className="text-xl font-black text-gray-900">{property.deliveryDate}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <section className="lg:col-span-2 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="size-10 rounded-xl bg-[#134e4a]/10 text-[#134e4a] flex items-center justify-center">
+              <i className="las la-calendar-check text-xl" aria-hidden />
+            </div>
+            <h2 className="text-xl font-black text-gray-900 leading-tight">{t("plans.title")}</h2>
+          </div>
+          <div className="relative">
+            <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gray-100" />
+            {property.plans.map((plan: any, i: number) => {
+              const d = new Date(`${plan.date}T${plan.time || "00:00"}`);
+              const formattedDate = d.toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", { 
+                weekday: "long", 
+                day: "numeric", 
+                month: "short", 
+                year: "numeric" 
+              });
+              
+              return (
+                <div key={i} className="relative pl-12 pb-8 last:pb-0 group">
+                  <div className={`absolute left-0 top-1.5 size-[31px] rounded-full border-4 border-white shadow-sm z-10 transition-transform group-hover:scale-110 ${plan.status === "completed" ? "bg-emerald-500" : "bg-gray-200"}`} />
+                  <div>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <p className="text-[10px] font-black text-[#134e4a] uppercase tracking-widest">{formattedDate}</p>
+                      <span className="text-gray-300 hidden sm:inline">•</span>
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gray-50 border border-gray-100">
+                        <i className="las la-clock text-[10px] text-gray-400" />
+                        <p className="text-[10px] font-black text-gray-600">{plan.time || "00:00"}</p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-mono text-gray-500">
-                        {formatPlanDate(plan.date, plan.time, locale)}
-                      </p>
-                      <p className="text-sm font-bold text-gray-900 mt-0.5">
-                        {plan.title}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">{plan.description}</p>
-                      {plan.status === "in-progress" && (
-                        <span className="inline-block mt-2 px-2 py-0.5 rounded bg-amber-100 text-amber-700 text-[10px] font-bold uppercase">
-                          {t("plans.inProgress")}
-                        </span>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    <h3 className={`text-base font-black mt-1.5 ${plan.status === "completed" ? "text-gray-900" : "text-gray-400"}`}>{plan.title}</h3>
+                    {plan.description && (
+                      <p className="text-sm text-gray-500 mt-1 leading-relaxed max-w-2xl">{plan.description}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-[#134e4a] rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-[#134e4a]/20">
+          <div className="absolute -top-12 -right-12 size-48 bg-white/10 rounded-full blur-3xl" />
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <div className="size-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+              <i className="las la-leaf text-3xl" />
+            </div>
+            <h3 className="text-xl font-black">{t("sustainability.title")}</h3>
+            <p className="text-white/70 text-sm mt-1 mb-8">{t("sustainability.subtitle")}</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {["Solar Panels", "EV Charging", "Green Garden"].map((feat, i) => (
+                <span key={i} className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-[10px] font-black uppercase tracking-wider">{feat}</span>
+              ))}
             </div>
           </div>
         </section>
+      </div>
 
-        {/* Logs */}
-        <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <i className="las la-clipboard-list text-[#134e4a] text-xl" aria-hidden />
-            <h2 className="text-lg font-bold text-gray-900">{t("activityLog.title")}</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <section className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="size-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center">
+              <i className="las la-history text-xl" />
+            </div>
+            <h2 className="text-xl font-black text-gray-900 leading-tight">{t("activityLog.title")}</h2>
           </div>
-          <div className="p-6 max-h-[600px] overflow-y-auto">
-            <ul className="space-y-4">
-              {property.logs.map((log, i) => (
-                <li
-                  key={i}
-                  className="flex gap-4 pb-4 border-b border-gray-100 last:border-0 last:pb-0"
-                >
-                  <div className="shrink-0 w-16 text-right">
-                    <p className="text-[10px] font-mono text-gray-500 uppercase">
-                      {formatLogDate(log.date, log.time, locale)}
-                    </p>
-                    <p className="text-xs font-mono font-semibold text-gray-700 mt-0.5">
-                      {formatLogTime(log.time)}
-                    </p>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-600 text-[10px] font-bold uppercase mb-1">
-                      {log.category}
-                    </span>
-                    <p className="text-sm text-gray-800">{log.message}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+          <div className="space-y-4">
+            {property.logs.map((log: any, i: number) => (
+              <div key={i} className="flex gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                <div className="size-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
+                  <i className="las la-check text-[#134e4a]" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{log.date}</span>
+                  <p className="text-sm text-gray-700 leading-relaxed font-medium">{log.message}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       </div>
 
-      {/* Weekly photo updates */}
       {property.weeklyUpdates && property.weeklyUpdates.length > 0 && (
-        <WeeklyPhotoUpdates weeklyUpdates={property.weeklyUpdates} />
+        <div className="mt-12">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="size-10 rounded-xl bg-[#134e4a] text-white flex items-center justify-center">
+              <i className="las la-camera text-xl" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-gray-900 tracking-tight">Weekly Progress</h2>
+              <p className="text-sm text-gray-500 font-medium">Visual site reports</p>
+            </div>
+          </div>
+          <WeeklyPhotoUpdates weeklyUpdates={property.weeklyUpdates} />
+        </div>
       )}
     </div>
   );

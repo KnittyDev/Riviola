@@ -796,7 +796,9 @@
     },
     "activityLog": {
       "title": "Aktivite günlüğü"
-    }
+    },
+    "fullList": "Tam listeyi gör",
+    "showLess": "Daha az gör"
   },
   "RequestsPage": {
     "title": "Taleplerim",

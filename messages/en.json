@@ -795,7 +795,9 @@
     },
     "activityLog": {
       "title": "Activity log"
-    }
+    },
+    "fullList": "See full list",
+    "showLess": "Show less"
   },
   "RequestsPage": {
     "title": "My requests",
