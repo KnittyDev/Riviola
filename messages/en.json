@@ -268,6 +268,9 @@
     "saved": "Payment window saved.",
     "noBuildings": "No buildings.",
     "addBuildings": "Add buildings to your company to track dues.",
+    "searchPlaceholder": "Search by investor, block or unit...",
+    "noSearchResults": "No units match your search.",
+    "clearSearch": "Clear search",
     "ordinal": {
       "0": "th",
       "1": "st",
@@ -941,5 +944,25 @@
     "heavy_snow": "Heavy snow",
     "thunderstorm": "Thunderstorm",
     "cloudy": "Cloudy"
+  },
+  "StaffAgreementModal": {
+    "title": "Service Agreement",
+    "subtitle": "Please review and accept our professional terms of service.",
+    "section1Title": "Data Ownership & Privacy",
+    "section1Body": "The User (Contractor/Staff) owns all uploaded content (photos, documents); however, Riviola is granted the right to process and store this data to ensure system functionality and service delivery.",
+    "section2Title": "Liability Limitation",
+    "section2Body": "Riviola is strictly an information-sharing platform. The User is solely responsible for the accuracy of all data entered into the system. Riviola remains neutral in disputes between Developers and Investors and cannot be held liable for discrepancies.",
+    "section3Title": "The SaaS License",
+    "section3Body": "This is a Software as a Service (SaaS). Ownership of the software, its source code, design, and intellectual property belongs exclusively to Riviola. No ownership rights are transferred to the User.",
+    "section4Title": "Payment & Suspension",
+    "section4Body": "Continuous access is contingent upon timely payment. In the event of a payment delay exceeding seven (7) business days, system access (including Investor Panels) will be automatically suspended until the account is settled.",
+    "section5Title": "Independent Contractor Status",
+    "section5Body": "Using Riviola does not create an employer-employee relationship, partnership, or joint venture between the User and Riviola. The User operates as an independent professional.",
+    "checkboxLabel": "I have read, understood, and accept the Riviola Professional Service Agreement.",
+    "confirmButton": "Confirm & Access Dashboard",
+    "processing": "Processing...",
+    "errorNotChecked": "Please read and check the acceptance box.",
+    "successToast": "Agreement accepted successfully.",
+    "errorToast": "Failed to update agreement status."
   }
 }

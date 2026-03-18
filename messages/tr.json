@@ -270,6 +270,9 @@
     "saved": "Ödeme aralığı kaydedildi.",
     "noBuildings": "Bina bulunamadı.",
     "addBuildings": "Aidat takibi için şirketinize bina ekleyin.",
+    "searchPlaceholder": "Yatırımcı adı, blok veya ünite ile ara...",
+    "noSearchResults": "Aramanıza uygun ünite bulunamadı.",
+    "clearSearch": "Aramayı temizle",
     "ordinal": {
       "0": ".",
       "1": ".",
@@ -942,5 +945,25 @@
     "heavy_snow": "Yoğun kar",
     "thunderstorm": "Gök gürültülü fırtına",
     "cloudy": "Bulutlu"
+  },
+  "StaffAgreementModal": {
+    "title": "Hizmet Sözleşmesi",
+    "subtitle": "Lütfen profesyonel hizmet şartlarımızı inceleyin ve kabul edin.",
+    "section1Title": "Veri Sahipliği & Gizlilik",
+    "section1Body": "Kullanıcı (Yüklenici/Personel), yüklenen tüm içeriklerin (fotoğraflar, belgeler) sahibidir; ancak Riviola, sistem işlevselliğini ve hizmet sunumunu sağlamak amacıyla bu verileri işleme ve depolama hakkına sahiptir.",
+    "section2Title": "Sorumluluk Sınırlaması",
+    "section2Body": "Riviola yalnızca bilgi paylaşımına yönelik bir platformdur. Sisteme girilen tüm verilerin doğruluğundan yalnızca Kullanıcı sorumludur. Riviola, Geliştiriciler ile Yatırımcılar arasındaki anlaşmazlıklarda tarafsız kalır ve tutarsızlıklardan sorumlu tutulamaz.",
+    "section3Title": "SaaS Lisansı",
+    "section3Body": "Bu uygulama bir Hizmet Olarak Yazılım (SaaS) çözümüdür. Yazılımın, kaynak kodunun, tasarımının ve fikri mülkiyetin sahipliği yalnızca Riviola'ya aittir. Kullanıcıya hiçbir mülkiyet hakkı devredilmez.",
+    "section4Title": "Ödeme & Askıya Alma",
+    "section4Body": "Sürekli erişim, ödemelerin zamanında yapılmasına bağlıdır. Yedi (7) iş gününü aşan ödeme gecikmelerinde, hesap kapatılana kadar sistem erişimi (Yatırımcı Panelleri dahil) otomatik olarak askıya alınacaktır.",
+    "section5Title": "Bağımsız Yüklenici Statüsü",
+    "section5Body": "Riviola'nın kullanımı, Kullanıcı ile Riviola arasında işveren-çalışan ilişkisi, ortaklık veya iş ortaklığı oluşturmaz. Kullanıcı bağımsız bir profesyonel olarak faaliyet gösterir.",
+    "checkboxLabel": "Riviola Profesyonel Hizmet Sözleşmesi'ni okudum, anladım ve kabul ediyorum.",
+    "confirmButton": "Onayla & Panele Geç",
+    "processing": "İşleniyor...",
+    "errorNotChecked": "Lütfen sözleşmeyi okuyup onay kutusunu işaretleyin.",
+    "successToast": "Sözleşme başarıyla kabul edildi.",
+    "errorToast": "Sözleşme durumu güncellenemedi."
   }
 }

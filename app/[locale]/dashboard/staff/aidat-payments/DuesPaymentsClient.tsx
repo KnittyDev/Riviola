@@ -107,6 +107,7 @@ export function DuesPaymentsClient({
   );
   const [savingSettings, setSavingSettings] = useState(false);
   const [togglingKey, setTogglingKey] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   function addPricingTier() {
     setAreaPricing((prev) => [...prev, { min: "", max: "", amount: "", id: Date.now() }]);
@@ -195,13 +196,23 @@ export function DuesPaymentsClient({
     return !!paidByPeriod[period]?.[unitId]?.paid_at;
   }
 
+  const filteredUnits = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return units;
+    return units.filter((u) =>
+      (u.full_name ?? "").toLowerCase().includes(q) ||
+      (u.block ?? "").toLowerCase().includes(q) ||
+      (u.unit ?? "").toLowerCase().includes(q)
+    );
+  }, [units, search]);
+
   const hasAnyOverdue = useMemo(() => {
     const endDay = settings?.payment_window_end_day;
     if (!endDay) return false;
-    return units.some(u => 
+    return filteredUnits.some(u =>
       periods.some(p => isOverdue(p, isPaid(u.id, p), endDay))
     );
-  }, [units, periods, settings, paidByPeriod]);
+  }, [filteredUnits, periods, settings, paidByPeriod]);
 
   function getExpectedDues(unit: UnitForDues): string {
     if (!settings) return "—";
@@ -474,10 +485,43 @@ export function DuesPaymentsClient({
             )}
           </div>
 
+          {/* Search bar */}
+          <div className="mb-4 relative">
+            <i className="las la-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="w-full sm:max-w-sm pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none shadow-sm transition"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <i className="las la-times text-lg" />
+              </button>
+            )}
+          </div>
+
           {units.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
               <p className="text-gray-500 font-medium">{t("noUnits")}</p>
               <p className="text-sm text-gray-400 mt-1">{t("assignInvestors")}</p>
+            </div>
+          ) : filteredUnits.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
+              <div className="size-12 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-3">
+                <i className="las la-search text-2xl" />
+              </div>
+              <p className="text-gray-500 font-medium">{t("noSearchResults")}</p>
+              <button
+                onClick={() => setSearch("")}
+                className="mt-3 text-sm font-semibold text-[#134e4a] hover:underline"
+              >
+                {t("clearSearch")}
+              </button>
             </div>
           ) : (
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
@@ -501,7 +545,7 @@ export function DuesPaymentsClient({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {units.map((u) => (
+                    {filteredUnits.map((u) => (
                       <tr key={u.id} className="hover:bg-gray-50/80">
                         <td className="px-4 py-3 text-sm font-medium text-gray-900">{u.block}</td>
                         <td className="px-4 py-3 text-sm font-medium text-gray-900">{u.unit}</td>

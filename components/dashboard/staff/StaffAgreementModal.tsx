@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 
 export function StaffAgreementModal({ userId }: { userId: string }) {
+  const t = useTranslations("StaffAgreementModal");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [accepted, setAccepted] = useState(false);
 
   const handleAccept = async () => {
     if (!accepted) {
-      toast.error("Please read and check the acceptance box.");
+      toast.error(t("errorNotChecked"));
       return;
     }
 
@@ -25,12 +27,12 @@ export function StaffAgreementModal({ userId }: { userId: string }) {
         .eq("id", userId);
 
       if (error) throw error;
-      
-      toast.success("Agreement accepted successfully.");
+
+      toast.success(t("successToast"));
       router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update agreement status.");
+      toast.error(t("errorToast"));
     } finally {
       setLoading(false);
     }
@@ -45,8 +47,8 @@ export function StaffAgreementModal({ userId }: { userId: string }) {
             <i className="las la-file-contract text-2xl" />
           </div>
           <div>
-            <h2 className="text-xl font-extrabold text-[#134e4a]">Service Agreement</h2>
-            <p className="text-xs text-gray-500 font-medium">Please review and accept our professional terms of service.</p>
+            <h2 className="text-xl font-extrabold text-[#134e4a]">{t("title")}</h2>
+            <p className="text-xs text-gray-500 font-medium">{t("subtitle")}</p>
           </div>
         </div>
 
@@ -55,50 +57,50 @@ export function StaffAgreementModal({ userId }: { userId: string }) {
           <section className="space-y-2">
             <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <span className="size-5 rounded bg-teal-100 text-teal-700 text-[10px] flex items-center justify-center">01</span>
-              Data Ownership & Privacy
+              {t("section1Title")}
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed italic border-l-2 border-teal-100 pl-4">
-              The User (Contractor/Staff) owns all uploaded content (photos, documents); however, Riviola is granted the right to process and store this data to ensure system functionality and service delivery.
+              {t("section1Body")}
             </p>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <span className="size-5 rounded bg-teal-100 text-teal-700 text-[10px] flex items-center justify-center">02</span>
-              Liability Limitation
+              {t("section2Title")}
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed italic border-l-2 border-teal-100 pl-4">
-              Riviola is strictly an information-sharing platform. The User is solely responsible for the accuracy of all data entered into the system. Riviola remains neutral in disputes between Developers and Investors and cannot be held liable for discrepancies.
+              {t("section2Body")}
             </p>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <span className="size-5 rounded bg-teal-100 text-teal-700 text-[10px] flex items-center justify-center">03</span>
-              The SaaS License
+              {t("section3Title")}
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed italic border-l-2 border-teal-100 pl-4">
-              This is a Software as a Service (SaaS). Ownership of the software, its source code, design, and intellectual property belongs exclusively to Riviola. No ownership rights are transferred to the User.
+              {t("section3Body")}
             </p>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <span className="size-5 rounded bg-teal-100 text-teal-700 text-[10px] flex items-center justify-center">04</span>
-              Payment & Suspension
+              {t("section4Title")}
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed italic border-l-2 border-teal-100 pl-4">
-              Continuous access is contingent upon timely payment. In the event of a payment delay exceeding seven (7) business days, system access (including Investor Panels) will be automatically suspended until the account is settled.
+              {t("section4Body")}
             </p>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <span className="size-5 rounded bg-teal-100 text-teal-700 text-[10px] flex items-center justify-center">05</span>
-              Independent Contractor Status
+              {t("section5Title")}
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed italic border-l-2 border-teal-100 pl-4">
-              Using Riviola does not create an employer-employee relationship, partnership, or joint venture between the User and Riviola. The User operates as an independent professional.
+              {t("section5Body")}
             </p>
           </section>
         </div>
@@ -117,7 +119,7 @@ export function StaffAgreementModal({ userId }: { userId: string }) {
               <i className="las la-check absolute text-[10px] text-white opacity-0 peer-checked:opacity-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity" />
             </div>
             <span className="text-sm text-gray-600 font-medium select-none">
-              I have read, understood, and accept the Riviola Professional Service Agreement.
+              {t("checkboxLabel")}
             </span>
           </label>
 
@@ -128,10 +130,10 @@ export function StaffAgreementModal({ userId }: { userId: string }) {
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                Processing... <i className="las la-spinner animate-spin" />
+                {t("processing")} <i className="las la-spinner animate-spin" />
               </span>
             ) : (
-              "Confirm & Access Dashboard"
+              t("confirmButton")
             )}
           </button>
         </div>
