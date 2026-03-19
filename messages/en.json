@@ -791,7 +791,12 @@
     },
     "plans": {
       "title": "Plans & schedule",
+      "subtitle": "Tracking the roadmap",
       "inProgress": "In progress"
+    },
+    "weeklyPhotos": {
+      "title": "Weekly Progress",
+      "subtitle": "Visual site reports"
     },
     "activityLog": {
       "title": "Activity log"
@@ -1093,5 +1098,147 @@
         }
       }
     }
+  },
+  "Onboarding": {
+    "exit": "Exit",
+    "stepOf": "Step {step} of {total}",
+    "continue": "Continue",
+    "back": "Back",
+    "welcome": "Welcome to Riviola",
+    "getStarted": "Get Started",
+    "transition": "Let's move on to the next step.",
+    "step1": {
+      "title": "What will you use Riviola for?",
+      "subtitle": "You can select more than one option.",
+      "useCases": {
+        "property-management": {
+          "label": "Property management",
+          "desc": "Manage buildings, units, and tenant occupancy."
+        },
+        "dues-collection": {
+          "label": "Dues & payments",
+          "desc": "Track aidat payments and automated invoicing."
+        },
+        "investor-relations": {
+          "label": "Investor relations",
+          "desc": "Keep stakeholders updated with clear reports."
+        },
+        "maintenance-requests": {
+          "label": "Maintenance requests",
+          "desc": "Collect and track staff tasks and requests."
+        },
+        "weekly-updates": {
+          "label": "Weekly photo updates",
+          "desc": "Document and share project progress visually."
+        },
+        "financial-reporting": {
+          "label": "Financial reporting",
+          "desc": "Monitor cashflow and installment payments."
+        }
+      }
+    },
+    "step2": {
+      "title": "Brief project details",
+      "subtitle": "Five fields — that is all we need to tailor your experience.",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "e.g. John Doe",
+      "companyName": "Company name",
+      "companyNamePlaceholder": "e.g. Riviola Ltd.",
+      "location": "Location",
+      "locationPlaceholder": "City, Country",
+      "email": "Contact email",
+      "emailPlaceholder": "you@company.com",
+      "phone": "Phone"
+    },
+    "step3": {
+      "title": "The Riviola experience",
+      "subtitle": "Book a private demo and we will tailor the session to your project.",
+      "cardTitle": "Book a private demo",
+      "cardBadge": "Recommended",
+      "cardDesc": "Reserve a dedicated session with a Riviola specialist. We will tailor the demo to your project — live, personal, and precise.",
+      "chooseTime": "Choose time"
+    },
+    "step4": {
+      "title": "Select a date & time",
+      "subtitle": "Pick a slot for your personalized demo session.",
+      "pickDayFirst": "Pick a day first",
+      "selectDate": "Select a date",
+      "timezone": "Timezone",
+      "confirmBooking": "Confirm Booking",
+      "submitting": "Submitting..."
+    },
+    "loading": {
+      "messages": [
+        "Analysing your project details...",
+        "Configuring your personalised demo...",
+        "Setting up your custom dashboard...",
+        "Almost there — putting the final touches..."
+      ],
+      "tagline": "Your exclusive experience is being crafted just for you."
+    },
+    "success": {
+      "title": "You're all set!",
+      "body": "Your personalised experience is ready. Dive in now to explore the demo dashboard and see Riviola in action.",
+      "cta": "Explore Demo Dashboard"
+    }
+  },
+  "Privacy": {
+    "backToHome": "Back to home",
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated:",
+    "s1title": "1. Introduction",
+    "s1body": "Riviola (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our construction and investment management platform and related services.",
+    "s2title": "2. Information we collect",
+    "s2body": "We may collect information that you provide directly (e.g. name, email, company details, payment information) and information collected automatically (e.g. device data, logs, cookies). We use this to operate the platform, process payments, and improve our services.",
+    "s3title": "3. How we use your information",
+    "s3body": "We use the information we collect to provide, maintain, and improve our services; to communicate with you; to process transactions; and to comply with legal obligations. We do not sell your personal data to third parties.",
+    "s4title": "4. Data retention and security",
+    "s4body": "We retain your data only as long as necessary for the purposes described in this policy or as required by law. We implement appropriate technical and organisational measures to protect your personal data against unauthorised access, alteration, or destruction.",
+    "s5title": "5. Your rights",
+    "s5body": "Depending on your location, you may have the right to access, correct, delete, or port your personal data, and to object to or restrict certain processing. You may also have the right to lodge a complaint with a supervisory authority. To exercise these rights, contact us at the details provided below.",
+    "s6title": "6. Contact",
+    "s6body": "For questions about this Privacy Policy or our data practices, please contact us at privacy@riviola.com or at the address indicated on our website."
+  },
+  "Terms": {
+    "backToHome": "Back to home",
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated:",
+    "s1title": "1. Agreement to terms",
+    "s1body": "By accessing or using Riviola's platform and services, you agree to be bound by these Terms of Service. If you do not agree, do not use our services. We may update these terms from time to time; continued use after changes constitutes acceptance.",
+    "s2title": "2. Description of services",
+    "s2body": "Riviola provides a construction and investment management platform for companies and investors. Services include project and building management, investor accounts, request handling, reporting, and related tools. We reserve the right to modify or discontinue features with reasonable notice where feasible.",
+    "s3title": "3. Accounts and eligibility",
+    "s3body": "You must provide accurate information when creating an account and keep it updated. You are responsible for maintaining the confidentiality of your credentials and for all activity under your account. You must be at least 18 years old and have the authority to bind your organisation if registering on its behalf.",
+    "s4title": "4. Fees and payment",
+    "s4body": "Subscription and usage fees are as set out in your plan or order. Fees are generally billed in advance (e.g. annually or monthly). Failure to pay may result in suspension or termination of access. All amounts are in the currency stated (e.g. EUR) and exclude applicable taxes unless otherwise indicated.",
+    "s5title": "5. Acceptable use",
+    "s5body": "You agree not to use the services for any unlawful purpose or in a way that could harm Riviola, other users, or third parties. You must not attempt to gain unauthorised access to systems or data, distribute malware, or abuse the platform. We may suspend or terminate accounts that violate these terms.",
+    "s6title": "6. Limitation of liability",
+    "s6body": "To the maximum extent permitted by law, Riviola and its affiliates shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the services. Our total liability shall not exceed the fees paid by you in the twelve months preceding the claim.",
+    "s7title": "7. Contact",
+    "s7body": "For questions about these Terms of Service, please contact us at legal@riviola.com or at the address provided on our website."
+  },
+  "Cookies": {
+    "backToHome": "Back to home",
+    "title": "Cookie Policy",
+    "lastUpdated": "Last updated:",
+    "s1title": "1. What are cookies",
+    "s1body": "Cookies are small text files stored on your device when you visit a website. They help the site remember your preferences, keep you signed in, and understand how you use the service. We use cookies and similar technologies in line with this policy and applicable law.",
+    "s2title": "2. Cookies we use",
+    "s2intro": "We use the following types of cookies:",
+    "s2li1bold": "Strictly necessary:",
+    "s2li1": "Required for the site to function (e.g. authentication, security). These cannot be disabled for the service to work.",
+    "s2li2bold": "Functional:",
+    "s2li2": "Remember your choices (e.g. language, region) to improve your experience.",
+    "s2li3bold": "Analytics:",
+    "s2li3": "Help us understand how visitors use our site (e.g. pages viewed, traffic) so we can improve it.",
+    "s2li4bold": "Marketing (if any):",
+    "s2li4": "Used to deliver relevant ads or measure campaign effectiveness, where we have your consent where required.",
+    "s3title": "3. How to manage cookies",
+    "s3body": "You can control and delete cookies through your browser settings. Note that blocking or deleting certain cookies may affect site functionality or your experience. For more information, see your browser's help section or visit www.aboutcookies.org.",
+    "s4title": "4. Updates",
+    "s4body": "We may update this Cookie Policy from time to time to reflect changes in our practices or legal requirements. We will post the updated version on this page and indicate the last updated date. We encourage you to review this policy periodically.",
+    "s5title": "5. Contact",
+    "s5body": "If you have questions about our use of cookies, please contact us at privacy@riviola.com or at the address provided on our website."
   }
 }

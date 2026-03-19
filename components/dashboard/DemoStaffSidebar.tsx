@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 const BASE = "/demo/staff";
 
@@ -13,6 +14,14 @@ interface DemoStaffSidebarProps {
 export function DemoStaffSidebar({ open = false, onClose }: DemoStaffSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations("Demo");
+  const [personalCompany, setPersonalCompany] = useState<string | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("riviola_demo_company");
+    if (saved) setPersonalCompany(saved);
+  }, []);
+
+  const displayName = personalCompany || t("companyName");
 
   const navItems = [
     { href: `${BASE}`, label: t("nav.overview"), icon: "las la-th-large" },
@@ -41,9 +50,9 @@ export function DemoStaffSidebar({ open = false, onClose }: DemoStaffSidebarProp
             <div className="bg-[#134e4a] rounded-lg p-2 text-white">
               <i className="las la-hard-hat text-xl" aria-hidden />
             </div>
-            <div>
-              <h1 className="text-gray-900 text-base font-bold leading-tight">
-                {t("companyName")}
+            <div className="min-w-0">
+              <h1 className="text-gray-900 text-base font-bold leading-tight truncate max-w-[140px]" title={displayName}>
+                {displayName}
               </h1>
               <p className="text-gray-500 text-xs font-medium">{t("label")}</p>
             </div>

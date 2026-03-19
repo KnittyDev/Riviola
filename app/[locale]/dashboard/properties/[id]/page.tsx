@@ -293,7 +293,7 @@ export default async function PropertyDetailPage({
                   <i className="las la-calendar-check text-[#134e4a]" />
                   {t("plans.title")}
                 </h2>
-                <p className="text-sm text-gray-500 font-medium">Tracking the roadmap</p>
+                <p className="text-sm text-gray-500 font-medium">{t("plans.subtitle")}</p>
               </div>
             </div>
 
@@ -367,8 +367,8 @@ export default async function PropertyDetailPage({
                 <i className="las la-camera text-xl" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-gray-900 tracking-tight">Weekly Progress</h2>
-                <p className="text-sm text-gray-500 font-medium">Visual site reports</p>
+                <h2 className="text-2xl font-black text-gray-900 tracking-tight">{t("weeklyPhotos.title")}</h2>
+                <p className="text-sm text-gray-500 font-medium">{t("weeklyPhotos.subtitle")}</p>
               </div>
             </div>
             <WeeklyPhotoUpdates weeklyUpdates={weeklyUpdates} />
@@ -518,7 +518,10 @@ export default async function PropertyDetailPage({
             <div className="size-10 rounded-xl bg-[#134e4a]/10 text-[#134e4a] flex items-center justify-center">
               <i className="las la-calendar-check text-xl" aria-hidden />
             </div>
-            <h2 className="text-xl font-black text-gray-900 leading-tight">{t("plans.title")}</h2>
+            <div>
+              <h2 className="text-xl font-black text-gray-900 leading-tight">{t("plans.title")}</h2>
+              <p className="text-sm text-gray-500 font-medium">{t("plans.subtitle")}</p>
+            </div>
           </div>
           <div className="relative">
             <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gray-100" />
@@ -602,8 +605,8 @@ export default async function PropertyDetailPage({
               <i className="las la-camera text-xl" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-gray-900 tracking-tight">Weekly Progress</h2>
-              <p className="text-sm text-gray-500 font-medium">Visual site reports</p>
+              <h2 className="text-2xl font-black text-gray-900 tracking-tight">{t("weeklyPhotos.title")}</h2>
+              <p className="text-sm text-gray-500 font-medium">{t("weeklyPhotos.subtitle")}</p>
             </div>
           </div>
           <WeeklyPhotoUpdates weeklyUpdates={property.weeklyUpdates} />

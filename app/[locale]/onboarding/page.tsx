@@ -5,53 +5,34 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "@/lib/toast";
 import { submitOnboarding } from "./actions";
 
-const USE_CASES = [
-  {
-    id: "property-management",
-    icon: "las la-building",
-    label: "Property management",
-    desc: "Manage buildings, units, and tenant occupancy.",
-  },
-  {
-    id: "dues-collection",
-    icon: "las la-receipt",
-    label: "Dues & payments",
-    desc: "Track aidat payments and automated invoicing.",
-  },
-  {
-    id: "investor-relations",
-    icon: "las la-user-friends",
-    label: "Investor relations",
-    desc: "Keep stakeholders updated with clear reports.",
-  },
-  {
-    id: "maintenance-requests",
-    icon: "las la-tools",
-    label: "Maintenance requests",
-    desc: "Collect and track staff tasks and requests.",
-  },
-  {
-    id: "weekly-updates",
-    icon: "las la-camera-retro",
-    label: "Weekly photo updates",
-    desc: "Document and share project progress visually.",
-  },
-  {
-    id: "financial-reporting",
-    icon: "las la-chart-pie",
-    label: "Financial reporting",
-    desc: "Monitor cashflow and installment payments.",
-  },
+const USE_CASE_IDS = [
+  "property-management",
+  "dues-collection",
+  "investor-relations",
+  "maintenance-requests",
+  "weekly-updates",
+  "financial-reporting",
 ] as const;
 
-type UseCaseId = (typeof USE_CASES)[number]["id"];
+const USE_CASE_ICONS: Record<string, string> = {
+  "property-management": "las la-building",
+  "dues-collection": "las la-receipt",
+  "investor-relations": "las la-user-friends",
+  "maintenance-requests": "las la-tools",
+  "weekly-updates": "las la-camera-retro",
+  "financial-reporting": "las la-chart-pie",
+};
+
+type UseCaseId = (typeof USE_CASE_IDS)[number];
 
 export default function OnboardingPage() {
-  const router = useRouter();
+  const t = useTranslations("Onboarding");
+  const locale = useLocale();
+  const resolvedLocale = locale === "tr" ? "tr-TR" : "en-GB";
   const [step, setStep] = useState<0 | 1 | 2 | 3 | 4>(0);
   const [step1Confirming, setStep1Confirming] = useState(false);
   const [useCases, setUseCases] = useState<UseCaseId[]>([]);
@@ -67,6 +48,9 @@ export default function OnboardingPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [done, setDone] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [loadingFading, setLoadingFading] = useState(false);
 
   const handleConfirm = async () => {
     if (!selectedDate || !selectedTime) return;
@@ -84,12 +68,39 @@ export default function OnboardingPage() {
         demo_time: selectedTime,
         demo_timezone: selectedTimezone,
       });
-      setDone(true);
-      toast.success("Demo request submitted successfully!");
+      // Save company name for demo personalisation
+      if (companyName.trim()) {
+        localStorage.setItem("riviola_demo_company", companyName.trim());
+      }
+
+      // Start the loading animation sequence (~40% longer = ~6s total)
+      setIsSubmitting(false);
+      setIsLoading(true);
+      setLoadingStep(0);
+
+      const STEP_DURATION = 1400; // ms per message
+      const FADE_DURATION = 300;  // ms for fade transition
+
+      [0, 1, 2, 3].forEach((idx) => {
+        setTimeout(() => {
+          setLoadingFading(true);
+          setTimeout(() => {
+            setLoadingStep(idx);
+            setLoadingFading(false);
+          }, FADE_DURATION);
+        }, idx * STEP_DURATION);
+      });
+
+      // Show success after all 4 messages + a brief pause
+      setTimeout(() => {
+        setIsLoading(false);
+        setDone(true);
+      }, 4 * STEP_DURATION + 600);
+
+      toast.success(t("success.title"));
     } catch (error) {
       console.error(error);
       toast.error("Failed to submit demo request. Please try again.");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -130,6 +141,70 @@ export default function OnboardingPage() {
   const canProceed1 = useCases.length > 0;
   const canProceed2 = fullName.trim() && companyName.trim() && location.trim() && email.trim() && phone.trim();
 
+  const loadingMessages = [
+    t("loading.messages.0"),
+    t("loading.messages.1"),
+    t("loading.messages.2"),
+    t("loading.messages.3"),
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center px-6">
+        <div className="max-w-lg w-full text-center">
+          {/* Glowing orb */}
+          <div className="relative mx-auto mb-10 size-28 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-[#134e4a]/10 animate-ping" style={{ animationDuration: '2s' }} />
+            <div className="absolute inset-2 rounded-full bg-[#134e4a]/15 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.3s' }} />
+            <div className="relative size-20 rounded-full bg-[#134e4a] flex items-center justify-center shadow-2xl shadow-[#134e4a]/40">
+              <i className="las la-magic text-3xl text-white" aria-hidden />
+            </div>
+          </div>
+
+          {/* Cycling message */}
+          <div className="h-16 flex items-center justify-center mb-4">
+            <p
+              className="text-xl font-bold text-gray-800 transition-all duration-300"
+              style={{ opacity: loadingFading ? 0 : 1, transform: loadingFading ? 'translateY(8px)' : 'translateY(0)' }}
+            >
+              {loadingMessages[loadingStep]}
+            </p>
+          </div>
+
+          <p className="text-sm text-gray-400 mb-10">{t("loading.tagline")}</p>
+
+          {/* Animated dots */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className={`rounded-full transition-all duration-500 ${
+                  i === loadingStep
+                    ? 'size-3 bg-[#134e4a]'
+                    : i < loadingStep
+                    ? 'size-2 bg-[#134e4a]/40'
+                    : 'size-2 bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full max-w-xs mx-auto h-1 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#134e4a] rounded-full transition-all"
+              style={{
+                width: `${((loadingStep + 1) / 4) * 100}%`,
+                transitionDuration: '900ms',
+                transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (done) {
     return (
       <div className="min-h-screen bg-[#f9fafb] flex items-center justify-center px-6">
@@ -138,17 +213,17 @@ export default function OnboardingPage() {
             <i className="las la-calendar-check text-4xl text-[#134e4a]" aria-hidden />
           </div>
           <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-            You&apos;re all set!
+            {t("success.title")}
           </h2>
           <p className="text-gray-500 text-base leading-relaxed mb-8">
-            Your personalised experience is ready. Dive in now to explore the demo dashboard and see Riviola in action.
+            {t("success.body")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/demo/staff"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#134e4a] text-white font-bold hover:bg-[#115e59] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#134e4a]/20"
             >
-              Explore Demo Dashboard
+              {t("success.cta")}
               <i className="las la-arrow-right" aria-hidden />
             </Link>
           </div>
@@ -192,7 +267,7 @@ export default function OnboardingPage() {
           ))}
         </div>
         <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-          Exit
+          {t("exit")}
         </Link>
       </div>
 
@@ -203,14 +278,14 @@ export default function OnboardingPage() {
         {step === 0 && (
           <div key="step0-welcome" className="w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-[280px]">
             <p className="text-center text-5xl md:text-7xl font-medium text-[#134e4a] animate-smooth-in w-full max-w-5xl">
-              Welcome to Riviola
+              {t("welcome")}
             </p>
             <button
               type="button"
               onClick={() => setStep(1)}
               className="animate-smooth-in animate-btn-pulse mt-10 flex items-center gap-2 px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors cursor-pointer"
             >
-              Get Started <i className="las la-arrow-right" aria-hidden />
+              {t("getStarted")} <i className="las la-arrow-right" aria-hidden />
             </button>
           </div>
         )}
@@ -219,14 +294,14 @@ export default function OnboardingPage() {
         {step === 1 && step1Confirming && (
           <div key="step1-transition" className="w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-[280px]">
             <p className="text-center text-5xl md:text-7xl font-medium text-[#134e4a] animate-smooth-in w-full max-w-5xl">
-              The features you selected are great. Let&apos;s move on to the next step.
+              {t("transition")}
             </p>
             <button
               type="button"
               onClick={goToStep2}
               className="animate-smooth-in animate-btn-pulse mt-10 flex items-center gap-2 px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-colors cursor-pointer"
             >
-              Continue <i className="las la-arrow-right" aria-hidden />
+              {t("continue")} <i className="las la-arrow-right" aria-hidden />
             </button>
           </div>
         )}
@@ -235,22 +310,24 @@ export default function OnboardingPage() {
         {step === 1 && !step1Confirming && (
           <div key="step1" className="max-w-2xl w-full animate-fade-in-up">
             <div className="text-center mb-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">Step 1 of 3</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">
+                {t("stepOf", { step: 1, total: 3 })}
+              </p>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                What will you use Riviola for?
+                {t("step1.title")}
               </h1>
               <p className="text-gray-500 mt-3 text-sm">
-                You can select more than one option.
+                {t("step1.subtitle")}
               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
-              {USE_CASES.map((u, idx) => {
-                const selected = useCases.includes(u.id);
+              {USE_CASE_IDS.map((id, idx) => {
+                const selected = useCases.includes(id);
                 return (
                   <button
-                    key={u.id}
+                    key={id}
                     type="button"
-                    onClick={() => toggleUseCase(u.id)}
+                    onClick={() => toggleUseCase(id)}
                     className={`relative text-left p-5 rounded-2xl border-2 transition-all duration-300 ease-out animate-fade-in-up w-full ${idx === 0 ? "delay-50" : idx === 1 ? "delay-100" : idx === 2 ? "delay-150" : idx === 3 ? "delay-200" : idx === 4 ? "delay-250" : "delay-300"
                       } ${selected
                         ? "border-[#134e4a] bg-[#134e4a]/5 shadow-md shadow-[#134e4a]/10"
@@ -259,13 +336,13 @@ export default function OnboardingPage() {
                   >
                     <div className={`size-12 rounded-xl flex items-center justify-center mb-3 transition-colors ${selected ? "bg-[#134e4a] text-white" : "bg-[#134e4a]/10 text-[#134e4a]"
                       }`}>
-                      <i className={`las ${u.icon} text-2xl`} aria-hidden />
+                      <i className={`${USE_CASE_ICONS[id]} text-2xl`} aria-hidden />
                     </div>
                     <p className={`font-bold ${selected ? "text-[#134e4a]" : "text-gray-900"}`}>
-                      {u.label}
+                      {t(`step1.useCases.${id}.label`)}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                      {u.desc}
+                      {t(`step1.useCases.${id}.desc`)}
                     </p>
                     {selected && (
                       <div className="absolute top-4 right-4 size-6 rounded-full bg-[#134e4a] flex items-center justify-center">
@@ -283,7 +360,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep1Confirming(true)}
                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               >
-                Continue <i className="las la-arrow-right" aria-hidden />
+                {t("continue")} <i className="las la-arrow-right" aria-hidden />
               </button>
             </div>
           </div>
@@ -293,70 +370,72 @@ export default function OnboardingPage() {
         {step === 2 && (
           <div key="step2" className="max-w-xl w-full animate-fade-in-up">
             <div className="text-center mb-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">Step 2 of 3</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">
+                {t("stepOf", { step: 2, total: 3 })}
+              </p>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                Brief project details
+                {t("step2.title")}
               </h1>
               <p className="text-gray-500 mt-3 text-sm">
-                Five fields — that is all we need to tailor your experience.
+                {t("step2.subtitle")}
               </p>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm space-y-5 transition-shadow duration-300 hover:shadow-md">
               <div>
                 <label htmlFor="pfull" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Full name
+                  {t("step2.fullName")}
                 </label>
                 <input
                   id="pfull"
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. John Doe"
+                  placeholder={t("step2.fullNamePlaceholder")}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
               </div>
               <div>
-                <label htmlFor="plocation" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Company name
+                <label htmlFor="pcompany" className="block text-sm font-semibold text-gray-700 mb-1">
+                  {t("step2.companyName")}
                 </label>
                 <input
                   id="pcompany"
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="e.g. Riviola Ltd."
+                  placeholder={t("step2.companyNamePlaceholder")}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
               </div>
               <div>
                 <label htmlFor="plocation" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Location
+                  {t("step2.location")}
                 </label>
                 <input
                   id="plocation"
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="City, Country"
+                  placeholder={t("step2.locationPlaceholder")}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
               </div>
               <div>
                 <label htmlFor="pemail" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Contact email
+                  {t("step2.email")}
                 </label>
                 <input
                   id="pemail"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
+                  placeholder={t("step2.emailPlaceholder")}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/15 outline-none transition-colors text-sm"
                 />
               </div>
               <div>
                 <label htmlFor="pphone" className="block text-sm font-semibold text-gray-700 mb-1">
-                  Phone
+                  {t("step2.phone")}
                 </label>
                 <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-xl [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-4 [&_.react-international-phone-input]:!py-3 [&_.react-international-phone-input]:!text-sm">
                   <PhoneInput
@@ -374,7 +453,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep(1)}
                 className="flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-[1.02]"
               >
-                <i className="las la-arrow-left" aria-hidden /> Back
+                <i className="las la-arrow-left" aria-hidden /> {t("back")}
               </button>
               <button
                 type="button"
@@ -382,7 +461,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep(3)}
                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               >
-                Continue <i className="las la-arrow-right" aria-hidden />
+                {t("continue")} <i className="las la-arrow-right" aria-hidden />
               </button>
             </div>
           </div>
@@ -392,12 +471,14 @@ export default function OnboardingPage() {
         {step === 3 && (
           <div key="step3" className="max-w-2xl w-full animate-fade-in-up">
             <div className="text-center mb-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">Step 3 of 3</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">
+                {t("stepOf", { step: 3, total: 3 })}
+              </p>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                The Riviola experience
+                {t("step3.title")}
               </h1>
               <p className="text-gray-500 mt-3 text-sm">
-                Book a private demo and we will tailor the session to your project.
+                {t("step3.subtitle")}
               </p>
             </div>
             <div className="max-w-xl mx-auto">
@@ -406,13 +487,13 @@ export default function OnboardingPage() {
                   <i className="las la-calendar-check text-2xl text-white" aria-hidden />
                 </div>
                 <p className="font-bold text-lg text-white">
-                  Book a private demo
+                  {t("step3.cardTitle")}
                 </p>
                 <p className="text-xs font-semibold mt-1 text-white/70">
-                  Recommended
+                  {t("step3.cardBadge")}
                 </p>
                 <p className="text-sm mt-3 leading-relaxed text-white/80">
-                  Reserve a dedicated session with a Riviola specialist. We will tailor the demo to your project — live, personal, and precise.
+                  {t("step3.cardDesc")}
                 </p>
               </div>
             </div>
@@ -422,14 +503,14 @@ export default function OnboardingPage() {
                 onClick={() => setStep(2)}
                 className="flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-[1.02]"
               >
-                <i className="las la-arrow-left" aria-hidden /> Back
+                <i className="las la-arrow-left" aria-hidden /> {t("back")}
               </button>
               <button
                 type="button"
                 onClick={() => setStep(4)}
                 className="flex items-center gap-2 px-7 py-3 rounded-xl bg-[#134e4a] text-white font-semibold hover:bg-[#115e59] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               >
-                Choose time <i className="las la-arrow-right" aria-hidden />
+                {t("step3.chooseTime")} <i className="las la-arrow-right" aria-hidden />
               </button>
             </div>
           </div>
@@ -439,12 +520,14 @@ export default function OnboardingPage() {
         {step === 4 && (
           <div key="step4" className="max-w-4xl w-full animate-fade-in-up">
             <div className="text-center mb-10">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">Step 4 of 4</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#134e4a] mb-3">
+                {t("stepOf", { step: 4, total: 4 })}
+              </p>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                Select a date & time
+                {t("step4.title")}
               </h1>
               <p className="text-gray-500 mt-3 text-sm">
-                Pick a slot for your personalized demo session.
+                {t("step4.subtitle")}
               </p>
             </div>
 
@@ -453,7 +536,7 @@ export default function OnboardingPage() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-bold text-gray-900 text-lg">
-                    {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                    {currentMonth.toLocaleString(resolvedLocale, { month: 'long', year: 'numeric' })}
                   </h3>
                   <div className="flex gap-2">
                     <button
@@ -472,11 +555,15 @@ export default function OnboardingPage() {
                 </div>
 
                 <div className="grid grid-cols-7 gap-1 mb-2">
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                    <div key={day} className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-wider h-8 flex items-center justify-center">
-                      {day}
-                    </div>
-                  ))}
+                  {Array.from({ length: 7 }, (_, i) => {
+                    // Generate Mon-Sun starting from Monday (day index 1..7)
+                    const d = new Date(2024, 0, 1 + i); // 1 Jan 2024 is Monday
+                    return (
+                      <div key={i} className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-wider h-8 flex items-center justify-center">
+                        {d.toLocaleDateString(resolvedLocale, { weekday: 'short' })}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="grid grid-cols-7 gap-2">
@@ -523,7 +610,7 @@ export default function OnboardingPage() {
               {/* Time Slots Column */}
               <div className="border-t lg:border-t-0 lg:border-l border-gray-100 pt-8 lg:pt-0 lg:pl-8">
                 <h3 className="font-bold text-gray-900 text-lg mb-6">
-                  {selectedDate ? selectedDate.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }) : 'Select a date'}
+                  {selectedDate ? selectedDate.toLocaleDateString(resolvedLocale, { weekday: 'long', month: 'short', day: 'numeric' }) : t("step4.selectDate")}
                 </h3>
 
                 {selectedDate ? (
@@ -545,14 +632,14 @@ export default function OnboardingPage() {
                 ) : (
                   <div className="h-40 flex flex-col items-center justify-center text-gray-400 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                     <i className="las la-calendar text-3xl mb-2" />
-                    <p className="text-xs">Pick a day first</p>
+                    <p className="text-xs">{t("step4.pickDayFirst")}</p>
                   </div>
                 )}
 
                 <div className="mt-8 space-y-4">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-                      Timezone
+                      {t("step4.timezone")}
                     </label>
                     <div className="relative">
                       <select
@@ -579,7 +666,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep(3)}
                 className="flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-gray-700"
               >
-                <i className="las la-arrow-left" /> Back
+                <i className="las la-arrow-left" /> {t("back")}
               </button>
               <button
                 type="button"
@@ -589,11 +676,11 @@ export default function OnboardingPage() {
               >
                 {isSubmitting ? (
                   <>
-                    Submitting... <i className="las la-spinner animate-spin" />
+                    {t("step4.submitting")} <i className="las la-spinner animate-spin" />
                   </>
                 ) : (
                   <>
-                    Confirm Booking <i className="las la-check" />
+                    {t("step4.confirmBooking")} <i className="las la-check" />
                   </>
                 )}
               </button>

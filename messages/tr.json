@@ -791,8 +791,13 @@
       "greenScore": "Yeşil Skor"
     },
     "plans": {
-      "title": "Planlar ve Program",
-      "inProgress": "Devam Ediyor"
+      "title": "İnşaat Süreci",
+      "subtitle": "Yol haritası takibi",
+      "inProgress": "Devam ediyor"
+    },
+    "weeklyPhotos": {
+      "title": "Haftalık İlerleme",
+      "subtitle": "Görsel saha raporları"
     },
     "activityLog": {
       "title": "Aktivite günlüğü"
@@ -1094,5 +1099,147 @@
         }
       }
     }
+  },
+  "Onboarding": {
+    "exit": "Çıkış",
+    "stepOf": "{total} adımdan {step}. adım",
+    "continue": "Devam et",
+    "back": "Geri",
+    "welcome": "Riviola'ya hoş geldiniz",
+    "getStarted": "Başla",
+    "transition": "Bir sonraki adıma geçelim.",
+    "step1": {
+      "title": "Riviola'yı ne için kullanacaksınız?",
+      "subtitle": "Birden fazla seçenek seçebilirsiniz.",
+      "useCases": {
+        "property-management": {
+          "label": "Mülk yönetimi",
+          "desc": "Binaları, üniteleri ve kira dolulukları yönetin."
+        },
+        "dues-collection": {
+          "label": "Aidat ve ödemeler",
+          "desc": "Aidat ödemelerini ve otomatik faturalandırmayı takip edin."
+        },
+        "investor-relations": {
+          "label": "Yatırımcı ilişkileri",
+          "desc": "Paydaşları net raporlarla güncel tutun."
+        },
+        "maintenance-requests": {
+          "label": "Bakım talepleri",
+          "desc": "Personel görevlerini ve taleplerini toplayıp takip edin."
+        },
+        "weekly-updates": {
+          "label": "Haftalık fotoğraf güncellemeleri",
+          "desc": "Proje ilerlemesini görsel olarak belgeleyip paylaşın."
+        },
+        "financial-reporting": {
+          "label": "Finansal raporlama",
+          "desc": "Nakit akışını ve taksit ödemelerini izleyin."
+        }
+      }
+    },
+    "step2": {
+      "title": "Kısa proje bilgileri",
+      "subtitle": "Beş alan — deneyiminizi özelleştirmek için hepsine ihtiyacımız var.",
+      "fullName": "Ad Soyad",
+      "fullNamePlaceholder": "Örn: Ahmet Yılmaz",
+      "companyName": "Şirket adı",
+      "companyNamePlaceholder": "Örn: Riviola Ltd.",
+      "location": "Konum",
+      "locationPlaceholder": "Şehir, Ülke",
+      "email": "E-posta adresi",
+      "emailPlaceholder": "siz@sirket.com",
+      "phone": "Telefon"
+    },
+    "step3": {
+      "title": "Riviola deneyimi",
+      "subtitle": "Özel bir demo ayırtalım ve oturumu projenize göre özelleştirelim.",
+      "cardTitle": "Özel demo rezervasyonu",
+      "cardBadge": "Tavsiye edilir",
+      "cardDesc": "Bir Riviola uzmanıyla özel bir seans rezervasyonu yapın. Demoyu projenize göre özelleştireceğiz — canlı, kişisel ve kesin.",
+      "chooseTime": "Saat seç"
+    },
+    "step4": {
+      "title": "Tarih ve saat seçin",
+      "subtitle": "Kişisel demo oturumunuz için bir zaman dilimi seçin.",
+      "pickDayFirst": "Önce bir gün seçin",
+      "selectDate": "Tarih seçin",
+      "timezone": "Saat dilimi",
+      "confirmBooking": "Rezervasyonu Onayla",
+      "submitting": "Gönderiliyor..."
+    },
+    "loading": {
+      "messages": [
+        "Proje detaylarınız analiz ediliyor...",
+        "Size özel demo yapılandırılıyor...",
+        "Kişisel panosu hazırlanıyor...",
+        "Neredeyse bitti — son rötuşlar yapılıyor..."
+      ],
+      "tagline": "Özel deneyiminiz yalnızca sizin için hazırlanıyor."
+    },
+    "success": {
+      "title": "Her şey hazır!",
+      "body": "Kişisel deneyiminiz hazır. Demo panosunu keşfetmek ve Riviola'yı görmek için hemen dalın.",
+      "cta": "Demo Panosunu Keşfet"
+    }
+  },
+  "Privacy": {
+    "backToHome": "Ana sayfaya dön",
+    "title": "Gizlilik Politikası",
+    "lastUpdated": "Son güncelleme:",
+    "s1title": "1. Giriş",
+    "s1body": "Riviola (\"biz\", \"bizim\" veya \"bize\") gizliliğinizi korumaya kararlıdır. Bu Gizlilik Politikası, inşaat ve yatırım yönetim platformumuzu ve ilgili hizmetlerimizi kullandığınızda bilgilerinizi nasıl topladığımızı, kullandığımızı, ifşa ettiğimizi ve koruduğumuzu açıklamaktadır.",
+    "s2title": "2. Topladığımız bilgiler",
+    "s2body": "Doğrudan sağladığınız bilgileri (örn. ad, e-posta, şirket bilgileri, ödeme bilgileri) ve otomatik olarak toplanan bilgileri (örn. cihaz verileri, günlükler, çerezler) toplayabiliriz. Bunları platformu işletmek, ödemeleri işlemek ve hizmetlerimizi geliştirmek için kullanırız.",
+    "s3title": "3. Bilgilerinizi nasıl kullanıyoruz",
+    "s3body": "Topladığımız bilgileri; hizmetlerimizi sağlamak, sürdürmek ve iyileştirmek; sizinle iletişim kurmak; işlemleri gerçekleştirmek ve yasal yükümlülüklere uymak için kullanırız. Kişisel verilerinizi üçüncü taraflara satmıyoruz.",
+    "s4title": "4. Veri saklama ve güvenlik",
+    "s4body": "Verilerinizi yalnızca bu politikada açıklanan amaçlar için veya yasanın gerektirdiği süre boyunca saklarız. Kişisel verilerinizi yetkisiz erişime, değiştirilmeye veya imhaya karşı korumak için uygun teknik ve organizasyonel önlemleri uygularız.",
+    "s5title": "5. Haklarınız",
+    "s5body": "Bulunduğunuz konuma bağlı olarak kişisel verilerinize erişme, düzeltme, silme veya taşıma hakkına sahip olabilirsiniz; belirli işlemlere itiraz edebilir veya bunları kısıtlayabilirsiniz. Aynı zamanda denetleyici bir makama şikayette bulunma hakkınız da olabilir. Bu hakları kullanmak için aşağıdaki iletişim bilgilerinden bize ulaşın.",
+    "s6title": "6. İletişim",
+    "s6body": "Bu Gizlilik Politikası veya veri uygulamalarımız hakkındaki sorularınız için lütfen privacy@riviola.com adresinden veya web sitemizde belirtilen adres üzerinden bize ulaşın."
+  },
+  "Terms": {
+    "backToHome": "Ana sayfaya dön",
+    "title": "Hizmet Şartları",
+    "lastUpdated": "Son güncelleme:",
+    "s1title": "1. Şartları kabul",
+    "s1body": "Riviola'nın platformuna ve hizmetlerine erişerek veya bunları kullanarak bu Hizmet Şartlarına bağlı kalmayı kabul etmiş olursunuz. Kabul etmiyorsanız hizmetlerimizi kullanmayın. Bu şartları zaman zaman güncelleyebiliriz; değişikliklerin ardından kullanmaya devam etmek kabul anlamına gelir.",
+    "s2title": "2. Hizmetlerin açıklaması",
+    "s2body": "Riviola, şirketler ve yatırımcılar için bir inşaat ve yatırım yönetim platformu sağlar. Hizmetler; proje ve bina yönetimi, yatırımcı hesapları, talep yönetimi, raporlama ve ilgili araçları kapsar. Makul bir bildirimle özellikleri değiştirme veya durdurmak hakkını saklı tutarız.",
+    "s3title": "3. Hesaplar ve uygunluk",
+    "s3body": "Hesap oluştururken doğru bilgi vermeniz ve bunları güncel tutmanız gerekmektedir. Kimlik bilgilerinizin gizliliğini korumaktan ve hesabınız altındaki tüm etkinliklerden sorumlusunuz. En az 18 yaşında olmalı ve kuruluşunuz adına kayıt yapıyorsanız kuruluşunuzu temsil etme yetkisine sahip olmalısınız.",
+    "s4title": "4. Ücretler ve ödeme",
+    "s4body": "Abonelik ve kullanım ücretleri planınızda veya siparişinizde belirtildiği şekildedir. Ücretler genellikle peşin (örn. yıllık veya aylık) olarak faturalandırılır. Ödeme yapılmaması erişimin askıya alınmasına veya sonlandırılmasına yol açabilir. Tüm tutarlar belirtilen para birimindedir (örn. EUR) ve aksi belirtilmedikçe geçerli vergiler hariçtir.",
+    "s5title": "5. Kabul edilebilir kullanım",
+    "s5body": "Hizmetleri yasadışı herhangi bir amaç için veya Riviola'ya, diğer kullanıcılara ya da üçüncü taraflara zarar verebilecek şekilde kullanmamayı taahhüt edersiniz. Sistemlere veya verilere yetkisiz erişim sağlamaya, kötü amaçlı yazılım dağıtmaya veya platformu istismar etmeye çalışmamalısınız. Bu şartları ihlal eden hesapları askıya alabilir veya sonlandırabiliriz.",
+    "s6title": "6. Sorumluluk sınırlaması",
+    "s6body": "Yasanın izin verdiği azami ölçüde Riviola ve iştirakleri, hizmetleri kullanımınızdan kaynaklanan dolaylı, arızi, özel veya sonuçsal zararlardan sorumlu tutulamaz. Toplam sorumluluğumuz, talep öncesinde sizin ödediğiniz on iki aylık ücretleri aşmayacaktır.",
+    "s7title": "7. İletişim",
+    "s7body": "Hizmet Şartları hakkındaki sorularınız için lütfen legal@riviola.com adresinden veya web sitemizde belirtilen adres üzerinden bize ulaşın."
+  },
+  "Cookies": {
+    "backToHome": "Ana sayfaya dön",
+    "title": "Çerez Politikası",
+    "lastUpdated": "Son güncelleme:",
+    "s1title": "1. Çerezler nedir",
+    "s1body": "Çerezler, bir web sitesini ziyaret ettiğinizde cihazınızda depolanan küçük metin dosyalarıdır. Sitenin tercihlerinizi hatırlamasına, oturumunuzu açık tutmasına ve hizmeti nasıl kullandığınızı anlamasına yardımcı olurlar. Çerezleri ve benzer teknolojileri bu politika ile yürürlükteki mevzuata uygun şekilde kullanıyoruz.",
+    "s2title": "2. Kullandığımız çerezler",
+    "s2intro": "Aşağıdaki çerez türlerini kullanıyoruz:",
+    "s2li1bold": "Zorunlu çerezler:",
+    "s2li1": "Sitenin çalışması için gereklidir (örn. kimlik doğrulama, güvenlik). Hizmetin çalışması için devre dışı bırakılamazlar.",
+    "s2li2bold": "İşlevsel çerezler:",
+    "s2li2": "Deneyiminizi iyileştirmek için tercihlerinizi hatırlarlar (örn. dil, bölge).",
+    "s2li3bold": "Analitik çerezler:",
+    "s2li3": "Ziyaretçilerin sitemizi nasıl kullandığını anlamamıza yardımcı olurlar (örn. görüntülenen sayfalar, trafik) böylece siteyi geliştirebiliriz.",
+    "s2li4bold": "Pazarlama çerezleri (varsa):",
+    "s2li4": "İlgili reklamlar sunmak veya kampanya etkinliğini ölçmek için kullanılır; gerekli olduğu durumlarda onayınızla.",
+    "s3title": "3. Çerezleri nasıl yönetirsiniz",
+    "s3body": "Tarayıcı ayarlarınızdan çerezleri kontrol edip silebilirsiniz. Belirli çerezlerin engellenmesi veya silinmesinin site işlevselliğini veya deneyiminizi etkileyebileceğini unutmayın. Daha fazla bilgi için tarayıcınızın yardım bölümüne bakın veya www.aboutcookies.org adresini ziyaret edin.",
+    "s4title": "4. Güncellemeler",
+    "s4body": "Bu Çerez Politikasını zaman zaman uygulamalarımızdaki veya yasal gerekliliklerindeki değişiklikleri yansıtmak amacıyla güncelleyebiliriz. Güncellenmiş sürümü bu sayfada yayınlayacak ve son güncelleme tarihini belirteceğiz. Bu politikayı periyodik olarak incelemenizi öneririz.",
+    "s5title": "5. İletişim",
+    "s5body": "Çerezlerin kullanımı hakkındaki sorularınız için lütfen privacy@riviola.com adresinden veya web sitemizde belirtilen adres üzerinden bize ulaşın."
   }
 }
