@@ -301,7 +301,7 @@ export async function unmarkDuesPaid(
 ): Promise<boolean> {
   const { error } = await supabase
     .from("dues_payments")
-    .delete()
+    .update({ paid_at: null, marked_by: null })
     .eq("investor_property_id", investorPropertyId)
     .eq("period", period);
 
@@ -439,7 +439,8 @@ export async function getStaffOverdueDues(
   const { data: paidRows } = await supabase
     .from("dues_payments")
     .select("investor_property_id, period")
-    .in("investor_property_id", propIds);
+    .in("investor_property_id", propIds)
+    .not("paid_at", "is", null);
   const paidSet = new Set(
     (paidRows ?? []).map(
       (r: { investor_property_id: string; period: string }) => `${r.investor_property_id}:${r.period}`
