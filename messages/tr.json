@@ -273,6 +273,21 @@
     "searchPlaceholder": "Yatırımcı adı, blok veya ünite ile ara...",
     "noSearchResults": "Aramanıza uygun ünite bulunamadı.",
     "clearSearch": "Aramayı temizle",
+    "filters": {
+      "all": "Tüm Üniteler",
+      "overdue": "Gecikenler",
+      "paid": "Ödenmiş",
+      "pending": "Bekleyenler"
+    },
+    "advancedFilter": "Gelişmiş Filtre",
+    "filterModal": {
+      "title": "Ayrıntılı Filtre",
+      "period": "Dönem / Ay",
+      "status": "Ödeme Durumu",
+      "allPeriods": "Tüm Dönemler",
+      "apply": "Filtreleri Uygula",
+      "reset": "Sıfırla"
+    },
     "ordinal": {
       "0": ".",
       "1": ".",
@@ -1069,12 +1084,30 @@
           "status": "Durum",
           "statusHint": "Bu bina/projenin mevcut durumunu belirleyin.",
           "statusOptions": {
-            "Planned": { "label": "Planlanan", "helper": "Başlamaya hazırlanıyor" },
-            "In progress": { "label": "Devam Ediyor", "helper": "İnşaat devam ediyor" },
-            "At risk": { "label": "Risk Altında", "helper": "Dikkat gerektiriyor" },
-            "On hold": { "label": "Askıda", "helper": "Geçici olarak durduruldu" },
-            "Completed": { "label": "Tamamlandı", "helper": "Teslimat yapıldı" },
-            "Cancelled": { "label": "İptal Edildi", "helper": "Kalıcı olarak durduruldu" }
+            "Planned": {
+              "label": "Planlanan",
+              "helper": "Başlamaya hazırlanıyor"
+            },
+            "In progress": {
+              "label": "Devam Ediyor",
+              "helper": "İnşaat devam ediyor"
+            },
+            "At risk": {
+              "label": "Risk Altında",
+              "helper": "Dikkat gerektiriyor"
+            },
+            "On hold": {
+              "label": "Askıda",
+              "helper": "Geçici olarak durduruldu"
+            },
+            "Completed": {
+              "label": "Tamamlandı",
+              "helper": "Teslimat yapıldı"
+            },
+            "Cancelled": {
+              "label": "İptal Edildi",
+              "helper": "Kalıcı olarak durduruldu"
+            }
           },
           "blocks": "Blok isimleri",
           "blocksHint": "Bu projedeki blokları veya kuleleri tanımlayın (Örn: A Blok, Doğu Kulesi). Bunlar yatırımcıları bir üniteye atarken kullanılacaktır.",

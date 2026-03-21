@@ -108,6 +108,10 @@ export function DuesPaymentsClient({
   const [savingSettings, setSavingSettings] = useState(false);
   const [togglingKey, setTogglingKey] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "overdue" | "pending">("all");
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [advStatusFilter, setAdvStatusFilter] = useState<"all" | "paid" | "overdue" | "pending">("all");
+  const [advPeriodFilter, setAdvPeriodFilter] = useState<string | "all">("all");
 
   function addPricingTier() {
     setAreaPricing((prev) => [...prev, { min: "", max: "", amount: "", id: Date.now() }]);
@@ -197,22 +201,66 @@ export function DuesPaymentsClient({
   }
 
   const filteredUnits = useMemo(() => {
+    let result = units;
+    
+    // 1. Text Search
     const q = search.trim().toLowerCase();
-    if (!q) return units;
-    return units.filter((u) =>
-      (u.full_name ?? "").toLowerCase().includes(q) ||
-      (u.block ?? "").toLowerCase().includes(q) ||
-      (u.unit ?? "").toLowerCase().includes(q)
-    );
-  }, [units, search]);
+    if (q) {
+      result = result.filter((u) =>
+        (u.full_name ?? "").toLowerCase().includes(q) ||
+        (u.block ?? "").toLowerCase().includes(q) ||
+        (u.unit ?? "").toLowerCase().includes(q)
+      );
+    }
+
+    // 2. Quick Status Filter (from Legend)
+    if (statusFilter !== "all") {
+      const endDay = settings?.payment_window_end_day;
+      result = result.filter((u) => {
+        const unitStatuses = periods.map((p) => {
+          const paid = isPaid(u.id, p);
+          const overdue = isOverdue(p, paid, endDay ?? undefined);
+          if (paid) return "paid";
+          if (overdue) return "overdue";
+          return "pending";
+        });
+
+        if (statusFilter === "paid") return unitStatuses.includes("paid");
+        if (statusFilter === "overdue") return unitStatuses.includes("overdue");
+        if (statusFilter === "pending") return unitStatuses.includes("pending");
+        return true;
+      });
+    }
+    if (advPeriodFilter !== "all" || advStatusFilter !== "all") {
+      const endDay = settings?.payment_window_end_day;
+      result = result.filter((u) => {
+        const targetPeriods = advPeriodFilter === "all" ? periods : [advPeriodFilter];
+        
+        // If searching a specific month, we return true if that month matches the status
+        // If searching all months, we return true if ANY month matches the status
+        return targetPeriods.some(p => {
+          const paid = isPaid(u.id, p);
+          const overdue = isOverdue(p, paid, endDay ?? undefined);
+          
+          if (advStatusFilter === "all") return true;
+          if (advStatusFilter === "paid") return paid;
+          if (advStatusFilter === "overdue") return overdue;
+          if (advStatusFilter === "pending") return !paid && !overdue;
+          return true;
+        });
+      });
+    }
+
+    return result;
+  }, [units, search, statusFilter, advStatusFilter, advPeriodFilter, periods, settings, paidByPeriod]);
 
   const hasAnyOverdue = useMemo(() => {
     const endDay = settings?.payment_window_end_day;
     if (!endDay) return false;
-    return filteredUnits.some(u =>
+    return units.some(u =>
       periods.some(p => isOverdue(p, isPaid(u.id, p), endDay))
     );
-  }, [filteredUnits, periods, settings, paidByPeriod]);
+  }, [units, periods, settings, paidByPeriod]);
 
   function getExpectedDues(unit: UnitForDues): string {
     if (!settings) return "—";
@@ -250,39 +298,74 @@ export function DuesPaymentsClient({
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-        <label className="text-sm font-semibold text-gray-700 shrink-0">{t("building")}</label>
-        <select
-          value={selectedBuildingId}
-          onChange={(e) => updateParams(e.target.value)}
-          className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
-        >
-          {buildings.map((b) => (
-            <option key={b.id} value={b.id}>
-              {b.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-4">
+          <label className="text-sm font-semibold text-gray-700 shrink-0">{t("building")}</label>
+          <select
+            value={selectedBuildingId}
+            onChange={(e) => updateParams(e.target.value)}
+            className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none"
+          >
+            {buildings.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+        </div>
         
-        {/* Status Legend */}
-        <div className="flex flex-wrap items-center gap-4 bg-white/50 px-4 py-2 rounded-xl border border-gray-100 shadow-sm ml-auto">
-          <div className="flex items-center gap-1.5">
-            <div className="size-5 rounded-md bg-[#134e4a]/10 text-[#134e4a] flex items-center justify-center border border-[#134e4a]/20">
-              <i className="las la-check text-xs font-bold" />
+        {/* Status Legend / Quick Filters */}
+        <div className="flex flex-wrap items-center gap-6 bg-white/60 px-6 py-3 rounded-[1.5rem] border border-gray-100 shadow-sm ml-auto backdrop-blur-sm">
+          <button 
+            onClick={() => setStatusFilter(prev => prev === "paid" ? "all" : "paid")}
+            className={`flex items-center gap-3 transition-all hover:scale-110 active:scale-95 group ${statusFilter === "paid" ? "opacity-100 scale-105" : statusFilter === "all" ? "opacity-100" : "opacity-40"}`}
+          >
+            <div className={`size-8 rounded-xl flex items-center justify-center border-2 transition-all ${
+              statusFilter === "paid" 
+                ? "bg-[#134e4a] border-[#134e4a] text-white shadow-lg shadow-[#134e4a]/20" 
+                : "bg-[#134e4a]/10 text-[#134e4a] border-[#134e4a]/20 group-hover:border-[#134e4a]/40"
+            }`}>
+              <i className="las la-check text-sm font-bold" />
             </div>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t("paid")}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="size-5 rounded-md bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 animate-pulse">
-              <i className="las la-exclamation-triangle text-xs" />
+            <span className={`text-xs font-black uppercase tracking-widest ${statusFilter === "paid" ? "text-[#134e4a]" : "text-gray-500 group-hover:text-gray-900"}`}>{t("paid")}</span>
+          </button>
+
+          <button 
+            onClick={() => setStatusFilter(prev => prev === "overdue" ? "all" : "overdue")}
+            className={`flex items-center gap-3 transition-all hover:scale-110 active:scale-95 group ${statusFilter === "overdue" ? "opacity-100 scale-105" : statusFilter === "all" ? "opacity-100" : "opacity-40"}`}
+          >
+            <div className={`size-8 rounded-xl flex items-center justify-center border-2 transition-all ${
+              statusFilter === "overdue" 
+                ? "bg-rose-600 border-rose-600 text-white shadow-lg shadow-rose-200 animate-pulse" 
+                : "bg-rose-50 text-rose-600 border-rose-100 group-hover:border-rose-300"
+            }`}>
+              <i className="las la-exclamation-triangle text-sm" />
             </div>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t("overdue")}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="size-5 rounded-md bg-gray-50 text-gray-400 flex items-center justify-center border border-gray-100">
-              <i className="las la-clock text-xs" />
+            <span className={`text-xs font-black uppercase tracking-widest ${statusFilter === "overdue" ? "text-rose-600" : "text-gray-500 group-hover:text-gray-900"}`}>{t("overdue")}</span>
+          </button>
+
+          <button 
+            onClick={() => setStatusFilter(prev => prev === "pending" ? "all" : "pending")}
+            className={`flex items-center gap-3 transition-all hover:scale-110 active:scale-95 group ${statusFilter === "pending" ? "opacity-100 scale-105" : statusFilter === "all" ? "opacity-100" : "opacity-40"}`}
+          >
+            <div className={`size-8 rounded-xl flex items-center justify-center border-2 transition-all ${
+              statusFilter === "pending" 
+                ? "bg-gray-700 border-gray-700 text-white shadow-lg shadow-gray-200" 
+                : "bg-gray-50 text-gray-400 border-gray-100 group-hover:border-gray-300"
+            }`}>
+              <i className="las la-clock text-sm" />
             </div>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t("pending")}</span>
-          </div>
+            <span className={`text-xs font-black uppercase tracking-widest ${statusFilter === "pending" ? "text-gray-900" : "text-gray-500 group-hover:text-gray-900"}`}>{t("pending")}</span>
+          </button>
+
+          {statusFilter !== "all" && (
+            <button
+              onClick={() => setStatusFilter("all")}
+              className="ml-2 text-gray-400 hover:text-rose-500 transition-colors"
+              title={t("clearSearch")}
+            >
+              <i className="las la-times-circle text-xl" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -485,24 +568,58 @@ export function DuesPaymentsClient({
             )}
           </div>
 
-          {/* Search bar */}
-          <div className="mb-4 relative">
-            <i className="las la-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("searchPlaceholder")}
-              className="w-full sm:max-w-sm pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none shadow-sm transition"
-            />
-            {search && (
+          {/* Filters Bar */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 sm:max-w-sm">
+              <i className="las la-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("searchPlaceholder")}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none shadow-sm transition"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <i className="las la-times text-lg" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
               <button
-                onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onClick={() => setShowFilterModal(true)}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border flex items-center gap-2.5 ${
+                  advPeriodFilter !== "all" || advStatusFilter !== "all"
+                    ? "bg-[#134e4a] text-white border-[#134e4a] shadow-md shadow-[#134e4a]/20"
+                    : "bg-white text-[#134e4a] border-[#134e4a]/20 hover:bg-[#134e4a]/5"
+                }`}
               >
-                <i className="las la-times text-lg" />
+                <i className={`las ${advPeriodFilter !== "all" || advStatusFilter !== "all" ? "la-filter" : "la-sliders-h"} text-base`} />
+                {t("advancedFilter")}
+                {(advPeriodFilter !== "all" || advStatusFilter !== "all") && (
+                  <span className="ml-1 px-1.5 py-0.5 rounded-md bg-emerald-400 text-[9px] text-[#134e4a] font-black animate-pulse">
+                    !
+                  </span>
+                )}
               </button>
-            )}
+
+              {(advPeriodFilter !== "all" || advStatusFilter !== "all") && (
+                <button
+                  onClick={() => {
+                    setAdvPeriodFilter("all");
+                    setAdvStatusFilter("all");
+                  }}
+                  className="p-2 text-gray-400 hover:text-rose-500 transition-colors"
+                  title={t("filterModal.reset")}
+                >
+                  <i className="las la-times-circle text-lg" />
+                </button>
+              )}
+            </div>
           </div>
 
           {units.length === 0 ? (
@@ -613,6 +730,120 @@ export function DuesPaymentsClient({
           <p className="text-sm text-gray-400 mt-1">{t("addBuildings")}</p>
         </div>
       )}
+
+      {showFilterModal && (
+        <FilterModal
+          periods={periods}
+          currentPeriod={advPeriodFilter}
+          currentStatus={advStatusFilter}
+          onClose={() => setShowFilterModal(false)}
+          onApply={(period, status) => {
+            setAdvPeriodFilter(period);
+            setAdvStatusFilter(status);
+            setShowFilterModal(false);
+          }}
+          locale={locale}
+          t={t}
+        />
+      )}
+    </div>
+  );
+}
+
+function FilterModal({
+  periods,
+  currentPeriod,
+  currentStatus,
+  onClose,
+  onApply,
+  locale,
+  t,
+}: {
+  periods: string[];
+  currentPeriod: string;
+  currentStatus: string;
+  onClose: () => void;
+  onApply: (period: string, status: any) => void;
+  locale: string;
+  t: any;
+}) {
+  const [period, setPeriod] = useState(currentPeriod);
+  const [status, setStatus] = useState(currentStatus);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl border border-white/20 overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <div>
+            <h3 className="text-xl font-black text-gray-900 tracking-tight">{t("filterModal.title")}</h3>
+          </div>
+          <button onClick={onClose} className="size-10 rounded-2xl hover:bg-white hover:shadow-md flex items-center justify-center transition-all group">
+            <i className="las la-times text-xl text-gray-400 group-hover:text-gray-900" />
+          </button>
+        </div>
+        
+        <div className="p-8 space-y-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">
+              {t("filterModal.period")}
+            </label>
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              className="w-full rounded-2xl border border-gray-200 px-5 py-4 text-sm font-bold bg-gray-50/50 focus:bg-white focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/10 outline-none transition-all cursor-pointer"
+            >
+              <option value="all">{t("filterModal.allPeriods")}</option>
+              {periods.map((p) => (
+                <option key={p} value={p}>
+                  {formatMonthLabel(p, locale)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">
+              {t("filterModal.status")}
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {(["all", "paid", "overdue", "pending"] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStatus(s)}
+                  className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border flex items-center justify-center gap-2 ${
+                    status === s
+                      ? "bg-[#134e4a] text-white border-[#134e4a] shadow-md shadow-[#134e4a]/20"
+                      : "bg-white text-gray-500 border-gray-100 hover:border-gray-200"
+                  }`}
+                >
+                  {s === "paid" && <i className="las la-check" />}
+                  {s === "overdue" && <i className="las la-exclamation-triangle" />}
+                  {s === "pending" && <i className="las la-clock" />}
+                  {t(`filters.${s}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 pt-4">
+            <button
+               onClick={() => {
+                 setPeriod("all");
+                 setStatus("all");
+               }}
+               className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 transition-all"
+            >
+              {t("filterModal.reset")}
+            </button>
+            <button
+              onClick={() => onApply(period, status)}
+              className="flex-[2] py-4 rounded-2xl bg-[#134e4a] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#0f3d3a] shadow-xl shadow-[#134e4a]/30 transition-all hover:-translate-y-1"
+            >
+              {t("filterModal.apply")}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

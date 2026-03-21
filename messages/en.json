@@ -271,6 +271,21 @@
     "searchPlaceholder": "Search by investor, block or unit...",
     "noSearchResults": "No units match your search.",
     "clearSearch": "Clear search",
+    "filters": {
+      "all": "All Units",
+      "overdue": "Overdue",
+      "paid": "Fully Paid",
+      "pending": "Pending"
+    },
+    "advancedFilter": "Advanced Filter",
+    "filterModal": {
+      "title": "Detailed Filter",
+      "period": "Period / Month",
+      "status": "Payment Status",
+      "allPeriods": "All Periods",
+      "apply": "Apply Filters",
+      "reset": "Reset"
+    },
     "ordinal": {
       "0": "th",
       "1": "st",
