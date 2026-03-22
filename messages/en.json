@@ -103,10 +103,10 @@
           "0% commission on all payments"
         ]
       },
-      "ultraDeluxe": {
-        "name": "Ultra Deluxe",
+      "prestige": {
+        "name": "Prestige",
         "description": "Enterprise-grade features for large-scale operations.",
-        "cta": "Choose Ultra Deluxe",
+        "cta": "Choose Prestige",
         "features": [
           "Unlimited Buildings & Projects",
           "Full Customization",

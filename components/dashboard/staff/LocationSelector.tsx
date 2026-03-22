@@ -42,7 +42,7 @@ export function LocationSelector({
         fetchCountries();
     }, []);
 
-    // Fetch cities when country changes
+    // Fetch cities when country changes for it
     useEffect(() => {
         if (!selectedCountry) {
             setCities([]);

@@ -102,10 +102,10 @@
           "%0 Komisyon ile Ödeme Alma"
         ]
       },
-      "ultraDeluxe": {
-        "name": "Ultra Deluxe",
+      "prestige": {
+        "name": "Prestige",
         "description": "Büyük ölçekli operasyonlar için kurumsal özellikler.",
-        "cta": "Ultra Deluxe'u Seç",
+        "cta": "Prestige'i Seç",
         "features": [
           "Sınırsız Bina ve Proje",
           "Tam Sistem Özelleştirme",

@@ -7,13 +7,13 @@ const PRICE_DATA = {
   en: {
     essence: { monthly: 99, annual: 719 },
     signature: { monthly: 149, annual: 999 },
-    ultraDeluxe: { monthly: 199, annual: 1299 },
+    prestige: { monthly: 199, annual: 1299 },
     symbol: "€"
   },
   tr: {
     essence: { monthly: 4000, annual: 28800 },
     signature: { monthly: 5000, annual: 36000 },
-    ultraDeluxe: { monthly: 7000, annual: 50400 },
+    prestige: { monthly: 7000, annual: 50400 },
     symbol: "₺"
   }
 };
@@ -32,7 +32,7 @@ const tiers = [
     recommended: true,
   },
   {
-    id: "ultraDeluxe",
+    id: "prestige",
     includedTierId: "signature",
     variant: "outline" as const,
     recommended: false,
