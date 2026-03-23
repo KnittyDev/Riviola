@@ -16,6 +16,7 @@ const navItems = [
   { href: "/dashboard/staff/aidat-payments", labelKey: "duesPayments", icon: "las la-receipt" },
   { href: "/dashboard/staff/purchase-payments", labelKey: "purchasePayments", icon: "las la-wallet" },
   { href: "/dashboard/staff/subscription", labelKey: "subscription", icon: "las la-credit-card" },
+  { href: "/dashboard/staff/support", labelKey: "support", icon: "las la-headset" },
 ];
 
 interface StaffSidebarProps {

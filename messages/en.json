@@ -172,7 +172,8 @@
     "subscription": "Subscription",
     "companyPanel": "Company panel",
     "logout": "Logout",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "support": "Support & Help"
   },
   "Subscription": {
     "recommended": "Recommended",
@@ -247,6 +248,33 @@
     "emailRegistered": "This email is already registered. Please sign in.",
     "genericError": "Something went wrong. Please try again.",
     "agreement": "By creating an account, you agree to our Terms of Service and Privacy Policy."
+  },
+  "Support": {
+    "title": "Support Tickets",
+    "subtitle": "Create a ticket for technical support or help.",
+    "newTicket": "New Ticket",
+    "ticketTitle": "Title",
+    "subject": "Subject",
+    "priority": "Priority",
+    "description": "Description",
+    "urgency": "Urgency",
+    "photo": "Photo",
+    "send": "Send",
+    "sending": "Sending...",
+    "noTickets": "You don't have any support tickets yet.",
+    "status": "Status",
+    "createdAt": "Created At",
+    "urgent": "Urgent",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "open": "Open",
+    "resolved": "Resolved",
+    "closed": "Closed",
+    "ticketForm": "Ticket Form",
+    "successMessage": "Your support ticket has been sent successfully.",
+    "errorMessage": "An error occurred while sending the ticket.",
+    "cancel": "Cancel"
   },
   "Requests": {
     "title": "Investor requests",

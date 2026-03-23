@@ -171,7 +171,8 @@
     "subscription": "Abonelik",
     "companyPanel": "Şirket paneli",
     "logout": "Çıkış Yap",
-    "closeMenu": "Menüyü kapat"
+    "closeMenu": "Menüyü kapat",
+    "support": "Destek & Yardım"
   },
   "Subscription": {
     "recommended": "Önerilen",
@@ -248,6 +249,33 @@
     "emailRegistered": "Bu e-posta zaten kayıtlı. Lütfen giriş yapın.",
     "genericError": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
     "agreement": "Hesap oluşturarak Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz."
+  },
+  "Support": {
+    "title": "Destek Talepleri",
+    "subtitle": "Teknik destek veya yardım almak için talep oluşturun.",
+    "newTicket": "Yeni Talep",
+    "ticketTitle": "Başlık",
+    "subject": "Konu",
+    "priority": "Öncelik",
+    "description": "Açıklama",
+    "urgency": "Aciliyet",
+    "photo": "Fotoğraf",
+    "send": "Gönder",
+    "sending": "Gönderiliyor...",
+    "noTickets": "Henüz bir destek talebiniz bulunmuyor.",
+    "status": "Durum",
+    "createdAt": "Oluşturulma",
+    "urgent": "Acil",
+    "high": "Yüksek",
+    "medium": "Orta",
+    "low": "Düşük",
+    "open": "Açık",
+    "resolved": "Çözüldü",
+    "closed": "Kapalı",
+    "ticketForm": "Talep Formu",
+    "successMessage": "Destek talebiniz başarıyla iletildi.",
+    "errorMessage": "Talep gönderilirken bir hata oluştu.",
+    "cancel": "İptal"
   },
   "Requests": {
     "title": "Yatırımcı talepleri",
