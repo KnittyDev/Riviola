@@ -1,4 +1,15 @@
 {
+  "Limits": {
+    "title": "Plan Limit",
+    "upgradeRequired": "Upgrade Required",
+    "maxBuildingsReached": "You have reached the maximum building limit ({count}/{max}).",
+    "upgradeToCreateMore": "You need to upgrade your plan to add more buildings.",
+    "upgradeNow": "Upgrade Now",
+    "featureLocked": "This feature is not included in your plan.",
+    "featureLockedDesc": "Please upgrade your plan to access this feature.",
+    "usage": "Usage",
+    "unlimited": "Unlimited"
+  },
   "Hero": {
     "badge": "Next-Gen Infrastructure",
     "title": "Architecture of <gradient>Excellence</gradient> <br></br> and Transparency.",

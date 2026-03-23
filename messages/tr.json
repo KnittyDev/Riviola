@@ -1,4 +1,15 @@
 {
+  "Limits": {
+    "title": "Plan Sınırı",
+    "upgradeRequired": "Yükseltme Gerekiyor",
+    "maxBuildingsReached": "Maksimum bina sınırına ulaştınız ({count}/{max}).",
+    "upgradeToCreateMore": "Daha fazla bina eklemek için planınızı yükseltmeniz gerekmektedir.",
+    "upgradeNow": "Şimdi Yükselt",
+    "featureLocked": "Bu özellik planınıza dahil değil.",
+    "featureLockedDesc": "Bu özelliği kullanabilmek için planınızı yükseltmeniz gerekmektedir.",
+    "usage": "Kullanım",
+    "unlimited": "Sınırsız"
+  },
   "Hero": {
     "badge": "Yeni Nesil Altyapı",
     "title": "Mükemmeliyet ve <gradient>Şeffaflık</gradient> <br></br> Mimarisi.",

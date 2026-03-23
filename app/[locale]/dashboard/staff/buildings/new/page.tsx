@@ -10,6 +10,7 @@ import type { BuildingStatus } from "@/lib/supabase/types";
 import type { PlannedMilestone } from "@/lib/staffBuildingOverrides";
 import { computeProgressFromMilestones } from "@/lib/buildings";
 import { LocationSelector } from "@/components/dashboard/staff/LocationSelector";
+import { getPlanLimitsClient } from "@/lib/plan.client";
 
 const BANNER_BUCKET = "building_banners";
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
@@ -51,6 +52,24 @@ export default function NewBuildingPage() {
 
   const DRAFT_KEY = "riviola.new_building_draft.v1";
   useEffect(() => {
+    async function checkLimit() {
+       const supabase = createClient();
+       const { data: { user } } = await supabase.auth.getUser();
+       if (!user) return;
+       
+       const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', user.id).single();
+       if (!profile?.company_id) return;
+
+       const { count } = await supabase.from('buildings').select('*', { count: 'exact', head: true }).eq('company_id', profile.company_id);
+       const limits = await getPlanLimitsClient();
+       
+       if (count !== null && count >= limits.maxBuildings) {
+         toast.error("Plan limit reached. Please upgrade to add more buildings.");
+         router.push('/dashboard/staff/buildings');
+       }
+    }
+    checkLimit();
+
     const raw = window.localStorage.getItem(DRAFT_KEY);
     if (!raw) return;
     try {

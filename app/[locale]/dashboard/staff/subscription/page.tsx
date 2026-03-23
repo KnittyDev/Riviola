@@ -48,13 +48,13 @@ export default async function StaffSubscriptionPage() {
       recommended: true,
     },
     {
-      name: tPricing("tiers.ultraDeluxe.name"),
-      description: tPricing("tiers.ultraDeluxe.description"),
-      monthlyPriceId: process.env.STRIPE_ULTRA_DELUXE_MONTHLY_PRICE_ID ?? "",
-      annualPriceId: process.env.STRIPE_ULTRA_DELUXE_ANNUAL_PRICE_ID ?? "",
+      name: tPricing("tiers.prestige.name"),
+      description: tPricing("tiers.prestige.description"),
+      monthlyPriceId: process.env.STRIPE_PRESTIGE_MONTHLY_PRICE_ID ?? "",
+      annualPriceId: process.env.STRIPE_PRESTIGE_ANNUAL_PRICE_ID ?? "",
       monthlyPrice: 199,
       annualPrice: 1299,
-      features: (tPricing.raw("tiers.ultraDeluxe.features") as string[]).filter(f => !f.toLowerCase().includes("commission")),
+      features: (tPricing.raw("tiers.prestige.features") as string[]).filter(f => !f.toLowerCase().includes("commission")),
       recommended: false,
     },
   ];

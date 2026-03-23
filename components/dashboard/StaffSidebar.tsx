@@ -4,12 +4,15 @@ import { Link, usePathname, useRouter } from "@/i18n/routing";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+import { getPlanLimitsClient } from "@/lib/plan.client";
+import { PLAN_LIMITS } from "@/lib/plan";
 
 const navItems = [
   { href: "/dashboard/staff", labelKey: "overview", icon: "las la-th-large" },
   { href: "/dashboard/staff/buildings", labelKey: "buildings", icon: "las la-building" },
   { href: "/dashboard/staff/investors", labelKey: "investors", icon: "las la-user-friends" },
-  { href: "/dashboard/staff/requests", labelKey: "requests", icon: "las la-tasks" },
+  { href: "/dashboard/staff/requests", labelKey: "requests", icon: "las la-tasks", premium: true },
   { href: "/dashboard/staff/aidat-payments", labelKey: "duesPayments", icon: "las la-receipt" },
   { href: "/dashboard/staff/purchase-payments", labelKey: "purchasePayments", icon: "las la-wallet" },
   { href: "/dashboard/staff/subscription", labelKey: "subscription", icon: "las la-credit-card" },
@@ -29,6 +32,11 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
   const t = useTranslations("Sidebar");
   const pathname = usePathname();
   const router = useRouter();
+  const [limits, setLimits] = useState(PLAN_LIMITS.essence);
+
+  useEffect(() => {
+    getPlanLimitsClient().then((l) => setLimits(l));
+  }, []);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -100,13 +108,16 @@ export function StaffSidebar({ companyName = "Company", companyLogoUrl = null, f
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${isActive
                   ? "bg-[#134e4a]/10 text-[#134e4a]"
                   : "text-gray-600 hover:bg-gray-50"
                 }`}
             >
               <i className={`${item.icon} text-lg`} aria-hidden />
-              <span className="text-sm font-semibold">{t(item.labelKey)}</span>
+              <span className="text-sm font-semibold flex-1 mb-0.5">{t(item.labelKey)}</span>
+              {(item as any).premium && !limits.hasRequestTracking && (
+                <i className="las la-lock text-sm text-amber-500" aria-hidden />
+              )}
             </Link>
           );
         })}

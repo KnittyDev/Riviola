@@ -7,6 +7,7 @@ import { BuildingListMetaClient } from "./BuildingListMetaClient";
 import { DeleteBuildingButton } from "./DeleteBuildingButton";
 import type { Building, BuildingStatus } from "@/lib/supabase/types";
 import { getTranslations } from "next-intl/server";
+import { getPlanLimits } from "@/lib/plan.server";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80";
 
@@ -21,6 +22,11 @@ export default async function StaffBuildingsPage() {
     .select("*")
     .eq("company_id", companyId)
     .order("created_at", { ascending: false });
+
+  const limits = await getPlanLimits();
+  const currentCount = buildings?.length ?? 0;
+  const isLimitReached = currentCount >= limits.maxBuildings;
+  const tLimits = await getTranslations("Limits");
 
   const list = (buildings ?? []) as Building[];
   const buildingIds = list.map((b) => b.id);
@@ -40,15 +46,38 @@ export default async function StaffBuildingsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{t("title")}</h1>
-        <div className="flex gap-2">
-          <Link
-            href="/dashboard/staff/buildings/new"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{t("title")}</h1>
+          <div 
+            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border backdrop-blur-sm transition-all shadow-sm ${
+              isLimitReached 
+                ? "bg-amber-50 text-amber-700 border-amber-200 animate-pulse" 
+                : "bg-[#134e4a]/5 text-[#134e4a] border-[#134e4a]/10"
+            }`}
+            title={tLimits("usage")}
           >
-            <i className="las la-plus" aria-hidden />
-            {t("addBuilding")}
-          </Link>
+            {currentCount} / {limits.maxBuildings === Infinity ? tLimits("unlimited") : limits.maxBuildings}
+          </div>
+        </div>
+        <div className="flex gap-2">
+          {isLimitReached ? (
+            <Link
+              href="/dashboard/staff/subscription"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition-colors shadow-sm"
+              title={tLimits("maxBuildingsReached", { count: currentCount, max: limits.maxBuildings })}
+            >
+              <i className="las la-arrow-up" aria-hidden />
+              {tLimits("upgradeNow")}
+            </Link>
+          ) : (
+            <Link
+              href="/dashboard/staff/buildings/new"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
+            >
+              <i className="las la-plus" aria-hidden />
+              {t("addBuilding")}
+            </Link>
+          )}
           <Link
             href="/dashboard/staff/weekly-photos/new"
             className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors"
@@ -58,18 +87,30 @@ export default async function StaffBuildingsPage() {
           </Link>
         </div>
       </div>
+
+
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {list.length === 0 ? (
           <div className="p-12 text-center">
             <p className="text-gray-500 font-medium">{t("noBuildings")}</p>
             <p className="text-sm text-gray-400 mt-1 mb-6">{t("noBuildingsSubtitle")}</p>
-            <Link
-              href="/dashboard/staff/buildings/new"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
-            >
-              <i className="las la-plus" aria-hidden />
-              {t("addBuilding")}
-            </Link>
+            {isLimitReached ? (
+              <Link
+                href="/dashboard/staff/subscription"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition-colors shadow-sm"
+              >
+                <i className="las la-arrow-up" aria-hidden />
+                {tLimits("upgradeNow")}
+              </Link>
+            ) : (
+              <Link
+                href="/dashboard/staff/buildings/new"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors"
+              >
+                <i className="las la-plus" aria-hidden />
+                {t("addBuilding")}
+              </Link>
+            )}
           </div>
         ) : (
           <ul className="divide-y divide-gray-100">
