@@ -51,7 +51,7 @@ export default async function StaffBuildingsPage() {
           <div 
             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border backdrop-blur-sm transition-all shadow-sm ${
               isLimitReached 
-                ? "bg-amber-50 text-amber-700 border-amber-200 animate-pulse" 
+                ? "bg-rose-50 text-rose-700 border-rose-200 animate-pulse" 
                 : "bg-[#134e4a]/5 text-[#134e4a] border-[#134e4a]/10"
             }`}
             title={tLimits("usage")}
@@ -63,7 +63,7 @@ export default async function StaffBuildingsPage() {
           {isLimitReached ? (
             <Link
               href="/dashboard/staff/subscription"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors shadow-sm"
               title={tLimits("maxBuildingsReached", { count: currentCount, max: limits.maxBuildings })}
             >
               <i className="las la-arrow-up" aria-hidden />
@@ -97,7 +97,7 @@ export default async function StaffBuildingsPage() {
             {isLimitReached ? (
               <Link
                 href="/dashboard/staff/subscription"
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] transition-colors shadow-sm"
               >
                 <i className="las la-arrow-up" aria-hidden />
                 {tLimits("upgradeNow")}

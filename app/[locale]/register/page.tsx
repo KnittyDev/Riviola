@@ -3,9 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
+  const t = useTranslations("Register");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +30,7 @@ export default function RegisterPage() {
       if (signUpError) {
         setError(
           signUpError.message.includes("already registered")
-            ? "This email is already registered. Please sign in."
+            ? t("emailRegistered")
             : signUpError.message
         );
         setLoading(false);
@@ -45,8 +47,7 @@ export default function RegisterPage() {
       }
       setLoading(false);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
-      setError(message);
+      setError(t("genericError"));
       setLoading(false);
     }
   }
@@ -75,7 +76,7 @@ export default function RegisterPage() {
             href="/"
             className="text-sm font-semibold text-gray-600 hover:text-[#134e4a] transition-colors"
           >
-            Back to home
+            {t("backHome")}
           </Link>
         </div>
       </header>
@@ -86,10 +87,10 @@ export default function RegisterPage() {
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                Create account
+                {t("title")}
               </h1>
               <p className="text-gray-500 text-sm mt-2">
-                Enter your details to get started with Riviola.
+                {t("subtitle")}
               </p>
             </div>
 
@@ -99,7 +100,7 @@ export default function RegisterPage() {
                   htmlFor="fullName"
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
                 >
-                  Full name
+                  {t("fullName")}
                 </label>
                 <div className="relative">
                   <i
@@ -124,7 +125,7 @@ export default function RegisterPage() {
                   htmlFor="email"
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
                 >
-                  Email
+                  {t("email")}
                 </label>
                 <div className="relative">
                   <i
@@ -149,7 +150,7 @@ export default function RegisterPage() {
                   htmlFor="password"
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
                 >
-                  Password
+                  {t("password")}
                 </label>
                 <div className="relative">
                   <i
@@ -175,7 +176,7 @@ export default function RegisterPage() {
                   htmlFor="confirmPassword"
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
                 >
-                  Confirm password
+                  {t("confirmPassword")}
                 </label>
                 <div className="relative">
                   <i
@@ -198,7 +199,7 @@ export default function RegisterPage() {
                     }`}
                   />
                   {confirmPassword && !passwordsMatch && (
-                    <p className="text-red-600 text-xs mt-1.5">Passwords do not match.</p>
+                    <p className="text-red-600 text-xs mt-1.5">{t("passwordsDoNotMatch")}</p>
                   )}
                 </div>
               </div>
@@ -213,20 +214,20 @@ export default function RegisterPage() {
                 disabled={!passwordsMatch || loading}
                 className="w-full py-3.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] disabled:opacity-50 disabled:pointer-events-none transition-colors shadow-lg shadow-[#134e4a]/20"
               >
-                {loading ? "Creating account..." : "Create account"}
+                {loading ? t("creatingAccount") : t("createAccount")}
               </button>
             </form>
 
             <p className="text-center text-gray-500 text-sm mt-6">
-              Already have an account?{" "}
+              {t("alreadyHaveAccount")}{" "}
               <Link href="/login" className="font-semibold text-[#134e4a] hover:underline">
-                Sign in
+                {t("signIn")}
               </Link>
             </p>
           </div>
 
           <p className="text-center text-gray-500 text-xs mt-6">
-            By creating an account, you agree to our Terms of Service and Privacy Policy.
+            {t("agreement")}
           </p>
         </div>
       </main>

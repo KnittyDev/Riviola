@@ -4,11 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -59,14 +61,14 @@ function LoginForm() {
       if (signInError) {
         setError(
           signInError.message === "Invalid login credentials"
-            ? "Invalid email or password."
+            ? t("invalidCredentials")
             : signInError.message
         );
         setLoading(false);
         return;
       }
       if (!data?.user) {
-        setError("Sign in failed. Please try again.");
+        setError(t("signInFailed"));
         setLoading(false);
         return;
       }
@@ -82,7 +84,7 @@ function LoginForm() {
         window.location.href = "/dashboard";
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(t("genericError"));
       setLoading(false);
     }
   }
@@ -117,7 +119,7 @@ function LoginForm() {
             href="/"
             className="text-sm font-semibold text-gray-600 hover:text-[#134e4a] transition-colors"
           >
-            Back to home
+            {t("backHome")}
           </Link>
         </div>
       </header>
@@ -128,14 +130,14 @@ function LoginForm() {
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                Sign in
+                {t("title")}
               </h1>
               <p className="text-gray-500 text-sm mt-2">
-                Enter your credentials to access your account.
+                {t("subtitle")}
               </p>
               {registeredMessage && (
                 <p className="text-[#134e4a] text-sm mt-2 font-medium">
-                  Account created. Please sign in.
+                  {t("registered")}
                 </p>
               )}
             </div>
@@ -146,7 +148,7 @@ function LoginForm() {
                   htmlFor="email"
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
                 >
-                  Email
+                  {t("email")}
                 </label>
                 <div className="relative">
                   <i
@@ -171,7 +173,7 @@ function LoginForm() {
                   htmlFor="password"
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
                 >
-                  Password
+                  {t("password")}
                 </label>
                 <div className="relative">
                   <i
@@ -201,20 +203,20 @@ function LoginForm() {
                 disabled={loading}
                 className="w-full py-3.5 rounded-xl bg-[#134e4a] text-white font-bold text-sm hover:bg-[#115e59] disabled:opacity-70 transition-colors shadow-lg shadow-[#134e4a]/20"
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? t("signingIn") : t("signIn")}
               </button>
             </form>
 
             <p className="text-center text-gray-500 text-sm mt-6">
-              Don&apos;t have an account?{" "}
+              {t("noAccount")}{" "}
               <Link href="/register" className="font-semibold text-[#134e4a] hover:underline">
-                Create account
+                {t("createAccount")}
               </Link>
             </p>
           </div>
 
           <p className="text-center text-gray-500 text-xs mt-6">
-            By signing in, you agree to our Terms of Service and Privacy Policy.
+            {t("agreement")}
           </p>
         </div>
       </main>

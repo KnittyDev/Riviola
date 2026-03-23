@@ -251,3 +251,65 @@ export async function createBillingPortalAction(): Promise<ActionResult> {
 
   return { ok: true, url: portalSession.url };
 }
+
+/* ─── Upgrade Subscription ───────────────────────────────────── */
+
+export async function upgradeSubscriptionAction(
+  priceId: string
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.user) return { error: "Not authenticated" };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("stripe_customer_id")
+    .eq("id", session.user.id)
+    .single();
+
+  if (!profile?.stripe_customer_id) return { error: "No active customer found." };
+
+  const stripe = getStripe();
+
+  // Find active subscription
+  const subscriptions = await stripe.subscriptions.list({
+    customer: profile.stripe_customer_id,
+    status: "active",
+    limit: 1,
+  });
+
+  if (!subscriptions.data.length) return { error: "No active subscription found to upgrade." };
+
+  const currentSub = subscriptions.data[0] as any;
+  const remainingSeconds = currentSub.current_period_end - Math.floor(Date.now() / 1000);
+  
+  // New billing cycle: 30 days + remaining days
+  // trial_end will defer the next charge
+  const nextBillingSeconds = Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) + Math.max(0, remainingSeconds);
+
+  try {
+    const updatedSub = await stripe.subscriptions.update(currentSub.id, {
+      items: [
+        {
+          id: currentSub.items.data[0].id,
+          price: priceId,
+        },
+      ],
+      trial_end: nextBillingSeconds,
+      proration_behavior: "none", // As requested to just add days and start billing after them
+    });
+
+    await upsertSubscriptionFromStripe(
+      updatedSub,
+      profile.stripe_customer_id,
+      session.user.id
+    );
+
+    return { ok: true };
+  } catch (err: any) {
+    console.error("[Upgrade Action Error]", err);
+    return { error: err.message || "Could not upgrade." };
+  }
+}

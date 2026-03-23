@@ -10,6 +10,7 @@ import {
   createBillingPortalAction,
   confirmCheckoutSessionAction,
   syncSubscriptionAction,
+  upgradeSubscriptionAction,
 } from "./actions";
 
 type SubscriptionData = {
@@ -132,6 +133,18 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     }
   }
 
+  async function handleUpgrade(priceId: string) {
+    setLoading(priceId);
+    const result = await upgradeSubscriptionAction(priceId);
+    setLoading(null);
+    if (result.ok) {
+      toast.success(t("activated"));
+      router.refresh();
+    } else {
+      toast.error(result.error ?? t("genericError"));
+    }
+  }
+
   const isActive =
     subscription?.status === "active" || subscription?.status === "trialing";
 
@@ -156,7 +169,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     const currentTier = tiers.find(t => t.name.toLowerCase() === subscription.plan_name.toLowerCase());
 
     return (
-      <div className="max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           {t("title")}
         </h1>
@@ -235,6 +248,104 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
             >
               {loading === "manage" ? t("opening") : t("billingPortal")}
             </button>
+          </div>
+        </div>
+
+        {/* Upgrade / Change Plan Section */}
+        <div className="mt-16">
+          <div className="text-center mb-10">
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">
+              {t("upgradeSubtitle")}
+            </h2>
+            <div className="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100 inline-flex items-center gap-3">
+               <div className="size-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <i className="las la-clock text-lg" />
+               </div>
+               <p className="text-sm text-emerald-800 font-medium">
+                 {t("daysAdded", { days: days ?? 0 })}
+               </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {tiers.map((tier) => {
+              const isAnnual = billingToggle === "annual";
+              const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
+              const priceId = isAnnual ? tier.annualPriceId : tier.monthlyPriceId;
+              const periodLabel = isAnnual ? "/year" : "/mo";
+              
+              const isCurrent = subscription.stripe_price_id === priceId;
+
+              return (
+                <div
+                  key={tier.name}
+                  className={`p-6 rounded-2xl border-2 transition-all relative ${
+                    isCurrent
+                      ? "border-emerald-500 bg-emerald-50/30"
+                      : tier.recommended
+                      ? "border-[#134e4a] bg-white shadow-2xl"
+                      : "border-gray-200 bg-white hover:border-[#134e4a] hover:shadow-xl"
+                  }`}
+                >
+                  {isCurrent && (
+                    <div className="absolute -top-3.5 right-6 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-sm">
+                      {t("currentPlanBadge")}
+                    </div>
+                  )}
+                  {!isCurrent && tier.recommended && (
+                    <div className="absolute -top-3.5 right-6 bg-[#134e4a] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full">
+                      {t("recommended")}
+                    </div>
+                  )}
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    {tier.name}
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-4">{tier.description}</p>
+                  <div className="text-3xl font-extrabold text-[#134e4a] mb-6">
+                    {price}€
+                    <span className="text-sm text-gray-400 font-medium">
+                      {" "}
+                      {periodLabel}
+                    </span>
+                  </div>
+                  
+                  <ul className="space-y-2.5 mb-6">
+                    {tier.features.map((f) => (
+                      <li
+                        key={f}
+                        className="flex items-center gap-2 text-sm text-gray-600"
+                      >
+                        <i
+                          className={`las la-check-circle text-base shrink-0 ${isCurrent ? "text-emerald-500" : "text-teal-500"}`}
+                          aria-hidden
+                        />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {!isCurrent && (
+                    <button
+                      type="button"
+                      onClick={() => handleUpgrade(priceId)}
+                      disabled={loading !== null}
+                      className={`w-full py-3 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 ${
+                        tier.recommended
+                          ? "bg-[#134e4a] text-white hover:bg-[#115e59]"
+                          : "border-2 border-[#134e4a] text-[#134e4a] hover:bg-teal-50"
+                      }`}
+                    >
+                      {loading === priceId ? t("upgrading") : t("upgradeTo", { tier: tier.name })}
+                    </button>
+                  )}
+                  {isCurrent && (
+                    <div className="w-full py-3 rounded-xl border-2 border-emerald-200 text-emerald-600 text-sm font-bold text-center">
+                      {t("currentPlanBadge")}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
