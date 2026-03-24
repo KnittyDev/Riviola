@@ -173,7 +173,8 @@
     "companyPanel": "Company panel",
     "logout": "Logout",
     "closeMenu": "Close menu",
-    "support": "Support & Help"
+    "support": "Support & Help",
+    "wallet": "Wallet & Balance"
   },
   "Subscription": {
     "recommended": "Recommended",
@@ -275,6 +276,29 @@
     "successMessage": "Your support ticket has been sent successfully.",
     "errorMessage": "An error occurred while sending the ticket.",
     "cancel": "Cancel"
+  },
+  "Wallet": {
+    "title": "Wallet",
+    "subtitle": "Manage your company balance and withdrawals.",
+    "balance": "Company Balance",
+    "withdraw": "Request Withdrawal",
+    "iban": "IBAN",
+    "bankName": "Bank Name",
+    "bank": "Bank",
+    "amount": "Amount",
+    "status": "Status",
+    "date": "Date",
+    "note": "Note",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "requests": "Withdrawal Requests",
+    "noRequests": "No withdrawal requests yet.",
+    "insufficientBalance": "Insufficient balance.",
+    "successRequest": "Withdrawal request submitted successfully.",
+    "errorRequest": "Failed to submit request.",
+    "cancel": "Cancel",
+    "sending": "Sending..."
   },
   "Requests": {
     "title": "Investor requests",

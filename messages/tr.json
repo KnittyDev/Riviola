@@ -172,7 +172,8 @@
     "companyPanel": "Şirket paneli",
     "logout": "Çıkış Yap",
     "closeMenu": "Menüyü kapat",
-    "support": "Destek & Yardım"
+    "support": "Destek & Yardım",
+    "wallet": "Cüzdan & Bakiye"
   },
   "Subscription": {
     "recommended": "Önerilen",
@@ -276,6 +277,29 @@
     "successMessage": "Destek talebiniz başarıyla iletildi.",
     "errorMessage": "Talep gönderilirken bir hata oluştu.",
     "cancel": "İptal"
+  },
+  "Wallet": {
+    "title": "Cüzdan",
+    "subtitle": "Şirket bakiyenizi yönetin ve para çekim talebi oluşturun.",
+    "balance": "Şirket Bakiyesi",
+    "withdraw": "Para Çekim Talebi",
+    "iban": "IBAN",
+    "bankName": "Banka Adı",
+    "bank": "Banka",
+    "amount": "Miktar",
+    "status": "Durum",
+    "date": "Tarih",
+    "note": "Not",
+    "pending": "Beklemede",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi",
+    "requests": "Para Çekim Talepleri",
+    "noRequests": "Henüz çekim talebiniz bulunmuyor.",
+    "insufficientBalance": "Yetersiz bakiye.",
+    "successRequest": "Para çekim talebi başarıyla oluşturuldu.",
+    "errorRequest": "Talep oluşturulurken bir hata oluştu.",
+    "cancel": "İptal",
+    "sending": "Gönderiliyor..."
   },
   "Requests": {
     "title": "Yatırımcı talepleri",

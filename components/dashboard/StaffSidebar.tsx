@@ -14,7 +14,8 @@ const navItems = [
   { href: "/dashboard/staff/investors", labelKey: "investors", icon: "las la-user-friends" },
   { href: "/dashboard/staff/requests", labelKey: "requests", icon: "las la-tasks", premium: true },
   { href: "/dashboard/staff/aidat-payments", labelKey: "duesPayments", icon: "las la-receipt" },
-  { href: "/dashboard/staff/purchase-payments", labelKey: "purchasePayments", icon: "las la-wallet" },
+  { href: "/dashboard/staff/purchase-payments", labelKey: "purchasePayments", icon: "las la-money-bill-wave" },
+  { href: "/dashboard/staff/wallet", labelKey: "wallet", icon: "las la-wallet" },
   { href: "/dashboard/staff/subscription", labelKey: "subscription", icon: "las la-credit-card" },
   { href: "/dashboard/staff/support", labelKey: "support", icon: "las la-headset" },
 ];
