@@ -29,9 +29,17 @@ export default function WalletClient({
   const t = useTranslations("Wallet");
   const router = useRouter();
   const [amount, setAmount] = useState("");
+  const [currency, setCurrency] = useState("EUR");
   const [submitting, setSubmitting] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const currencies = [
+    { code: "EUR", symbol: "€" },
+    { code: "USD", symbol: "$" },
+    { code: "TRY", symbol: "₺" },
+    { code: "GBP", symbol: "£" }
+  ];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,19 +51,23 @@ export default function WalletClient({
       return;
     }
 
+    if (!currency) {
+      toast.error("Please select a currency");
+      return;
+    }
+
     setSubmitting(true);
     const supabase = createClient();
 
-    // 1. Withdrawal request using default company IBAN
-
-    // 2. Create request for it
+    // Create request with selected currency
     const { error } = await createWithdrawalRequest(
       supabase,
       companyId,
       profileId,
       withdrawAmount,
       iban,
-      bankName
+      bankName,
+      currency
     );
 
     if (error) {
@@ -69,7 +81,7 @@ export default function WalletClient({
     setSubmitting(false);
     setIsSuccess(true);
 
-    // Auto close after 3 seconds
+    // Auto close after 2.5 seconds
     setTimeout(() => {
       setIsSuccess(false);
       setShowWithdraw(false);
@@ -77,28 +89,35 @@ export default function WalletClient({
     }, 2500);
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Balance Card */}
-      <div className="bg-[#134e4a] rounded-[2rem] p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden group">
-        <div className="absolute -right-16 -top-16 size-64 bg-white/5 rounded-full blur-3xl transition-transform group-hover:scale-110 duration-700" />
-        <div className="absolute -left-16 -bottom-16 size-64 bg-teal-400/10 rounded-full blur-3xl transition-transform group-hover:scale-110 duration-700" />
+  const getCurrencySymbol = (code: string) => {
+    return currencies.find(c => c.code === code)?.symbol || code;
+  };
 
-        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+  return (
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Balance Card */}
+      <div className="bg-[#134e4a] rounded-[3rem] p-10 sm:p-14 text-white shadow-2xl relative overflow-hidden group border border-white/10">
+        <div className="absolute -right-20 -top-20 size-80 bg-white/5 rounded-full blur-3xl transition-transform group-hover:scale-110 duration-1000" />
+        <div className="absolute -left-20 -bottom-20 size-80 bg-teal-400/10 rounded-full blur-3xl transition-transform group-hover:scale-110 duration-1000" />
+
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-10">
           <div>
-            <p className="text-teal-200/80 font-bold uppercase tracking-widest text-[10px] sm:text-xs mb-2">{t("balance")}</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl sm:text-6xl font-black tracking-tighter">
+            <div className="flex items-center gap-3 mb-3">
+               <div className="size-2 bg-teal-400 rounded-full animate-pulse" />
+               <p className="text-teal-200/60 font-black uppercase tracking-[0.2em] text-[10px] sm:text-xs">{t("balance")}</p>
+            </div>
+            <div className="flex items-baseline gap-3">
+              <span className="text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm">
                 {balance.toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 2 })}
               </span>
-              <span className="text-2xl sm:text-3xl font-bold opacity-60">EUR</span>
+              <span className="text-2xl sm:text-3xl font-black opacity-30 tracking-widest">EUR</span>
             </div>
           </div>
           <button
             onClick={() => setShowWithdraw(!showWithdraw)}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-[#134e4a] font-black hover:bg-teal-50 transition-all hover:scale-105 shadow-xl shadow-black/10 active:scale-95 text-sm sm:text-base whitespace-nowrap"
+            className="inline-flex items-center gap-3 px-10 py-5 rounded-[2rem] bg-white text-[#134e4a] font-black hover:bg-teal-50 transition-all hover:scale-105 shadow-2xl shadow-black/20 active:scale-95 text-sm sm:text-base whitespace-nowrap group/btn"
           >
-            <i className={`las ${showWithdraw ? 'la-times' : 'la-arrow-up'} text-xl`} />
+            <i className={`las ${showWithdraw ? 'la-times' : 'la-arrow-up'} text-xl group-hover/btn:rotate-12 transition-transform`} />
             {showWithdraw ? t("cancel") : t("withdraw")}
           </button>
         </div>
@@ -106,53 +125,83 @@ export default function WalletClient({
 
       {/* Withdrawal Form */}
       {showWithdraw && !isSuccess && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-[2rem] border border-gray-100 p-8 sm:p-10 shadow-xl space-y-8 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div>
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">{t("amount")}</label>
-                <div className="relative">
-                  <input
-                    required
-                    type="number"
-                    step="0.01"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/10 outline-none transition-all font-bold text-lg"
-                    placeholder="0.00"
-                  />
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#134e4a] font-black text-lg">€</div>
+        <form onSubmit={handleSubmit} className="bg-white rounded-[3rem] border border-gray-100 p-10 sm:p-14 shadow-2xl space-y-10 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3 pl-1">Target Currency</label>
+                   <div className="relative group">
+                      <select
+                        required
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        className="w-full pl-12 pr-4 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/30 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-black text-gray-900 appearance-none shadow-sm group-hover:bg-gray-50"
+                      >
+                        {currencies.map((c) => (
+                           <option key={c.code} value={c.code}>{c.code} ({c.symbol})</option>
+                        ))}
+                      </select>
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
+                         <i className="las la-globe text-xl" />
+                      </div>
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:translate-y-0.5 transition-transform">
+                         <i className="las la-angle-down" />
+                      </div>
+                   </div>
+                </div>
+
+                <div>
+                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3 pl-1">{t("amount")}</label>
+                   <div className="relative group">
+                      <input
+                        required
+                        type="number"
+                        step="0.01"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="w-full pl-12 pr-4 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/30 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-black text-gray-900 shadow-sm group-hover:bg-gray-50"
+                        placeholder="0.00"
+                      />
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] font-black text-xl pointer-events-none">
+                        {getCurrencySymbol(currency)}
+                      </div>
+                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t("iban")}</label>
-                  <p className="font-mono text-sm font-bold text-gray-700 truncate">{iban || "—"}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="p-6 bg-gray-50/80 rounded-3xl border border-gray-100/50 backdrop-blur-sm shadow-inner group">
+                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">{t("iban")}</label>
+                  <p className="font-mono text-xs font-black text-gray-800 break-all leading-relaxed group-hover:text-[#134e4a] transition-colors">{iban || "—"}</p>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Country</label>
-                  <p className="text-sm font-bold text-gray-700">{country || "—"}</p>
+                <div className="p-6 bg-gray-50/80 rounded-3xl border border-gray-100/50 backdrop-blur-sm shadow-inner group">
+                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Country</label>
+                  <p className="text-[11px] font-black text-gray-800 uppercase tracking-widest group-hover:text-[#134e4a] transition-colors">{country || "—"}</p>
                 </div>
               </div>
 
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{t("bank")}</label>
-                <p className="text-sm font-bold text-gray-700">{bankName || "—"}</p>
+              <div className="p-6 bg-gray-50/80 rounded-3xl border border-gray-100/50 backdrop-blur-sm shadow-inner group">
+                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">{t("bank")}</label>
+                <p className="text-sm font-black text-gray-800 group-hover:text-[#134e4a] transition-colors">{bankName || "—"}</p>
               </div>
             </div>
 
-            <div className="bg-gray-50/50 rounded-3xl p-8 border border-gray-100 flex flex-col justify-between">
-              <div>
-                <h3 className="text-[#134e4a] font-black uppercase tracking-widest text-xs mb-4">Security Info</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">
-                  Withdrawal requests are typically processed within 1-3 business days. Please ensure your IBAN and Country details are correct to avoid delays.
+            <div className="bg-[#134e4a]/5 rounded-[3rem] p-10 border border-[#134e4a]/10 flex flex-col justify-between relative overflow-hidden group/info">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#134e4a]/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover/info:scale-110 transition-transform duration-700" />
+              <div className="relative">
+                <div className="size-14 bg-[#134e4a] rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl shadow-[#134e4a]/20">
+                   <i className="las la-shield-alt text-2xl" />
+                </div>
+                <h3 className="text-[#134e4a] font-black uppercase tracking-[0.2em] text-xs mb-4">Transfer Protocols</h3>
+                <p className="text-gray-500 text-sm leading-relaxed font-medium font-inter">
+                  Requests are verified through Riviola global settlement protocols. Processing typically takes <span className="text-[#134e4a] font-black">1-3 business days</span>. Multi-currency settlements are executed at the spot rate during processing.
                 </p>
               </div>
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full mt-8 py-4 rounded-2xl bg-[#134e4a] text-white font-black hover:bg-[#115e59] disabled:opacity-50 transition-all shadow-lg shadow-[#134e4a]/20"
+                className="w-full mt-10 py-5 rounded-[2rem] bg-[#134e4a] text-white font-black hover:bg-[#115e59] disabled:opacity-50 transition-all shadow-2xl shadow-[#134e4a]/30 hover:shadow-[#134e4a]/50 active:scale-[0.98] uppercase text-xs tracking-[0.2em]"
               >
                 {submitting ? t("sending") : t("withdraw")}
               </button>
@@ -163,68 +212,89 @@ export default function WalletClient({
 
       {/* Success Animation View */}
       {isSuccess && (
-        <div className="bg-white rounded-[2rem] border-2 border-emerald-100 p-20 shadow-xl flex flex-col items-center justify-center space-y-6 animate-in zoom-in-95 duration-500">
+        <div className="bg-white rounded-[3rem] border-2 border-emerald-100 p-24 shadow-2xl flex flex-col items-center justify-center space-y-8 animate-in zoom-in-95 duration-700">
           <div className="relative">
-            <div className="absolute inset-0 bg-emerald-400/20 rounded-full blur-2xl animate-pulse" />
-            <div className="size-24 rounded-full bg-emerald-500 text-white flex items-center justify-center relative shadow-lg shadow-emerald-500/30">
-              <i className="las la-check text-5xl animate-in slide-in-from-bottom-2 duration-700 delay-100" />
+            <div className="absolute inset-0 bg-emerald-400/20 rounded-full blur-3xl animate-pulse" />
+            <div className="size-32 rounded-full bg-emerald-500 text-white flex items-center justify-center relative shadow-2xl shadow-emerald-500/40">
+              <i className="las la-check text-6xl animate-in slide-in-from-bottom-4 duration-1000 delay-100" />
             </div>
           </div>
-          <div className="text-center group">
-            <h3 className="text-2xl font-black text-[#134e4a] tracking-tight">{t("successRequest")}</h3>
-            <p className="text-gray-400 text-sm font-bold uppercase tracking-widest mt-2">{t("pending")}...</p>
+          <div className="text-center">
+            <h3 className="text-3xl font-black text-[#134e4a] tracking-tight">{t("successRequest")}</h3>
+            <p className="text-gray-400 text-xs font-black uppercase tracking-[0.3em] mt-4 flex items-center justify-center gap-3">
+               <span className="size-1.5 bg-amber-400 rounded-full animate-bounce" />
+               {t("pending")}...
+            </p>
           </div>
         </div>
       )}
 
       {/* Requests History */}
-      <div className="bg-white rounded-[2rem] border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-extrabold text-gray-900 tracking-tight">{t("requests")}</h2>
+      <div className="bg-white rounded-[3rem] border border-gray-100 shadow-xl shadow-black/5 overflow-hidden">
+        <div className="p-10 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+          <h2 className="text-xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+             <i className="las la-history text-2xl text-orange-600" />
+             {t("requests")}
+          </h2>
+          <span className="bg-gray-100 text-gray-400 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">Global Record</span>
         </div>
 
         {requests.length === 0 ? (
-          <div className="p-20 text-center">
-            <div className="size-20 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center mx-auto mb-6">
-              <i className="las la-history text-4xl" />
+          <div className="p-24 text-center">
+            <div className="size-24 rounded-full bg-gray-50 text-gray-200 flex items-center justify-center mx-auto mb-8 shadow-inner">
+              <i className="las la-inbox text-5xl" />
             </div>
-            <p className="text-gray-500 font-medium text-lg">{t("noRequests")}</p>
+            <p className="text-gray-400 font-black uppercase text-xs tracking-widest">{t("noRequests")}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-100">
-                  <th className="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">{t("amount")}</th>
-                  <th className="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">{t("status")}</th>
-                  <th className="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">{t("iban")}</th>
-                  <th className="px-8 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">{t("date")}</th>
+                <tr className="bg-gray-50/20 border-b border-gray-50">
+                  <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("amount")}</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("status")}</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("iban")}</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">{t("date")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-50 font-inter">
                 {requests.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50/80 transition-colors group">
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-1.5 font-bold text-gray-900">
-                        <span>{Number(r.amount).toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 2 })}</span>
-                        <span className="text-xs opacity-40">EUR</span>
+                  <tr key={r.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-10 py-8">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2 font-black text-gray-900 text-lg tabular-nums">
+                          <span>{getCurrencySymbol(r.currency)}</span>
+                          <span>{Number(r.amount).toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 2 })}</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1 opacity-60">
+                           Settlement: {r.currency || "EUR"}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${r.status === 'Approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                          r.status === 'Rejected' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                            'bg-amber-50 text-amber-600 border-amber-100'
+                    <td className="px-10 py-8">
+                      <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${r.status === 'Approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 shadow-emerald-500/5' :
+                          r.status === 'Rejected' ? 'bg-rose-50 text-rose-600 border-rose-100 shadow-rose-500/5' :
+                            'bg-amber-50 text-amber-600 border-amber-100 shadow-amber-500/5'
                         }`}>
                         {t(r.status.toLowerCase())}
                       </span>
                     </td>
-                    <td className="px-8 py-6 text-sm text-gray-500 font-mono tracking-tight">{r.iban}</td>
-                    <td className="px-8 py-6 text-sm text-gray-500 font-medium">
-                      {new Date(r.created_at).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric"
-                      })}
+                    <td className="px-10 py-8">
+                       <div className="flex flex-col gap-1">
+                          <span className="font-mono text-[11px] font-black text-gray-600 bg-gray-50 px-2.5 py-1 rounded-lg w-fit group-hover:bg-[#134e4a]/5 group-hover:text-[#134e4a] transition-colors">{r.iban}</span>
+                        </div>
+                    </td>
+                    <td className="px-10 py-8 text-right">
+                       <div className="flex flex-col items-end">
+                          <span className="text-sm font-black text-gray-900 leading-tight">
+                            {new Date(r.created_at).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric"
+                            })}
+                          </span>
+                          <span className="text-[10px] text-gray-300 font-bold uppercase tracking-tighter mt-1">Ref: {r.id.slice(0, 8)}</span>
+                       </div>
                     </td>
                   </tr>
                 ))}

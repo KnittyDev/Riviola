@@ -174,7 +174,13 @@
     "logout": "Logout",
     "closeMenu": "Close menu",
     "support": "Support & Help",
-    "wallet": "Wallet & Balance"
+    "wallet": "Wallet & Balance",
+    "adminPanel": "Admin Panel",
+    "companies": "Companies",
+    "users": "Users",
+    "withdrawRequests": "Withdrawal Requests",
+    "supportTickets": "Support Tickets",
+    "globalSettings": "Global Settings"
   },
   "Subscription": {
     "recommended": "Recommended",

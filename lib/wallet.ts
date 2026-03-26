@@ -8,6 +8,7 @@ export type WithdrawalRequest = {
   status: "Pending" | "Approved" | "Rejected";
   iban: string;
   bank_name: string | null;
+  currency: string;
   note: string | null;
   created_at: string;
   updated_at: string;
@@ -48,6 +49,7 @@ export async function createWithdrawalRequest(
   amount: number,
   iban: string,
   bankName: string,
+  currency: string,
   note?: string
 ) {
   // 1. Check balance
@@ -65,6 +67,7 @@ export async function createWithdrawalRequest(
       amount,
       iban,
       bank_name: bankName,
+      currency,
       note,
       status: "Pending"
     })
@@ -84,6 +87,55 @@ export async function createWithdrawalRequest(
     
   if (updateError) {
     await supabase.from("withdrawal_requests").delete().eq("id", data.id);
+    return { error: updateError.message };
+  }
+
+  return { ok: true };
+}
+
+export async function updateWithdrawalStatus(
+  supabase: SupabaseClient,
+  requestId: string,
+  newStatus: "Approved" | "Rejected"
+) {
+  // 1. Get original request
+  const { data: request, error: fetchError } = await supabase
+    .from("withdrawal_requests")
+    .select("*, companies(balance)")
+    .eq("id", requestId)
+    .single();
+
+  if (fetchError || !request) {
+    return { error: fetchError?.message || "Request not found" };
+  }
+
+  // 2. If already processed, return
+  if (request.status !== "Pending") {
+    return { error: "Request already processed" };
+  }
+
+  // 3. If rejected, refund the company balance
+  if (newStatus === "Rejected") {
+    const currentBalance = Number(request.companies.balance);
+    const refundAmount = Number(request.amount);
+    
+    const { error: refundError } = await supabase
+      .from("companies")
+      .update({ balance: currentBalance + refundAmount })
+      .eq("id", request.company_id);
+
+    if (refundError) {
+      return { error: refundError.message };
+    }
+  }
+
+  // 4. Update the request status
+  const { error: updateError } = await supabase
+    .from("withdrawal_requests")
+    .update({ status: newStatus })
+    .eq("id", requestId);
+
+  if (updateError) {
     return { error: updateError.message };
   }
 

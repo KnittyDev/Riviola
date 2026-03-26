@@ -49,8 +49,73 @@ function generateQrDataUrl(url: string): Promise<string> {
  */
 export async function downloadDuesPdf(
   fees: InvestorDuesFeeItem[],
-  company: CompanyForInvoice | null = null
+  company: CompanyForInvoice | null = null,
+  locale: string = "en"
 ): Promise<void> {
+  const i18n = {
+    en: {
+      title: "Dues & Fees Summary",
+      generatedOn: "Generated on",
+      qrText: "Scan the QR code using your phone to view your dues and payments.",
+      support: "For support:",
+      noDues: "No dues recorded yet.",
+      table: {
+        buildingUnit: "Building / Unit",
+        period: "Period",
+        dueDate: "Due date",
+        amount: "Amount",
+        status: "Status",
+        invoiceId: "Invoice ID",
+        paidOn: "Paid on",
+      },
+      status: {
+        paid: "Paid",
+        overdue: "Overdue",
+        due: "Due",
+      },
+      summary: {
+        title: "Summary",
+        totalItems: "Total items:",
+        paid: "Paid:",
+        dueOverdue: "Due/Overdue:",
+        amountStillDue: "Amount still due:",
+      },
+      footerSuccess: "The payment was successfully completed.",
+    },
+    tr: {
+      title: "Aidat ve Borç Özeti",
+      generatedOn: "Olusturulma tarihi",
+      qrText: "Aidat ve ödemelerinizi görüntülemek için telefonunuzla QR kodu tarayın.",
+      support: "Destek için:",
+      noDues: "Henüz kayıtlı bir aidat bulunmuyor.",
+      table: {
+        buildingUnit: "Bina / Daire",
+        period: "Dönem",
+        dueDate: "Son Ödeme",
+        amount: "Miktar",
+        status: "Durum",
+        invoiceId: "Fatura No",
+        paidOn: "Ödeme Tarihi",
+      },
+      status: {
+        paid: "Ödendi",
+        overdue: "Gecikmiş",
+        due: "Bekliyor",
+      },
+      summary: {
+        title: "Özet",
+        totalItems: "Toplam:",
+        paid: "Ödenen:",
+        dueOverdue: "Bekleyen:",
+        amountStillDue: "Kalan borç:",
+      },
+      footerSuccess: "Ödeme başarıyla gerçekleştirildi.",
+    },
+  };
+
+  const t = locale === "tr" ? i18n.tr : i18n.en;
+  const lang = locale === "tr" ? "tr-TR" : "en-GB";
+
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const margin = 14;
   let y = 14;
@@ -84,12 +149,13 @@ export async function downloadDuesPdf(
 
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("Dues & Fees Summary", logoLeft, y);
+  doc.text(t.title, logoLeft, y);
   y += 8;
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.text(`Generated on ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}`, margin, y);
+  const dateStr = new Date().toLocaleDateString(lang, { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  doc.text(`${t.generatedOn} ${dateStr}`, margin, y);
   y += 12;
 
   let qrDataUrl: string | null = null;
@@ -109,15 +175,15 @@ export async function downloadDuesPdf(
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100, 100, 100);
-      doc.text("Scan the QR code using your phone to view your dues and payments.", pageWidth / 2, footerY + qrSize + 5, { align: "center" });
-      doc.text("For support: " + SUPPORT_EMAIL, pageWidth / 2, footerY + qrSize + 9, { align: "center" });
+      doc.text(t.qrText, pageWidth / 2, footerY + qrSize + 5, { align: "center" });
+      doc.text(`${t.support} ` + SUPPORT_EMAIL, pageWidth / 2, footerY + qrSize + 9, { align: "center" });
       doc.setTextColor(0, 0, 0);
     }
   }
 
   if (fees.length === 0) {
     doc.setFontSize(11);
-    doc.text("No dues recorded yet.", margin, y);
+    doc.text(t.noDues, margin, y);
     drawPdfFooter(doc, qrDataUrl);
     doc.save("dues-summary.pdf");
     return;
@@ -128,13 +194,13 @@ export async function downloadDuesPdf(
       ? `dues-${fees[0].periodKey}-${fees[0].building.replace(/\s+/g, "-")}.pdf`
       : "dues-summary.pdf";
 
-  const headers = ["Building / Unit", "Period", "Due date", "Amount", "Status", "Invoice ID", "Paid on"];
+  const headers = [t.table.buildingUnit, t.table.period, t.table.dueDate, t.table.amount, t.table.status, t.table.invoiceId, t.table.paidOn];
   const rows = fees.map((f) => [
     `${f.building}\n${f.unit}`,
     f.period,
     f.dueDate,
     f.amountFormatted,
-    f.status === "paid" ? "Paid" : f.status === "overdue" ? "Overdue" : "Due",
+    f.status === "paid" ? t.status.paid : f.status === "overdue" ? t.status.overdue : t.status.due,
     f.status === "paid" && f.payment_number ? f.payment_number : "—",
     f.status === "paid" ? formatPaidAt(f.paid_at) : "—",
   ]);
@@ -181,12 +247,12 @@ export async function downloadDuesPdf(
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("Summary", margin, y);
+  doc.text(t.summary.title, margin, y);
   y += 6;
   doc.setFont("helvetica", "normal");
-  doc.text(`Total items: ${fees.length}  •  Paid: ${paidCount}  •  Due/Overdue: ${dueCount}`, margin, y);
+  doc.text(`${t.summary.totalItems} ${fees.length}  •  ${t.summary.paid} ${paidCount}  •  ${t.summary.dueOverdue} ${dueCount}`, margin, y);
   y += 6;
-  doc.text(`Amount still due: € ${totalDue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, margin, y);
+  doc.text(`${t.summary.amountStillDue} € ${totalDue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, margin, y);
   y += 10;
 
   if (company) {
@@ -202,7 +268,7 @@ export async function downloadDuesPdf(
     y += 6;
     doc.setFontSize(9);
     doc.setTextColor(19, 78, 74);
-    doc.text("The payment was successfully completed.", margin, y);
+    doc.text(t.footerSuccess, margin, y);
     doc.setTextColor(0, 0, 0);
   }
 

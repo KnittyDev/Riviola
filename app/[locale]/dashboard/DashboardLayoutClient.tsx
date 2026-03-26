@@ -4,6 +4,7 @@ import { usePathname } from "@/i18n/routing";
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { StaffSidebar } from "@/components/dashboard/StaffSidebar";
+import { AdminSidebar } from "@/components/dashboard/AdminSidebar";
 
 export function DashboardLayoutClient({
   children,
@@ -27,11 +28,18 @@ export function DashboardLayoutClient({
   const pathname = usePathname();
   const lowerRole = (role || "investor").toLowerCase();
   const isStaff = pathname?.toLowerCase().includes("/staff") && (lowerRole === "staff" || lowerRole === "admin");
+  const isAdmin = pathname?.toLowerCase().includes("/admin") && lowerRole === "admin";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-[#f6f8f8]">
-      {isStaff ? (
+      {isAdmin ? (
+         <AdminSidebar
+           fullName={fullName}
+           open={mobileMenuOpen}
+           onClose={() => setMobileMenuOpen(false)}
+         />
+      ) : isStaff ? (
         <StaffSidebar
           companyName={companyName}
           companyLogoUrl={companyLogoUrl}
@@ -60,7 +68,7 @@ export function DashboardLayoutClient({
           <i className="las la-bars text-xl" aria-hidden />
         </button>
         <span className="text-base font-bold text-gray-900 truncate max-w-[180px]">
-          {isStaff ? companyName : "Dashboard"}
+          {isAdmin ? "Riviola HQ" : isStaff ? companyName : "Dashboard"}
         </span>
         <div className="w-10" aria-hidden />
       </div>

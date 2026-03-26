@@ -193,7 +193,7 @@ export function FeesPageClient({ fees, company }: Props) {
           <div className="flex gap-2 items-center">
             <button
               type="button"
-              onClick={() => downloadDuesPdf(fees, company)}
+              onClick={() => downloadDuesPdf(fees, company, locale)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:border-[#134e4a] hover:text-[#134e4a] transition-colors"
               title={t("table.downloadInvoice")}
             >
@@ -284,7 +284,7 @@ export function FeesPageClient({ fees, company }: Props) {
                       <td className="px-6 py-4">
                         <button
                           type="button"
-                          onClick={() => downloadDuesPdf([row], company)}
+                          onClick={() => downloadDuesPdf([row], company, locale)}
                           className="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#134e4a] text-xs font-medium transition-colors"
                           title={`${t("table.invoice")}: ${row.period} – ${row.building}`}
                         >

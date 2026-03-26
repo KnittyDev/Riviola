@@ -173,7 +173,13 @@
     "logout": "Çıkış Yap",
     "closeMenu": "Menüyü kapat",
     "support": "Destek & Yardım",
-    "wallet": "Cüzdan & Bakiye"
+    "wallet": "Cüzdan & Bakiye",
+    "adminPanel": "Admin Paneli",
+    "companies": "Şirketler",
+    "users": "Kullanıcılar",
+    "withdrawRequests": "Para Çekim Talepleri",
+    "supportTickets": "Destek Talepleri",
+    "globalSettings": "Genel Ayarlar"
   },
   "Subscription": {
     "recommended": "Önerilen",
