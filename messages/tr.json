@@ -524,6 +524,7 @@
       "type": "Tür",
       "delivery": "Teslim",
       "edit": "Düzenle",
+      "searchPlaceholder": "Yatırımcı ara...",
       "types": {
         "buyer": "Alıcı",
         "renter": "Kiracı"

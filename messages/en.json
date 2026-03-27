@@ -522,6 +522,7 @@
       "type": "Type",
       "delivery": "Delivery",
       "edit": "Edit",
+      "searchPlaceholder": "Search investors...",
       "types": {
         "buyer": "Buyer",
         "renter": "Renter"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CompanyInvestorPropertyRow } from "@/lib/companyInvestors";
@@ -48,9 +48,27 @@ export function InvestorsTable({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [buildingFilter, setBuildingFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+
   useEffect(() => {
     setEditPhone(editing?.phone ?? "");
   }, [editing]);
+
+  const filteredRows = useMemo(() => {
+    return rows.filter(row => {
+      const matchesSearch = 
+        (row.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+         row.email?.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const matchesBuilding = buildingFilter === "all" || row.building_id === buildingFilter;
+      const matchesType = typeFilter === "all" || row.investor_type === typeFilter;
+
+      return matchesSearch && matchesBuilding && matchesType;
+    });
+  }, [rows, searchTerm, buildingFilter, typeFilter]);
 
   async function handleSave(e: React.FormEvent) {
     if (!editing) return;
@@ -97,107 +115,154 @@ export function InvestorsTable({
     setError(result.error || "Something went wrong");
   }
 
-  // Find the blocks of the building currently being edited
   const currentBuildingBlocks = editing 
     ? (buildings.find(b => b.id === editing.building_id)?.blocks ?? [])
     : [];
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      {/* Filters Section */}
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="relative group/search">
+          <input 
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t("table.searchPlaceholder") || "Search investors..."}
+            className="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 bg-white focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/5 outline-none transition-all shadow-sm"
+          />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/search:text-[#134e4a] transition-colors">
+            <i className="las la-search text-lg" />
+          </div>
+        </div>
+
+        <div className="relative">
+          <select 
+            value={buildingFilter}
+            onChange={(e) => setBuildingFilter(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 bg-white focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/5 outline-none transition-all shadow-sm appearance-none font-semibold text-gray-700 text-sm"
+          >
+            <option value="all">All Projects</option>
+            {buildings.map(b => (
+              <option key={b.id} value={b.id}>{b.name}</option>
+            ))}
+          </select>
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <i className="las la-building text-lg" />
+          </div>
+        </div>
+
+        <div className="relative">
+          <select 
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 bg-white focus:border-[#134e4a] focus:ring-4 focus:ring-[#134e4a]/5 outline-none transition-all shadow-sm appearance-none font-semibold text-gray-700 text-sm"
+          >
+            <option value="all">Any Status</option>
+            <option value="buyer">Buyer</option>
+            <option value="renter">Renter</option>
+          </select>
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <i className="las la-filter text-lg" />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in duration-700">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/80">
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.investor")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.phone")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.project")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.block")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.unit")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.m2")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.type")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {t("table.delivery")}
                 </th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">
+                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
                   {t("table.edit")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {rows.map((row, idx) => (
-                <tr
-                  key={`${row.id}-${idx}`}
-                  className="hover:bg-gray-50/80"
-                >
-                  <td className="px-6 py-4">
-                    <p className="font-semibold text-gray-900">{row.full_name || "—"}</p>
-                    {row.email && (
-                      <a href={`mailto:${row.email}`} className="text-sm text-[#134e4a] hover:underline">
-                        {row.email}
-                      </a>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-700">
-                    {row.phone ? (
-                      <a href={`tel:${row.phone}`} className="text-[#134e4a] hover:underline">
-                        {row.phone}
-                      </a>
-                    ) : "—"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <Link
-                      href={`/dashboard/staff/buildings/${row.building_id}`}
-                      className="text-sm font-medium text-[#134e4a] hover:underline"
-                    >
-                      {row.building_name}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{row.block}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">{row.unit}</td>
-                  <td className="px-6 py-4 text-sm text-gray-700">
-                    {row.area_m2 != null ? `${row.area_m2}` : "—"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
-                      row.investor_type === "renter" 
-                         ? "bg-amber-50 text-amber-700 border-amber-100" 
-                        : "bg-blue-50 text-blue-700 border-blue-100"
-                    }`}>
-                      {row.investor_type === "renter" ? t("table.types.renter") : t("table.types.buyer")}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-700">
-                    {row.delivery_period || "—"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditPhone(row.phone ?? "");
-                        setEditing(row);
-                      }}
-                      className="text-sm font-medium text-[#134e4a] hover:underline"
-                    >
-                      {t("table.edit")}
-                    </button>
-                  </td>
+            <tbody className="divide-y divide-gray-100 font-inter">
+              {filteredRows.length === 0 ? (
+                <tr>
+                   <td colSpan={9} className="px-6 py-12 text-center text-gray-400 italic">No investors matching current filters.</td>
                 </tr>
-              ))}
+              ) : (
+                filteredRows.map((row, idx) => (
+                  <tr
+                    key={`${row.id}-${idx}`}
+                    className="hover:bg-gray-50/50 transition-colors group"
+                  >
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-900 group-hover:text-[#134e4a] transition-colors">{row.full_name || "—"}</span>
+                        {row.email && (
+                          <span className="text-[11px] text-gray-400 font-medium lowercase">
+                            {row.email}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 text-xs font-bold text-gray-600">
+                      {row.phone || "—"}
+                    </td>
+                    <td className="px-6 py-5">
+                      <span className="text-sm font-black text-[#134e4a]/80">
+                        {row.building_name}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 text-sm font-bold text-gray-600">{row.block}</td>
+                    <td className="px-6 py-5 text-sm font-black text-gray-900">{row.unit}</td>
+                    <td className="px-6 py-5 text-sm font-bold text-gray-600">
+                      {row.area_m2 != null ? `${row.area_m2} m²` : "—"}
+                    </td>
+                    <td className="px-6 py-5">
+                      <span className={`inline-flex px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
+                        row.investor_type === "renter" 
+                           ? "bg-amber-50 text-amber-700 border-amber-100" 
+                          : "bg-blue-50 text-blue-700 border-blue-100"
+                      }`}>
+                        {row.investor_type === "renter" ? "Renter" : "Buyer"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 text-xs font-bold text-gray-500 italic">
+                      {row.delivery_period || "—"}
+                    </td>
+                    <td className="px-6 py-5 text-right">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditPhone(row.phone ?? "");
+                          setEditing(row);
+                        }}
+                        className="p-2 rounded-lg bg-gray-50 text-[#134e4a] hover:bg-[#134e4a] hover:text-white transition-all shadow-sm inline-flex items-center justify-center"
+                      >
+                        <i className="las la-pen text-lg" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -205,177 +270,107 @@ export function InvestorsTable({
 
       {editing && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={() => !loading && setEditing(null)}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="edit-investor-title"
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-[2.5rem] shadow-2xl max-w-xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 border-b border-gray-200">
-              <h2 id="edit-investor-title" className="text-lg font-bold text-gray-900">
-                {t("modal.editTitle")}
-              </h2>
-              <p className="text-sm text-gray-500 mt-0.5">
-                {editing.building_name} – {editing.block} / {editing.unit}
-              </p>
+            <div className="p-8 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
+               <div>
+                  <h2 className="text-xl font-black text-gray-900 tracking-tight">
+                    {t("modal.editTitle")}
+                  </h2>
+                  <p className="text-xs text-gray-400 font-black uppercase tracking-widest mt-1">
+                    {editing.building_name} — {editing.block} / {editing.unit}
+                  </p>
+               </div>
+               <button onClick={() => setEditing(null)} className="size-10 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-rose-500 transition-all flex items-center justify-center">
+                  <i className="las la-times text-xl" />
+               </button>
             </div>
-            <form onSubmit={handleSave} className="p-6 space-y-4">
+            
+            <form onSubmit={handleSave} className="p-8 overflow-y-auto space-y-6 custom-scrollbar">
               {error && (
-                <p className="text-red-600 text-sm p-2 rounded-lg bg-red-50" role="alert">
+                <p className="text-red-600 text-[10px] font-black uppercase tracking-widest p-4 rounded-xl bg-red-50 border border-red-100" role="alert">
                   {error}
                 </p>
               )}
-              <div>
-                <label className={labelClass}>{t("modal.fullName")}</label>
-                <input
-                  name="fullName"
-                  type="text"
-                  defaultValue={editing.full_name ?? ""}
-                  className={inputClass}
-                />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.fullName")}</label>
+                    <input name="fullName" type="text" defaultValue={editing.full_name ?? ""} className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.email")}</label>
+                    <input name="email" type="email" defaultValue={editing.email ?? ""} className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                 </div>
               </div>
-              <div>
-                <label className={labelClass}>{t("modal.email")}</label>
-                <input
-                  name="email"
-                  type="email"
-                  defaultValue={editing.email ?? ""}
-                  className={inputClass}
-                />
+
+              <div className="space-y-2">
+                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.phone")}</label>
+                 <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-xl [&_.react-international-phone-input]:!border-2 [&_.react-international-phone-input]:!border-gray-50 [&_.react-international-phone-input]:!bg-gray-50/50 [&_.react-international-phone-input]:!px-4 [&_.react-international-phone-input]:!py-3 [&_.react-international-phone-input]:!font-semibold">
+                   <PhoneInput
+                     defaultCountry="tr"
+                     value={editPhone}
+                     onChange={(value) => setEditPhone(value)}
+                     inputProps={{ id: "phone", name: "phone" }}
+                   />
+                 </div>
               </div>
-              <div>
-                <label className={labelClass}>{t("modal.phone")}</label>
-                <div className="w-full [&_.react-international-phone-input-container]:!w-full [&_.react-international-phone-input]:!w-full [&_.react-international-phone-input]:!rounded-lg [&_.react-international-phone-input]:!border-gray-200 [&_.react-international-phone-input]:!px-3 [&_.react-international-phone-input]:!py-2 [&_.react-international-phone-input]:!text-sm">
-                  <PhoneInput
-                    defaultCountry="tr"
-                    value={editPhone}
-                    onChange={(value) => setEditPhone(value)}
-                    inputProps={{ 
-                      id: "phone", 
-                      name: "phone", 
-                      placeholder: t("modal.phonePlaceholder") || "+90 5xx xxx xx xx" 
-                    }}
-                  />
-                </div>
-                <p className="text-[10px] text-gray-400 mt-1 font-medium italic">
-                  {t("modal.phoneNote")}
-                </p>
-              </div>
-              <div>
-                <label className={labelClass}>{t("modal.investorType")}</label>
-                <select
-                  name="investorType"
-                  defaultValue={editing.investor_type ?? "buyer"}
-                  className={inputClass}
-                >
-                  <option value="buyer">{t("modal.investorTypeOptions.buyer")}</option>
-                  <option value="renter">{t("modal.investorTypeOptions.renter")}</option>
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>{t("modal.block")}</label>
-                  {currentBuildingBlocks.length > 0 ? (
-                    <select
-                      name="block"
-                      defaultValue={editing.block}
-                      required
-                      className={inputClass}
-                    >
-                      {currentBuildingBlocks.map(b => (
-                        <option key={b} value={b}>{b}</option>
-                      ))}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.investorType")}</label>
+                    <select name="investorType" defaultValue={editing.investor_type ?? "buyer"} className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-bold text-sm appearance-none cursor-pointer">
+                       <option value="buyer">Buyer</option>
+                       <option value="renter">Renter</option>
                     </select>
-                  ) : (
-                    <input
-                      name="block"
-                      type="text"
-                      defaultValue={editing.block}
-                      required
-                      className={inputClass}
-                    />
-                  )}
-                </div>
-                <div>
-                  <label className={labelClass}>{t("modal.unit")}</label>
-                  <input
-                    name="unit"
-                    type="text"
-                    defaultValue={editing.unit}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.deliveryPeriod")}</label>
+                    <input name="deliveryPeriod" type="text" defaultValue={editing.delivery_period ?? ""} className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>{t("modal.area")}</label>
-                  <input
-                    name="areaM2"
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    defaultValue={editing.area_m2 ?? ""}
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("modal.deliveryPeriod")}</label>
-                  <input
-                    name="deliveryPeriod"
-                    type="text"
-                    defaultValue={editing.delivery_period ?? ""}
-                    placeholder="Q3 2026"
-                    className={inputClass}
-                  />
-                </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.block")}</label>
+                    <input name="block" type="text" defaultValue={editing.block} required className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">{t("modal.unit")}</label>
+                    <input name="unit" type="text" defaultValue={editing.unit} required className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>{t("modal.purchaseValue")}</label>
-                  <input
-                    name="purchaseValue"
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    defaultValue={editing.purchase_value ?? ""}
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>{t("modal.currency")}</label>
-                  <select
-                    name="purchaseCurrency"
-                    defaultValue={editing.purchase_currency ?? "EUR"}
-                    className={inputClass}
-                  >
-                    {CURRENCIES.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Area (m²)</label>
+                    <input name="areaM2" type="number" step="0.01" defaultValue={editing.area_m2 ?? ""} className="w-full px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Value</label>
+                    <div className="flex gap-2">
+                       <input name="purchaseValue" type="number" step="0.01" defaultValue={editing.purchase_value ?? ""} className="flex-1 px-4 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-semibold" />
+                       <select name="purchaseCurrency" defaultValue={editing.purchase_currency ?? "EUR"} className="w-24 px-2 py-3 rounded-xl border-2 border-gray-50 bg-gray-50/50 outline-none font-bold text-xs">
+                          {CURRENCIES.map(c => <option key={c.value} value={c.value}>{c.value}</option>)}
+                       </select>
+                    </div>
+                 </div>
               </div>
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#134e4a] text-white text-sm font-semibold hover:bg-[#115e59] disabled:opacity-60"
-                >
-                  {loading ? t("modal.saving") : t("modal.save")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => !loading && setEditing(null)}
-                  className="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50"
-                >
-                  {t("modal.cancel")}
-                </button>
+
+              <div className="flex gap-4 pt-4">
+                 <button type="submit" disabled={loading} className="flex-1 py-4 rounded-2xl bg-[#134e4a] text-white font-black uppercase text-xs tracking-[0.2em] hover:bg-[#115e59] shadow-xl shadow-[#134e4a]/20 transition-all active:scale-[0.98]">
+                    {loading ? "Saving..." : "Update Investor Record"}
+                 </button>
+                 <button type="button" onClick={() => setEditing(null)} className="px-8 py-4 rounded-2xl border-2 border-gray-100 font-black uppercase text-xs tracking-widest text-gray-400 hover:bg-gray-50 transition-all">
+                    Cancel
+                 </button>
               </div>
             </form>
           </div>
