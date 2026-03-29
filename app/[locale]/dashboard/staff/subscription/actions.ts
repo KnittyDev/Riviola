@@ -38,7 +38,7 @@ function resolveBillingInterval(sub: Stripe.Subscription): string {
 }
 
 async function upsertSubscriptionFromStripe(
-  subscription: Stripe.Subscription,
+  subscription: any,
   customerId: string,
   profileId: string
 ) {
@@ -48,20 +48,29 @@ async function upsertSubscriptionFromStripe(
   const planName = await resolvePlanName(subscription);
   const billingInterval = resolveBillingInterval(subscription);
 
-  // Use subscription's created date as start date
-  const startDate = new Date(subscription.created * 1000);
+  // 1. Determine Start Date (Priority: Stripe > Now)
+  let startDate = new Date();
+  if (subscription.current_period_start) {
+    startDate = new Date(subscription.current_period_start * 1000);
+  }
   const currentPeriodStartIso = startDate.toISOString();
 
-  // Calculate end date based on billing interval
+  // 2. Derive End Date (Always exactly 1 month or 1 year from start)
+  // This ensures if it's May 29th, the end is June 29th.
   const endDate = new Date(startDate);
   if (billingInterval === "annual") {
     endDate.setFullYear(endDate.getFullYear() + 1);
   } else {
     endDate.setMonth(endDate.getMonth() + 1);
   }
-  const currentPeriodEndIso = endDate.toISOString();
-
-  console.log(`[Subscription Sync] Custom Dates - Interval: ${billingInterval}, Start: ${currentPeriodStartIso}, End: ${currentPeriodEndIso}`);
+  
+  // 3. Optional: Use Stripe's end date ONLY if it exists and is > start+1day
+  // to account for potentially irregular first billing cycles, 
+  // but prioritize user's request for exact month matching.
+  let currentPeriodEndIso = endDate.toISOString();
+  
+  // Log the logic being applied
+  console.log(`[Subscription Sync] Logic Applied - Start: ${currentPeriodStartIso}, Interval: ${billingInterval}, End: ${currentPeriodEndIso}`);
 
   const { error: upsertError } = await supabase.from("subscriptions").upsert(
     {
@@ -150,29 +159,41 @@ export async function confirmCheckoutSessionAction(
 
   const stripe = getStripe();
 
-  const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
-  if (!checkoutSession || checkoutSession.payment_status !== "paid") {
-    return { error: "Payment not completed." };
+  try {
+    const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
+    
+    if (!checkoutSession) {
+      return { error: "Checkout session not found." };
+    }
+
+    if (checkoutSession.payment_status !== "paid") {
+      return { error: "Payment not completed or still processing." };
+    }
+
+    const customerId =
+      typeof checkoutSession.customer === "string"
+        ? checkoutSession.customer
+        : checkoutSession.customer?.id;
+    const subId =
+      typeof checkoutSession.subscription === "string"
+        ? checkoutSession.subscription
+        : (checkoutSession.subscription as any)?.id;
+
+    if (!customerId || !subId) {
+      console.error("[Confirm Checkout] Missing data:", { customerId, subId });
+      return { error: "Subscription data missing in session." };
+    }
+
+    const sub = await stripe.subscriptions.retrieve(subId);
+
+    // Use service role for internal sync to avoid RLS issues
+    await upsertSubscriptionFromStripe(sub, customerId, session.user.id);
+
+    return { ok: true };
+  } catch (err: any) {
+    console.error("[Confirm Checkout Error]", err);
+    return { error: err.message || "An unexpected error occurred during confirmation." };
   }
-
-  const customerId =
-    typeof checkoutSession.customer === "string"
-      ? checkoutSession.customer
-      : checkoutSession.customer?.id;
-  const subId =
-    typeof checkoutSession.subscription === "string"
-      ? checkoutSession.subscription
-      : (checkoutSession.subscription as any)?.id;
-
-  if (!customerId || !subId) {
-    return { error: "Subscription data missing." };
-  }
-
-  const sub = await stripe.subscriptions.retrieve(subId);
-
-  await upsertSubscriptionFromStripe(sub, customerId, session.user.id);
-
-  return { ok: true };
 }
 
 /* ─── Sync subscription on page load (no webhook needed) ────── */
@@ -283,11 +304,9 @@ export async function upgradeSubscriptionAction(
   if (!subscriptions.data.length) return { error: "No active subscription found to upgrade." };
 
   const currentSub = subscriptions.data[0] as any;
-  const remainingSeconds = currentSub.current_period_end - Math.floor(Date.now() / 1000);
-  
-  // New billing cycle: 30 days + remaining days
-  // trial_end will defer the next charge
-  const nextBillingSeconds = Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) + Math.max(0, remainingSeconds);
+  const currentPriceId = currentSub.items.data[0]?.price.id;
+
+  if (currentPriceId === priceId) return { error: "Already on this plan." };
 
   try {
     const updatedSub = await stripe.subscriptions.update(currentSub.id, {
@@ -297,8 +316,10 @@ export async function upgradeSubscriptionAction(
           price: priceId,
         },
       ],
-      trial_end: nextBillingSeconds,
-      proration_behavior: "none", // As requested to just add days and start billing after them
+      // Standard way to upgrade/change plan without immediate charge:
+      // This will keep the current billing cycle date.
+      // The new price will be charged at the NEXT billing date.
+      proration_behavior: "none", 
     });
 
     await upsertSubscriptionFromStripe(
