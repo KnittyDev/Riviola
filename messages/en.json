@@ -184,6 +184,7 @@
   },
   "Subscription": {
     "recommended": "Recommended",
+    "currency": "Currency",
     "title": "Subscription",
     "subtitle": "Plan and billing",
     "choosePlan": "Choose your plan",
@@ -509,9 +510,11 @@
   },
   "Investors": {
     "title": "Investors",
-    "createAccount": "Create investor account",
-    "noProperties": "No investor properties yet.",
-    "noPropertiesSubtitle": "When investors are assigned to units in your company's buildings, they will appear here.",
+    "subtitle": "Manage and oversee your real estate investors with precise asset assignments.",
+    "createAccount": "Account Registration",
+    "noProperties": "No properties assigned.",
+    "noPropertiesSubtitle": "Investors will appear here once they are assigned to units in your company buildings.",
+    "createFirstInvestor": "Create Your First Investor",
     "table": {
       "investor": "Investor",
       "phone": "Phone",
@@ -523,6 +526,15 @@
       "delivery": "Delivery",
       "edit": "Edit",
       "searchPlaceholder": "Search investors...",
+      "allProjects": "Global Project View",
+      "anyStatus": "Any Investment Status",
+      "premierBuyer": "Premier Buyer",
+      "verifiedRenter": "Verified Renter",
+      "identity": "Identity / Contact",
+      "assignment": "Project Assignment",
+      "unitDetail": "Unit Detail",
+      "status": "Status",
+      "management": "Management",
       "types": {
         "buyer": "Buyer",
         "renter": "Renter"
@@ -547,7 +559,9 @@
       "purchaseValue": "Purchase value",
       "currency": "Currency",
       "save": "Save",
+      "saveChanges": "Save Changes",
       "saving": "Saving...",
+      "updating": "Updating...",
       "cancel": "Cancel"
     },
     "newAccount": {

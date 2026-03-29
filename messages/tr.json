@@ -183,6 +183,7 @@
   },
   "Subscription": {
     "recommended": "Önerilen",
+    "currency": "Para Birimi",
     "title": "Abonelik",
     "subtitle": "Plan ve faturalandırma",
     "choosePlan": "Planınızı seçin",
@@ -511,9 +512,11 @@
   },
   "Investors": {
     "title": "Yatırımcılar",
-    "createAccount": "Yatırımcı hesabı oluştur",
+    "subtitle": "Gayrimenkul yatırımcılarınızı hassas varlık atamalarıyla yönetin ve denetleyin.",
+    "createAccount": "Hesap Kaydı",
     "noProperties": "Henüz yatırımcı mülkü yok.",
     "noPropertiesSubtitle": "Yatırımcılar şirketinizin binalarındaki ünitelere atandığında burada görünecekler.",
+    "createFirstInvestor": "İlk Yatırımcınızı Oluşturun",
     "table": {
       "investor": "Yatırımcı",
       "phone": "Telefon",
@@ -525,6 +528,15 @@
       "delivery": "Teslim",
       "edit": "Düzenle",
       "searchPlaceholder": "Yatırımcı ara...",
+      "allProjects": "Genel Proje Görünümü",
+      "anyStatus": "Herhangi Bir Yatırım Durumu",
+      "premierBuyer": "Premium Alıcı",
+      "verifiedRenter": "Onaylı Kiracı",
+      "identity": "Kimlik / İletişim",
+      "assignment": "Proje Ataması",
+      "unitDetail": "Ünite Detayı",
+      "status": "Durum",
+      "management": "Yönetim",
       "types": {
         "buyer": "Alıcı",
         "renter": "Kiracı"
@@ -549,7 +561,9 @@
       "purchaseValue": "Satın alma değeri",
       "currency": "Para birimi",
       "save": "Kaydet",
+      "saveChanges": "Değişiklikleri Kaydet",
       "saving": "Kaydediliyor...",
+      "updating": "Güncelleniyor...",
       "cancel": "İptal"
     },
     "newAccount": {

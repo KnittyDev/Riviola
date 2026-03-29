@@ -39,6 +39,21 @@ type Props = {
   tiers: PricingTier[];
 };
 
+const PRICE_DATA = {
+  EUR: {
+    essence: { monthly: 99, annual: 719 },
+    signature: { monthly: 149, annual: 999 },
+    prestige: { monthly: 199, annual: 1299 },
+    symbol: "€"
+  },
+  TRY: {
+    essence: { monthly: 4000, annual: 28800 },
+    signature: { monthly: 5000, annual: 36000 },
+    prestige: { monthly: 7000, annual: 50400 },
+    symbol: "₺"
+  }
+};
+
 function formatDate(dateStr: string | null, locale: string): string {
   if (!dateStr) return "—";
   return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
@@ -70,6 +85,9 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
   const [loading, setLoading] = useState<string | null>(null);
   const [billingToggle, setBillingToggle] = useState<"monthly" | "annual">(
     subscription?.billing_interval === "annual" ? "annual" : "monthly"
+  );
+  const [currency, setCurrency] = useState<"EUR" | "TRY">(
+    locale === "tr" ? "TRY" : "EUR"
   );
   const synced = useRef(false);
 
@@ -159,6 +177,39 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
     );
   }
 
+  // Find pricing data for display
+  const prices = PRICE_DATA[currency];
+
+  const CurrencyToggle = () => (
+    <div className="flex items-center gap-3">
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("currency")}</span>
+      <div className="inline-flex p-1 bg-gray-100 rounded-2xl">
+        <button
+          type="button"
+          onClick={() => setCurrency("TRY")}
+          className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            currency === "TRY"
+              ? "bg-white shadow-sm text-[#134e4a]"
+              : "text-gray-500 hover:text-[#134e4a]"
+          }`}
+        >
+          TRY (₺)
+        </button>
+        <button
+          type="button"
+          onClick={() => setCurrency("EUR")}
+          className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            currency === "EUR"
+              ? "bg-white shadow-sm text-[#134e4a]"
+              : "text-gray-500 hover:text-[#134e4a]"
+          }`}
+        >
+          EUR (€)
+        </button>
+      </div>
+    </div>
+  );
+
   // ─── Active subscription view ──────────────────────────────────────
   if (subscription && isActive) {
     const hasPeriodEnd = !!subscription.current_period_end;
@@ -170,12 +221,17 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
 
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          {t("title")}
-        </h1>
-        <p className="text-gray-500 text-sm mt-1">
-          {t("subtitle")}
-        </p>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+           <div>
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+                {t("title")}
+              </h1>
+              <p className="text-gray-500 text-sm mt-1">
+                {t("subtitle")}
+              </p>
+           </div>
+           <CurrencyToggle />
+        </div>
 
         <div className="mt-8 space-y-6">
           <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
@@ -270,7 +326,8 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {tiers.map((tier) => {
               const isAnnual = billingToggle === "annual";
-              const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
+              const tierId = tier.name.toLowerCase() as keyof typeof prices;
+              const displayPrice = isAnnual ? (prices as any)[tierId].annual : (prices as any)[tierId].monthly;
               const priceId = isAnnual ? tier.annualPriceId : tier.monthlyPriceId;
               const periodLabel = isAnnual ? "/year" : "/mo";
               
@@ -302,7 +359,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
                   </h3>
                   <p className="text-gray-500 text-sm mb-4">{tier.description}</p>
                   <div className="text-3xl font-extrabold text-[#134e4a] mb-6">
-                    {price}€
+                    {displayPrice}{prices.symbol}
                     <span className="text-sm text-gray-400 font-medium">
                       {" "}
                       {periodLabel}
@@ -356,6 +413,9 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
       <div className="text-center mb-10">
+        <div className="flex justify-center mb-6">
+           <CurrencyToggle />
+        </div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
           {t("choosePlan")}
         </h1>
@@ -392,7 +452,8 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {tiers.map((tier) => {
           const isAnnual = billingToggle === "annual";
-          const price = isAnnual ? tier.annualPrice : tier.monthlyPrice;
+          const tierId = tier.name.toLowerCase() as keyof typeof prices;
+          const displayPrice = isAnnual ? (prices as any)[tierId].annual : (prices as any)[tierId].monthly;
           const priceId = isAnnual ? tier.annualPriceId : tier.monthlyPriceId;
           const periodLabel = isAnnual ? "/year" : "/mo";
 
@@ -415,7 +476,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
               </h3>
               <p className="text-gray-500 text-sm mb-4">{tier.description}</p>
               <div className="text-3xl font-extrabold text-[#134e4a] mb-1">
-                {price}€
+                {displayPrice}{prices.symbol}
                 <span className="text-sm text-gray-400 font-medium">
                   {" "}
                   {periodLabel}
@@ -423,7 +484,7 @@ export function SubscriptionClient({ subscription, tiers }: Props) {
               </div>
               {isAnnual && (
                 <p className="text-xs text-gray-400 mb-4">
-                  {Math.round(tier.annualPrice / 12)}€/mo equivalent
+                  {Math.round((prices as any)[tierId].annual / 12)}{prices.symbol}/mo equivalent
                 </p>
               )}
               <ul className="space-y-2.5 mb-6">
