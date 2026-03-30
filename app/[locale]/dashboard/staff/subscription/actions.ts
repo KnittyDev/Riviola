@@ -14,7 +14,7 @@ async function resolvePlanName(sub: Stripe.Subscription): Promise<string> {
   if (!price) return "Essence";
 
   let product = price.product;
-  
+
   // If product is only an ID, we need to fetch it to get the name
   if (typeof product === "string") {
     const stripe = getStripe();
@@ -55,7 +55,7 @@ async function upsertSubscriptionFromStripe(
   }
   const currentPeriodStartIso = startDate.toISOString();
 
-  // 2. Derive End Date (Always exactly 1 month or 1 year from start)
+  // 2. Derive End Date e (Always exactly 1 month or 1 year from start)
   // This ensures if it's May 29th, the end is June 29th.
   const endDate = new Date(startDate);
   if (billingInterval === "annual") {
@@ -63,12 +63,12 @@ async function upsertSubscriptionFromStripe(
   } else {
     endDate.setMonth(endDate.getMonth() + 1);
   }
-  
+
   // 3. Optional: Use Stripe's end date ONLY if it exists and is > start+1day
   // to account for potentially irregular first billing cycles, 
   // but prioritize user's request for exact month matching.
   let currentPeriodEndIso = endDate.toISOString();
-  
+
   // Log the logic being applied
   console.log(`[Subscription Sync] Logic Applied - Start: ${currentPeriodStartIso}, Interval: ${billingInterval}, End: ${currentPeriodEndIso}`);
 
@@ -161,7 +161,7 @@ export async function confirmCheckoutSessionAction(
 
   try {
     const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
-    
+
     if (!checkoutSession) {
       return { error: "Checkout session not found." };
     }
@@ -319,7 +319,7 @@ export async function upgradeSubscriptionAction(
       // Standard way to upgrade/change plan without immediate charge:
       // This will keep the current billing cycle date.
       // The new price will be charged at the NEXT billing date.
-      proration_behavior: "none", 
+      proration_behavior: "none",
     });
 
     await upsertSubscriptionFromStripe(
