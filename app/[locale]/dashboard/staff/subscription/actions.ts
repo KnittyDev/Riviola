@@ -48,7 +48,7 @@ async function upsertSubscriptionFromStripe(
   const planName = await resolvePlanName(subscription);
   const billingInterval = resolveBillingInterval(subscription);
 
-  // 1. Determine Start Date (Priority: Stripe > Now)
+  // 1. Determine Start Date! 3a (Priority: Stripe > Now)
   let startDate = new Date();
   if (subscription.current_period_start) {
     startDate = new Date(subscription.current_period_start * 1000);
