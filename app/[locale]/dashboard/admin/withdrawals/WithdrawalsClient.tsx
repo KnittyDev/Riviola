@@ -12,6 +12,7 @@ interface WithdrawalRequest {
   amount: number;
   status: string;
   iban: string;
+  account_holder_name: string | null;
   currency: string;
   bank_name: string | null;
   note: string | null;
@@ -19,6 +20,7 @@ interface WithdrawalRequest {
   companies: {
     name: string;
     bank_name: string | null;
+    bank_account_holder: string | null;
   };
   profiles: {
     full_name: string | null;
@@ -71,107 +73,134 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-black text-gray-900 tracking-tight">{commonT("withdrawRequests")}</h1>
-        <p className="text-gray-500 font-medium font-inter">Manage and process company withdrawal requests with automatic company balance rollback on rejection.</p>
+        <p className="text-gray-500 font-medium font-inter">Administrative terminal for auditing and processing organizational divestment triggers.</p>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-black/5 overflow-hidden">
+      <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Company / Requester</th>
-                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Bank Details</th>
-                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400">Amount</th>
-                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400 text-center">Status</th>
-                <th className="px-8 py-5 text-xs font-black uppercase tracking-widest text-gray-400 text-right">Actions</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Entity / Requester</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Settlement Destination</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Amount</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-center">Status</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-right">Clearance</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 font-inter">
               {requests.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-12 text-center text-gray-400 font-medium italic">
-                    No withdrawal requests found.
+                  <td colSpan={5} className="px-10 py-20 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                       <div className="size-16 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-200">
+                          <i className="las la-inbox text-4xl" />
+                       </div>
+                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest italic">Stable Infrastructure - No Pending Triggers</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 requests.map((req) => (
-                  <tr key={req.id} className="hover:bg-gray-50/30 transition-colors group">
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-black text-gray-900 leading-tight mb-0.5">
-                          {req.companies?.name || "Unknown Company"}
-                        </span>
-                        <span className="text-xs text-gray-500 font-medium">
-                          {req.profiles?.full_name || "Unknown Staff"}
-                        </span>
-                        <span className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">
-                          {new Date(req.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
+                  <tr key={req.id} className="hover:bg-gray-50/30 transition-all group">
+                    <td className="px-10 py-8">
+                       <div className="flex items-center gap-4">
+                          <div className="size-12 rounded-xl bg-[#134e4a]/5 flex items-center justify-center text-[#134e4a] shrink-0 border border-[#134e4a]/10">
+                             <i className="las la-building text-2xl" />
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-sm font-black text-gray-900 leading-tight mb-1 truncate">
+                              {req.companies?.name || "Global Entity"}
+                            </span>
+                            <div className="flex items-center gap-2">
+                               <div className="size-4 rounded-full bg-gray-100 flex items-center justify-center">
+                                  <i className="las la-user text-[10px] text-gray-400" />
+                               </div>
+                               <span className="text-[11px] text-gray-500 font-bold tracking-tight truncate">
+                                 {req.profiles?.full_name || "System Automated"}
+                               </span>
+                            </div>
+                          </div>
+                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-900 tracking-tight mb-1">
-                          {req.companies?.bank_name || "N/A"}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-[11px] text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md font-bold">
-                            {req.iban}
-                          </span>
+                    <td className="px-10 py-8">
+                      <div className="flex flex-col gap-2.5">
+                        <div className="flex items-center gap-3">
+                           <div className="flex flex-col">
+                              <span className="text-[11px] font-black text-gray-900 tracking-tight leading-none">
+                                {req.account_holder_name || req.companies?.bank_account_holder || "N/A"}
+                              </span>
+                              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest mt-1">Beneficiary Account</span>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <div className="px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-100/50 flex flex-col">
+                              <span className="text-[8px] text-orange-400 font-black uppercase tracking-tighter mb-0.5">{req.bank_name || req.companies?.bank_name || "Primary Institution"}</span>
+                              <span className="font-mono text-[10px] text-orange-700 font-black tracking-tight">{req.iban}</span>
+                           </div>
                         </div>
                         {req.note && (
-                          <p className="text-[10px] text-gray-400 mt-2 italic max-w-xs line-clamp-2 leading-relaxed">
-                            "{req.note}"
-                          </p>
+                          <div className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                             <i className="las la-comment-alt text-gray-300 text-sm mt-0.5" />
+                             <p className="text-[10px] text-gray-400 font-medium italic leading-relaxed line-clamp-2">
+                               {req.note}
+                             </p>
+                          </div>
                         )}
                       </div>
                     </td>
-                    <td className="px-8 py-6">
+                    <td className="px-10 py-8">
                       <div className="flex flex-col">
-                        <span className="text-xl font-black text-gray-900 tabular-nums">
-                          {getCurrencySymbol(req.currency || req.profiles?.currency)}{req.amount.toLocaleString()}
-                        </span>
-                        <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">
-                           {req.currency || req.profiles?.currency || "EUR"}
+                        <div className="flex items-baseline gap-1">
+                           <span className="text-[10px] font-black text-gray-400 mr-0.5">{getCurrencySymbol(req.currency)}</span>
+                           <span className="text-2xl font-black text-gray-900 tabular-nums tracking-tighter">
+                             {req.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                           </span>
+                        </div>
+                        <span className="text-[9px] text-gray-300 font-black uppercase tracking-[0.2em] mt-1">
+                           {req.currency || "EUR"} DIVESTMENT
                         </span>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
+                    <td className="px-10 py-8 text-center">
                       <div className="flex justify-center">
                         <span className={`
-                          px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest
-                          ${req.status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : 
-                            req.status === 'Rejected' ? 'bg-rose-100 text-rose-700' : 
-                            'bg-amber-100 text-amber-700'}
+                          px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm border
+                          ${req.status === 'Approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                            req.status === 'Rejected' ? 'bg-rose-50 text-rose-600 border-rose-100' : 
+                            'bg-amber-50 text-amber-600 border-amber-100 animate-pulse'}
                         `}>
                           {req.status}
                         </span>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex justify-end gap-2 isolate">
+                    <td className="px-10 py-8">
+                      <div className="flex justify-end gap-3 isolate">
                         {req.status === 'Pending' && (
                           <>
                             <button
                               onClick={() => handleUpdateStatus(req.id, "Rejected")}
                               disabled={loadingId === req.id}
-                              className="size-10 rounded-xl bg-gray-100 text-gray-500 hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center disabled:opacity-50"
-                              title="Reject"
+                              className="size-11 rounded-2xl bg-white text-gray-400 border border-gray-100 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 transition-all flex items-center justify-center disabled:opacity-50 shadow-sm active:scale-95"
+                              title="Reject Request"
                             >
                               <i className="las la-times text-xl" />
                             </button>
                             <button
                               onClick={() => handleUpdateStatus(req.id, "Approved")}
                               disabled={loadingId === req.id}
-                              className="size-10 rounded-xl bg-orange-600 text-white hover:bg-orange-700 shadow-lg shadow-orange-600/20 transition-all flex items-center justify-center disabled:opacity-50 scale-110"
-                              title="Approve"
+                              className="size-11 rounded-2xl bg-[#134e4a] text-white hover:bg-[#115e59] shadow-xl shadow-[#134e4a]/20 transition-all flex items-center justify-center disabled:opacity-50 active:scale-95 border border-[#134e4a]"
+                              title="Authorize Transfer"
                             >
-                              <i className="las la-check text-xl" />
+                              <i className="las la-check text-xl font-bold" />
                             </button>
                           </>
                         )}
                         {req.status !== 'Pending' && (
-                          <span className="text-xs font-black text-gray-300 uppercase tracking-widest">Processed</span>
+                          <div className="flex items-center gap-2 text-gray-300 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
+                             <i className={`las ${req.status === 'Approved' ? 'la-check-circle' : 'la-ban'} text-lg`} />
+                             <span className="text-[9px] font-black uppercase tracking-widest">Finalized</span>
+                          </div>
                         )}
                       </div>
                     </td>

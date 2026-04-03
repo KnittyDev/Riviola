@@ -9,7 +9,7 @@ export default async function WithdrawalsPage() {
     .from("withdrawal_requests")
     .select(`
       *,
-      companies ( name, bank_name ),
+      companies ( name, bank_name, bank_account_holder ),
       profiles ( full_name, currency )
     `)
     .order("created_at", { ascending: false });
