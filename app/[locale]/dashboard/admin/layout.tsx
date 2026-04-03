@@ -17,7 +17,7 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  if (profile?.role !== "admin") {
+  if (profile?.role?.toLowerCase() !== "admin") {
     // If they aren't admin, redirect to their respective dashboard
     if (profile?.role === "staff") redirect("/dashboard/staff");
     else redirect("/dashboard");

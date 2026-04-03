@@ -8,6 +8,7 @@ export type WithdrawalRequest = {
   status: "Pending" | "Approved" | "Rejected";
   iban: string;
   bank_name: string | null;
+  account_holder_name: string | null;
   currency: string;
   note: string | null;
   created_at: string;
@@ -17,7 +18,7 @@ export type WithdrawalRequest = {
 export async function getCompanyBalance(supabase: SupabaseClient, companyId: string) {
   const { data, error } = await supabase
     .from("companies")
-    .select("balance, iban, country, bank_name")
+    .select("balance, iban, country, bank_name, currency, bank_account_holder")
     .eq("id", companyId)
     .single();
 
@@ -52,13 +53,13 @@ export async function createWithdrawalRequest(
   currency: string,
   note?: string
 ) {
-  // 1. Check balance
+  // 1. Check balance and get bank account holder name
   const balanceData = await getCompanyBalance(supabase, companyId);
   if (!balanceData || balanceData.balance < amount) {
     return { error: "Insufficient balance" };
   }
 
-  // 2. Insert request
+  // 2. Insert request using the company's bank_account_holder
   const { data, error } = await supabase
     .from("withdrawal_requests")
     .insert({
@@ -68,6 +69,7 @@ export async function createWithdrawalRequest(
       iban,
       bank_name: bankName,
       currency,
+      account_holder_name: balanceData.bank_account_holder, // Automated from company profiles
       note,
       status: "Pending"
     })

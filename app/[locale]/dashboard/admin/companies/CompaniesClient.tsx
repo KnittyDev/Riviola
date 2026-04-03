@@ -71,12 +71,12 @@ export function CompaniesClient({ initialCompanies }: { initialCompanies: Compan
           </div>
         ))}
         
-        <button className="bg-gray-50 p-8 rounded-[2.5rem] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-4 hover:bg-white hover:border-orange-600 transition-all group">
+        <Link href="/dashboard/admin/companies/new" className="bg-gray-50 p-8 rounded-[2.5rem] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-4 hover:bg-white hover:border-orange-600 transition-all group">
           <div className="size-16 rounded-2xl bg-gray-100 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-colors">
             <i className="las la-plus text-3xl" />
           </div>
           <span className="text-gray-500 font-bold uppercase text-xs tracking-widest group-hover:text-orange-600 transition-colors">Register New Company</span>
-        </button>
+        </Link>
       </div>
     </div>
   );

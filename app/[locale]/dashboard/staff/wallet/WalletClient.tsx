@@ -13,6 +13,8 @@ export default function WalletClient({
   iban,
   country,
   bankName,
+  currency,
+  bankAccountHolder,
   requests,
   profileId,
   companyId
@@ -22,6 +24,8 @@ export default function WalletClient({
   iban: string;
   country: string;
   bankName: string;
+  currency: string;
+  bankAccountHolder: string;
   requests: any[];
   profileId: string;
   companyId: string;
@@ -29,7 +33,6 @@ export default function WalletClient({
   const t = useTranslations("Wallet");
   const router = useRouter();
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("EUR");
   const [submitting, setSubmitting] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -51,15 +54,10 @@ export default function WalletClient({
       return;
     }
 
-    if (!currency) {
-      toast.error("Please select a currency");
-      return;
-    }
-
     setSubmitting(true);
     const supabase = createClient();
 
-    // Create request with selected currency
+    // The backend now automatically uses the bankAccountHolder from the company profile
     const { error } = await createWithdrawalRequest(
       supabase,
       companyId,
@@ -107,10 +105,11 @@ export default function WalletClient({
                <p className="text-teal-200/60 font-black uppercase tracking-[0.2em] text-[10px] sm:text-xs">{t("balance")}</p>
             </div>
             <div className="flex items-baseline gap-3">
+              <span className="text-2xl sm:text-4xl font-black opacity-40 -mr-1">{getCurrencySymbol(currency)}</span>
               <span className="text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm">
                 {balance.toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 2 })}
               </span>
-              <span className="text-2xl sm:text-3xl font-black opacity-30 tracking-widest">EUR</span>
+              <span className="text-xl sm:text-2xl font-black opacity-20 tracking-widest ml-1">{currency}</span>
             </div>
           </div>
           <button
@@ -129,29 +128,7 @@ export default function WalletClient({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3 pl-1">Target Currency</label>
-                   <div className="relative group">
-                      <select
-                        required
-                        value={currency}
-                        onChange={(e) => setCurrency(e.target.value)}
-                        className="w-full pl-12 pr-4 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/30 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-black text-gray-900 appearance-none shadow-sm group-hover:bg-gray-50"
-                      >
-                        {currencies.map((c) => (
-                           <option key={c.code} value={c.code}>{c.code} ({c.symbol})</option>
-                        ))}
-                      </select>
-                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
-                         <i className="las la-globe text-xl" />
-                      </div>
-                      <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:translate-y-0.5 transition-transform">
-                         <i className="las la-angle-down" />
-                      </div>
-                   </div>
-                </div>
-
-                <div>
+                <div className="sm:col-span-2">
                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3 pl-1">{t("amount")}</label>
                    <div className="relative group">
                       <input
@@ -166,24 +143,41 @@ export default function WalletClient({
                       <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] font-black text-xl pointer-events-none">
                         {getCurrencySymbol(currency)}
                       </div>
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-white/60 px-2 py-0.5 rounded-md border border-gray-200">
+                         <i className="las la-lock text-xs text-teal-600" />
+                         <span className="text-[8px] uppercase text-gray-400 font-bold">{currency} Only</span>
+                      </div>
                    </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="p-6 bg-gray-50/80 rounded-3xl border border-gray-100/50 backdrop-blur-sm shadow-inner group">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">{t("iban")}</label>
-                  <p className="font-mono text-xs font-black text-gray-800 break-all leading-relaxed group-hover:text-[#134e4a] transition-colors">{iban || "—"}</p>
+              <div className="p-6 bg-[#134e4a]/5 rounded-3xl border border-[#134e4a]/10 backdrop-blur-sm shadow-inner group">
+                <div className="flex items-center gap-3 mb-4">
+                   <div className="size-8 bg-[#134e4a] rounded-lg flex items-center justify-center text-white text-xs">
+                      <i className="las la-address-card" />
+                   </div>
+                   <h4 className="text-[10px] font-black text-[#134e4a] uppercase tracking-[0.2em]">Verified Settlement Account</h4>
                 </div>
-                <div className="p-6 bg-gray-50/80 rounded-3xl border border-gray-100/50 backdrop-blur-sm shadow-inner group">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">Country</label>
-                  <p className="text-[11px] font-black text-gray-800 uppercase tracking-widest group-hover:text-[#134e4a] transition-colors">{country || "—"}</p>
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1.5">Bank Account Name</label>
+                    <p className="text-sm font-black text-gray-900 tracking-tight">{bankAccountHolder || "—"}</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[#134e4a]/5">
+                    <div>
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1.5">{t("iban")}</label>
+                      <p className="font-mono text-xs font-black text-gray-700 break-all leading-relaxed">{iban || "—"}</p>
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1.5">Country / Jurisdiction</label>
+                      <p className="text-[11px] font-black text-gray-700 uppercase tracking-widest leading-tight">{country || "—"}</p>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-[#134e4a]/5">
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1.5">{t("bank")}</label>
+                    <p className="text-[11px] font-black text-gray-700 uppercase tracking-widest leading-tight">{bankName || "—"}</p>
+                  </div>
                 </div>
-              </div>
-
-              <div className="p-6 bg-gray-50/80 rounded-3xl border border-gray-100/50 backdrop-blur-sm shadow-inner group">
-                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">{t("bank")}</label>
-                <p className="text-sm font-black text-gray-800 group-hover:text-[#134e4a] transition-colors">{bankName || "—"}</p>
               </div>
             </div>
 
@@ -195,7 +189,7 @@ export default function WalletClient({
                 </div>
                 <h3 className="text-[#134e4a] font-black uppercase tracking-[0.2em] text-xs mb-4">Transfer Protocols</h3>
                 <p className="text-gray-500 text-sm leading-relaxed font-medium font-inter">
-                  Requests are verified through Riviola global settlement protocols. Processing typically takes <span className="text-[#134e4a] font-black">1-3 business days</span>. Multi-currency settlements are executed at the spot rate during processing.
+                  All requests are processed using the pre-approved company settlement accounts. Processing typically takes <span className="text-[#134e4a] font-black">1-3 business days</span>. Settlements are executed in the fixed company currency: <span className="text-[#134e4a] font-black">{currency}</span>.
                 </p>
               </div>
               <button
@@ -253,7 +247,7 @@ export default function WalletClient({
                 <tr className="bg-gray-50/20 border-b border-gray-50">
                   <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("amount")}</th>
                   <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("status")}</th>
-                  <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("iban")}</th>
+                  <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Account</th>
                   <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">{t("date")}</th>
                 </tr>
               </thead>
@@ -280,8 +274,14 @@ export default function WalletClient({
                       </span>
                     </td>
                     <td className="px-10 py-8">
-                       <div className="flex flex-col gap-1">
-                          <span className="font-mono text-[11px] font-black text-gray-600 bg-gray-50 px-2.5 py-1 rounded-lg w-fit group-hover:bg-[#134e4a]/5 group-hover:text-[#134e4a] transition-colors">{r.iban}</span>
+                       <div className="flex flex-col gap-1.5">
+                          <span className="font-mono text-[11px] font-black text-gray-600 bg-gray-50 px-2.5 py-1 rounded-lg w-fit group-hover:bg-[#134e4a]/5 group-hover:text-[#134e4a] transition-colors tracking-tight">
+                            {r.iban}
+                          </span>
+                          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2 pl-1">
+                            <i className="las la-user-circle text-sm opacity-50" />
+                            {r.account_holder_name || "—"}
+                          </span>
                         </div>
                     </td>
                     <td className="px-10 py-8 text-right">

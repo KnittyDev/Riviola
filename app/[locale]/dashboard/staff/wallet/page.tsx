@@ -37,6 +37,8 @@ export default async function WalletPage({ params }: { params: Promise<{ locale:
         iban={balanceData?.iban ?? ""}
         country={balanceData?.country ?? ""}
         bankName={balanceData?.bank_name ?? ""}
+        currency={balanceData?.currency ?? "EUR"}
+        bankAccountHolder={balanceData?.bank_account_holder ?? ""}
         requests={requests}
         profileId={user.id}
         companyId={profile.company_id}
