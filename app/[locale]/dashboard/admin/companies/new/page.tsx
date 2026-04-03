@@ -17,9 +17,17 @@ export default async function NewCompanyPage() {
 
   if (profile?.role?.toLowerCase() !== "admin") redirect("/");
 
+  // 3. Fetch all profiles (except other admins) to allow assignment and promotion
+  const { data: allUsers } = await supabase
+    .from("profiles")
+    .select("id, full_name, email, role, company_id")
+    .neq("role", "admin")
+    .neq("role", "Admin")
+    .order("full_name", { ascending: true });
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <NewCompanyClient />
+      <NewCompanyClient allUsers={allUsers || []} />
     </div>
   );
 }

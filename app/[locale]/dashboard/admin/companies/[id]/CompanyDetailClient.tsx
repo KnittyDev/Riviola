@@ -19,9 +19,26 @@ interface Company {
   created_at: string;
 }
 
-export function CompanyDetailClient({ company, locale }: { company: Company; locale: string }) {
+interface UserProfile {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  role: string | null;
+  company_id: string | null;
+}
+
+export function CompanyDetailClient({ 
+  company, 
+  allUsers,
+  locale 
+}: { 
+  company: Company; 
+  allUsers: UserProfile[];
+  locale: string;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Form states
   const [formData, setFormData] = useState({
@@ -30,6 +47,11 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
     iban: company.iban || "",
     bankName: company.bank_name || ""
   });
+
+  // Current staff state: array of IDs currently assigned to this company or selected for it
+  const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>(
+    allUsers.filter(s => s.company_id === company.id).map(s => s.id)
+  );
 
   const currencies = [
     { code: "EUR", symbol: "€" },
@@ -42,16 +64,30 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
     e.preventDefault();
     setLoading(true);
 
-    const res = await updateCompanyFinancials(company.id, formData);
+    const res = await updateCompanyFinancials(company.id, {
+      ...formData,
+      selectedStaffIds
+    });
 
     if (res.error) {
        toast.error(res.error);
     } else {
-       toast.success("Financial settings updated successfully");
+       toast.success("Profile, roles, and personnel updated successfully");
        router.refresh();
     }
     setLoading(false);
   }
+
+  const toggleStaff = (id: string) => {
+    setSelectedStaffIds(prev => 
+      prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
+    );
+  };
+
+  const filteredUsers = allUsers.filter(u => 
+    u.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    u.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -66,7 +102,7 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
            </Link>
            <div>
               <div className="flex items-center gap-2 mb-1">
-                 <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest">Administrative Panel</span>
+                 <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest leading-none">Administrative Panel</span>
               </div>
               <h1 className="text-3xl font-black text-gray-900 tracking-tight">{company.name}</h1>
            </div>
@@ -89,75 +125,117 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Company Profile Brief */}
+        {/* User Promotion & Staff Roster */}
         <div className="lg:col-span-1 space-y-8">
-           <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-xl shadow-black/5 relative overflow-hidden group">
-              <div className="relative z-10">
-                 <div className="size-24 rounded-3xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden mb-6 shadow-inner">
-                    {company.logo_url ? (
-                       <Image src={company.logo_url} alt={company.name} width={96} height={96} className="w-full h-full object-contain p-4" />
-                    ) : (
-                       <span className="text-4xl font-black text-[#134e4a]">{company.name.charAt(0)}</span>
-                    )}
-                 </div>
-                 <h4 className="text-xl font-black text-gray-900 mb-2 truncate">{company.name}</h4>
-                 <div className="flex items-center gap-2 text-gray-400 text-xs font-bold font-inter tracking-tight">
-                    <i className="las la-globe-europe text-lg" />
-                    <span>Jurisdiction: {company.country || "Global"}</span>
-                 </div>
-                 <div className="mt-8 pt-8 border-t border-gray-50 space-y-4">
-                    <div className="flex justify-between items-center bg-gray-50/50 p-4 rounded-2xl border border-gray-50">
-                       <span className="text-[10px] text-gray-400 font-black uppercase">Internal ID</span>
-                       <span className="text-[10px] font-mono font-black text-gray-900">{company.id.slice(0, 16)}...</span>
+           <div className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-xl shadow-black/5 flex flex-col gap-6 relative overflow-hidden">
+              <div className="flex items-center justify-between px-2 relative z-10">
+                 <div className="flex items-center gap-3">
+                    <div className="size-8 bg-[#134e4a] rounded-lg flex items-center justify-center text-white">
+                       <i className="las la-user-shield text-lg" />
+                    </div>
+                    <div>
+                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] leading-none block">System Personnel</span>
+                       <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-1">Convert Investors to Staff</p>
                     </div>
                  </div>
+                 <div className="flex items-baseline gap-1 bg-[#134e4a] text-white px-3 py-1 rounded-full">
+                    <span className="text-[10px] font-black tabular-nums">{selectedStaffIds.length}</span>
+                 </div>
               </div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#134e4a]/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-           </div>
 
-           <div className="p-8 bg-[#134e4a] rounded-[2.5rem] text-white shadow-2xl shadow-[#134e4a]/20 relative overflow-hidden group">
-              <div className="relative z-10 h-full flex flex-col justify-between gap-6">
-                 <div>
-                    <div className="size-12 bg-white/10 rounded-xl flex items-center justify-center mb-6">
-                       <i className="las la-shield-alt text-2xl" />
-                    </div>
-                    <h5 className="text-sm font-black uppercase tracking-[0.2em] mb-3">Immutable Protocols</h5>
-                    <p className="text-white/60 text-xs leading-relaxed font-inter font-medium">
-                       These settings govern all future settlement triggers. Modification requires highest tier administrative clearance.
-                    </p>
-                 </div>
-                 <div className="flex items-center gap-2 bg-white/10 w-fit px-3 py-1.5 rounded-full border border-white/5">
-                    <div className="size-1.5 bg-teal-400 rounded-full animate-pulse" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-teal-100">Live Infrastructure</span>
+              {/* Search Bar */}
+              <div className="px-2 relative z-10">
+                 <div className="relative group">
+                    <input 
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search users..."
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-50 focus:border-[#134e4a]/30 focus:bg-white outline-none font-bold text-[11px] transition-all"
+                    />
+                    <i className="las la-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 text-lg group-focus-within:text-[#134e4a]" />
                  </div>
               </div>
-              <div className="absolute -bottom-10 -right-10 size-40 bg-white/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
+
+              <div className="space-y-3 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar relative z-10">
+                 {filteredUsers.length === 0 ? (
+                    <div className="text-center py-10 opacity-50">
+                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">No users found</p>
+                    </div>
+                 ) : (
+                    filteredUsers.map(user => {
+                       const isSelected = selectedStaffIds.includes(user.id);
+                       const isInvestor = user.role?.toLowerCase() === "investor";
+                       const isStaffInOtherCompany = user.role?.toLowerCase() === "staff" && user.company_id && user.company_id !== company.id;
+                       const currentStaff = user.company_id === company.id;
+
+                       return (
+                          <div 
+                            key={user.id} 
+                            onClick={() => toggleStaff(user.id)}
+                            className={`p-4 rounded-3xl border transition-all cursor-pointer flex items-center gap-4 group/item ${
+                               isSelected ? 'bg-[#134e4a] border-[#134e4a] text-white shadow-xl shadow-[#134e4a]/20 scale-[1.02]' : 
+                               'bg-gray-50 border-gray-100 hover:border-[#134e4a]/20 hover:bg-white'
+                            }`}
+                          >
+                             <div className={`size-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${isSelected ? 'bg-white/20' : 'bg-white border border-gray-100'}`}>
+                                <span className={`font-black text-sm ${isSelected ? 'text-white' : 'text-[#134e4a]'}`}>
+                                   {user.full_name?.charAt(0) || "U"}
+                                </span>
+                             </div>
+                             <div className="flex-1 min-w-0">
+                                <h6 className={`text-[11px] font-black tracking-tight truncate ${isSelected ? 'text-white' : 'text-gray-900'}`}>{user.full_name || user.email}</h6>
+                                <div className="flex items-center gap-2 mt-1">
+                                   <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
+                                      isSelected ? 'bg-white/10 text-white' : 'bg-gray-200/50 text-gray-400'
+                                   }`}>
+                                      {isInvestor ? "Investor" : "Staff"}
+                                   </span>
+                                   {isStaffInOtherCompany && !isSelected && (
+                                      <span className="text-[8px] font-black uppercase text-orange-400 tracking-tighter">Active @ Other</span>
+                                   )}
+                                   {currentStaff && !isSelected && (
+                                      <span className="text-[8px] font-black uppercase text-teal-500 tracking-tighter">Assigned Here</span>
+                                   )}
+                                </div>
+                             </div>
+                             <div className={`size-6 rounded-xl border-2 flex items-center justify-center transition-all ${
+                                isSelected ? 'border-emerald-400 bg-emerald-400 text-white' : 'border-gray-200 group-hover/item:border-[#134e4a]/30'
+                             }`}>
+                                {isSelected && <i className="las la-plus text-xs" />}
+                             </div>
+                          </div>
+                       );
+                    })
+                 )}
+              </div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#134e4a]/5 rounded-full -translate-y-1/2 translate-x-1/2 -z-0" />
            </div>
         </div>
 
         {/* Financial Settings Form */}
-        <div className="lg:col-span-2">
-           <form onSubmit={handleUpdate} className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl shadow-black/5 p-10 sm:p-14 space-y-12 relative">
-              <div className="flex items-center justify-between border-b border-gray-50 pb-8 mb-4">
+        <div className="lg:col-span-2 space-y-12">
+           <form onSubmit={handleUpdate} className="bg-white rounded-[3.5rem] border border-gray-100 shadow-2xl shadow-black/5 p-10 sm:p-14 space-y-12 relative overflow-hidden">
+              <div className="flex items-center justify-between border-b border-gray-50 pb-8 mb-4 relative z-10">
                  <div className="flex items-center gap-4">
                     <div className="size-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 shadow-sm border border-orange-100">
                        <i className="las la-cog text-2xl" />
                     </div>
                     <div>
                        <h3 className="text-xl font-black text-gray-900 tracking-tight">Settlement Infrastructure</h3>
-                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Primary Financial Configuration</p>
+                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Global Transaction Parameters</p>
                     </div>
                  </div>
                  <button 
                    type="submit"
                    disabled={loading}
-                   className="px-10 py-4 rounded-2xl bg-[#134e4a] text-white font-black hover:bg-[#115e59] disabled:opacity-50 transition-all shadow-xl shadow-[#134e4a]/30 active:scale-95 text-xs tracking-[0.2em] uppercase"
+                   className="px-12 py-5 rounded-[2rem] bg-[#134e4a] text-white font-black hover:bg-[#115e59] disabled:opacity-50 transition-all shadow-xl shadow-[#134e4a]/40 active:scale-95 text-xs tracking-[0.2em] uppercase"
                  >
-                   {loading ? "Updating..." : "Persist Changes"}
+                   {loading ? "Persisting Architecture..." : "Sync Company Ecosystem"}
                  </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 relative z-10">
                  {/* Currency Selection */}
                  <div className="space-y-4">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">System Currency</label>
@@ -175,11 +253,7 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
                           <i className="las la-coins text-2xl opacity-60" />
                        </div>
-                       <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 group-hover:translate-y-0.5 transition-transform duration-300">
-                          <i className="las la-angle-down" />
-                       </div>
                     </div>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest px-2">Primary unit for all internal wallet accounts.</p>
                  </div>
 
                  {/* Bank Account Holder */}
@@ -192,18 +266,17 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
                          value={formData.bankAccountHolder}
                          onChange={(e) => setFormData({...formData, bankAccountHolder: e.target.value})}
                          className="w-full pl-14 pr-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none group-hover:bg-gray-50"
-                         placeholder="Legal Entity Name"
+                         placeholder="Legal Corporate Person Name"
                        />
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
-                          <i className="las la-user-shield text-2xl opacity-60" />
+                          <i className="las la-user-tag text-2xl opacity-60" />
                        </div>
                     </div>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest px-2">Verification source for withdrawal claims.</p>
                  </div>
 
                  {/* IBAN */}
                  <div className="space-y-4 sm:col-span-1">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Master IBAN</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Settlement Master IBAN</label>
                     <div className="relative group">
                        <input 
                          required
@@ -214,14 +287,14 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
                          placeholder="TR00 0000 0000..."
                        />
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
-                          <i className="las la-credit-card text-2xl opacity-60" />
+                          <i className="las la-id-card-alt text-2xl opacity-60" />
                        </div>
                     </div>
                  </div>
 
                  {/* Bank Name */}
                  <div className="space-y-4 sm:col-span-1">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Settlement Institution</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Governing Financial Institution</label>
                     <div className="relative group">
                        <input 
                          required
@@ -232,24 +305,28 @@ export function CompanyDetailClient({ company, locale }: { company: Company; loc
                          placeholder="Bank Name"
                        />
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
-                          <i className="las la-university text-2xl opacity-60" />
+                          <i className="las la-building text-2xl opacity-60" />
                        </div>
                     </div>
                  </div>
               </div>
-              
-              <div className="bg-gray-50/80 p-8 rounded-[2.5rem] border border-gray-100/50 flex flex-col sm:flex-row items-center gap-8 shadow-inner">
-                 <div className="size-20 bg-white rounded-2xl flex items-center justify-center text-orange-600 shadow-md border border-orange-50">
+              <div className="absolute top-0 left-0 w-64 h-64 bg-[#134e4a]/[0.02] rounded-full -translate-y-1/2 -translate-x-1/2 -z-0" />
+           </form>
+           
+           <div className="bg-emerald-500 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-emerald-500/20 relative overflow-hidden group">
+              <div className="relative z-10 flex flex-col sm:flex-row items-center gap-8">
+                 <div className="size-20 bg-white/20 rounded-3xl flex items-center justify-center shadow-inner">
                     <i className="las la-info-circle text-4xl" />
                  </div>
                  <div className="flex-1 text-center sm:text-left">
-                    <h6 className="text-[10px] font-black text-gray-900 uppercase tracking-widest mb-2">Audit Compliance Warning</h6>
-                    <p className="text-gray-400 text-xs font-inter font-medium leading-relaxed">
-                       Standardization of settlement accounts ensures that all Riviola HQ financial triggers are executed via verified jurisdictional corridors. Ensure the Master IBAN matches the Legal Entity Title provided above.
+                    <h6 className="text-[11px] font-black uppercase tracking-[0.3em] mb-2">Automated Transition Logic</h6>
+                    <p className="text-white/80 text-xs font-inter font-medium leading-relaxed pr-8">
+                       Selecting an Investor in the Roster above will automatically 'graduate' them to a Staff role upon saving. Deselecting an existing Staff member will revert them to Investor status and clear their organizational access.
                     </p>
                  </div>
               </div>
-           </form>
+              <div className="absolute -bottom-10 -right-10 size-48 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
+           </div>
         </div>
       </div>
     </div>
