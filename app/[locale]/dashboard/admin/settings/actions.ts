@@ -20,7 +20,7 @@ export async function toggleMaintenanceMode(currentState: boolean) {
     return { error: "Unauthorized" };
   }
 
-  // 2. Clear old staff assignments for this company (set to 'investor' and NULL company_id)
+  // 2. Fetch the global settings ID for atomic update
   const { data: currentSettings } = await supabase
     .from("site_settings")
     .select("id")
