@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/lib/toast";
 import { useTranslations } from "next-intl";
+import { notifyInvestorsOfNewPhotos } from "@/app/[locale]/dashboard/staff/weekly-photos/new/notify-action";
 
 export type BuildingOption = {
   id: string;
@@ -144,10 +145,14 @@ export function NewWeeklyPhotoForm({ buildings }: { buildings: BuildingOption[] 
       }
     }
 
+    // Trigger notification engine (Initialization is fast, emails are backgrounded on server)
+    await notifyInvestorsOfNewPhotos(selectedBuildingId, description.trim()).catch((e) => {
+      console.error("Background Dispatch Initialization Failed:", e);
+    });
+
     setIsSubmitting(false);
     toast.success(t("success"));
     router.push("/dashboard/staff");
-    router.refresh();
   };
 
   const canSubmit =
