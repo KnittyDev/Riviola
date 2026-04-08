@@ -19,7 +19,7 @@ export function LocaleSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside for ok
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -48,18 +48,17 @@ export function LocaleSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isPending}
-        className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-100 bg-white/50 backdrop-blur-sm hover:border-[#134e4a]/20 hover:bg-white transition-all duration-300 shadow-sm ${
-          isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-        }`}
+        className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-100 bg-white/50 backdrop-blur-sm hover:border-[#134e4a]/20 hover:bg-white transition-all duration-300 shadow-sm ${isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+          }`}
       >
         <div className="w-5 h-5 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
           <Flag code={currentLang.code} className="w-full h-full object-cover" />
         </div>
         <span className="text-[11px] font-black text-gray-700 uppercase tracking-widest">{currentLang.label}</span>
-        <svg 
-          className={`w-3 h-3 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#134e4a]' : 'group-hover:text-gray-600'}`} 
-          fill="none" 
-          viewBox="0 0 24 24" 
+        <svg
+          className={`w-3 h-3 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#134e4a]' : 'group-hover:text-gray-600'}`}
+          fill="none"
+          viewBox="0 0 24 24"
           stroke="currentColor"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -73,11 +72,10 @@ export function LocaleSwitcher() {
               <button
                 key={key}
                 onClick={() => onSelectChange(key)}
-                className={`flex w-full items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all duration-200 ${
-                  locale === key 
-                    ? 'bg-[#134e4a]/5 text-[#134e4a]' 
+                className={`flex w-full items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all duration-200 ${locale === key
+                    ? 'bg-[#134e4a]/5 text-[#134e4a]'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 group/item'
-                }`}
+                  }`}
               >
                 <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
                   <Flag code={lang.code} className="w-full h-full object-cover" />
