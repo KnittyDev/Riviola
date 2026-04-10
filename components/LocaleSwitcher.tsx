@@ -9,6 +9,8 @@ import Flag from 'react-world-flags';
 const LANGUAGES = {
   en: { name: 'English', code: 'GB', label: 'EN' },
   tr: { name: 'Türkçe', code: 'TR', label: 'TR' },
+  sr: { name: 'Srpski', code: 'RS', label: 'SR' },
+  sq: { name: 'Shqip', code: 'AL', label: 'SQ' },
 };
 
 export function LocaleSwitcher() {

@@ -317,6 +317,7 @@
     "inProgress": "Devam Ediyor",
     "done": "Tamamlandı",
     "cancelled": "İptal Edildi",
+    "updating": "Güncelleniyor...",
     "noMatch": "Filtrelere uygun talep bulunamadı.",
     "projectBlockUnit": "Proje / Blok · Ünite",
     "block": "Blok",

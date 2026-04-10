@@ -141,8 +141,8 @@ export async function getInvestorDuesFees(
     SAR: "﷼",
   };
 
-  const dayLang = locale === "tr" ? "tr-TR" : "en-GB";
-  const numLang = locale === "tr" ? "tr-TR" : "en-US";
+  const dayLang = locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : "en-GB";
+  const numLang = locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : "en-US";
 
   for (const { prop, periods } of propPeriodsList) {
     const buildingName = buildingMap.get(prop.building_id) ?? "Building";

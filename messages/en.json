@@ -316,6 +316,7 @@
     "inProgress": "In progress",
     "done": "Done",
     "cancelled": "Cancelled",
+    "updating": "Updating...",
     "noMatch": "No requests match the filters.",
     "projectBlockUnit": "Project / Block · Unit",
     "block": "Block",

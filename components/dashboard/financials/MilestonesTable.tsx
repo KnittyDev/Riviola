@@ -20,7 +20,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 
 function formatAmount(value: number, currency: string, locale: string) {
   const sym = CURRENCY_SYMBOLS[currency] ?? currency + " ";
-  const lang = locale === "tr" ? "tr-TR" : "en-US";
+  const lang = locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : "en-US";
   const formatted = value.toLocaleString(lang, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   return sym === "€" || sym === "£" || sym === "₺" ? `${formatted} ${sym}` : `${sym}${formatted}`;
 }
@@ -28,7 +28,7 @@ function formatAmount(value: number, currency: string, locale: string) {
 function formatDueDate(dateStr: string | null, locale: string) {
   if (!dateStr) return "—";
   try {
-    const lang = locale === "tr" ? "tr-TR" : "en-GB";
+    const lang = locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : "en-GB";
     return new Date(dateStr).toLocaleDateString(lang, { day: "numeric", month: "short", year: "numeric" });
   } catch {
     return "—";

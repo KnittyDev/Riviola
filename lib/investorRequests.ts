@@ -228,5 +228,21 @@ export async function updateRequestStatus(
     console.error("[investorRequests] updateRequestStatus error:", error.message);
     return false;
   }
+
+  // If status is marked as "Done", trigger notifications
+  if (status === "Done") {
+    console.log(`[investorRequests] Status is "Done" for request ${requestId}. Triggering notifications...`);
+    // We import dynamically to avoid circular dependencies if any, 
+    // and because it's a side effect.
+    import("@/lib/notifications").then(({ notifyRequestCompleted }) => {
+      console.log(`[investorRequests] Notification module loaded. Calling notifyRequestCompleted...`);
+      notifyRequestCompleted(requestId).catch(err => {
+        console.error("[investorRequests] Notification trigger failed:", err);
+      });
+    }).catch(err => {
+      console.error("[investorRequests] Failed to import notifications module:", err);
+    });
+  }
+
   return true;
 }

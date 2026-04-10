@@ -1,0 +1,1382 @@
+{
+  "Limits": {
+    "title": "Limit plana",
+    "upgradeRequired": "Potrebna nadogradnja",
+    "maxBuildingsReached": "Dostigli ste maksimalni limit zgrada ({count}/{max}).",
+    "upgradeToCreateMore": "Morate nadograditi svoj plan da biste dodali više zgrada.",
+    "upgradeNow": "Nadogradi sada",
+    "featureLocked": "Ova funkcija nije uključena u vaš plan.",
+    "featureLockedDesc": "Molimo nadogradite svoj plan da biste pristupili ovoj funkciji.",
+    "usage": "Upotreba",
+    "unlimited": "Neograničeno"
+  },
+  "Hero": {
+    "badge": "Infrastruktura nove generacije",
+    "title": "Arhitektura <gradient>izvrsnosti</gradient> <br></br> i transparentnosti.",
+    "subtitle": "Vrhunsko upravljanje gradnjom za moderne investitore. Pratite svaki stub, budžet i napredak u realnom vremenu.",
+    "buttonLaunch": "Pokreni projekat",
+    "buttonDemo": "Pogledaj demo",
+    "activeProjects": "Aktivni projekti",
+    "activeProjectsNew": "+48 NOVIH",
+    "managedAssets": "Upravljana imovina"
+  },
+  "Navigation": {
+    "dashboard": "Kontrolna tabla",
+    "properties": "Nekretnine",
+    "financials": "Finansije",
+    "requests": "Zahtevi",
+    "documents": "Dokumenti",
+    "settings": "Podešavanja",
+    "features": "Funkcije",
+    "pricing": "Cene",
+    "contact": "Kontakt",
+    "signIn": "Prijavi se",
+    "getStarted": "Započni"
+  },
+  "Marquee": {
+    "title": "Poverenje svetskih lidera u infrastrukturi"
+  },
+  "Features": {
+    "title": "Sve što vam treba za <gradient>upravljanje nekretninama</gradient> — pojednostavljeno.",
+    "subtitle": "Zaboravite na razbacane alate. Riviola objedinjuje celokupno poslovanje u jedan ekosistem visokih performansi.",
+    "cta": "Započni besplatno istraživanje",
+    "seeHowItWorks": "Pogledaj kako radi",
+    "items": {
+      "hub": {
+        "title": "Centar za nekretnine",
+        "description": "Srce vašeg poslovanja. Upravljajte jedinicama, zakupima i dostupnošću u realnom vremenu iz komandnog centra."
+      },
+      "investor": {
+        "title": "Portal za investitore",
+        "description": "Premium izveštavanje za akcionare. Pratite raspodelu i distribuciju bez ikakvih poteškoća."
+      },
+      "payments": {
+        "title": "Naknade i plaćanja",
+        "description": "Automatizujte tok gotovine uz pametno fakturisanje i usklađivanje."
+      },
+      "docs": {
+        "title": "Sigurni trezor",
+        "description": "Usklađenost bez napora. Bezbedno čuvajte nacrte i ugovore."
+      },
+      "insights": {
+        "title": "Finansijski uvid",
+        "description": "Dubinska analitika i prilagođene table za izveštavanje."
+      },
+      "maintenance": {
+        "title": "Pametni zahtevi",
+        "description": "Pratite održavanje od zahteva do rešenja trenutno."
+      },
+      "photos": {
+        "title": "Vizuelna ažuriranja",
+        "description": "Nedeljne fotografije napretka isporučene svakom akcionaru."
+      }
+    }
+  },
+  "Pricing": {
+    "title": "Cene",
+    "billingMonthly": "Mesečni obračun",
+    "billingAnnual": "Godišnji obračun",
+    "billingAnnualSaving": "(Uštedite 40%)",
+    "tierRecommended": "Preporučeno",
+    "periodMo": "/mes",
+    "periodYear": "/god",
+    "moEquivalent": "ekvivalent €/mes",
+    "includedTier": "Sve {tier} funkcije uključene",
+    "fullProcessFeature": "Mi ćemo se pobrinuti za ceo proces umesto vas.",
+    "fullProcessModalTitle": "Kompletna briga o procesu",
+    "fullProcessModalText": "Upravljamo i preuzimamo odgovornost za ceo proces u vaše ime. Vodimo svu dokumentaciju za vaše građevinske projekte, registrujemo investitore, kupce i zakupce, i komuniciramo sa investitorima. Rešavamo sve probleme. Upravljamo naknadama za održavanje (aidat) za stambene zgrade i jedinice.",
+    "tiers": {
+      "essence": {
+        "name": "Essence",
+        "description": "Savršeno za pojedinačne zgrade ili male portfolije.",
+        "cta": "Izaberi Essence",
+        "features": [
+          "Do 2 zgrade / projekta",
+          "Osnovno praćenje investitora",
+          "Upravljanje dokumentima",
+          "Osnovno finansijsko izveštavanje",
+          "Standardno finansijsko izveštavanje",
+          "Pristup portalu za investitore",
+          "Upravljamo sa 50% procesa.",
+          "0% provizije na sva izvršena i prenesena plaćanja"
+        ]
+      },
+      "signature": {
+        "name": "Signature",
+        "description": "Optimizovano za profesionalne firme za upravljanje nekretninama.",
+        "cta": "Izaberi Signature",
+        "features": [
+          "Do 10 zgrada / projekata",
+          "Automatizovana naplata naknada",
+          "Napredna finansijska analitika",
+          "Automatsko generisanje faktura",
+          "Praćenje zahteva i održavanja",
+          "0% provizije na sva plaćanja"
+        ]
+      },
+      "prestige": {
+        "name": "Prestige",
+        "description": "Funkcije na nivou preduzeća za operacije velikih razmera.",
+        "cta": "Izaberi Prestige",
+        "features": [
+          "Neograničen broj zgrada i projekata",
+          "Potpuna prilagodba",
+          "Prioritetna podrška i posvećeni menadžer",
+          "White-label izveštaji za investitore",
+          "Grupno obrađivanje plaćanja",
+          "0% provizije na sva plaćanja"
+        ]
+      }
+    }
+  },
+  "CTA": {
+    "title": "Postavite temelje za svoj sledeći projekat već danas.",
+    "buttonConsultation": "Zakažite konsultacije",
+    "buttonTrial": "Započni besplatni probni period"
+  },
+  "Footer": {
+    "subtitle": "Vrhunsko upravljanje gradnjom za moderne investitore. Pratite svaki stub, budžet i napredak u realnom vremenu.",
+    "product": "Proizvod",
+    "legal": "Pravno",
+    "account": "Nalog",
+    "rights": "Sva prava zadržana.",
+    "links": {
+      "features": "Funkcije",
+      "pricing": "Cene",
+      "demo": "Pogledaj demo",
+      "getStarted": "Započni",
+      "privacy": "Politika privatnosti",
+      "terms": "Uslovi korišćenja",
+      "cookies": "Politika kolačića",
+      "signIn": "Prijavi se",
+      "contact": "Kontakt",
+      "privacyShort": "Privatnost",
+      "termsShort": "Uslovi",
+      "cookiesShort": "Kolačići"
+    }
+  },
+  "Sidebar": {
+    "investorManagement": "Upravljanje investitorima",
+    "dashboard": "Kontrolna tabla",
+    "myProperties": "Moje nekretnine",
+    "requests": "Zahtevi",
+    "financials": "Finansije",
+    "feesAndPayments": "Naknade i plaćanja",
+    "investorAccount": "Nalog investitora",
+    "profileSettings": "Podešavanja profila",
+    "overview": "Pregled",
+    "buildings": "Zgrade",
+    "investors": "Investitori",
+    "duesPayments": "Plaćanje naknada",
+    "purchasePayments": "Plaćanje kupovine",
+    "subscription": "Pretplata",
+    "companyPanel": "Panel kompanije",
+    "logout": "Odjavi se",
+    "closeMenu": "Zatvori meni",
+    "support": "Podrška i pomoć",
+    "wallet": "Novčanik i balans",
+    "adminPanel": "Admin panel",
+    "companies": "Kompanije",
+    "users": "Korisnici",
+    "withdrawRequests": "Zahtevi za isplatu",
+    "supportTickets": "Tiketi za podršku",
+    "globalSettings": "Globalna podešavanja"
+  },
+  "Subscription": {
+    "recommended": "Preporučeno",
+    "currency": "Valuta",
+    "title": "Pretplata",
+    "subtitle": "Plan i obračun",
+    "choosePlan": "Izaberite svoj plan",
+    "choosePlanSubtitle": "Izaberite pretplatu da biste otključali sve funkcije.",
+    "monthly": "Mesečno",
+    "annual": "Godišnje (Uštedite 40%)",
+    "confirming": "Potvrda vaše pretplate...",
+    "confirmingWait": "Molimo sačekajte dok podešavamo sve za vas.",
+    "currentPlan": "Trenutni plan",
+    "daysLeft": "Preostalo dana",
+    "cancelsOn": "Otkazuje se dana {date}",
+    "includedFeatures": "Uključene funkcije",
+    "nextBillingDate": "Sledeći datum obračuna",
+    "billingPortal": "Portal za obračun",
+    "opening": "Otvaranje...",
+    "redirecting": "Preusmeravanje...",
+    "chooseTier": "Izaberi {tier}",
+    "billedAnnually": "Obračunato godišnje",
+    "billedMonthly": "Obračunato mesečno",
+    "activated": "Pretplata aktivirana! Dobrodošli.",
+    "confirmError": "Nije moguće potvrditi plaćanje.",
+    "genericError": "Došlo je do greške tokom potvrde.",
+    "canceled": "Plaćanje je otkazano.",
+    "startError": "Nije moguće pokrenuti plaćanje.",
+    "portalError": "Nije moguće otvoriti portal za obračun.",
+    "upgradeTo": "Nadogradi na {tier}",
+    "upgradeSubtitle": "Nadogradite svoj plan za više funkcija i zgrada.",
+    "currentPlanBadge": "Trenutni",
+    "daysAdded": "Preostalih {days} dana biće dodato vašoj novoj pretplati.",
+    "upgrading": "Nadogradnja...",
+    "loadingDetails": "Učitavanje detalja plana...",
+    "statuses": {
+      "active": "Aktivno",
+      "trialing": "Probni period",
+      "past_due": "Dospeo dug",
+      "canceled": "Otkazano",
+      "incomplete": "Nepotpuno"
+    }
+  },
+  "Login": {
+    "title": "Prijava",
+    "subtitle": "Unesite svoje podatke za pristup nalogu.",
+    "registered": "Nalog kreiran. Molimo prijavite se.",
+    "email": "E-pošta",
+    "password": "Lozinka",
+    "signIn": "Prijavi se",
+    "signingIn": "Prijavljivanje...",
+    "noAccount": "Nemate nalog?",
+    "createAccount": "Kreiraj nalog",
+    "backHome": "Nazad na početnu",
+    "invalidCredentials": "Neispravna e-pošta ili lozinka.",
+    "genericError": "Nešto je pošlo naopako. Molimo pokušajte ponovo.",
+    "signInFailed": "Prijava nije uspela. Molimo pokušajte ponovo.",
+    "agreement": "Prijavljivanjem pristajete na naše Uslove korišćenja i Politiku privatnosti."
+  },
+  "Register": {
+    "title": "Kreiraj nalog",
+    "subtitle": "Unesite svoje podatke da biste započeli sa Riviolom.",
+    "fullName": "Ime i prezime",
+    "email": "E-pošta",
+    "password": "Lozinka",
+    "confirmPassword": "Potvrdite lozinku",
+    "createAccount": "Kreiraj nalog",
+    "creatingAccount": "Kreiranje naloga...",
+    "alreadyHaveAccount": "Već imate nalog?",
+    "signIn": "Prijavi se",
+    "backHome": "Nazad na početnu",
+    "passwordsDoNotMatch": "Lozinke se ne podudaraju.",
+    "emailRegistered": "Ova e-pošta je već registrovana. Molimo prijavite se.",
+    "genericError": "Nešto je pošlo naopako. Molimo pokušajte ponovo.",
+    "agreement": "Kreiranjem naloga pristajete na naše Uslove korišćenja i Politiku privatnosti."
+  },
+  "Support": {
+    "title": "Tiketi za podršku",
+    "subtitle": "Kreirajte tiket za tehničku podršku ili pomoć.",
+    "newTicket": "Novi tiket",
+    "ticketTitle": "Naslov",
+    "subject": "Tema",
+    "priority": "Prioritet",
+    "description": "Opis",
+    "urgency": "Hitnost",
+    "photo": "Fotografija",
+    "send": "Pošalji",
+    "sending": "Slanje...",
+    "noTickets": "Još uvek nemate nijedan tiket za podršku.",
+    "status": "Status",
+    "createdAt": "Kreirano",
+    "urgent": "Hitno",
+    "high": "Visok",
+    "medium": "Srednji",
+    "low": "Nizak",
+    "open": "Otvoreno",
+    "resolved": "Rešeno",
+    "closed": "Zatvoreno",
+    "ticketForm": "Formular za tiket",
+    "successMessage": "Vaš tiket za podršku je uspešno poslat.",
+    "errorMessage": "Došlo je do greške prilikom slanja tiketa.",
+    "cancel": "Otkaži"
+  },
+  "Wallet": {
+    "title": "Novčanik",
+    "subtitle": "Upravljajte balansom kompanije i isplatama.",
+    "balance": "Balans kompanije",
+    "withdraw": "Zahtevaj isplatu",
+    "iban": "IBAN",
+    "bankName": "Naziv banke",
+    "bank": "Banka",
+    "amount": "Iznos",
+    "status": "Status",
+    "date": "Datum",
+    "note": "Napomena",
+    "pending": "Na čekanju",
+    "approved": "Odobreno",
+    "rejected": "Odbijeno",
+    "requests": "Zahtevi za isplatu",
+    "noRequests": "Još uvek nema zahteva za isplatu.",
+    "insufficientBalance": "Nedovoljan balans.",
+    "successRequest": "Zahtev za isplatu je uspešno podnet.",
+    "errorRequest": "Podnošenje zahteva nije uspelo.",
+    "cancel": "Otkaži",
+    "sending": "Slanje..."
+  },
+  "Requests": {
+    "title": "Zahtevi investitora",
+    "subtitle": "Obilasci lokacije, informacije, priključci na komunalije (voda, struja, gas) i drugi zahtevi investitora.",
+    "all": "Sve",
+    "allTypes": "Svi tipovi",
+    "pending": "Na čekanju",
+    "inProgress": "U toku",
+    "done": "Završeno",
+    "cancelled": "Otkazano",
+    "updating": "Ažuriranje...",
+    "noMatch": "Nema zahteva koji odgovaraju filterima.",
+    "projectBlockUnit": "Projekat / Blok · Jedinica",
+    "block": "Blok",
+    "unit": "Jedinica",
+    "m2": "m²",
+    "delivery": "Isporuka",
+    "noUnit": "Podnosiocu zahteva nije dodeljena jedinica u ovoj zgradi.",
+    "note": "Napomena",
+    "requestedAt": "Traženo {date}",
+    "viewBuilding": "Pogledaj zgradu",
+    "noCompany": "Kompanija nije dodeljena. Ne možete videti zahteve.",
+    "types": {
+      "Site tour": "Obilazak lokacije",
+      "Information": "Informacije",
+      "Water connection": "Priključak za vodu",
+      "Electricity connection": "Priključak za struju",
+      "Gas connection": "Priključak za gas",
+      "Handover inspection": "Inspekcija primopredaje",
+      "Document request": "Zahtev za dokumentacijom",
+      "Maintenance request": "Zahtev za održavanje",
+      "Repair request": "Zahtev za popravku"
+    }
+  },
+  "Dues": {
+    "title": "Plaćanje naknada",
+    "subtitle": "Podesite period plaćanja po zgradi i pratite mesečne naknade po jedinici.",
+    "building": "Zgrada",
+    "paid": "Plaćeno",
+    "overdue": "Kasni",
+    "pending": "Na čekanju",
+    "overdueDetected": "Detektovana kašnjenja u plaćanju",
+    "overdueSubtitle": "Neki investitori imaju neplaćene naknade nakon mesečnog roka. Molimo proverite tabelu ispod.",
+    "paymentWindowInfo": "Plaćanje se mora izvršiti između {start}. i {end}. u mesecu.",
+    "amountPerMonth": "Iznos: {amount} mesečno.",
+    "setWindowAmount": "Podesite period i iznos plaćanja za ovu zgradu (npr. od 4. do 12. u mesecu).",
+    "cancel": "Otkaži",
+    "editWindow": "Izmeni period",
+    "startDay": "Početni dan (1–31)",
+    "endDay": "Krajnji dan (1–31)",
+    "amount": "Iznos (mesečno)",
+    "currency": "Valuta",
+    "areaPricing": "Cenovni nivoi po površini (opciono preklapanje na osnovu m²)",
+    "addTier": "+ Dodaj nivo",
+    "noTiers": "Nema nivoa cena po površini. Koristi se osnovni iznos.",
+    "minM2": "Min m²",
+    "maxM2": "Max m²",
+    "amountShort": "Iznos",
+    "saving": "Čuvanje…",
+    "saveSettings": "Sačuvaj sva podešavanja",
+    "noUnits": "Nema jedinica u ovoj zgradi.",
+    "assignInvestors": "Dodelite investitore jedinicama radi praćenja naknada.",
+    "block": "Blok",
+    "unit": "Jedinica",
+    "investor": "Investitor",
+    "duesAmount": "Iznos naknade",
+    "markPaid": "Označeno kao plaćeno.",
+    "unmarkPaid": "Oznaka plaćanja uklonjena.",
+    "saved": "Period plaćanja sačuvan.",
+    "noBuildings": "Nema zgrada.",
+    "addBuildings": "Dodajte zgrade svojoj kompaniji da biste pratili naknade.",
+    "searchPlaceholder": "Pretraži po investitoru, bloku ili jedinici...",
+    "noSearchResults": "Nema jedinica koje odgovaraju pretrazi.",
+    "clearSearch": "Obriši pretragu",
+    "filters": {
+      "all": "Sve jedinice",
+      "overdue": "Kasni",
+      "paid": "U potpunosti plaćeno",
+      "pending": "Na čekanju"
+    },
+    "advancedFilter": "Napredni filter",
+    "filterModal": {
+      "title": "Detaljan filter",
+      "period": "Period / Mesec",
+      "status": "Status plaćanja",
+      "allPeriods": "Svi periodi",
+      "apply": "Primeni filtere",
+      "reset": "Resetuj"
+    },
+    "ordinal": {
+      "0": ".",
+      "1": ".",
+      "2": ".",
+      "3": ".",
+      "4": ".",
+      "5": ".",
+      "6": ".",
+      "7": ".",
+      "8": ".",
+      "9": ".",
+      "other": "."
+    }
+  },
+  "Purchase": {
+    "title": "Plaćanje kupovine",
+    "subtitle": "Pratite sve jedinice i uplate u objedinjenoj listi. Kreirajte ili upravljajte planovima preko modala.",
+    "project": "Projekat",
+    "block": "Blok",
+    "searchPlaceholder": "Pretraži jedinicu, investitora ili uplatu...",
+    "status": {
+      "all": "Svi zapisi",
+      "paid": "Samo plaćeno",
+      "pending": "Samo na čekanju",
+      "unconfigured": "Nije konfigurisano"
+    },
+    "selectBuilding": "Molimo izaberite zgradu da biste počeli.",
+    "noUnitsFound": "Nema pronađenih jedinica",
+    "noUnitsSubtitle": "Nismo pronašli nijednu kupčevu jedinicu u ovom projektu.",
+    "unitsInBlock": "Sve jedinice u bloku {block}",
+    "unitsActive": "{count} aktivnih jedinica",
+    "table": {
+      "unitInvestor": "Jedinica / Investitor",
+      "paymentPlan": "Plaćanje / Plan",
+      "dueDate": "Datum dospeća",
+      "amount": "Iznos",
+      "status": "Status",
+      "actions": "Akcije"
+    },
+    "noRecordsFound": "Nema pronađenih zapisa koji odgovaraju filterima.",
+    "clearFilters": "Obriši sve filtere",
+    "noInvestor": "Nema investitora",
+    "noPlan": "Plan nije konfigurisan",
+    "notSet": "Nije postavljeno",
+    "paid": "Plaćeno",
+    "pending": "Na čekanju",
+    "setPlan": "Postavi plan",
+    "markPaid": "Označi plaćeno",
+    "unmark": "Ukloni oznaku",
+    "deletePlan": "Obriši ceo plan",
+    "confirmDelete": "Obrisati ovaj plan plaćanja? Zapisi o ratama će biti uklonjeni.",
+    "planCreated": "Plan plaćanja kreiran.",
+    "unmarkedPaid": "Oznaka plaćanja uklonjena.",
+    "markedPaid": "Označeno kao plaćeno.",
+    "planDeleted": "Plan obrisan.",
+    "labels": {
+      "full": "Puna isplata",
+      "down": "Učešće",
+      "installment": "{n}. rata"
+    },
+    "modal": {
+      "title": "Postavi plan plaćanja",
+      "independentUnit": "Nezavisna jedinica",
+      "planStructure": "Struktura plana",
+      "fullPayment": "Puna isplata",
+      "downInstallments": "Učešće + Rate",
+      "currency": "Valuta",
+      "contractValue": "Ukupna vrednost ugovora",
+      "startDate": "Datum početka",
+      "downPayment": "Učešće",
+      "installmentCount": "Broj rata",
+      "cancel": "Otkaži",
+      "initialize": "Inicijalizuj plan",
+      "processing": "Obrada"
+    },
+    "footer": "Kraj podataka bloka • Riviola Premium Real Estate Management"
+  },
+  "Staff": {
+    "title": "Panel za osoblje",
+    "addPhoto": "Dodaj nedeljnu fotografiju",
+    "addPhotoSubtitle": "Otpremite nedeljne fotografije napretka za projekte.",
+    "createInvestor": "Kreiraj nalog investitora",
+    "createInvestorSubtitle": "Kreirajte naloge za prijavu za investitore.",
+    "overview": "Pregled",
+    "overviewSubtitle": "Upravljajte svojim zgradama i kreirajte naloge investitora.",
+    "stats": {
+      "buildings": "Zgrade",
+      "activeProjects": "Aktivni projekti",
+      "completed": "Završeno",
+      "investorAccounts": "Nalozi investitora"
+    },
+    "alerts": {
+      "title": "Naknade i upozorenja",
+      "overdue": "Kasne naknade",
+      "recent": "Nedavne uplate",
+      "noItems": "Nema nedavnih uplata ili zakašnjenja.",
+      "trackingInfo": "Naknade se prate u sekciji Plaćanje naknada.",
+      "dueOn": "dospeva {date}",
+      "paidOn": "plaćeno {date}"
+    },
+    "chart": {
+      "title": "Vrednost portfolija investitora",
+      "totalValue": "Ukupna vrednost",
+      "portfolioValue": "Vrednost portfolija"
+    },
+    "projects": {
+      "title": "Aktivni projekti",
+      "viewAll": "Pogledaj sve projekte",
+      "noBuildings": "Još uvek nema zgrada.",
+      "addBuilding": "Dodaj zgradu",
+      "completed": "Završeno",
+      "percentComplete": "{percent}% završeno"
+    }
+  },
+  "Investors": {
+    "title": "Investitori",
+    "subtitle": "Upravljajte i nadgledajte svoje investitore u nekretnine uz precizno dodeljivanje imovine.",
+    "createAccount": "Registracija naloga",
+    "noProperties": "Nema dodeljenih nekretnina.",
+    "noPropertiesSubtitle": "Investitori će se pojaviti ovde kada budu dodeljeni jedinicama u zgradama vaše kompanije.",
+    "createFirstInvestor": "Kreirajte svog prvog investitora",
+    "table": {
+      "investor": "Investitor",
+      "phone": "Telefon",
+      "project": "Projekat",
+      "block": "Blok",
+      "unit": "Jedinica",
+      "m2": "m²",
+      "type": "Tip",
+      "delivery": "Isporuka",
+      "edit": "Izmeni",
+      "searchPlaceholder": "Pretraži investitore...",
+      "allProjects": "Globalni pregled projekata",
+      "anyStatus": "Bilo koji status investicije",
+      "premierBuyer": "Premijum kupac",
+      "verifiedRenter": "Verifikovani zakupac",
+      "identity": "Identitet / Kontakt",
+      "assignment": "Dodela projekta",
+      "unitDetail": "Detalj jedinice",
+      "status": "Status",
+      "management": "Upravljanje",
+      "types": {
+        "buyer": "Kupac",
+        "renter": "Zakupac"
+      }
+    },
+    "modal": {
+      "editTitle": "Izmeni investitora",
+      "fullName": "Ime i prezime",
+      "email": "E-pošta",
+      "phone": "Telefon",
+      "phonePlaceholder": "npr. +382 67 123 456",
+      "phoneNote": "* Molimo ne uklanjajte i ne brišite pozivni broj zemlje (npr. +382, +90).",
+      "investorType": "Tip investitora",
+      "investorTypeOptions": {
+        "buyer": "Kupac (vidi finansije)",
+        "renter": "Zakupac (ne vidi finansije)"
+      },
+      "block": "Blok",
+      "unit": "Jedinica",
+      "area": "Površina (m²)",
+      "deliveryPeriod": "Period isporuke",
+      "purchaseValue": "Kupovna vrednost",
+      "currency": "Valuta",
+      "save": "Sačuvaj",
+      "saveChanges": "Sačuvaj promene",
+      "saving": "Čuvanje...",
+      "updating": "Ažuriranje...",
+      "cancel": "Otkaži"
+    },
+    "newAccount": {
+      "back": "Nazad na pregled",
+      "title": "Kreiraj nalog investitora",
+      "subtitle": "Kreirajte nalog za prijavu za investitora i dodelite ga projektu, bloku, jedinici i planu plaćanja.",
+      "fullName": "Ime i prezime",
+      "fullNamePlaceholder": "npr. Marko Marković",
+      "email": "E-pošta",
+      "emailPlaceholder": "investitor@primer.com",
+      "password": "Privremena lozinka",
+      "passwordPlaceholder": "Početna lozinka (može se promeniti kasnije)",
+      "phone": "Telefon",
+      "phonePlaceholder": "npr. +382 67 123 456",
+      "phoneNote": "* Molimo ne uklanjajte i ne brišite pozivni broj zemlje (npr. +382, +90).",
+      "investorType": "Tip investitora",
+      "project": "Projekat / Zgrada",
+      "selectProject": "Izaberi projekat",
+      "block": "Naziv bloka",
+      "selectBlock": "Izaberi blok",
+      "floor": "Sprat",
+      "selectFloor": "Izaberi sprat",
+      "unit": "Jedinica / Apartman",
+      "unitPlaceholder": "npr. 402",
+      "area": "Površina (m²)",
+      "areaPlaceholder": "npr. 85",
+      "deliveryPeriod": "Period isporuke",
+      "deliveryPeriodPlaceholder": "npr. Q3 2026, Q4 2026",
+      "amountTitle": "Iznos za plaćanje (ukupno)",
+      "amountSubtitle": "Ukupan iznos koji je investitor platio ili će platiti za ovu jedinicu.",
+      "amountPlaceholder": "npr. 150000",
+      "paymentPlan": "Plan plaćanja",
+      "paymentPlanSubtitle": "Puna isplata odjednom ili plaćanje u ratama.",
+      "fullPayment": "Puna isplata (jednokratno)",
+      "installments": "Rate",
+      "installmentCount": "Broj rata",
+      "preview": "Pregled",
+      "previewHint": "Unesite ukupan iznos iznad da vidite pregled.",
+      "onetimePayment": "Jednokratna isplata: {amount}",
+      "installmentsOf": "{count} rata od po {amount}",
+      "totalPreview": "Ukupno: {amount}",
+      "create": "Kreiraj nalog",
+      "creating": "Kreiranje...",
+      "cancel": "Otkaži",
+      "successRedirect": "Nalog kreiran. Preusmeravanje...",
+      "serverError": "Server nije odgovorio. Pokušajte ponovo.",
+      "fallbackError": "Nalog nije mogao biti kreiran. Pokušajte ponovo.",
+      "genericError": "Došlo je do greške. Pokušajte ponovo."
+    }
+  },
+  "Buildings": {
+    "title": "Zgrade",
+    "addBuilding": "Dodaj zgradu",
+    "addWeeklyPhoto": "Dodaj nedeljnu fotografiju",
+    "noBuildings": "Još uvek nema zgrada.",
+    "noBuildingsSubtitle": "Dodajte zgradu da biste započeli.",
+    "unitsCount": "{count} jedinica",
+    "noWeeklyPhotos": "Nema nedeljnih fotografija",
+    "weeklyUpdateCount": "{count} nedeljno ažuriranje",
+    "weeklyUpdateCount_plural": "{count} nedeljnih ažuriranja",
+    "see": "Pogledaj",
+    "edit": "Izmeni",
+    "delete": "Obriši"
+  },
+  "Statuses": {
+    "planned": "Planirano",
+    "inProgress": "U toku",
+    "atRisk": "Pod rizikom",
+    "onHold": "Na čekanju",
+    "completed": "Završeno",
+    "cancelled": "Otkazano"
+  },
+  "WeeklyPhotos": {
+    "back": "Nazad na kontrolnu tablu",
+    "title": "Dodaj nedeljnu fotografiju",
+    "selectBuilding": "Izaberite zgradu",
+    "selectProject": "Izaberite projekat...",
+    "blocksLabel": "Za koji blok(ove) je ovo?",
+    "selectAll": "Izaberi sve blokove",
+    "deselectAll": "Poništi sve",
+    "dateRange": "Raspon datuma (npr. 13-20 decembar)",
+    "dateRangePlaceholder": "13-20 decembar 2024",
+    "weekLabel": "Oznaka nedelje",
+    "weekLabelPlaceholder": "Nedelja 51",
+    "description": "Opis napretka",
+    "descriptionPlaceholder": "Dajte kratko ažuriranje o onome što se vidi na fotografijama...",
+    "uploadTitle": "Otpremi fotografije",
+    "uploadSubtitle": "Kliknite da pretražite ili prevucite nedeljne fotografije ovde.",
+    "selectFiles": "Izaberi fajlove",
+    "submitting": "Slanje...",
+    "submit": "Otpremi nedeljno ažuriranje",
+    "success": "Nedeljno ažuriranje uspešno otpremljeno.",
+    "errorGeneric": "Kreiranje ažuriranja nije uspelo.",
+    "errorUpload": "Otpremanje nije uspelo: {message}",
+    "errorRecord": "Čuvanje zapisa slike nije uspelo: {message}"
+  },
+  "Settings": {
+    "title": "Podešavanja profila",
+    "subtitle": "Ažurirajte detalje svog profila i preferencije.",
+    "save": "Sačuvaj promene",
+    "saving": "Čuvanje...",
+    "saved": "Sačuvano",
+    "notSignedIn": "Niste prijavljeni.",
+    "sections": {
+      "profile": {
+        "title": "Profil",
+        "subtitle": "Ovi detalji se pojavljuju na vašem nalogu.",
+        "fullName": "Ime i prezime",
+        "fullNamePlaceholder": "Vaše ime",
+        "email": "E-pošta",
+        "emailPlaceholder": "ime@primer.com",
+        "emailNote": "E-poštom upravlja vaš nalog.",
+        "phone": "Telefon",
+        "company": "Kompanija",
+        "companyNote": "Vaša kompanija je povezana preko vašeg naloga.",
+        "role": "Uloga",
+        "roleNote": "Vaša uloga određuje kojoj kontrolnoj tabli možete pristupiti."
+      },
+      "preferences": {
+        "title": "Preferencije",
+        "subtitle": "Kontrolišite kako se Riviola ponaša.",
+        "language": "Jezik",
+        "currency": "Valuta",
+        "currencyNote": "Vašom valutom upravlja osoblje i ne može se menjati ovde."
+      },
+      "notifications": {
+        "title": "Obaveštenja",
+        "subtitle": "Izaberite o čemu želite da vas obaveštavamo e-poštom.",
+        "payments": {
+          "title": "Plaćanja i naknade",
+          "desc": "Datumi dospeća naknada, potvrde i neuspela plaćanja."
+        },
+        "milestones": {
+          "title": "Prekretnice",
+          "desc": "Obaveštenja kada se zabeleži napredak na prekretnicama."
+        },
+        "documents": {
+          "title": "Dokumenti",
+          "desc": "Nove fakture i deljeni fajlovi."
+        }
+      }
+    },
+    "roles": {
+      "investor": "Investitor",
+      "staff": "Osoblje",
+      "admin": "Admin"
+    }
+  },
+  "StaffBuildingDetail": {
+    "backToBuildings": "Nazad na zgrade",
+    "addWeeklyPhoto": "Dodaj nedeljnu fotografiju",
+    "edit": "Izmeni",
+    "delete": "Obriši",
+    "deleteConfirm": "Da li ste sigurni da želite da uklonite ovu zgradu?",
+    "deleteSuccess": "Zgrada uklonjena.",
+    "location": "Lokacija",
+    "units": "Jedinice",
+    "progress": "Napredak",
+    "currentMilestone": "Trenutna prekretnica",
+    "nextMilestone": "Sledeća prekretnica",
+    "sustainabilityTitle": "Tabela održivosti",
+    "sustainabilitySubtitle": "Uticaj projekta na životnu sredinu i zeleni sertifikat",
+    "greenScore": "Zeleni skor",
+    "noMilestones": "Još uvek nema prekretnica za ovu zgradu.",
+    "addMilestonesHint": "Dodajte planirane prekretnice prilikom izmene zgrade da biste ih videli ovde.",
+    "milestonesTitle": "Prekretnice",
+    "milestonesSubtitle": "Hronološka lista prekretnica za ovu zgradu.",
+    "current": "Trenutno",
+    "milestoneLabel": "Prekretnica",
+    "weeklyUpdatesTitle": "Nedeljna ažuriranja fotografijama",
+    "cityWeather": "Vreme u gradu {city}"
+  },
+  "EditBuilding": {
+    "backToBuilding": "Nazad na zgradu",
+    "title": "Izmeni zgradu",
+    "subtitle": "Ažurirajte detalje zgrade. Promene će biti vidljive investitorima.",
+    "defaultBlock": "Blok A",
+    "saveSuccess": "Zgrada uspešno sačuvana.",
+    "saving": "Čuvanje...",
+    "saveChanges": "Sačuvaj promene",
+    "cancel": "Otkaži",
+    "form": {
+      "nameLabel": "Naziv zgrade / projekta",
+      "namePlaceholder": "npr. Avala Resort",
+      "addressLabel": "Puna adresa ili detaljna lokacija",
+      "addressPlaceholder": "npr. Jadranska obala, Glavna ulica 12",
+      "bannerLabel": "Naslovna fotografija",
+      "bannerSubtitle": "Naslovna slika za stranicu detalja zgrade. Ostavite prazno da zadržite trenutnu.",
+      "changePhoto": "Promeni fotografiju",
+      "uploadPhoto": "Otpremi naslovnu fotografiju",
+      "removePhoto": "Ukloni fotografiju",
+      "unitsLabel": "Broj jedinica",
+      "unitsPlaceholder": "npr. 24",
+      "blocksLabel": "Nazivi blokova",
+      "blocksSubtitle": "Definišite blokove ili kule u ovom projektu. Oni će se koristiti prilikom dodeljivanja investitora jedinici.",
+      "blockPlaceholder": "npr. Blok A",
+      "removeBlock": "Ukloni blok",
+      "newBlockName": "Naziv novog bloka",
+      "addBlock": "Dodaj blok",
+      "floorsLabel": "Broj spratova",
+      "floorsPlaceholder": "npr. 8",
+      "countryLabel": "Zemlja",
+      "countryPlaceholder": "Izaberite zemlju",
+      "cityLabel": "Grad",
+      "cityPlaceholder": "Izaberite grad",
+      "loadingCities": "Učitavanje gradova...",
+      "statusLabel": "Status",
+      "milestonePlan": "Plan prekretnica",
+      "milestoneSubtitle": "Dodajte prekretnice i izaberite koja je trenutna.",
+      "addMilestone": "Dodaj prekretnicu",
+      "noMilestones": "Još uvek nema planiranih prekretnica.",
+      "setAsCurrent": "Postavi kao trenutnu",
+      "current": "Trenutno",
+      "milestoneTitle": "Naslov",
+      "milestoneTitlePlaceholder": "npr. Završno fasadno bojenje",
+      "targetDate": "Ciljni datum i vreme",
+      "removeMilestone": "Ukloni prekretnicu",
+      "sustainabilityDashboard": "Tabela održivosti (Zeleni skor)",
+      "sustainabilitySubtitle": "Pokažite ekološki uticaj svog projekta investitorima.",
+      "greenScoreLabel": "Ukupni zeleni skor (automatski izračunato)",
+      "greenScoreHint": "Skor se računa na osnovu zelenih funkcija koje izaberete ispod.",
+      "addFeatures": "Dodajte funkcije održivosti projekta"
+    }
+  },
+  "StatusOptions": {
+    "Planned": {
+      "label": "Planirano",
+      "helper": "Priprema za početak"
+    },
+    "In progress": {
+      "label": "U toku",
+      "helper": "Gradnja u toku"
+    },
+    "At risk": {
+      "label": "Pod rizikom",
+      "helper": "Potrebna pažnja"
+    },
+    "On hold": {
+      "label": "Na čekanju",
+      "helper": "Privremeno pauzirano"
+    },
+    "Completed": {
+      "label": "Završeno",
+      "helper": "Primopredaja završena"
+    },
+    "Cancelled": {
+      "label": "Otkazano",
+      "helper": "Trajno zaustavljeno"
+    }
+  },
+  "SustainabilityFeatures": {
+    "Solar Panels": "Solarni paneli",
+    "EV Charging Stations": "Stanice za punjenje električnih vozila",
+    "Rainwater Harvesting": "Sakupljanje kišnice",
+    "Energy Efficient Lighting": "Energetski efikasno osvetljenje",
+    "Waste & Recycling Management": "Upravljanje otpadom i reciklažom",
+    "Smart Home Tech": "Smart Home tehnologija",
+    "Natural Ventilation": "Prirodna ventilacija",
+    "Green Roof / Sky Garden": "Zeleni krov / Sky Garden",
+    "Advanced Thermal Insulation": "Napredna toplotna izolacija",
+    "Eco-friendly Materials": "Ekološki materijali",
+    "Professional Garden Design": "Profesionalni dizajn bašte",
+    "Eco-friendly Infrastructure": "Ekološka infrastruktura",
+    "Pet Friendly Spaces": "Prostori prilagođeni kućnim ljubimcima",
+    "Secure Bicycle Parking": "Siguran parking za bicikle",
+    "High-efficiency HVAC": "Visokoefikasni HVAC sistemi",
+    "Water-saving Fixtures": "Elementi za uštedu vode"
+  },
+  "InvestorDashboard": {
+    "header": {
+      "title": "Moje rezidencije",
+      "subtitle": "Dobrodošli nazad, vrednost vaših nekretnina raste prema planu.",
+      "notifications": "Obaveštenja",
+      "logout": "Odjavi se"
+    },
+    "portfolio": {
+      "assetValue": "Vrednost imovine",
+      "paymentsMade": "Izvršena plaćanja",
+      "assetValueDesc": "Ukupna vrednost vaših nekretnina",
+      "paymentsMadeDesc": "Ukupne plaćene naknade do danas",
+      "valueLabel": "Vrednost",
+      "paidLabel": "Plaćeno",
+      "current": "Trenutno"
+    },
+    "upcomingMilestones": {
+      "title": "Predstojeće prekretnice",
+      "live": "Live",
+      "updatedJustNow": "Ažurirano upravo sada",
+      "updatedAgo": "Ažurirano pre {seconds}s",
+      "empty": "Još uvek nema predstojećih prekretnica za vaše nekretnine.",
+      "viewProperties": "Pogledaj nekretnine"
+    },
+    "myProperties": {
+      "title": "Moje aktivne nekretnine",
+      "totalValue": "Ukupna vrednost:",
+      "totalPaid": "Ukupno plaćeno:",
+      "viewAllAssets": "Pogledaj svu imovinu",
+      "viewAllProperties": "Pogledaj sve nekretnine",
+      "propertyBadge": "Nekretnina",
+      "assignedUnitUpdate": "Dodeljena jedinica. Pogledajte detalje za ažuriranja."
+    },
+    "propertyCard": {
+      "constructionProgress": "Napredak gradnje",
+      "area": "Površina",
+      "viewDetails": "Pogledaj detalje"
+    },
+    "weeklyPhoto": {
+      "title": "Nedeljna fotografija",
+      "noUpdates": "Još uvek nema ažuriranja",
+      "openFullscreen": "Otvori nedeljnu fotografiju preko celog ekrana",
+      "fallbackDescription": "Nedeljno ažuriranje napretka",
+      "viewGallery": "Pogledaj galeriju fotografija",
+      "emptyText": "Kada osoblje podeli nedeljne fotografije za vašu nekretninu, pojaviće se ovde."
+    }
+  },
+  "PropertiesPage": {
+    "title": "Moje nekretnine",
+    "subtitleBuyer": "Upravljajte i pratite svu svoju imovinu.",
+    "subtitleRenter": "Upravljajte i pratite svoje zakupljene jedinice.",
+    "summary": {
+      "totalProperties": "Ukupno nekretnina",
+      "underConstruction": "U izgradnji",
+      "completed": "Završeno",
+      "totalValue": "Ukupna vrednost",
+      "totalPaid": "Ukupno plaćeno"
+    },
+    "filter": {
+      "all": "Sve nekretnine",
+      "active": "Aktivno",
+      "completed": "Završeno",
+      "planning": "Planiranje",
+      "search": "Pretraži nekretnine..."
+    },
+    "card": {
+      "underConstruction": "U izgradnji",
+      "planningPhase": "Faza planiranja",
+      "completed": "Završeno",
+      "constructionProgress": "Napredak gradnje",
+      "delivery": "Isporuka:",
+      "viewDetails": "Pogledaj detalje",
+      "propertyBadge": "Nekretnina"
+    },
+    "empty": {
+      "noFound": "Nema pronađenih nekretnina.",
+      "noAssigned": "Još uvek nemate dodeljene jedinice. Kontaktirajte svog menadžera projekta.",
+      "tryAdjusting": "Pokušajte da prilagodite pretragu ili filtere."
+    }
+  },
+  "PropertyDetail": {
+    "backToProperties": "Nazad na nekretnine",
+    "propertyBadge": "Nekretnina",
+    "yourUnit": "Vaša jedinica:",
+    "progress": "Napredak",
+    "value": "Vrednost",
+    "area": "Površina",
+    "delivery": "Isporuka",
+    "currentMilestone": "Trenutna prekretnica",
+    "nextMilestone": "Sledeća prekretnica",
+    "milestoneFallback": "Prekretnica",
+    "sustainability": {
+      "title": "Tabela održivosti",
+      "subtitle": "Uticaj na životnu sredinu i zeleni sertifikat",
+      "greenScore": "Zeleni skor"
+    },
+    "plans": {
+      "title": "Planovi i raspored",
+      "subtitle": "Praćenje mape puta",
+      "inProgress": "U toku"
+    },
+    "weeklyPhotos": {
+      "title": "Nedeljni napredak",
+      "subtitle": "Vizuelni izveštaji sa gradilišta"
+    },
+    "activityLog": {
+      "title": "Log aktivnosti"
+    },
+    "fullList": "Pogledaj punu listu",
+    "showLess": "Prikaži manje"
+  },
+  "RequestsPage": {
+    "title": "Moji zahtevi",
+    "subtitle": "Podnesite i pratite obilaske lokacije, priključke na komunalije, dokumente i druge zahteve.",
+    "newRequest": "Novi zahtev",
+    "form": {
+      "title": "Podnesite novi zahtev",
+      "typeLabel": "Tip zahteva",
+      "buildingLabel": "Nekretnina / Zgrada",
+      "buildingPlaceholder": "Izaberite nekretninu",
+      "noteLabel": "Napomena (opciono)",
+      "notePlaceholder": "npr. Željeni datum za obilazak, ili detalji za priključak",
+      "attachLabel": "Priložite fotografije (opciono)",
+      "filesSelected": "{count} fajl(ova) izabrano",
+      "submitButton": "Podnesi zahtev",
+      "submitting": "Slanje…",
+      "cancelButton": "Otkaži",
+      "chooseFile": "Izaberi fajl"
+    },
+    "types": {
+      "Site tour": "Obilazak lokacije",
+      "Information": "Informacije",
+      "Water connection": "Priključak za vodu",
+      "Electricity connection": "Priključak za struju",
+      "Gas connection": "Priključak za gas",
+      "Handover inspection": "Inspekcija primopredaje",
+      "Document request": "Zahtev za dokumentacijom",
+      "Maintenance request": "Zahtev za održavanje",
+      "Repair request": "Zahtev za popravku"
+    },
+    "filters": {
+      "summary": "Prikazano {count} zahteva ({pending} na čekanju).",
+      "type": "Tip",
+      "building": "Zgrada",
+      "status": "Status",
+      "allTypes": "Svi tipovi",
+      "allBuildings": "Sve zgrade",
+      "allStatuses": "Svi statusi",
+      "emptyTitle": "Nema zahteva koji odgovaraju vašim filterima.",
+      "clearFilters": "Obriši sve filtere"
+    },
+    "list": {
+      "submitted": "Podneto {date}",
+      "cancelButton": "Otkaži zahtev",
+      "cancelling": "Otkazivanje…"
+    },
+    "modals": {
+      "cancel": {
+        "title": "Otkaži zahtev?",
+        "body": "Da li ste sigurni da želite da otkažete ovaj zahtev? {type} za {building} će biti otkazan.",
+        "keep": "Zadrži zahtev",
+        "confirm": "Da, otkaži"
+      }
+    },
+    "statuses": {
+      "Pending": "Na čekanju",
+      "In progress": "U toku",
+      "Done": "Završeno",
+      "Cancelled": "Otkazano"
+    },
+    "toasts": {
+      "success": "Zahtev uspešno podnet.",
+      "cancelled": "Zahtev otkazan."
+    }
+  },
+  "FinancialsPage": {
+    "title": "Finansije i rate",
+    "subtitle": "Pratite prekretnice plaćanja i preostale balanse za svoje nekretnine.",
+    "exportButton": "Izvezi izveštaj",
+    "progress": {
+      "title": "Ukupan napredak",
+      "paid": "Plaćeno",
+      "remaining": "Preostalo",
+      "contractValue": "Ukupna vrednost ugovora",
+      "paidToDate": "Plaćeno do danas",
+      "balance": "Preostali balans"
+    },
+    "table": {
+      "title": "Plaćanja",
+      "payment": "Plaćanje",
+      "dueDate": "Datum dospeća",
+      "amount": "Iznos",
+      "status": "Status",
+      "empty": "Još uvek nema plaćanja.",
+      "statuses": {
+        "paid": "Plaćeno",
+        "pending": "Na čekanju"
+      }
+    }
+  },
+  "FeesPage": {
+    "title": "Naknade i plaćanja",
+    "subtitle": "Pratite i plaćajte naknade za apartmane i zgrade — zajednički troškovi (aidat) i povezani rashodi.",
+    "stats": {
+      "totalDue": "Ukupan dug",
+      "itemsToPay": "{count} stavka(e) za plaćanje",
+      "paidMonth": "Plaćeno ovog meseca",
+      "payments": "{count} uplata(e)",
+      "nextDue": "Sledeći datum dospeća",
+      "commonCharges": "Zajednički troškovi (Aidat)",
+      "noUpcoming": "Nema predstojećih obaveza"
+    },
+    "table": {
+      "title": "Sve naknade i troškovi",
+      "downloadInvoice": "Preuzmi fakturu",
+      "building": "Zgrada / Jedinica",
+      "type": "Tip",
+      "period": "Period",
+      "dueDate": "Datum dospeća",
+      "amount": "Iznos",
+      "status": "Status",
+      "invoice": "Faktura",
+      "action": "Akcija",
+      "empty": "Još uvek nema zabeleženih naknada. Naknade će se pojaviti ovde kada vaš upravnik zgrade konfiguriše periode plaćanja za vaše jedinice.",
+      "commonChargesLabel": "Zajednički troškovi (Aidat)"
+    },
+    "actions": {
+      "pay": "Plati",
+      "sending": "Slanje…",
+      "paid": "Plaćeno",
+      "paidOn": "Plaćeno {date}, {time}",
+      "due": "Dospeva",
+      "overdue": "Kasni"
+    },
+    "footer": "Kliknite na \"Plati\" da biste platili putem Stripe-a. Iznos mora biti postavljen od strane upravnika zgrade da bi dugme za plaćanje radilo.",
+    "toasts": {
+      "success": "Plaćanje završeno. Hvala vam.",
+      "error": "Nije moguće potvrditi plaćanje.",
+      "startError": "Plaćanje nije moglo biti pokrenuto."
+    }
+  },
+  "Weather": {
+    "clear_sky": "Vedro",
+    "mainly_clear": "Pretežno vedro",
+    "partly_cloudy": "Delimično oblačno",
+    "overcast": "Oblačno",
+    "fog": "Magla",
+    "light_drizzle": "Slaba sipeća kiša",
+    "moderate_drizzle": "Umerena sipeća kiša",
+    "dense_drizzle": "Gusta sipeća kiša",
+    "slight_rain": "Slaba kiša",
+    "moderate_rain": "Umerena kiša",
+    "heavy_rain": "Jaka kiša",
+    "slight_snow": "Slab sneg",
+    "moderate_snow": "Umeren sneg",
+    "heavy_snow": "Jak sneg",
+    "thunderstorm": "Grmljavina",
+    "cloudy": "Oblačno"
+  },
+  "StaffAgreementModal": {
+    "title": "Ugovor o uslugama",
+    "subtitle": "Molimo pregledajte i prihvatite naše profesionalne uslove korišćenja.",
+    "section1Title": "Vlasništvo nad podacima i privatnost",
+    "section1Body": "Korisnik (izvođač/osoblje) poseduje sav otpremljeni sadržaj (fotografije, dokumenti); međutim, Rivoli se daje pravo na obradu i skladištenje ovih podataka kako bi se osigurala funkcionalnost sistema i pružanje usluga.",
+    "section2Title": "Ograničenje odgovornosti",
+    "section2Body": "Riviola je striktno platforma za deljenje informacija. Korisnik je isključivo odgovoran za tačnost svih podataka unetih u sistem. Riviola ostaje neutralna u sporovima između investitora i developera i ne može se smatrati odgovornom za neslaganja.",
+    "section3Title": "SaaS licenca",
+    "section3Body": "Ovo je Softver kao usluga (SaaS). Vlasništvo nad softverom, njegovim izvornim kodom, dizajnom i intelektualnom svojinom pripada isključivo Rivoli. Korisniku se ne prenose nikakva prava vlasništva.",
+    "section4Title": "Plaćanje i suspenzija",
+    "section4Body": "Kontinuirani pristup zavisi od pravovremenog plaćanja. U slučaju kašnjenja u plaćanju dužeg od sedam (7) radnih dana, pristup sistemu (uključujući panele investitora) će biti automatski suspendovan dok se nalog ne izmiri.",
+    "section5Title": "Status nezavisnog izvođača",
+    "section5Body": "Korišćenje Riviole ne stvara odnos poslodavac-zaposleni, partnerstvo ili zajedničko ulaganje između Korisnika i Riviole. Korisnik posluje kao nezavisni profesionalac.",
+    "checkboxLabel": "Pročitao sam, razumeo i prihvatam Riviola profesionalni ugovor o uslugama.",
+    "confirmButton": "Potvrdi i pristupi panelu",
+    "processing": "Obrada...",
+    "errorNotChecked": "Molimo pročitajte i označite polje za prihvatanje.",
+    "successToast": "Ugovor uspešno prihvaćen.",
+    "errorToast": "Ažuriranje statusa ugovora nije uspelo."
+  },
+  "Demo": {
+    "notice": "Demo panela za osoblje — podaci su samo za potrebe prikaza",
+    "label": "Demo",
+    "companyName": "Primera gradnja (Demo)",
+    "nav": {
+      "overview": "Pregled",
+      "buildings": "Zgrade",
+      "investors": "Investitori",
+      "requests": "Zahtevi",
+      "dues": "Plaćanje naknada",
+      "subscription": "Pretplata"
+    },
+    "backToLanding": "Nazad na početnu",
+    "staff": {
+      "actions": {
+        "addPhoto": {
+          "title": "Dodaj nedeljnu fotografiju",
+          "description": "Otpremite nedeljne fotografije napretka za projekte."
+        },
+        "createAccount": {
+          "title": "Kreiraj nalog investitora",
+          "description": "Kreirajte naloge za prijavu za investitore."
+        }
+      },
+      "overview": {
+        "title": "Pregled",
+        "subtitle": "Upravljajte svojim zgradama i kreirajte naloge investitora.",
+        "stats": {
+          "buildings": "Zgrade",
+          "activeProjects": "Aktivni projekti",
+          "completed": "Završeno",
+          "investors": "Nalozi investitora"
+        }
+      }
+    },
+    "investors": {
+      "title": "Investitori",
+      "create": "Kreiraj nalog investitora"
+    },
+    "requests": {
+      "title": "Zahtevi investitora",
+      "subtitle": "Obilasci lokacije, informacije, priključci na komunalije (voda, struja, gas) i drugi zahtevi investitora.",
+      "status": {
+        "all": "Sve",
+        "Pending": "Na čekanju",
+        "In progress": "U toku",
+        "Done": "Završeno",
+        "Cancelled": "Otkazano"
+      },
+      "types": {
+        "all": "Svi tipovi",
+        "Site tour": "Obilazak lokacije",
+        "Information": "Informacije",
+        "Water connection": "Priključak za vodu",
+        "Electricity connection": "Priključak za struju",
+        "Gas connection": "Priključak za gas",
+        "Handover inspection": "Inspekcija primopredaje",
+        "Document request": "Zahtev za dokumentacijom",
+        "Maintenance request": "Zahtev za održavanje",
+        "Repair request": "Zahtev za popravku"
+      },
+      "empty": "Nema zahteva koji odgovaraju filterima.",
+      "requestedOn": "Traženo {date}",
+      "viewBuilding": "Pogledaj zgradu"
+    },
+    "buildings": {
+      "title": "Zgrade",
+      "addPhoto": "Dodaj nedeljnu fotografiju",
+      "units": "{count} jedinica",
+      "see": "Pogledaj",
+      "edit": "Izmeni",
+      "status": {
+        "Planned": "Planirano",
+        "In progress": "U toku",
+        "At risk": "Pod rizikom",
+        "On hold": "Na čekanju",
+        "Completed": "Završeno",
+        "Cancelled": "Otkazano"
+      },
+      "editPage": {
+        "back": "Nazad na zgradu",
+        "title": "Izmeni zgradu",
+        "subtitle": "Ažurirajte detalje zgrade. Promene će biti vidljive investitorima."
+      },
+      "addPage": {
+        "back": "Nazad na pregled",
+        "title": "Dodaj zgradu",
+        "description": "Napravite novi zapis projekta ili zgrade. Postavite nazive blokova, spratove i jedinice.",
+        "form": {
+          "name": "Naziv zgrade / projekta",
+          "namePlaceholder": "npr. Avala Resort",
+          "address": "Puna adresa ili detaljna lokacija",
+          "addressPlaceholder": "npr. Jadranska obala, Glavna ulica 12",
+          "status": "Status",
+          "statusHint": "Postavite trenutno stanje ove zgrade/projekta.",
+          "statusOptions": {
+            "Planned": { "label": "Planirano", "helper": "Priprema za početak" },
+            "In progress": { "label": "U toku", "helper": "Gradnja u toku" },
+            "At risk": { "label": "Pod rizikom", "helper": "Potrebna pažnja" },
+            "On hold": { "label": "Na čekanju", "helper": "Privremeno pauzirano" },
+            "Completed": { "label": "Završeno", "helper": "Primopredaja završena" },
+            "Cancelled": { "label": "Otkazano", "helper": "Trajno zaustavljeno" }
+          },
+          "blocks": "Nazivi blokova",
+          "blocksHint": "Definišite blokove ili kule u ovom projektu.",
+          "newBlockPlaceholder": "Naziv novog bloka",
+          "addBlock": "Dodaj blok",
+          "floors": "Broj spratova",
+          "floorsPlaceholder": "npr. 8",
+          "units": "Broj jedinica",
+          "unitsPlaceholder": "npr. 24",
+          "milestones": {
+            "title": "Plan prekretnica",
+            "subtitle": "Dodajte predstojeće prekretnice i označite koja je sledeća.",
+            "add": "Dodaj prekretnicu",
+            "empty": "Još uvek nema planiranih prekretnica.",
+            "next": "Sledeće",
+            "milestoneTitle": "Naslov",
+            "milestoneTitlePlaceholder": "npr. Krovna konstrukcija",
+            "targetDate": "Ciljni datum i vreme"
+          },
+          "submit": "Dodaj zgradu",
+          "cancel": "Otkaži"
+        }
+      }
+    }
+  },
+  "Onboarding": {
+    "exit": "Izlaz",
+    "stepOf": "Korak {step} od {total}",
+    "continue": "Nastavi",
+    "back": "Nazad",
+    "welcome": "Dobrodošli u Rivolu",
+    "getStarted": "Započni",
+    "transition": "Hajde da pređemo na sledeći korak.",
+    "step1": {
+      "title": "Za šta ćete koristiti Rivolu?",
+      "subtitle": "Možete izabrati više od jedne opcije.",
+      "useCases": {
+        "property-management": {
+          "label": "Upravljanje nekretninama",
+          "desc": "Upravljajte zgradama, jedinicama i popunjenošću."
+        },
+        "dues-collection": {
+          "label": "Naknade i plaćanja",
+          "desc": "Pratite uplate naknada (aidat) i automatsko fakturisanje."
+        },
+        "investor-relations": {
+          "label": "Odnosi sa investitorima",
+          "desc": "Obaveštavajte akcionare putem jasnih izveštaja."
+        },
+        "maintenance-requests": {
+          "label": "Zahtevi za održavanje",
+          "desc": "Sakupljajte i pratite zadatke i zahteve osoblja."
+        },
+        "weekly-updates": {
+          "label": "Nedeljna ažuriranja fotografijama",
+          "desc": "Dokumentujte i vizuelno delite napredak projekta."
+        },
+        "financial-reporting": {
+          "label": "Finansijsko izveštavanje",
+          "desc": "Pratite tok gotovine i plaćanje rata."
+        }
+      }
+    },
+    "step2": {
+      "title": "Kratki detalji projekta",
+      "subtitle": "Svega pet polja — to je sve što nam treba.",
+      "fullName": "Ime i prezime",
+      "fullNamePlaceholder": "npr. Marko Marković",
+      "companyName": "Naziv kompanije",
+      "companyNamePlaceholder": "npr. Riviola Ltd.",
+      "location": "Lokacija",
+      "locationPlaceholder": "Grad, Država",
+      "email": "Kontakt e-pošta",
+      "emailPlaceholder": "vi@kompanija.com",
+      "phone": "Telefon"
+    },
+    "step3": {
+      "title": "Riviola iskustvo",
+      "subtitle": "Zakažite privatni demo i mi ćemo prilagoditi sesiju vašem projektu.",
+      "cardTitle": "Zakažite privatni demo",
+      "cardBadge": "Preporučeno",
+      "cardDesc": "Rezervišite posvećenu sesiju sa Riviola stručnjakom.",
+      "chooseTime": "Izaberi vreme"
+    },
+    "step4": {
+      "title": "Izaberite datum i vreme",
+      "subtitle": "Izaberite termin za svoju personalizovanu demo sesiju.",
+      "pickDayFirst": "Prvo izaberite dan",
+      "selectDate": "Izaberite datum",
+      "timezone": "Vremenska zona",
+      "confirmBooking": "Potvrdi zakazivanje",
+      "submitting": "Slanje..."
+    },
+    "loading": {
+      "messages": [
+        "Analiziramo detalje vašeg projekta...",
+        "Konfigurišemo vaš personalizovani demo...",
+        "Podešavamo vašu kontrolnu tablu...",
+        "Skoro smo završili — postavljamo finalne detalje..."
+      ],
+      "tagline": "Vaše ekskluzivno iskustvo se kreira samo za vas."
+    },
+    "success": {
+      "title": "Sve je spremno!",
+      "body": "Vaše personalizovano iskustvo je spremno. Zaronite sada da istražite demo dashboard.",
+      "cta": "Istraži demo dashboard"
+    }
+  },
+  "Privacy": {
+    "backToHome": "Nazad na početnu",
+    "title": "Politika privatnosti",
+    "lastUpdated": "Poslednji put ažurirano:",
+    "s1title": "1. Uvod",
+    "s1body": "Riviola (\"mi\", \"naš\" ili \"nama\") se obavezuje da će štititi vašu privatnost. Ova Politika privatnosti objašnjava kako prikupljamo, koristimo, otkrivamo i štitimo vaše podatke.",
+    "s2title": "2. Informacije koje prikupljamo",
+    "s2body": "Možemo prikupljati informacije koje nam direktno pružite (npr. ime, e-pošta, detalji kompanije, informacije o plaćanju) i informacije koje se automatski prikupljaju.",
+    "s3title": "3. Kako koristimo vaše informacije",
+    "s3body": "Koristimo prikupljene informacije da bismo obezbedili, održavali i poboljšali naše usluge; da bismo komunicirali sa vama; da bismo obrađivali transakcije.",
+    "s4title": "4. Zadržavanje podataka i bezbednost",
+    "s4body": "Vaše podatke čuvamo samo onoliko dugo koliko je neophodno za svrhe opisane u ovoj politici ili u skladu sa zakonom.",
+    "s5title": "5. Vaša prava",
+    "s5body": "U zavisnosti od vaše lokacije, možda imate pravo da pristupite, ispravite, obrišete ili prenesete svoje podatke.",
+    "s6title": "6. Kontakt",
+    "s6body": "Za pitanja o ovoj Politici privatnosti, kontaktirajte nas na privacy@riviola.com."
+  },
+  "Terms": {
+    "backToHome": "Nazad na početnu",
+    "title": "Uslovi korišćenja",
+    "lastUpdated": "Poslednji put ažurirano:",
+    "s1title": "1. Pristanak na uslove",
+    "s1body": "Pristupanjem ili korišćenjem Riviola platforme i usluga, pristajete na ove Uslove korišćenja.",
+    "s2title": "2. Opis usluga",
+    "s2body": "Riviola pruža platformu za upravljanje gradnjom i investicijama za kompanije i investitore.",
+    "s3title": "3. Nalozi i podobnost",
+    "s3body": "Morate pružiti tačne informacije prilikom kreiranja naloga i održavati ih ažurnim.",
+    "s4title": "4. Naknade i plaćanje",
+    "s4body": "Naknade za pretplatu i korišćenje su onakve kakve su navedene u vašem planu.",
+    "s5title": "5. Prihvatljivo korišćenje",
+    "s5body": "Slažete se da nećete koristiti usluge u bilo kakve nezakonite svrhe ili na način koji bi mogao naštetiti Rivoli.",
+    "s6title": "6. Ograničenje odgovornosti",
+    "s6body": "U maksimalnoj meri dozvoljenoj zakonom, Riviola neće biti odgovorna za bilo kakvu indirektnu, slučajnu ili posledičnu štetu.",
+    "s7title": "7. Kontakt",
+    "s7body": "Za pitanja o uslovima korišćenja, kontaktirajte nas na legal@riviola.com."
+  },
+  "Cookies": {
+    "backToHome": "Nazad na početnu",
+    "title": "Politika kolačića",
+    "lastUpdated": "Poslednji put ažurirano:",
+    "s1title": "1. Šta su kolačići",
+    "s1body": "Kolačići su mali tekstualni fajlovi koji se čuvaju na vašem uređaju kada posetite veb sajt.",
+    "s2title": "2. Kolačići koje koristimo",
+    "s2intro": "Koristimo sledeće tipove kolačića:",
+    "s2li1bold": "Strogo neophodni:",
+    "s2li1": "Potrebni za funkcionisanje sajta.",
+    "s2li2bold": "Funkcionalni:",
+    "s2li2": "Pamte vaše izbore (npr. jezik, region).",
+    "s2li3bold": "Analitički:",
+    "s2li3": "Pomažu nam da razumemo kako posetioci koriste naš sajt.",
+    "s2li4bold": "Marketing:",
+    "s2li4": "Koriste se za prikazivanje relevantnih oglasa.",
+    "s3title": "3. Kako upravljati kolačićima",
+    "s3body": "Kolačiće možete kontrolisati i brisati putem podešavanja vašeg pretraživača.",
+    "s4title": "4. Ažuriranja",
+    "s4body": "Povremeno možemo ažurirati ovu Politiku kolačića.",
+    "s5title": "5. Kontakt",
+    "s5body": "Ako imate pitanja o našoj upotrebi kolačića, kontaktirajte nas na privacy@riviola.com."
+  }
+}

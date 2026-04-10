@@ -1,0 +1,1237 @@
+{
+  "Limits": {
+    "title": "Limiti i planit",
+    "upgradeRequired": "Kërkohet azhurnim",
+    "maxBuildingsReached": "Keni arritur limitin maksimal të ndërtesave ({count}/{max}).",
+    "upgradeToCreateMore": "Duhet të azhurnoni planin tuaj për të shtuar më shumë ndërtesa.",
+    "upgradeNow": "Azhurno tani",
+    "featureLocked": "Kjo veçori nuk përfshihet në planin tuaj.",
+    "featureLockedDesc": "Ju lutemi azhurnoni planin tuaj për të hyrë në këtë veçori.",
+    "usage": "Përdorimi",
+    "unlimited": "I pakufizuar"
+  },
+  "Hero": {
+    "badge": "Infrastruktura e gjeneratës së re",
+    "title": "Arkitektura e <gradient>shkëlqimit</gradient> <br></br> dhe transparencës.",
+    "subtitle": "Menaxhim i nivelit të lartë të ndërtimit për investitorët modernë. Ndiqni çdo tra, buxhet dhe arritje në kohë reale.",
+    "buttonLaunch": "Nis Projektin",
+    "buttonDemo": "Shiko Demon",
+    "activeProjects": "Projekte Aktive",
+    "activeProjectsNew": "+48 TË REJA",
+    "managedAssets": "Asete të Menaxhuara"
+  },
+  "Navigation": {
+    "dashboard": "Paneli kontrollit",
+    "properties": "Pronat",
+    "financials": "Financat",
+    "requests": "Kërkesat",
+    "documents": "Dokumentet",
+    "settings": "Cilësimet",
+    "features": "Veçoritë",
+    "pricing": "Çmimet",
+    "contact": "Kontakti",
+    "signIn": "Hyni",
+    "getStarted": "Fillo Tani"
+  },
+  "Marquee": {
+    "title": "Besuar nga liderët globalë në infrastrukturë"
+  },
+  "Features": {
+    "title": "Gjithçka që ju nevojitet për të <gradient>menaxhuar pronat</gradient> — e thjeshtuar.",
+    "subtitle": "Harroni mjetet e shpërndara. Riviola sjell gjithë operacionin tuaj në një ekosistem të vetëm me performancë të lartë.",
+    "cta": "Fillo eksplorimin falas",
+    "seeHowItWorks": "Shiko si funksionon",
+    "items": {
+      "hub": {
+        "title": "Qendra e Pronave",
+        "description": "Zemra e operacionit tuaj. Menaxhoni njësitë, qira dhe disponueshmërinë në kohë reale nga një qendër komande."
+      },
+      "investor": {
+        "title": "Portali i Investitorit",
+        "description": "Raportim premium për aksionarët. Ndiqni alokimet dhe shpërndarjet me zero fërkim."
+      },
+      "payments": {
+        "title": "Tarifat & Pagesat",
+        "description": "Automatizoni rrjedhën e parave tuaja me faturim dhe rakordim inteligjent."
+      },
+      "docs": {
+        "title": "Kasaforta e Sigurt",
+        "description": "Pajtueshmëria e bërë pa sforcim. Ruani planet dhe kontratat në mënyrë të sigurt."
+      },
+      "insights": {
+        "title": "Njohuri Financiare",
+        "description": "Analitikë e thellë dhe tabela raportimi të personalizuara."
+      },
+      "maintenance": {
+        "title": "Kërkesat Inteligjente",
+        "description": "Ndiqni mirëmbajtjen nga kërkesa deri te zgjidhja menjëherë."
+      },
+      "photos": {
+        "title": "Përditësimet Vizuale",
+        "description": "Foto javore të progresit të dërguara te çdo aksionar."
+      }
+    }
+  },
+  "Pricing": {
+    "title": "Çmimet",
+    "billingMonthly": "Faturimi Mujor",
+    "billingAnnual": "Faturimi Vjetor",
+    "billingAnnualSaving": "(Kurseni 40%)",
+    "tierRecommended": "E rekomanduar",
+    "periodMo": "/muaj",
+    "periodYear": "/vit",
+    "moEquivalent": "ekuivalente €/muaj",
+    "includedTier": "Të gjitha veçoritë e {tier} janë të përfshira",
+    "fullProcessFeature": "Ne do të kujdesemi për gjithë procesin për ju.",
+    "fullProcessModalTitle": "Kujdesi i plotë i procesit",
+    "fullProcessModalText": "Ne menaxhojmë dhe marrim përgjegjësinë për të gjithë procesin në emrin tuaj. Ne merremi me gjithë dokumentacionin për projektet tuaja të ndërtimit, regjistrojmë investitorët, blerësit dhe qiramarrësit, dhe komunikojmë me investitorët. Ne kujdesemi për të gjitha çështjet. Ne menaxhojmë tarifat e mirëmbajtjes (aidat) për ndërtesat dhe njësitë e banimit.",
+    "tiers": {
+      "essence": {
+        "name": "Essence",
+        "description": "E përsosur për ndërtesa të vetme ose portofole të vogla.",
+        "cta": "Zgjidh Essence",
+        "features": [
+          "Deri në 2 Ndërtesa / Projekte",
+          "Ndjekja Bazë e Investitorëve",
+          "Menaxhimi i Dokumenteve",
+          "Raportimi Bazë Financiar",
+          "Raportimi Standard Financiar",
+          "Qasja në Portalin e Investitorëve",
+          "Ne menaxhojmë 50% të procesit.",
+          "0% komision për të gjitha pagesat e bëra"
+        ]
+      },
+      "signature": {
+        "name": "Signature",
+        "description": "E optimizuar për firmat profesionale të menaxhimit të pronave.",
+        "cta": "Zgjidh Signature",
+        "features": [
+          "Deri në 10 Ndërtesa / Projekte",
+          "Mbledhja e Automatizuar e Tarifave",
+          "Analitikë e Avancuar Financiare",
+          "Gjenerimi Automatik i Faturës",
+          "Ndjekja e Kërkesave & Mirëmbajtjes",
+          "0% komision për të gjitha pagesat"
+        ]
+      },
+      "prestige": {
+        "name": "Prestige",
+        "description": "Veçori të nivelit të ndërmarrjes për operacione në shkallë të gjerë.",
+        "cta": "Zgjidh Prestige",
+        "features": [
+          "Ndërtesa dhe Projekte të Pakufizuara",
+          "Personalizim i Plotë",
+          "Mbështetje Prioritare & Menaxher i Dedikuar",
+          "Raporte të Investitorëve White-label",
+          "Procesimi në Grup i Pagesave",
+          "0% komision për të gjitha pagesat"
+        ]
+      }
+    }
+  },
+  "CTA": {
+    "title": "Vendosni themelet për projektin tuaj të ardhshëm sot.",
+    "buttonConsultation": "Programoni nje Konsultë",
+    "buttonTrial": "Fillo Provën Falas"
+  },
+  "Footer": {
+    "subtitle": "Menaxhim i nivelit të lartë të ndërtimit për investitorët modernë. Ndiqni çdo tra, buxhet dhe arritje në kohë reale.",
+    "product": "Produkti",
+    "legal": "Ligjore",
+    "account": "Llogaria",
+    "rights": "Të gjitha të drejtat e rezervuara.",
+    "links": {
+      "features": "Veçoritë",
+      "pricing": "Çmimet",
+      "demo": "Shiko Demon",
+      "getStarted": "Fillo Tani",
+      "privacy": "Politika e Privatësisë",
+      "terms": "Kushtet e Shërbimit",
+      "cookies": "Politika e Kukive",
+      "signIn": "Hyni",
+      "contact": "Kontakti",
+      "privacyShort": "Privatësia",
+      "termsShort": "Kushtet",
+      "cookiesShort": "Kukit"
+    }
+  },
+  "Sidebar": {
+    "investorManagement": "Menaxhimi i Investitorit",
+    "dashboard": "Paneli",
+    "myProperties": "Pronat e Mia",
+    "requests": "Kërkesat",
+    "financials": "Financat",
+    "feesAndPayments": "Tarifat & Pagesat",
+    "investorAccount": "Logaria e Investitorit",
+    "profileSettings": "Cilësimet e profilit",
+    "overview": "Përmbledhje",
+    "buildings": "Ndërtesat",
+    "investors": "Investitorët",
+    "duesPayments": "Pagesat e Tarifave",
+    "purchasePayments": "Pagesat e Blerjes",
+    "subscription": "Abonimi",
+    "companyPanel": "Paneli i kompanisë",
+    "logout": "Shkyçu",
+    "closeMenu": "Mbyll menunë",
+    "support": "Mbështetje & Ndihmë",
+    "wallet": "Portofoli & Balanca",
+    "adminPanel": "Paneli i Adminit",
+    "companies": "Kompanitë",
+    "users": "Përdoruesit",
+    "withdrawRequests": "Kërkesat për Tërheqje",
+    "supportTickets": "Tiketat e Mbështetjes",
+    "globalSettings": "Cilësimet Globale"
+  },
+  "Subscription": {
+    "recommended": "E rekomanduar",
+    "currency": "Monedha",
+    "title": "Abonimi",
+    "subtitle": "Plani dhe faturimi",
+    "choosePlan": "Zgjidhni planin tuaj",
+    "choosePlanSubtitle": "Zgjidhni një abonim për të zhbllokuar të gjitha veçoritë.",
+    "monthly": "Mujor",
+    "annual": "Vjetor (Kurseni 40%)",
+    "confirming": "Duke konfirmuar abonimin tuaj...",
+    "confirmingWait": "Ju lutemi prisni ndërsa ne konfigurojmë gjërat për ju.",
+    "currentPlan": "Plani Aktual",
+    "daysLeft": "Ditë të mbetura",
+    "cancelsOn": "Anulohet më {date}",
+    "includedFeatures": "Veçoritë e Përfshira",
+    "nextBillingDate": "Data e ardhshme e faturimit",
+    "billingPortal": "Portali i Faturimit",
+    "opening": "Duke u hapur...",
+    "redirecting": "Duke u ridrejtuar...",
+    "chooseTier": "Zgjidh {tier}",
+    "billedAnnually": "Faturuar çdo vit",
+    "billedMonthly": "Faturuar çdo muaj",
+    "activated": "Abonimi u aktivizua! Mirë se vini në bord.",
+    "confirmError": "Nuk u mundësua konfirmimi i pagesës.",
+    "genericError": "Ndodhi një gabim gjatë konfirmimit.",
+    "canceled": "Pagesa u anulua.",
+    "startError": "Nuk u mundësua nisja e pagesës.",
+    "portalError": "Nuk u mundësua hapja e portalit të faturimit.",
+    "upgradeTo": "Azhurno në {tier}",
+    "upgradeSubtitle": "Azhurnoni planin tuaj për më shumë veçori dhe ndërtesa.",
+    "currentPlanBadge": "Aktual",
+    "daysAdded": "{days} ditët e mbetura do të shtohen në abonimin tuaj të ri.",
+    "upgrading": "Duke u azhurnuar...",
+    "loadingDetails": "Duke ngarkuar detajet e planit...",
+    "statuses": {
+      "active": "Aktiv",
+      "trialing": "Në provë",
+      "past_due": "I vonuar",
+      "canceled": "I anuluar",
+      "incomplete": "I paplotë"
+    }
+  },
+  "Login": {
+    "title": "Hyni",
+    "subtitle": "Shkruani kredencialet tuaja për të hyrë në llogari.",
+    "registered": "Llogaria u krijua. Ju lutemi hyni.",
+    "email": "Email",
+    "password": "Fjalëkalimi",
+    "signIn": "Hyni",
+    "signingIn": "Duke u futur...",
+    "noAccount": "Nuk keni llogari?",
+    "createAccount": "Krijoni llogari",
+    "backHome": "Mbrapsht në faqen kryesore",
+    "invalidCredentials": "Email ose fjalëkalim i pasaktë.",
+    "genericError": "Diçka shkoi keq. Ju lutemi provoni përsëri.",
+    "signInFailed": "Hyrja dështoi. Ju lutemi provoni përsëri.",
+    "agreement": "Duke hyrë, ju pranoni Kushtet tona të Shërbimit dhe Politikën e Privatësisë."
+  },
+  "Register": {
+    "title": "Krijoni llogari",
+    "subtitle": "Shkruani detajet tuaja për të filluar me Riviola.",
+    "fullName": "Emri i plotë",
+    "email": "Email",
+    "password": "Fjalëkalimi",
+    "confirmPassword": "Konfirmoni fjalëkalimin",
+    "createAccount": "Krijoni llogari",
+    "creatingAccount": "Duke krijuar llogari...",
+    "alreadyHaveAccount": "Keni tashmë një llogari?",
+    "signIn": "Hyni",
+    "backHome": "Mbrapsht në faqen kryesore",
+    "passwordsDoNotMatch": "Fjalëkalimet nuk përputhen.",
+    "emailRegistered": "Ky email është regjistruar tashmë. Ju lutemi hyni.",
+    "genericError": "Diçka shkoi keq. Ju lutemi provoni përsëri.",
+    "agreement": "Duke krijuar llogarinë, ju pranoni Kushtet tona të Shërbimit dhe Politikën e Privatësisë."
+  },
+  "Support": {
+    "title": "Tiketat e Mbështetjes",
+    "subtitle": "Krijoni një tiketë për mbështetje teknike ose ndihmë.",
+    "newTicket": "Tiketë e Re",
+    "ticketTitle": "Titulli",
+    "subject": "Subjekti",
+    "priority": "Prioriteti",
+    "description": "Përshkrimi",
+    "urgency": "Urgjenca",
+    "photo": "Foto",
+    "send": "Dërgo",
+    "sending": "Duke dërguar...",
+    "noTickets": "Nuk keni ende asnjë tiketë mbështetjeje.",
+    "status": "Statusi",
+    "createdAt": "Krijuar më",
+    "urgent": "Urgjente",
+    "high": "I lartë",
+    "medium": "I mesëm",
+    "low": "I ulët",
+    "open": "E hapur",
+    "resolved": "E zgjidhur",
+    "closed": "E mbyllur",
+    "ticketForm": "Formulari i Tiketës",
+    "successMessage": "Tiketa juaj e mbështetjes u dërgua me sukses.",
+    "errorMessage": "Ndodhi një gabim gjatë dërgimit të tiketës.",
+    "cancel": "Anulo"
+  },
+  "Wallet": {
+    "title": "Portofoli",
+    "subtitle": "Menaxhoni balancën e kompanisë dhe tërheqjet.",
+    "balance": "Balanca e Kompanisë",
+    "withdraw": "Kërko Tërheqje",
+    "iban": "IBAN",
+    "bankName": "Emri i Bankës",
+    "bank": "Banka",
+    "amount": "Shuma",
+    "status": "Statusi",
+    "date": "Data",
+    "note": "Shënim",
+    "pending": "Në pritje",
+    "approved": "E miratuar",
+    "rejected": "E refuzuar",
+    "requests": "Kërkesat për Tërheqje",
+    "noRequests": "Nuk ka ende kërkesa për tërheqje.",
+    "insufficientBalance": "Balancë e pamjaftueshme.",
+    "successRequest": "Kërkesa për tërheqje u dërgua me sukses.",
+    "errorRequest": "Dërgimi i kërkesës dështoi.",
+    "cancel": "Anulo",
+    "sending": "Duke dërguar..."
+  },
+  "Requests": {
+    "title": "Kërkesat e investitorit",
+    "subtitle": "Ture në kantier, informacione, lidhje të shërbimeve (ujë, energji elektrike, gaz) dhe kërkesa të tjera nga investitorët.",
+    "all": "Të gjitha",
+    "allTypes": "Të gjitha llojet",
+    "pending": "Në pritje",
+    "inProgress": "Në proces",
+    "done": "E kryer",
+    "cancelled": "E anuluar",
+    "updating": "Duke u përditësuar...",
+    "noMatch": "Nuk u gjetën kërkesa që përputhen me filtrat.",
+    "projectBlockUnit": "Projekti / Blloku · Njësia",
+    "block": "Blloku",
+    "unit": "Njësia",
+    "m2": "m²",
+    "delivery": "Dorëzimi",
+    "noUnit": "Asnjë njësi nuk i është caktuar kërkuesit në këtë ndërtesë.",
+    "note": "Shënim",
+    "requestedAt": "Kërkuar më {date}",
+    "viewBuilding": "Shiko ndërtesën",
+    "noCompany": "Asnjë kompani e caktuar. Nuk mund t'i shihni kërkesat.",
+    "types": {
+      "Site tour": "Tur në kantier",
+      "Information": "Informacion",
+      "Water connection": "Lidhja e ujit",
+      "Electricity connection": "Lidhja e energjisë",
+      "Gas connection": "Lidhja e gazit",
+      "Handover inspection": "Inspektimi i dorëzimit",
+      "Document request": "Kërkesë për dokument",
+      "Maintenance request": "Kërkesë mirëmbajtjeje",
+      "Repair request": "Kërkesë për riparim"
+    }
+  },
+  "Dues": {
+    "title": "Pagesat e tarifave",
+    "subtitle": "Vendosni periudhën e pagesës për ndërtesë dhe ndiqni tarifat mujore (aidat).",
+    "building": "Ndërtesa",
+    "paid": "E paguar",
+    "overdue": "E vonuar",
+    "pending": "Në pritje",
+    "overdueDetected": "U detektuan pagesa të vonuara",
+    "overdueSubtitle": "Disa investitorë kanë tarifa të papaguara pas afatit. Ju lutemi kontrolloni tabelën më poshtë.",
+    "paymentWindowInfo": "Pagesa duhet të bëhet midis datës {start} dhe {end} të çdo muaji.",
+    "amountPerMonth": "Shuma: {amount} në muaj.",
+    "setWindowAmount": "Vendosni dritaren e pagesës dhe shumën për këtë ndërtesë (p.sh. data 4–12 e çdo muaji).",
+    "cancel": "Anulo",
+    "editWindow": "Ndrysho dritaren",
+    "startDay": "Dita fillestare (1–31)",
+    "endDay": "Dita përfundimtare (1–31)",
+    "amount": "Shuma (për muaj)",
+    "currency": "Monedha",
+    "areaPricing": "Nivelet e çmimeve sipas sipërfaqes (opsionale)",
+    "addTier": "+ Shto Nivel",
+    "noTiers": "Nuk ka nivele çmimesh. Përdoret shuma standarde.",
+    "minM2": "Min m²",
+    "maxM2": "Max m²",
+    "amountShort": "Shuma",
+    "saving": "Duke ruajtur…",
+    "saveSettings": "Ruaj cilësimet",
+    "noUnits": "Nuk ka njësi në këtë ndërtesë.",
+    "assignInvestors": "Caktoni investitorët në njësi për të ndjekur tarifat.",
+    "block": "Blloku",
+    "unit": "Njësia",
+    "investor": "Investitori",
+    "duesAmount": "Shuma e Tarifës",
+    "markPaid": "U shënua si e paguar.",
+    "unmarkPaid": "U hoq shënimi si e paguar.",
+    "saved": "Dritarja e pagesës u ruajt.",
+    "noBuildings": "Nuk ka ndërtesa.",
+    "addBuildings": "Shtoni ndërtesa në kompaninë tuaj për të ndjekur tarifat.",
+    "searchPlaceholder": "Kërko sipas investitorit, bllokut ose njësisë...",
+    "noSearchResults": "Nuk u gjetën njësi që përputhen me kërkimin.",
+    "clearSearch": "Pastro kërkimin",
+    "filters": {
+      "all": "Të gjitha njësitë",
+      "overdue": "Të vonuara",
+      "paid": "Të paguara plotësisht",
+      "pending": "Në pritje"
+    },
+    "advancedFilter": "Filtër i Avancuar",
+    "filterModal": {
+      "title": "Filtër i Detajuar",
+      "period": "Periudha / Muaji",
+      "status": "Statusi i Pagesës",
+      "allPeriods": "Të gjitha periudhat",
+      "apply": "Apliko Filtrat",
+      "reset": "Rivendos"
+    },
+    "ordinal": {
+      "0": ".",
+      "1": ".",
+      "2": ".",
+      "3": ".",
+      "4": ".",
+      "5": ".",
+      "6": ".",
+      "7": ".",
+      "8": ".",
+      "9": ".",
+      "other": "."
+    }
+  },
+  "Purchase": {
+    "title": "Pagesat e Blerjes",
+    "subtitle": "Monitoroni të gjitha njësitë dhe pagesat në një listë të bashkuar. Menaxhoni planet përmes modalit.",
+    "project": "Projekti",
+    "block": "Blloku",
+    "searchPlaceholder": "Kërko njësi, investitor ose pagesë...",
+    "status": {
+      "all": "Të gjitha",
+      "paid": "Vetëm të paguara",
+      "pending": "Vetëm në pritje",
+      "unconfigured": "I pakonfiguruar"
+    },
+    "selectBuilding": "Ju lutemi zgjidhni një ndërtesë për të filluar.",
+    "noUnitsFound": "Nuk u gjetën njësi",
+    "noUnitsSubtitle": "Nuk gjetëm asnjë njësi blerësi në këtë projekt.",
+    "unitsInBlock": "Të gjitha njësitë në Bllokun {block}",
+    "unitsActive": "{count} Njësi Aktive",
+    "table": {
+      "unitInvestor": "Njësia / Investitori",
+      "paymentPlan": "Pagesa / Plani",
+      "dueDate": "Data e mbarimit",
+      "amount": "Shuma",
+      "status": "Statusi",
+      "actions": "Veprimet"
+    },
+    "noRecordsFound": "Nuk u gjetën të dhëna që përputhen me filtrat.",
+    "clearFilters": "Pastro të gjithë filtrat",
+    "noInvestor": "Pa Investitor",
+    "noPlan": "Asnjë plan i konfiguruar",
+    "notSet": "Nuk është vendosur",
+    "paid": "I paguar",
+    "pending": "Në pritje",
+    "setPlan": "Vendos Planin",
+    "markPaid": "Shëno si e paguar",
+    "unmark": "Hiq shënimin",
+    "deletePlan": "Fshi gjithë planin",
+    "confirmDelete": "Fshini këtë plan pagese? Të gjitha të dhënat e kësteve do të fshihen.",
+    "planCreated": "Plani i pagesës u krijua.",
+    "unmarkedPaid": "U hoq shënimi si e paguar.",
+    "markedPaid": "U shënua si e paguar.",
+    "planDeleted": "Plani u fshi.",
+    "labels": {
+      "full": "Pagesë e plotë",
+      "down": "Pagesë fillestare",
+      "installment": "Kësti {n}{suffix}"
+    },
+    "modal": {
+      "title": "Vendos Planin e Pagesës",
+      "independentUnit": "Njësi e Pavarur",
+      "planStructure": "Struktura e Planit",
+      "fullPayment": "Pagesë e Plotë",
+      "downInstallments": "Fillestare + Këste",
+      "currency": "Monedha",
+      "contractValue": "Vlera Totale e Kontratës",
+      "startDate": "Data e Fillimit",
+      "downPayment": "Pagesa Fillestare",
+      "installmentCount": "Numri i Kësteve",
+      "cancel": "Anulo",
+      "initialize": "Inicializo Planin",
+      "processing": "Duke procesuar"
+    },
+    "footer": "Fundi i të dhënave • Riviola Premium Real Estate Management"
+  },
+  "Staff": {
+    "title": "Paneli i Stafit",
+    "addPhoto": "Shto foto javore",
+    "addPhotoSubtitle": "Ngarkoni foto të progresit javor për projektet.",
+    "createInvestor": "Krijo llogari investitori",
+    "createInvestorSubtitle": "Krijoni llogari hyrëse për investitorët.",
+    "overview": "Përmbledhje",
+    "overviewSubtitle": "Menaxhoni ndërtesat tuaja dhe krijoni llogari investitorësh.",
+    "stats": {
+      "buildings": "Ndërtesat",
+      "activeProjects": "Projekte aktive",
+      "completed": "Të përfunduara",
+      "investorAccounts": "Llogari investitoresh"
+    },
+    "alerts": {
+      "title": "Tarifat & Alarmet",
+      "overdue": "Tarifa të vonuara",
+      "recent": "Pagesat e fundit",
+      "noItems": "Nuk ka pagesa të fundit ose tarifa të vonuara.",
+      "trackingInfo": "Tarifat ndiqen te rubrika Pagesat e Tarifave.",
+      "dueOn": "skadon më {date}",
+      "paidOn": "paguar më {date}"
+    },
+    "chart": {
+      "title": "Vlera e Portofolit të Investitorit",
+      "totalValue": "Vlera totale",
+      "portfolioValue": "Vlera e portofolit"
+    },
+    "projects": {
+      "title": "Projekte Aktive",
+      "viewAll": "Shiko të Gjitha Projektet",
+      "noBuildings": "Nuk ka ende ndërtesa.",
+      "addBuilding": "Shto ndërtesë",
+      "completed": "E përfunduar",
+      "percentComplete": "{percent}% e përfunduar"
+    }
+  },
+  "Investors": {
+    "title": "Investitorët",
+    "subtitle": "Menaxhoni investitorët tuaj të pasurive të paluajtshme me caktime të sakta ba aseteve.",
+    "createAccount": "Regjistrimi i Llogarisë",
+    "noProperties": "Asnjë pronë e caktuar.",
+    "noPropertiesSubtitle": "Investitorët do të shfaqen këtu pasi të caktohen në njësi në ndërtesat e kompanisë suaj.",
+    "createFirstInvestor": "Krijoni Investitorin Tuaj të Parë",
+    "table": {
+      "investor": "Investitori",
+      "phone": "Telefoni",
+      "project": "Projekti",
+      "block": "Blloku",
+      "unit": "Njësia",
+      "m2": "m²",
+      "type": "Lloji",
+      "delivery": "Dorëzimi",
+      "edit": "Ndrysho",
+      "searchPlaceholder": "Kërko investitorët...",
+      "allProjects": "Pamja Globale e Projektit",
+      "anyStatus": "Çdo Status Investimi",
+      "premierBuyer": "Blerës Premier",
+      "verifiedRenter": "Qiramarrës i Verifikuar",
+      "identity": "Identiteti / Kontakti",
+      "assignment": "Caktimi i Projektit",
+      "unitDetail": "Detajet e Njësisë",
+      "status": "Statusi",
+      "management": "Menaxhimi",
+      "types": {
+        "buyer": "Blerës",
+        "renter": "Qiramarrës"
+      }
+    },
+    "modal": {
+      "editTitle": "Ndrysho investitorin",
+      "fullName": "Emri i plotë",
+      "email": "Email",
+      "phone": "Telefoni",
+      "phonePlaceholder": "p.sh. +355 69 123 4567",
+      "phoneNote": "* Ju lutemi mos e hiqni kodin e shtetit (p.sh., +355, +382).",
+      "investorType": "Lloji i investitorit",
+      "investorTypeOptions": {
+        "buyer": "Blerës (sheh Financat)",
+        "renter": "Qiramarrës (nuk sheh Financat)"
+      },
+      "block": "Blloku",
+      "unit": "Njësia",
+      "area": "Sipërfaqja (m²)",
+      "deliveryPeriod": "Periudha e dorëzimit",
+      "purchaseValue": "Vlera e blerjes",
+      "currency": "Monedha",
+      "save": "Ruaj",
+      "saveChanges": "Ruaj Ndryshimet",
+      "saving": "Duke ruajtur...",
+      "updating": "Duke përditësuar...",
+      "cancel": "Anulo"
+    },
+    "newAccount": {
+      "back": "Mbrapsht në përmbledhje",
+      "title": "Krijo llogari investitori",
+      "subtitle": "Krijoni një llogari hyrëse dhe caktojeni atë në një projekt, bllok, njësi dhe plan pagese.",
+      "fullName": "Emri i plotë",
+      "fullNamePlaceholder": "p.sh. Filan Fisteku",
+      "email": "Email",
+      "emailPlaceholder": "investitori@shembull.com",
+      "password": "Fjalëkalimi i përkohshëm",
+      "passwordPlaceholder": "Fjalëkalimi fillestar (mund të ndryshohet më vonë)",
+      "phone": "Telefoni",
+      "phonePlaceholder": "p.sh. +355 69 123 4567",
+      "phoneNote": "* Ju lutemi mos e hiqni kodin e shtetit (p.sh., +355, +382).",
+      "investorType": "Lloji i investitorit",
+      "project": "Projekti / ndërtesa",
+      "selectProject": "Zgjidh projektin",
+      "block": "Emri i bllokut",
+      "selectBlock": "Zgjidh bllokun",
+      "floor": "Kati",
+      "selectFloor": "Zgjidh katin",
+      "unit": "Njësia / apartamenti",
+      "unitPlaceholder": "p.sh. 402",
+      "area": "Sipërfaqja (m²)",
+      "areaPlaceholder": "p.sh. 85",
+      "deliveryPeriod": "Periudha e dorëzimit",
+      "deliveryPeriodPlaceholder": "p.sh. Q3 2026, Q4 2026",
+      "amountTitle": "Shuma për t'u paguar (totale)",
+      "amountSubtitle": "Shuma totale që investitori ka paguar ose do të paguajë për këtë njësi.",
+      "amountPlaceholder": "p.sh. 150000",
+      "paymentPlan": "Plani i pagesës",
+      "paymentPlanSubtitle": "Pagesë e plotë menjëherë ose me këste.",
+      "fullPayment": "Pagesë e plotë (njëherësh)",
+      "installments": "Këste",
+      "installmentCount": "Numri i kësteve",
+      "preview": "Parashikimi",
+      "previewHint": "Shkruani shumën totale më lart për të parë parashikimin.",
+      "onetimePayment": "Pagesë e vetme: {amount}",
+      "installmentsOf": "{count} këste prej {amount} secili",
+      "totalPreview": "Totali: {amount}",
+      "create": "Krijo llogari",
+      "creating": "Duke krijuar...",
+      "cancel": "Anulo",
+      "successRedirect": "Llogaria u krijua. Duke u ridrejtuar...",
+      "serverError": "Serveri nuk u përgjigj. Provoni përsëri.",
+      "fallbackError": "Llogaria nuk mund të krijohej. Provoni përsëri.",
+      "genericError": "Ndodhi një gabim. Provoni përsëri."
+    }
+  },
+  "Buildings": {
+    "title": "Ndërtesat",
+    "addBuilding": "Shto ndërtesë",
+    "addWeeklyPhoto": "Shto foto javore",
+    "noBuildings": "Nuk ka ende ndërtesa.",
+    "noBuildingsSubtitle": "Shtoni një ndërtesë për të filluar.",
+    "unitsCount": "{count} njësi",
+    "noWeeklyPhotos": "Nuk ka foto javore",
+    "weeklyUpdateCount": "{count} përditësim javor",
+    "weeklyUpdateCount_plural": "{count} përditësime javore",
+    "see": "Shiko",
+    "edit": "Ndrysho",
+    "delete": "Fshij"
+  },
+  "Statuses": {
+    "planned": "Planifikuar",
+    "inProgress": "Në proces",
+    "atRisk": "Në rrezik",
+    "onHold": "Në pritje",
+    "completed": "Përfunduar",
+    "cancelled": "Anuluar"
+  },
+  "WeeklyPhotos": {
+    "back": "Mbrapsht në panel",
+    "title": "Shto Foto Javore",
+    "selectBuilding": "Zgjidh Ndërtesën",
+    "selectProject": "Zgjidh një projekt...",
+    "blocksLabel": "Për cilin bllok(e) është kjo?",
+    "selectAll": "Zgjidh të Gjithë Blloket",
+    "deselectAll": "Hiq të Gjitha",
+    "dateRange": "Gama e Datave (p.sh. 13-20 Dhjetor)",
+    "dateRangePlaceholder": "13-20 Dhj 2024",
+    "weekLabel": "Etiketa e Javës",
+    "weekLabelPlaceholder": "Java 51",
+    "description": "Përshkrimi i Progresit",
+    "descriptionPlaceholder": "Jepni një përditësim të shkurtër se çfarë shihet në foto...",
+    "uploadTitle": "Ngarko fotot",
+    "uploadSubtitle": "Klikoni për të kërkuar ose tërhiqni fotot këtu.",
+    "selectFiles": "Zgjidh Skedarët",
+    "submitting": "Duke u dërguar...",
+    "submit": "Ngarko Përditësimin Javor",
+    "success": "Përditësimi javor u ngarkua me sukses.",
+    "errorGeneric": "Dështoi krijimi i përditësimit.",
+    "errorUpload": "Dështoi ngarkimi: {message}",
+    "errorRecord": "Dështoi ruajtja e të dhënave të imazhit: {message}"
+  },
+  "Settings": {
+    "title": "Cilësimet e profilit",
+    "subtitle": "Përditësoni detajet dhe preferencat e profilit tuaj.",
+    "save": "Ruaj ndryshimet",
+    "saving": "Duke u ruajtur...",
+    "saved": "U ruajt",
+    "notSignedIn": "Nuk keni hyrë.",
+    "sections": {
+      "profile": {
+        "title": "Profili",
+        "subtitle": "Këto detaje shfaqen në llogarinë tuaj.",
+        "fullName": "Emri i plotë",
+        "fullNamePlaceholder": "Emri juaj",
+        "email": "Email",
+        "emailPlaceholder": "emri@shembull.com",
+        "emailNote": "Emaili menaxhohet nga llogaria juaj.",
+        "phone": "Telefoni",
+        "company": "Kompania",
+        "companyNote": "Kompania juaj është e lidhur me llogarinë tuaj.",
+        "role": "Roli",
+        "roleNote": "Roli juaj përcakton se cilin panel mund të përdorni."
+      },
+      "preferences": {
+        "title": "Preferencat",
+        "subtitle": "Kontrolloni se si sillet Riviola për ju.",
+        "language": "Gjuha",
+        "currency": "Monedha",
+        "currencyNote": "Monedha juaj menaxhohet nga stafi dhe nuk mund të ndryshohet këtu."
+      },
+      "notifications": {
+        "title": "Njoftimet",
+        "subtitle": "Zgjidhni për çfarë dëshironi t'ju dërgojmë email.",
+        "payments": {
+          "title": "Pagesat & tarifat",
+          "desc": "Afatet e pagesave, konfirmimet dhe pagesat e dështuara."
+        },
+        "milestones": {
+          "title": "Arritjet (Milestones)",
+          "desc": "Përditësime kur regjistrohet progres në piketa."
+        },
+        "documents": {
+          "title": "Dokumentet",
+          "desc": "Faturat e reja dhe skedarët e ndarë."
+        }
+      }
+    },
+    "roles": {
+      "investor": "Investitor",
+      "staff": "Stafi",
+      "admin": "Admin"
+    }
+  },
+  "StaffBuildingDetail": {
+    "backToBuildings": "Mbrapsht te ndërtesat",
+    "addWeeklyPhoto": "Shto foto javore",
+    "edit": "Ndrysho",
+    "delete": "Fshij",
+    "deleteConfirm": "A jeni të sigurt që dëshironi të hiqni këtë ndërtesë?",
+    "deleteSuccess": "Ndërtesa u hoq.",
+    "location": "Vendndodhja",
+    "units": "Njësitë",
+    "progress": "Progresi",
+    "currentMilestone": "Arritja aktuale",
+    "nextMilestone": "Arritja e ardhshme",
+    "sustainabilityTitle": "Paneli i Qëndrueshmërisë",
+    "sustainabilitySubtitle": "Impakti mjedisor dhe certifikata e gjelbër",
+    "greenScore": "Pikët e Gjelbra",
+    "noMilestones": "Nuk ka ende arritje për këtë ndërtesë.",
+    "addMilestonesHint": "Shtoni arritjet e planifikuara kur ndryshoni ndërtesën.",
+    "milestonesTitle": "Arritjet",
+    "milestonesSubtitle": "Lista kronologjike e piketave për këtë ndërtesë.",
+    "current": "Aktuale",
+    "milestoneLabel": "Arritja",
+    "weeklyUpdatesTitle": "Përditësimet javore me foto",
+    "cityWeather": "Moti në {city}"
+  },
+  "EditBuilding": {
+    "backToBuilding": "Mbrapsht te ndërtesa",
+    "title": "Ndrysho ndërtesën",
+    "subtitle": "Përditësoni detajet e ndërtesës. Ndryshimet do të jenë të dukshme për investitorët.",
+    "defaultBlock": "Blloku A",
+    "saveSuccess": "Ndërtesa u ruajt me sukses.",
+    "saving": "Duke u ruajtur...",
+    "saveChanges": "Ruaj ndryshimet",
+    "cancel": "Anulo",
+    "form": {
+      "nameLabel": "Emri i ndërtesës / projektit",
+      "namePlaceholder": "p.sh. Avala Resort",
+      "addressLabel": "Adresa e plotë ose lokacioni i detajuar",
+      "addressPlaceholder": "p.sh. Bregdeti Adriatik, Rruga Kryesore 12",
+      "bannerLabel": "Fotoja kryesore (Banner)",
+      "bannerSubtitle": "Imazhi kryesor për faqen e detajeve. Lëreni bosh për ta mbajtur aktualen.",
+      "changePhoto": "Ndrysho foton",
+      "uploadPhoto": "Ngarko foton kryesore",
+      "removePhoto": "Hiq foton",
+      "unitsLabel": "Numri i njësive",
+      "unitsPlaceholder": "p.sh. 24",
+      "blocksLabel": "Emrat e blloqeve",
+      "blocksSubtitle": "Definoni blloqet ose kullat (p.sh. Blloku A). Këto do të përdoren kur caktoni investitorët.",
+      "blockPlaceholder": "p.sh. Blloku A",
+      "removeBlock": "Hiq bllokun",
+      "newBlockName": "Emri i bllokut të ri",
+      "addBlock": "Shto bllok",
+      "floorsLabel": "Numri i kateve",
+      "floorsPlaceholder": "p.sh. 8",
+      "countryLabel": "Shteti",
+      "countryPlaceholder": "Zgjidh Shtetin",
+      "cityLabel": "Qyteti",
+      "cityPlaceholder": "Zgjidh Qytetin",
+      "loadingCities": "Duke ngarkuar qytetet...",
+      "statusLabel": "Statusi",
+      "milestonePlan": "Plani i arritjeve",
+      "milestoneSubtitle": "Shtoni arritjet dhe zgjidhni cilën është aktuale.",
+      "addMilestone": "Shto arritje",
+      "noMilestones": "Nuk ka ende arritje të planifikuara.",
+      "setAsCurrent": "Vendos si aktuale",
+      "current": "Aktuale",
+      "milestoneTitle": "Titulli",
+      "milestoneTitlePlaceholder": "p.sh. Lyerja e jashtme përfundimtare",
+      "targetDate": "Data dhe ora e synuar",
+      "removeMilestone": "Hiq arritjen",
+      "sustainabilityDashboard": "Paneli i Qëndrueshmërisë (Pikët e Gjelbra)",
+      "sustainabilitySubtitle": "Shfaqni ndikimin mjedisor të projektit tuaj te investitorët.",
+      "greenScoreLabel": "Pikët Totale të Gjelbra (Të llogaritura automatikisht)",
+      "greenScoreHint": "Pikët llogariten bazuar në veçoritë e gjelbra që zgjidhni më poshtë.",
+      "addFeatures": "Shto Veçoritë e Qëndrueshmërisë së Projektit"
+    }
+  },
+  "StatusOptions": {
+    "Planned": { "label": "Planifikuar", "helper": "Duke u përgatitur" },
+    "In progress": { "label": "Në proces", "helper": "Ndërtimi vazhdon" },
+    "At risk": { "label": "Në rrezik", "helper": "Kërkon vëmendje" },
+    "On hold": { "label": "Në pritje", "helper": "Pauzë e përkohshme" },
+    "Completed": { "label": "Përfunduar", "helper": "Dorëzimi u krye" },
+    "Cancelled": { "label": "Anuluar", "helper": "Ndërprerë përfundimisht" }
+  },
+  "SustainabilityFeatures": {
+    "Solar Panels": "Panele Diellore",
+    "EV Charging Stations": "Stacione Karikimi EV",
+    "Rainwater Harvesting": "Mbledhja e Ujit të Shiut",
+    "Energy Efficient Lighting": "Ndriçim Efiçent",
+    "Waste & Recycling Management": "Menaxhim Mbetjesh & Reciklim",
+    "Smart Home Tech": "Teknologji Smart Home",
+    "Natural Ventilation": "Ventilim Natyral",
+    "Green Roof / Sky Garden": "Çati e Gjelbër / Sky Garden",
+    "Advanced Thermal Insulation": "Izolim Termik i Avancuar",
+    "Eco-friendly Materials": "Materiale Ekologjike",
+    "Professional Garden Design": "Dizajn Profesional i Kopshtit",
+    "Eco-friendly Infrastructure": "Infrastrukturë Ekologjike",
+    "Pet Friendly Spaces": "Hapësira për Kafshët",
+    "Secure Bicycle Parking": "Parking i Sigurt për Biçikleta",
+    "High-efficiency HVAC": "Sisteme HVAC me Efiçencë të Lartë",
+    "Water-saving Fixtures": "Pajisje Kursimi Uji"
+  },
+  "InvestorDashboard": {
+    "header": {
+      "title": "Rezidencat e Mia",
+      "subtitle": "Mirë se vini mbrapsht, pronat tuaja po rriten në vlerë sipas planit.",
+      "notifications": "Njoftimet",
+      "logout": "Shkyçu"
+    },
+    "portfolio": {
+      "assetValue": "Vlera e Aseteve",
+      "paymentsMade": "Pagesat e Bëra",
+      "assetValueDesc": "Vlera totale e pronave tuaja",
+      "paymentsMadeDesc": "Tarifat totale të paguara deri më sot",
+      "valueLabel": "Vlera",
+      "paidLabel": "Paguar",
+      "current": "Aktual"
+    },
+    "upcomingMilestones": {
+      "title": "Arritjet e Ardhshme",
+      "live": "Live",
+      "updatedJustNow": "Përditësuar sapo",
+      "updatedAgo": "Përditësuar {seconds}s më parë",
+      "empty": "Nuk ka ende arritje të ardhshme për pronat tuaja.",
+      "viewProperties": "Shiko pronat"
+    },
+    "myProperties": {
+      "title": "Pronat e Mia Aktive",
+      "totalValue": "Vlera totale:",
+      "totalPaid": "Totali i paguar:",
+      "viewAllAssets": "Shiko të Gjitha Asetet",
+      "viewAllProperties": "Shiko të Gjitha Pronat",
+      "propertyBadge": "Prona",
+      "assignedUnitUpdate": "Njësia e caktuar. Shihni detajet për përditësime."
+    },
+    "propertyCard": {
+      "constructionProgress": "Progresi i Ndërtimit",
+      "area": "Sipërfaqja",
+      "viewDetails": "Shiko detajet"
+    },
+    "weeklyPhoto": {
+      "title": "Fotoja Javore",
+      "noUpdates": "Asnjë përditësim ende",
+      "openFullscreen": "Hap foton javore në ekran të plotë",
+      "fallbackDescription": "Përditësim i progresit javor",
+      "viewGallery": "Shiko Galerinë e Fotove",
+      "emptyText": "Kur stafi të ndajë fotot javore për pronën tuaj, ato do të shfaqen këtu."
+    }
+  },
+  "PropertiesPage": {
+    "title": "Pronat e Mia",
+    "subtitleBuyer": "Menaxhoni dhe ndiqni të gjitha asetet tuaja të paluajtshme.",
+    "subtitleRenter": "Menaxhoni dhe ndiqni njësitë tuaja me qira.",
+    "summary": {
+      "totalProperties": "Total Prona",
+      "underConstruction": "Në Ndërtim",
+      "completed": "Përfunduar",
+      "totalValue": "Vlera Totale",
+      "totalPaid": "Totali i Paguar"
+    },
+    "filter": {
+      "all": "Të Gjitha Pronat",
+      "active": "Aktive",
+      "completed": "Përfunduar",
+      "planning": "Planifikim",
+      "search": "Kërko pronat..."
+    },
+    "card": {
+      "underConstruction": "Në Ndërtim",
+      "planningPhase": "Faza e Planifikimit",
+      "completed": "Përfunduar",
+      "constructionProgress": "Progresi i Ndërtimit",
+      "delivery": "Dorëzimi:",
+      "viewDetails": "Shiko detajet",
+      "propertyBadge": "Prona"
+    },
+    "empty": {
+      "noFound": "Nuk u gjetën prona.",
+      "noAssigned": "Nuk keni ende asnjë njësi të caktuar. Kontaktoni menaxherin tuaj.",
+      "tryAdjusting": "Provoni të ndryshoni kërkimin ose filtrat."
+    }
+  },
+  "PropertyDetail": {
+    "backToProperties": "Mbrapsht te pronat",
+    "propertyBadge": "Prona",
+    "yourUnit": "Njësia juaj:",
+    "progress": "Progresi",
+    "value": "Vlera",
+    "area": "Sipërfaqja",
+    "delivery": "Dorëzimi",
+    "currentMilestone": "Arritja aktuale",
+    "nextMilestone": "Arritja e ardhshme",
+    "milestoneFallback": "Arritja",
+    "sustainability": {
+      "title": "Paneli i Qëndrueshmërisë",
+      "subtitle": "Impakti mjedisor & certifikata e gjelbër",
+      "greenScore": "Pikët e Gjelbra"
+    },
+    "plans": {
+      "title": "Planet & orari",
+      "subtitle": "Ndjekja e itinerarit",
+      "inProgress": "Në proces"
+    },
+    "weeklyPhotos": {
+      "title": "Progresi Javor",
+      "subtitle": "Raporte vizuale nga kantieri"
+    },
+    "activityLog": {
+      "title": "Logu i aktiviteti"
+    },
+    "fullList": "Shiko listën e plotë",
+    "showLess": "Shiko më pak"
+  },
+  "RequestsPage": {
+    "title": "Kërkesat e mia",
+    "subtitle": "Dërgoni dhe ndiqni turet në kantier, lidhjet e shërbimeve dhe dokumentet.",
+    "newRequest": "Kërkesë e re",
+    "form": {
+      "title": "Dërgoni një kërkesë të re",
+      "typeLabel": "Lloji i kërkesës",
+      "buildingLabel": "Prona / ndërtesa",
+      "buildingPlaceholder": "Zgjidh pronën",
+      "noteLabel": "Shënim (opsional)",
+      "notePlaceholder": "p.sh. Data e preferuar për tur, ose detaje për lidhjen e shërbimeve",
+      "attachLabel": "Bashkëngjit foto (opsional)",
+      "filesSelected": "{count} skedar(ë) të zgjedhur",
+      "submitButton": "Dërgo kërkesën",
+      "submitting": "Duke u dërguar…",
+      "cancelButton": "Anulo",
+      "chooseFile": "Zgjidh skedarin"
+    },
+    "types": {
+      "Site tour": "Tur në kantier",
+      "Information": "Informacion",
+      "Water connection": "Lidhja e ujit",
+      "Electricity connection": "Lidhja e energjisë",
+      "Gas connection": "Lidhja e gazit",
+      "Handover inspection": "Inspektimi i dorëzimit",
+      "Document request": "Kërkesë për dokument",
+      "Maintenance request": "Kërkesë mirëmbajtjeje",
+      "Repair request": "Kërkesë për riparim"
+    },
+    "filters": {
+      "summary": "Duke shfaqur {count} kërkesa ({pending} në pritje).",
+      "type": "Lloji",
+      "building": "Ndërtesa",
+      "status": "Statusi",
+      "allTypes": "Të Gjitha Llojet",
+      "allBuildings": "Të Gjitha Ndërtesat",
+      "allStatuses": "Të Gjithë Statuset",
+      "emptyTitle": "Nuk u gjetën kërkesa që përputhen me filtrat tuaj.",
+      "clearFilters": "Pastro të gjithë filtrat"
+    },
+    "list": {
+      "submitted": "Dërguar më {date}",
+      "cancelButton": "Anulo kërkesën",
+      "cancelling": "Duke u anuluar…"
+    },
+    "modals": {
+      "cancel": {
+        "title": "Anuloni kërkesën?",
+        "body": "A jeni të sigurt që dëshironi ta anuloni këtë kërkesë? {type} për {building} do të anulohet.",
+        "keep": "Mbaje kërkesën",
+        "confirm": "Po, anuloje"
+      }
+    },
+    "statuses": {
+      "Pending": "Në pritje",
+      "In progress": "Në proces",
+      "Done": "E kryer",
+      "Cancelled": "Anuluar"
+    },
+    "toasts": {
+      "success": "Kërkesa u dërgua me sukses.",
+      "cancelled": "Kërkesa u anulua."
+    }
+  },
+  "FinancialsPage": {
+    "title": "Financat & Këstet",
+    "subtitle": "Ndiqni milestonet e pagesave dhe balancat e mbetura për pronat tuaja.",
+    "exportButton": "Eksporto Raportin",
+    "progress": {
+      "title": "Progresi Total",
+      "paid": "Paguar",
+      "remaining": "Mbetur",
+      "contractValue": "Vlera Totale e Kontratës",
+      "paidToDate": "Paguar deri më sot",
+      "balance": "Balanca e Mbetur"
+    },
+    "table": {
+      "title": "Pagesat",
+      "payment": "Pagesa",
+      "dueDate": "Data e mbarimit",
+      "amount": "Shuma",
+      "status": "Statusi",
+      "empty": "Asnjë pagesë ende.",
+      "statuses": {
+        "paid": "E paguar",
+        "pending": "Në pritje"
+      }
+    }
+  },
+  "FeesPage": {
+    "title": "Tarifat & Pagesat",
+    "subtitle": "Ndiqni dhe paguani tarifat e apartamentit — shpenzimet e bashkëpronësisë (aidat).",
+    "stats": {
+      "totalDue": "Totali detyrim",
+      "itemsToPay": "{count} zë(ra) për të paguar",
+      "paidMonth": "Paguar këtë muaj",
+      "payments": "{count} pagesë(a)",
+      "nextDue": "Data e mbarimit",
+      "commonCharges": "Shpenzimet e bashkëpronësisë (Aidat)",
+      "noUpcoming": "Nuk ka pagesa të ardhshme"
+    },
+    "table": {
+      "title": "Të gjitha tarifat dhe shpenzimet",
+      "downloadInvoice": "Shkarko Faturën",
+      "building": "Ndërtesa / Njësia",
+      "type": "Lloji",
+      "period": "Periudha",
+      "dueDate": "Data",
+      "amount": "Shuma",
+      "status": "Statusi",
+      "invoice": "Fatura",
+      "action": "Veprimi",
+      "empty": "Asnjë tarifë e regjistruar ende. Tarifat do të shfaqen këtu pasi menaxheri të konfigurojë dritaret e pagesave.",
+      "commonChargesLabel": "Shpenzime bashkëpronësie (Aidat)"
+    },
+    "actions": {
+      "pay": "Paguaj",
+      "sending": "Duke u dërguar…",
+      "paid": "E paguar",
+      "paidOn": "Paguar më {date}, {time}",
+      "due": "Detyrim",
+      "overdue": "I vonuar"
+    },
+    "footer": "Klikoni \"Paguaj\" për të paguar me Stripe. Shuma duhet të caktohet nga menaxheri.",
+    "toasts": {
+      "success": "Pagesa u krye. Faleminderit.",
+      "error": "Nuk u mundësua konfirmimi i pagesës.",
+      "startError": "Pagesa nuk mund të nisej."
+    }
+  },
+  "Weather": {
+    "clear_sky": "Qiell i pastër",
+    "mainly_clear": "Kryesisht kthjellët",
+    "partly_cloudy": "Vranësira të pjesshme",
+    "overcast": "Vranët",
+    "fog": "Mjergull",
+    "light_drizzle": "Rigë e lehtë",
+    "moderate_drizzle": "Rigë mesatare",
+    "dense_drizzle": "Rigë e dendur",
+    "slight_rain": "Shi i pakët",
+    "moderate_rain": "Shi mesatar",
+    "heavy_rain": "Shi i dendur",
+    "slight_snow": "Borë e pakët",
+    "moderate_snow": "Borë mesatare",
+    "heavy_snow": "Borë e dendur",
+    "thunderstorm": "Shtrëngatë",
+    "cloudy": "Vranët"
+  },
+  "StaffAgreementModal": {
+    "title": "Marrëveshja e Shërbimit",
+    "subtitle": "Ju lutemi rishikoni dhe pranoni kushtet tona profesionale.",
+    "section1Title": "Pronësia e të Dhënave & Privatësia",
+    "section1Body": "Përdoruesi (Stafi) zotëron gjithë përmbajtjen e ngarkuar (foto, dokumente); megjithatë, Rivolës i jepet e drejta t'i procesojë ato për funksionimin e sistemit.",
+    "section2Title": "Kufizimi i Përgjegjësisë",
+    "section2Body": "Riviola është rreptësisht një platformë për ndarjen e informacionit. Përdoruesi është përgjegjës për saktësinë e të dhënave.",
+    "section3Title": "Licenca SaaS",
+    "section3Body": "Ky është një Softuer si Shërbim (SaaS). Pronësia e softuerit, kodit dhe dizajnit i përket Rivolës.",
+    "section4Title": "Pagesat & Suspendimi",
+    "section4Body": "Qasja e vazhdueshme varet nga pagesat me kohë. Në rast vonese mbi 7 ditë pune, qasja do të suspendohet.",
+    "section5Title": "Statusi i Pavarur",
+    "section5Body": "Përdorimi i Rivolës nuk krijon një marrëdhënie punëdhënës-punonjës. Përdoruesi operon si profesionist i pavarur.",
+    "checkboxLabel": "I kam lexuar, kuptuar dhe pranoj Marrëveshjen e Shërbimit të Rivolës.",
+    "confirmButton": "Konfirmo & Hap Panelin",
+    "processing": "Duke procesuar...",
+    "errorNotChecked": "Ju lutemi lexoni dhe shënoni kutinë e pranimit.",
+    "successToast": "Marrëveshja u pranua me sukses.",
+    "errorToast": "Dështoi përditësimi i statusit të marrëveshjes."
+  },
+  "Onboarding": {
+    "exit": "Dalje",
+    "stepOf": "Hapi {step} nga {total}",
+    "continue": "Vazhdo",
+    "back": "Mbrapsht",
+    "welcome": "Mirë se vini në Riviola",
+    "getStarted": "Fillo Tani",
+    "transition": "Le të kalojmë në hapin tjetër.",
+    "step1": {
+      "title": "Për çfarë do ta përdorni Rivolën?",
+      "subtitle": "Mund të zgjidhni më shumë se një opsion.",
+      "useCases": {
+        "property-management": {
+          "label": "Menaxhim pronash",
+          "desc": "Menaxhoni ndërtesat, njësitë dhe banueshmërinë."
+        },
+        "dues-collection": {
+          "label": "Tarifat & pagesat",
+          "desc": "Ndiqni aidat-et dhe faturimin automatik."
+        },
+        "investor-relations": {
+          "label": "Marrëdhëniet me investitorët",
+          "desc": "Mbajini aksionarët të informuar me raporte të qarta."
+        },
+        "maintenance-requests": {
+          "label": "Kërkesat e mirëmbajtjes",
+          "desc": "Mblidhni dhe ndiqni detyrat e stafit."
+        },
+        "weekly-updates": {
+          "label": "Foto javore të progresit",
+          "desc": "Dokumentoni progresin në mënyrë vizuale."
+        },
+        "financial-reporting": {
+          "label": "Raportim financiar",
+          "desc": "Monitoroni cashflow-n dhe pagesat e kësteve."
+        }
+      }
+    },
+    "step2": {
+      "title": "Detaje të shkurtra të projektit",
+      "subtitle": "Pesë fusha — kjo është e gjitha që na duhet.",
+      "fullName": "Emri i plotë",
+      "fullNamePlaceholder": "p.sh. Filan Fisteku",
+      "companyName": "Emri i kompanisë",
+      "companyNamePlaceholder": "p.sh. Riviola Shpk",
+      "location": "Vendndodhja",
+      "locationPlaceholder": "Qyteti, Shteti",
+      "email": "Email kontakti",
+      "emailPlaceholder": "ju@kompania.com",
+      "phone": "Telefoni"
+    },
+    "step3": {
+      "title": "Përvoja Riviola",
+      "subtitle": "Rezervoni një demo private dhe ne do ta përshtasim seancën me projektin tuaj.",
+      "cardTitle": "Rezervoni një demo private",
+      "cardBadge": "Rekomanduar",
+      "cardDesc": "Rezervoni një seancë me një specialist të Rivolës.",
+      "chooseTime": "Zgjidh kohën"
+    },
+    "step4": {
+      "title": "Zgjidhni datën & orën",
+      "subtitle": "Zgjidhni një slot për seancën tuaj të personalizuar.",
+      "pickDayFirst": "Zgjidhni ditën fillimisht",
+      "selectDate": "Zgjidhni datën",
+      "timezone": "Zona koritare",
+      "confirmBooking": "Konfirmo Rezervimin",
+      "submitting": "Duke u dërguar..."
+    },
+    "loading": {
+      "messages": [
+        "Duke analizuar detajet e projektit...",
+        "Duke konfiguruar demon tuaj...",
+        "Duke përgatitur panelin tuaj...",
+        "Gati gati — duke vendosur detajet finale..."
+      ],
+      "tagline": "Përvoja juaj ekskluzive po përgatitet vetëm për ju."
+    },
+    "success": {
+      "title": "Gjithçka gati!",
+      "body": "Përvoja juaj është gati. Hyni tani për të eksploruar panelin demo.",
+      "cta": "Eksploro Panelin Demo"
+    }
+  },
+  "Privacy": {
+    "backToHome": "Mbrapsht në faqen kryesore",
+    "title": "Politika e Privatësisë",
+    "lastUpdated": "Përditësuar fundi:",
+    "s1title": "1. Hyrje",
+    "s1body": "Riviola angazhohet të mbrojë privatësinë tuaj. Kjo politikë shpjegon se si mbledhim dhe përdorim të dhënat tuaja.",
+    "s2title": "2. Të dhënat që mbledhim",
+    "s2body": "Ne mbledhim informacion që na jepni direkt (emri, email, pagesat) dhe informacion automatik.",
+    "s3title": "3. Si i përdorim të dhënat",
+    "s3body": "Ne i përdorim ato për të ofruar shërbimin, për të komunikuar dhe për të procesuar transaksionet.",
+    "s4title": "4. Siguria",
+    "s4body": "Ne i mbajmë të dhënat tuaja vetëm për aq kohë sa është e nevojshme dhe përdorim masa sigurie të avancuara.",
+    "s5title": "5. Të drejtat tuaja",
+    "s5body": "Ju keni të drejtë të kërkoni akses, korrigjim ose fshirje të të dhënave tuaja.",
+    "s6title": "6. Kontakt",
+    "s6body": "Për pyetje, na kontaktoni në privacy@riviola.com."
+  },
+  "Terms": {
+    "backToHome": "Mbrapsht në faqen kryesore",
+    "title": "Kushtet e Shërbimit",
+    "lastUpdated": "Përditësuar fundi:",
+    "s1title": "1. Pajtimi me kushtet",
+    "s1body": "Duke përdorur platformën e Rivolës, ju pranoni të jeni të lidhur me këto kushte.",
+    "s2title": "2. Përshkrimi i shërbimit",
+    "s2body": "Riviola ofron një platformë për menaxhimin e ndërtimit dhe investimeve.",
+    "s3title": "3. Llogaritë",
+    "s3body": "Ju duhet të jepni informacion të saktë kur krijoni një llogari.",
+    "s4title": "4. Pagesat",
+    "s4body": "Tarifat janë ato të specifikuara në planin tuaj të abonimit.",
+    "s5title": "5. Përdorimi i lejueshëm",
+    "s5body": "Ju pranoni të mos e përdorni shërbimin për qëllime të paligjshme.",
+    "s6title": "6. Kufizimi i përgjegjësisë",
+    "s6body": "Riviola nuk mban përgjegjësi për dëme indirekte ose aksidentale.",
+    "s7title": "7. Kontakt",
+    "s7body": "Për pyetje, na kontaktoni në legal@riviola.com."
+  },
+  "Cookies": {
+    "backToHome": "Mbrapsht në faqen kryesore",
+    "title": "Politika e Kukive",
+    "lastUpdated": "Përditësuar fundi:",
+    "s1title": "1. Çfarë janë kukit",
+    "s1body": "Kukit janë skedarë të vegjël teksti që ruhen në pajisjen tuaj kur vizitoni një sajt.",
+    "s2title": "2. Çfarë përdorim",
+    "s2intro": "Ne përdorim kukit e mëposhtme:",
+    "s2li1bold": "Rreptësisht të nevojshme:",
+    "s2li1": "Nevojiten për funksionimin e sajtit.",
+    "s2li2bold": "Funksionale:",
+    "s2li2": "Mbajnë mend zgjedhjet tuaja (gjuha, rajoni).",
+    "s2li3bold": "Analitike:",
+    "s2li3": "Na ndihmojnë të kuptojmë trafikun në sajt.",
+    "s2li4bold": "Marketing:",
+    "s2li4": "Përdoren për reklama relevante.",
+    "s3title": "3. Menaxhimi",
+    "s3body": "Ju mund t'i kontrolloni kukit përmes cilësimeve të shfletuesit tuaj.",
+    "s4title": "4. Përditësimet",
+    "s4body": "Ne mund ta përditësojmë këtë politikë sipas nevojës.",
+    "s5title": "5. Kontakt",
+    "s5body": "Kontaktoni në privacy@riviola.com për çdo pyetje."
+  }
+}

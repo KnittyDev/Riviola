@@ -13,12 +13,18 @@ import {
 import type { StaffRequestView } from "@/lib/investorRequests";
 import { updateRequestStatusAction } from "./actions";
 import Image from "next/image";
+import { toast } from "sonner";
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 
 function formatDate(dateStr: string, locale: string) {
-  return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-GB", {
+  const localeMap: Record<string, string> = {
+    tr: "tr-TR",
+    sr: "sr-RS",
+    sq: "sq-AL",
+  };
+  return new Date(dateStr).toLocaleDateString(localeMap[locale] || "en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -62,9 +68,20 @@ export function StaffRequestsClient({ initialRequests }: Props) {
 
   async function handleStatusChange(id: string, status: RequestStatus) {
     setUpdatingId(id);
-    const result = await updateRequestStatusAction(id, status);
+    
+    const promise = updateRequestStatusAction(id, status);
+    
+    toast.promise(promise, {
+      loading: t("updating"),
+      success: () => {
+        router.refresh();
+        return t("done");
+      },
+      error: t("noMatch"), // Or another error key
+    });
+
+    await promise;
     setUpdatingId(null);
-    if (result.ok) router.refresh();
   }
 
   return (
@@ -199,6 +216,7 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                         {t("cancelled")}
                       </span>
                     ) : (
+                    <div className="relative">
                       <select
                         value={req.status}
                         onChange={(e) => handleStatusChange(req.id, e.target.value as RequestStatus)}
@@ -217,6 +235,12 @@ export function StaffRequestsClient({ initialRequests }: Props) {
                           </option>
                         ))}
                       </select>
+                      {updatingId === req.id && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg pointer-events-none">
+                          <i className="las la-spinner la-spin text-[#134e4a] text-lg" aria-hidden />
+                        </div>
+                      )}
+                    </div>
                     )}
                     <Link
                       href={`/dashboard/staff/buildings/${req.buildingId}`}
