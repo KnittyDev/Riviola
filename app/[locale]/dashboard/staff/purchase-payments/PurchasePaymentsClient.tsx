@@ -29,14 +29,14 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 
 function formatAmount(value: number, currency: string, locale: string): string {
   const sym = CURRENCY_SYMBOLS[currency] ?? currency + " ";
-  const formatted = value.toLocaleString(locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : "en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  const formatted = value.toLocaleString(locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : locale === "pl" ? "pl-PL" : "en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   return sym === "€" || sym === "£" || sym === "₺" ? `${formatted} ${sym}` : `${sym}${formatted}`;
 }
 
 function formatDate(dateStr: string | null, locale: string): string {
   if (!dateStr) return "—";
   try {
-    return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
+    return new Date(dateStr).toLocaleDateString(locale === "tr" ? "tr-TR" : locale === "sr" ? "sr-RS" : locale === "sq" ? "sq-AL" : locale === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
   } catch {
     return "—";
   }

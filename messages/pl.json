@@ -1,0 +1,1365 @@
+{
+  "Limits": {
+    "title": "Limit planu",
+    "upgradeRequired": "Wymagana aktualizacja",
+    "maxBuildingsReached": "Osiągnięto maksymalny limit budynków ({count}/{max}).",
+    "upgradeToCreateMore": "Musisz uaktualnić swój plan, aby dodać więcej budynków.",
+    "upgradeNow": "Uaktualnij teraz",
+    "featureLocked": "Ta funkcja nie jest dostępna w Twoim planie.",
+    "featureLockedDesc": "Uaktualnij swój plan, aby uzyskać dostęp do tej funkcji.",
+    "usage": "Zużycie",
+    "unlimited": "Bez limitu"
+  },
+  "Hero": {
+    "badge": "Infrastruktura nowej generacji",
+    "title": "Architektura <gradient>doskonałości</gradient> <br></br> i przejrzystości.",
+    "subtitle": "Najwyższej klasy zarządzanie budową dla nowoczesnych inwestorów. Śledź każdy szczegół, budżet i postępy w czasie rzeczywistym.",
+    "buttonLaunch": "Uruchom projekt",
+    "buttonDemo": "Zobacz demo",
+    "activeProjects": "Aktywne projekty",
+    "activeProjectsNew": "+48 NOWYCH",
+    "managedAssets": "Zarządzane aktywa"
+  },
+  "Navigation": {
+    "dashboard": "Panel sterowania",
+    "properties": "Nieruchomości",
+    "financials": "Finanse",
+    "requests": "Zgłoszenia",
+    "documents": "Dokumenty",
+    "settings": "Ustawienia",
+    "features": "Funkcje",
+    "pricing": "Cennik",
+    "contact": "Kontakt",
+    "signIn": "Zaloguj się",
+    "getStarted": "Rozpocznij",
+    "language": "Język"
+  },
+  "Marquee": {
+    "title": "Zaufali nam światowi liderzy infrastruktury"
+  },
+  "Features": {
+    "title": "Wszystko, czego potrzebujesz do <gradient>zarządzania nieruchomościami</gradient> — uproszczone.",
+    "subtitle": "Zapomnij o rozproszonych narzędziach. Riviola łączy całą Twoją działalność w jeden ekosystem o wysokiej wydajności.",
+    "cta": "Rozpocznij darmową eksplorację",
+    "seeHowItWorks": "Zobacz, jak to działa",
+    "items": {
+      "hub": {
+        "title": "Centrum Nieruchomości",
+        "description": "Serce Twojej działalności. Zarządzaj lokalami, wynajmem i dostępnością w czasie rzeczywistym z centrum dowodzenia."
+      },
+      "investor": {
+        "title": "Portal Inwestora",
+        "description": "Raportowanie premium dla akcjonariuszy. Śledź przydziały i dywidendy bez żadnych przeszkód."
+      },
+      "payments": {
+        "title": "Opłaty i Płatności",
+        "description": "Automatyzuj przepływy pieniężne dzięki inteligentnemu fakturowaniu i rozliczaniu."
+      },
+      "docs": {
+        "title": "Bezpieczny Skarbiec",
+        "description": "Zgodność bez wysiłku. Bezpiecznie przechowuj plany i kontrakty."
+      },
+      "insights": {
+        "title": "Wgląd Finansowy",
+        "description": "Głęboka analityka i spersonalizowane panele raportowania."
+      },
+      "maintenance": {
+        "title": "Inteligentne Zgłoszenia",
+        "description": "Śledź konserwację od zgłoszenia do rozwiązania w mgnieniu oka."
+      },
+      "photos": {
+        "title": "Aktualizacje Wizualne",
+        "description": "Cotygodniowe zdjęcia postępów dostarczane do każdego akcjonariusza."
+      }
+    }
+  },
+  "Pricing": {
+    "title": "Cennik",
+    "billingMonthly": "Rozliczenie miesięczne",
+    "billingAnnual": "Rozliczenie roczne",
+    "billingAnnualSaving": "(Oszczędzasz 40%)",
+    "tierRecommended": "Polecane",
+    "periodMo": "/mies.",
+    "periodYear": "/rok",
+    "moEquivalent": "ekwiwalent €/mies.",
+    "includedTier": "Wszystkie funkcje {tier} są wliczone",
+    "fullProcessFeature": "Zajmiemy się całym procesem za Ciebie.",
+    "fullProcessModalTitle": "Kompletna obsługa procesu",
+    "fullProcessModalText": "Zarządzamy i bierzemy odpowiedzialność za cały proces w Twoim imieniu. Obsługujemy całą dokumentację Twoich projektów budowlanych, rejestrujemy inwestorów, kupujących i najemców oraz komunikujemy się z inwestorami. Rozwiązujemy wszystkie problemy. Zarządzamy opłatami za utrzymanie (aidat) dla budynków i lokali mieszkaniowych.",
+    "tiers": {
+      "essence": {
+        "name": "Essence",
+        "description": "Idealny dla pojedynczych budynków lub małych portfeli.",
+        "cta": "Wybierz Essence",
+        "features": [
+          "Do 2 budynków / projektów",
+          "Podstawowe śledzenie inwestorów",
+          "Zarządzanie dokumentami",
+          "Podstawowe raportowanie finansowe",
+          "Standardowe raportowanie finansowe",
+          "Dostęp do portalu inwestora",
+          "Zarządzamy 50% procesu.",
+          "0% prowizji od wszystkich dokonanych płatności"
+        ]
+      },
+      "signature": {
+        "name": "Signature",
+        "description": "Zoptymalizowany dla profesjonalnych firm zarządczych.",
+        "cta": "Wybierz Signature",
+        "features": [
+          "Do 10 budynków / projektów",
+          "Zautomatyzowana windykacja opłat",
+          "Zaawansowana analityka finansowa",
+          "Automatyczne generowanie faktur",
+          "Śledzenie zgłoszeń i konserwacji",
+          "0% prowizji od wszystkich płatności"
+        ]
+      },
+      "prestige": {
+        "name": "Prestige",
+        "description": "Funkcje klasy enterprise dla operacji na dużą skalę.",
+        "cta": "Wybierz Prestige",
+        "features": [
+          "Nieograniczona liczba budynków i projektów",
+          "Pełna personalizacja",
+          "Wsparcie priorytetowe i dedykowany menedżer",
+          "Raporty inwestorskie White-label",
+          "Batchowe przetwarzanie płatności",
+          "0% prowizji od wszystkich płatności"
+        ]
+      }
+    }
+  },
+  "CTA": {
+    "title": "Zbuduj fundamenty pod swój kolejny projekt już dziś.",
+    "buttonConsultation": "Umów konsultację",
+    "buttonTrial": "Rozpocznij darmowy okres próbny"
+  },
+  "Footer": {
+    "subtitle": "Najwyższej klasy zarządzanie budową dla nowoczesnych inwestorów. Śledź każdy szczegół, budżet i postępy w czasie rzeczywistym.",
+    "product": "Produkt",
+    "legal": "Prawo",
+    "account": "Konto",
+    "rights": "Wszelkie prawa zastrzeżone.",
+    "links": {
+      "features": "Funkcje",
+      "pricing": "Cennik",
+      "demo": "Zobacz demo",
+      "getStarted": "Rozpocznij",
+      "privacy": "Polityka prywatności",
+      "terms": "Regulamin",
+      "cookies": "Polityka plików cookie",
+      "signIn": "Zaloguj się",
+      "contact": "Kontakt",
+      "privacyShort": "Prywatność",
+      "termsShort": "Warunki",
+      "cookiesShort": "Pliki cookie"
+    }
+  },
+  "Sidebar": {
+    "investorManagement": "Zarządzanie Inwestorami",
+    "dashboard": "Panel",
+    "myProperties": "Moje nieruchomości",
+    "requests": "Zgłoszenia",
+    "financials": "Finanse",
+    "feesAndPayments": "Opłaty i Płatności",
+    "investorAccount": "Konto Inwestora",
+    "profileSettings": "Ustawienia profilu",
+    "overview": "Przegląd",
+    "buildings": "Budynki",
+    "investors": "Inwestorzy",
+    "duesPayments": "Płatności składek",
+    "purchasePayments": "Płatności zakupu",
+    "subscription": "Subskrypcja",
+    "companyPanel": "Panel firmy",
+    "logout": "Wyloguj się",
+    "closeMenu": "Zamknij menu",
+    "support": "Wsparcie i Pomoc",
+    "wallet": "Portfel i Saldo",
+    "adminPanel": "Panel administratora",
+    "companies": "Firmy",
+    "users": "Użytkownicy",
+    "withdrawRequests": "Wnioski o wypłatę",
+    "supportTickets": "Zgłoszenia pomocy",
+    "globalSettings": "Ustawienia globalne"
+  },
+  "Subscription": {
+    "recommended": "Polecane",
+    "currency": "Waluta",
+    "title": "Subskrypcja",
+    "subtitle": "Plan i rozliczenia",
+    "choosePlan": "Wybierz swój plan",
+    "choosePlanSubtitle": "Wybierz subskrypcję, aby odblokować wszystkie funkcje.",
+    "monthly": "Miesięcznie",
+    "annual": "Rocznie (Oszczędzasz 40%)",
+    "confirming": "Potwierdzanie subskrypcji...",
+    "confirmingWait": "Proszę czekać, konfigurujemy wszystko dla Ciebie.",
+    "currentPlan": "Aktualny plan",
+    "daysLeft": "Pozostało dni",
+    "cancelsOn": "Anuluje się w dniu {date}",
+    "includedFeatures": "Zawarte funkcje",
+    "nextBillingDate": "Data następnego rozliczenia",
+    "billingPortal": "Portal rozliczeniowy",
+    "opening": "Otwieranie...",
+    "redirecting": "Przekierowywanie...",
+    "chooseTier": "Wybierz {tier}",
+    "billedAnnually": "Rozliczane rocznie",
+    "billedMonthly": "Rozliczane miesięcznie",
+    "activated": "Subskrypcja aktywowana! Witamy na pokładzie.",
+    "confirmError": "Nie udało się potwierdzić płatności.",
+    "genericError": "Wystąpił błąd podczas potwierdzania.",
+    "canceled": "Płatność została anulowana.",
+    "startError": "Nie udało się rozpocząć płatności.",
+    "portalError": "Nie udało się otworzyć portalu rozliczeniowego.",
+    "upgradeTo": "Uaktualnij do {tier}",
+    "upgradeSubtitle": "Uaktualnij plan, aby uzyskać więcej funkcji i budynków.",
+    "currentPlanBadge": "Aktualny",
+    "daysAdded": "Pozostałe {days} dni zostaną dodane do nowej subskrypcji.",
+    "upgrading": "Aktualizowanie...",
+    "loadingDetails": "Ładowanie szczegółów planu...",
+    "statuses": {
+      "active": "Aktywny",
+      "trialing": "Okres próbny",
+      "past_due": "Zaległy",
+      "canceled": "Anulowany",
+      "incomplete": "Niekompletny"
+    }
+  },
+  "Login": {
+    "title": "Logowanie",
+    "subtitle": "Wprowadź swoje dane, aby uzyskać dostęp do konta.",
+    "registered": "Konto utworzone. Proszę się zalogować.",
+    "email": "E-mail",
+    "password": "Hasło",
+    "signIn": "Zaloguj się",
+    "signingIn": "Logowanie...",
+    "noAccount": "Nie masz konta?",
+    "createAccount": "Utwórz konto",
+    "backHome": "Powrót do strony głównej",
+    "invalidCredentials": "Nieprawidłowy e-mail lub hasło.",
+    "genericError": "Coś poszło nie tak. Spróbuj ponownie.",
+    "signInFailed": "Logowanie nie powiodło się. Spróbuj ponownie.",
+    "agreement": "Logując się, zgadzasz się na nasz Regulamin i Politykę prywatności."
+  },
+  "Register": {
+    "title": "Utwórz konto",
+    "subtitle": "Wprowadź swoje dane, aby rozpocząć korzystanie z Rivoli.",
+    "fullName": "Imię i nazwisko",
+    "email": "E-mail",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "createAccount": "Utwórz konto",
+    "creatingAccount": "Tworzenie konta...",
+    "alreadyHaveAccount": "Masz już konto?",
+    "signIn": "Zaloguj się",
+    "backHome": "Powrót do strony głównej",
+    "passwordsDoNotMatch": "Hasła nie zgadzają się.",
+    "emailRegistered": "Ten e-mail jest już zarejestrowany. Proszę się zalogować.",
+    "genericError": "Coś poszło nie tak. Spróbuj ponownie.",
+    "agreement": "Tworząc konto, zgadzasz się na nasz Regulamin i Politykę prywatności."
+  },
+  "Support": {
+    "title": "Zgłoszenia pomocy",
+    "subtitle": "Utwórz zgłoszenie, aby uzyskać wsparcie techniczne lub pomoc.",
+    "newTicket": "Nowe zgłoszenie",
+    "ticketTitle": "Tytuł",
+    "subject": "Temat",
+    "priority": "Priorytet",
+    "description": "Opis",
+    "urgency": "Pilność",
+    "photo": "Zdjęcie",
+    "send": "Wyślij",
+    "sending": "Wysyłanie...",
+    "noTickets": "Nie masz jeszcze żadnych zgłoszeń pomocy.",
+    "status": "Status",
+    "createdAt": "Utworzono",
+    "urgent": "Pilne",
+    "high": "Wysoki",
+    "medium": "Średni",
+    "low": "Niski",
+    "open": "Otwarte",
+    "resolved": "Rozwiązane",
+    "closed": "Zamknięte",
+    "ticketForm": "Formularz zgłoszenia",
+    "successMessage": "Twoje zgłoszenie zostało pomyślnie wysłane.",
+    "errorMessage": "Wystąpił błąd podczas wysyłania zgłoszenia.",
+    "cancel": "Anuluj"
+  },
+  "Wallet": {
+    "title": "Portfel",
+    "subtitle": "Zarządzaj saldem firmy i wypłatami.",
+    "balance": "Saldo firmy",
+    "withdraw": "Zleć wypłatę",
+    "iban": "IBAN",
+    "bankName": "Nazwa banku",
+    "bank": "Bank",
+    "amount": "Kwota",
+    "status": "Status",
+    "date": "Data",
+    "note": "Uwaga",
+    "pending": "W oczekiwaniu",
+    "approved": "Zatwierdzone",
+    "rejected": "Odrzucone",
+    "requests": "Wnioski o wypłatę",
+    "noRequests": "Brak wniosków o wypłatę.",
+    "insufficientBalance": "Niewystarczające saldo.",
+    "successRequest": "Wniosek o wypłatę został pomyślnie złożony.",
+    "errorRequest": "Złożenie wniosku nie powiodło się.",
+    "cancel": "Anuluj",
+    "sending": "Wysyłanie..."
+  },
+  "Requests": {
+    "title": "Zgłoszenia inwestorów",
+    "subtitle": "Wizyty na budowie, informacje, przyłącza mediów (woda, prąd, gaz) i inne prośby od inwestorów.",
+    "all": "Wszystkie",
+    "allTypes": "Wszystkie typy",
+    "pending": "W oczekiwaniu",
+    "inProgress": "W toku",
+    "done": "Zakończone",
+    "cancelled": "Anulowane",
+    "updating": "Aktualizowanie...",
+    "noMatch": "Brak zgłoszeń pasujących do filtrów.",
+    "projectBlockUnit": "Projekt / Blok · Lokal",
+    "block": "Blok",
+    "unit": "Lokal",
+    "m2": "m²",
+    "delivery": "Odbiór",
+    "noUnit": "Zgłaszającemu nie przypisano żadnego lokalu w tym budynku.",
+    "note": "Uwaga",
+    "requestedAt": "Zgłoszono {date}",
+    "viewBuilding": "Zobacz budynek",
+    "noCompany": "Nie przypisano firmy. Nie możesz przeglądać zgłoszeń.",
+    "types": {
+      "Site tour": "Wizyta na budowie",
+      "Information": "Informacja",
+      "Water connection": "Przyłącze wody",
+      "Electricity connection": "Przyłącze prądu",
+      "Gas connection": "Przyłącze gazu",
+      "Handover inspection": "Przegląd przedodbiorowy",
+      "Document request": "Prośba o dokumenty",
+      "Maintenance request": "Zgłoszenie konserwacji",
+      "Repair request": "Zgłoszenie naprawy"
+    }
+  },
+  "Dues": {
+    "title": "Płatności składek",
+    "subtitle": "Ustaw okres płatności dla budynku i śledź miesięczne składki (aidat) za lokal.",
+    "building": "Budynek",
+    "paid": "Zapłacone",
+    "overdue": "Zaległe",
+    "pending": "W oczekiwaniu",
+    "overdueDetected": "Wykryto zaległości w płatnościach",
+    "overdueSubtitle": "Niektórzy inwestorzy mają nieuregulowane opłaty po terminie. Sprawdź tabelę poniżej.",
+    "paymentWindowInfo": "Płatności należy dokonać między {start}. a {end}. dniem każdego miesiąca.",
+    "amountPerMonth": "Kwota: {amount} miesięcznie.",
+    "setWindowAmount": "Ustaw okno płatności i kwotę dla tego budynku (np. 4–12 dzień miesiąca).",
+    "cancel": "Anuluj",
+    "editWindow": "Edytuj okno",
+    "startDay": "Dzień początkowy (1–31)",
+    "endDay": "Dzień końcowy (1–31)",
+    "amount": "Kwota (miesięcznie)",
+    "currency": "Waluta",
+    "areaPricing": "Poziomy cenowe zależne od powierzchni (opcjonalnie)",
+    "addTier": "+ Dodaj poziom",
+    "noTiers": "Brak poziomów cenowych. Używana jest kwota podstawowa.",
+    "minM2": "Min m²",
+    "maxM2": "Max m²",
+    "amountShort": "Kwota",
+    "saving": "Zapisywanie…",
+    "saveSettings": "Zapisz ustawienia",
+    "noUnits": "Brak lokali w tym budynku.",
+    "assignInvestors": "Przypisz inwestorów do lokali, aby śledzić składki.",
+    "block": "Blok",
+    "unit": "Lokal",
+    "investor": "Inwestor",
+    "duesAmount": "Kwota składki",
+    "markPaid": "Oznaczono jako zapłacone.",
+    "unmarkPaid": "Odznaczono jako zapłacone.",
+    "saved": "Okno płatności zostało zapisane.",
+    "noBuildings": "Brak budynków.",
+    "addBuildings": "Dodaj budynki do swojej firmy, aby śledzić składki.",
+    "searchPlaceholder": "Szukaj wg inwestora, bloku lub lokalu...",
+    "noSearchResults": "Nie znaleziono lokali pasujących do wyszukiwania.",
+    "clearSearch": "Wyczyść wyszukiwanie",
+    "filters": {
+      "all": "Wszystkie lokale",
+      "overdue": "Zaległe",
+      "paid": "W pełni opłacone",
+      "pending": "W oczekiwaniu"
+    },
+    "advancedFilter": "Zaawansowany filtr",
+    "filterModal": {
+      "title": "Szczegółowy filtr",
+      "period": "Okres / Miesiąc",
+      "status": "Status płatności",
+      "allPeriods": "Wszystkie okresy",
+      "apply": "Zastosuj filtry",
+      "reset": "Zresetuj"
+    },
+    "ordinal": {
+      "0": ".",
+      "1": ".",
+      "2": ".",
+      "3": ".",
+      "4": ".",
+      "5": ".",
+      "6": ".",
+      "7": ".",
+      "8": ".",
+      "9": ".",
+      "other": "."
+    }
+  },
+  "Purchase": {
+    "title": "Płatności zakupu",
+    "subtitle": "Monitoruj wszystkie lokale i płatności na jednej liście. Zarządzaj planami ratalnymi.",
+    "project": "Projekt",
+    "block": "Blok",
+    "searchPlaceholder": "Szukaj lokalu, inwestora lub płatności...",
+    "status": {
+      "all": "Wszystkie rekordy",
+      "paid": "Tylko zapłacone",
+      "pending": "Tylko oczekujące",
+      "unconfigured": "Nieskonfigurowane"
+    },
+    "selectBuilding": "Wybierz budynek, aby rozpocząć.",
+    "noUnitsFound": "Nie znaleziono lokali",
+    "noUnitsSubtitle": "Nie znaleźliśmy żadnych lokali nabywców w tym projekcie.",
+    "unitsInBlock": "Wszystkie lokale w Bloku {block}",
+    "unitsActive": "{count} aktywnych lokali",
+    "table": {
+      "unitInvestor": "Lokal / Inwestor",
+      "paymentPlan": "Płatność / Plan",
+      "dueDate": "Termin płatności",
+      "amount": "Kwota",
+      "status": "Status",
+      "actions": "Akcje"
+    },
+    "noRecordsFound": "Brak rekordów pasujących do filtrów.",
+    "clearFilters": "Wyczyść filtry",
+    "noInvestor": "Brak inwestora",
+    "noPlan": "Plan nie został skonfigurowany",
+    "notSet": "Nie ustawiono",
+    "paid": "Zapłacone",
+    "pending": "W oczekiwaniu",
+    "setPlan": "Ustaw plan",
+    "markPaid": "Oznacz jako zapłacone",
+    "unmark": "Odznacz",
+    "deletePlan": "Usuń cały plan",
+    "confirmDelete": "Usunąć ten plan płatności? Rekordy rat zostaną skasowane.",
+    "planCreated": "Plan płatności został utworzony.",
+    "unmarkedPaid": "Odznaczono jako zapłacone.",
+    "markedPaid": "Oznaczono jako zapłacone.",
+    "planDeleted": "Plan został usunięty.",
+    "labels": {
+      "full": "Pełna płatność",
+      "down": "Wpłata własna",
+      "installment": "{n}. rata"
+    },
+    "modal": {
+      "title": "Ustaw Plan Płatności",
+      "independentUnit": "Niezależny lokal",
+      "planStructure": "Struktura planu",
+      "fullPayment": "Pełna płatność",
+      "downInstallments": "Wpłata własna + Raty",
+      "currency": "Waluta",
+      "contractValue": "Całkowita wartość kontraktu",
+      "startDate": "Data rozpoczęcia",
+      "downPayment": "Wpłata własna",
+      "installmentCount": "Liczba rat",
+      "cancel": "Anuluj",
+      "initialize": "Inicjalizuj plan",
+      "processing": "Przetwarzanie"
+    },
+    "footer": "Koniec danych bloku • Riviola Premium Real Estate Management"
+  },
+  "Staff": {
+    "title": "Panel Pracownika",
+    "addPhoto": "Dodaj cotygodniowe zdjęcie",
+    "addPhotoSubtitle": "Przesyłaj zdjęcia postępów prac dla projektów.",
+    "createInvestor": "Utwórz konto inwestora",
+    "createInvestorSubtitle": "Utwórz dane do logowania dla inwestorów.",
+    "overview": "Przegląd",
+    "overviewSubtitle": "Zarządzaj budynkami i twórz konta inwestorów.",
+    "stats": {
+      "buildings": "Budynki",
+      "activeProjects": "Aktywne projekty",
+      "completed": "Zakończone",
+      "investorAccounts": "Konta inwestorów"
+    },
+    "alerts": {
+      "title": "Opłaty i Alerty",
+      "overdue": "Zaległe opłaty",
+      "recent": "Ostatnie płatności",
+      "noItems": "Brak ostatnich płatności lub zaległości.",
+      "trackingInfo": "Opłaty są śledzone w sekcji Płatności składek.",
+      "dueOn": "płatne do {date}",
+      "paidOn": "zapłacono {date}"
+    },
+    "chart": {
+      "title": "Wartość portfela inwestora",
+      "totalValue": "Wartość całkowita",
+      "portfolioValue": "Wartość portfela"
+    },
+    "projects": {
+      "title": "Aktywne Projekty",
+      "viewAll": "Zobacz wszystkie projekty",
+      "noBuildings": "Brak budynków.",
+      "addBuilding": "Dodaj budynek",
+      "completed": "Zakończone",
+      "percentComplete": "{percent}% ukończono"
+    }
+  },
+  "Investors": {
+    "title": "Inwestorzy",
+    "subtitle": "Zarządzaj swoimi inwestorami i nadzoruj przypisane im nieruchomości.",
+    "createAccount": "Rejestracja Konta",
+    "noProperties": "Brak przypisanych nieruchomości.",
+    "noPropertiesSubtitle": "Inwestorzy pojawią się tutaj po przypisaniu ich do lokali w Twoich budynkach.",
+    "createFirstInvestor": "Utwórz swojego pierwszego inwestora",
+    "table": {
+      "investor": "Inwestor",
+      "phone": "Telefon",
+      "project": "Projekt",
+      "block": "Blok",
+      "unit": "Lokal",
+      "m2": "m²",
+      "type": "Typ",
+      "delivery": "Odbiór",
+      "edit": "Edytuj",
+      "searchPlaceholder": "Szukaj inwestorów...",
+      "allProjects": "Globalny przegląd projektów",
+      "anyStatus": "Dowolny status inwestycji",
+      "premierBuyer": "Kupujący Premier",
+      "verifiedRenter": "Zweryfikowany najemca",
+      "identity": "Tożsamość / Kontakt",
+      "assignment": "Przypisanie projektu",
+      "unitDetail": "Szczegóły lokalu",
+      "status": "Status",
+      "management": "Zarządzanie",
+      "types": {
+        "buyer": "Kupujący",
+        "renter": "Najemca"
+      }
+    },
+    "modal": {
+      "editTitle": "Edytuj inwestora",
+      "fullName": "Imię i nazwisko",
+      "email": "E-mail",
+      "phone": "Telefon",
+      "phonePlaceholder": "np. +48 123 456 789",
+      "phoneNote": "* Prosimy nie usuwać kodu kraju (np. +48, +90).",
+      "investorType": "Typ inwestora",
+      "investorTypeOptions": {
+        "buyer": "Kupujący (widzi Finanse)",
+        "renter": "Najemca (nie widzi Finansów)"
+      },
+      "block": "Blok",
+      "unit": "Lokal",
+      "area": "Powierzchnia (m²)",
+      "deliveryPeriod": "Okres odbioru",
+      "purchaseValue": "Wartość zakupu",
+      "currency": "Waluta",
+      "save": "Zapisz",
+      "saveChanges": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "updating": "Aktualizowanie...",
+      "cancel": "Anuluj"
+    },
+    "newAccount": {
+      "back": "Powrót do przeglądu",
+      "title": "Utwórz konto inwestora",
+      "subtitle": "Utwórz konto dla inwestora i przypisz go do projektu, bloku, lokalu i planu płatności.",
+      "fullName": "Imię i nazwisko",
+      "fullNamePlaceholder": "np. Jan Kowalski",
+      "email": "E-mail",
+      "emailPlaceholder": "inwestor@przyklad.pl",
+      "password": "Hasło tymczasowe",
+      "passwordPlaceholder": "Hasło początkowe (można je zmienić później)",
+      "phone": "Telefon",
+      "phonePlaceholder": "np. +48 123 456 789",
+      "phoneNote": "* Prosimy nie usuwać kodu kraju (np. +48, +90).",
+      "investorType": "Typ inwestora",
+      "project": "Projekt / Budynek",
+      "selectProject": "Wybierz projekt",
+      "block": "Nazwa bloku",
+      "selectBlock": "Wybierz blok",
+      "floor": "Piętro",
+      "selectFloor": "Wybierz piętro",
+      "unit": "Lokal / Apartament",
+      "unitPlaceholder": "np. 402",
+      "area": "Powierzchnia (m²)",
+      "areaPlaceholder": "np. 85",
+      "deliveryPeriod": "Okres odbioru",
+      "deliveryPeriodPlaceholder": "np. Q3 2026, Q4 2026",
+      "amountTitle": "Kwota do zapłaty (łącznie)",
+      "amountSubtitle": "Całkowita kwota, którą inwestor zapłacił lub zapłaci za ten lokal.",
+      "amountPlaceholder": "np. 150000",
+      "paymentPlan": "Plan płatności",
+      "paymentPlanSubtitle": "Płatność jednorazowa lub ratalna.",
+      "fullPayment": "Płatność jednorazowa",
+      "installments": "Raty",
+      "installmentCount": "Liczba rat",
+      "preview": "Podgląd",
+      "previewHint": "Wprowadź kwotę powyżej, aby zobaczyć podgląd.",
+      "onetimePayment": "Płatność jednorazowa: {amount}",
+      "installmentsOf": "{count} rat po {amount}",
+      "totalPreview": "Łącznie: {amount}",
+      "create": "Utwórz konto",
+      "creating": "Tworzenie...",
+      "cancel": "Anuluj",
+      "successRedirect": "Konto utworzone. Przekierowywanie...",
+      "serverError": "Serwer nie odpowiada. Spróbuj ponownie.",
+      "fallbackError": "Nie udało się utworzyć konta. Spróbuj ponownie.",
+      "genericError": "Wystąpił błąd. Spróbuj ponownie."
+    }
+  },
+  "Buildings": {
+    "title": "Budynki",
+    "addBuilding": "Dodaj budynek",
+    "addWeeklyPhoto": "Dodaj cotygodniowe zdjęcie",
+    "noBuildings": "Brak budynków.",
+    "noBuildingsSubtitle": "Dodaj budynek, aby rozpocząć.",
+    "unitsCount": "Liczba lokali: {count}",
+    "noWeeklyPhotos": "Brak cotygodniowych zdjęć",
+    "weeklyUpdateCount": "{count} aktualizacja tygodniowa",
+    "weeklyUpdateCount_plural": "{count} aktualizacje tygodniowe",
+    "see": "Zobacz",
+    "edit": "Edytuj",
+    "delete": "Usuń"
+  },
+  "Statuses": {
+    "planned": "Planowane",
+    "inProgress": "W toku",
+    "atRisk": "Zagrożone",
+    "onHold": "Wstrzymane",
+    "completed": "Zakończone",
+    "cancelled": "Anulowane"
+  },
+  "WeeklyPhotos": {
+    "back": "Powrót do panelu",
+    "title": "Dodaj cotygodniowe zdjęcie",
+    "selectBuilding": "Wybierz budynek",
+    "selectProject": "Wybierz projekt...",
+    "blocksLabel": "Którego bloku dotyczy?",
+    "selectAll": "Wybierz wszystkie bloki",
+    "deselectAll": "Odznacz wszystkie",
+    "dateRange": "Zakres dat (np. 13-20 grudnia)",
+    "dateRangePlaceholder": "13-20 grudnia 2024",
+    "weekLabel": "Oznaczenie tygodnia",
+    "weekLabelPlaceholder": "Tydzień 51",
+    "description": "Opis postępów",
+    "descriptionPlaceholder": "Podaj krótką informację o tym, co widać na zdjęciach...",
+    "uploadTitle": "Prześlij zdjęcia",
+    "uploadSubtitle": "Kliknij, aby wybrać lub przeciągnij zdjęcia tutaj.",
+    "selectFiles": "Wybierz pliki",
+    "submitting": "Wysyłanie...",
+    "submit": "Prześlij aktualizację",
+    "success": "Aktualizacja pomyślnie przesłana.",
+    "errorGeneric": "Nie udało się utworzyć aktualizacji.",
+    "errorUpload": "Błąd przesyłania: {message}",
+    "errorRecord": "Błąd zapisu danych obrazu: {message}"
+  },
+  "Settings": {
+    "title": "Ustawienia profilu",
+    "subtitle": "Zaktualizuj swoje dane i preferencje.",
+    "save": "Zapisz zmiany",
+    "saving": "Zapisywanie...",
+    "saved": "Zapisano",
+    "notSignedIn": "Nie jesteś zalogowany.",
+    "sections": {
+      "profile": {
+        "title": "Profil",
+        "subtitle": "Te dane są widoczne na Twoim koncie.",
+        "fullName": "Imię i nazwisko",
+        "fullNamePlaceholder": "Twoje imię",
+        "email": "E-mail",
+        "emailPlaceholder": "email@przyklad.pl",
+        "emailNote": "E-mail jest zarządzany przez Twoje konto.",
+        "phone": "Telefon",
+        "company": "Firma",
+        "companyNote": "Twoja firma jest powiązana z Twoim kontem.",
+        "role": "Rola",
+        "roleNote": "Twoja rola określa, do którego panelu masz dostęp."
+      },
+      "preferences": {
+        "title": "Preferencje",
+        "subtitle": "Kontroluj działanie Rivoli.",
+        "language": "Język",
+        "currency": "Waluta",
+        "currencyNote": "Twoja waluta jest zarządzana przez pracownika i nie może być tutaj zmieniona."
+      },
+      "notifications": {
+        "title": "Powiadomienia",
+        "subtitle": "Zaznacz, o czym chcesz otrzymywać powiadomienia e-mailowe.",
+        "payments": {
+          "title": "Płatności i opłaty",
+          "desc": "Terminy płatności, potwierdzenia i nieudane płatności."
+        },
+        "milestones": {
+          "title": "Kamienie milowe",
+          "desc": "Aktualizacje po zarejestrowaniu postępów prac."
+        },
+        "documents": {
+          "title": "Dokumenty",
+          "desc": "Nowe faktury i udostępnione pliki."
+        }
+      }
+    },
+    "roles": {
+      "investor": "Inwestor",
+      "staff": "Pracownik",
+      "admin": "Admin"
+    }
+  },
+  "StaffBuildingDetail": {
+    "backToBuildings": "Powrót do budynków",
+    "addWeeklyPhoto": "Dodaj cotygodniowe zdjęcie",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "deleteConfirm": "Czy na pewno chcesz usunąć ten budynek?",
+    "deleteSuccess": "Budynek został usunięty.",
+    "location": "Lokalizacja",
+    "units": "Lokale",
+    "progress": "Postęp",
+    "currentMilestone": "Aktualny kamień milowy",
+    "nextMilestone": "Następny kamień milowy",
+    "sustainabilityTitle": "Panel Zrównoważonego Rozwoju",
+    "sustainabilitySubtitle": "Wpływ na środowisko i zielone certyfikaty",
+    "greenScore": "Green Score",
+    "noMilestones": "Brak kamieni milowych dla tego budynku.",
+    "addMilestonesHint": "Dodaj planowane kamienie milowe podczas edycji budynku.",
+    "milestonesTitle": "Kamienie Milowe",
+    "milestonesSubtitle": "Chronologiczna lista etapów budowy.",
+    "current": "Aktualnie",
+    "milestoneLabel": "Etap",
+    "weeklyUpdatesTitle": "Cotygodniowe aktualizacje zdjęć",
+    "cityWeather": "Pogoda w mieście {city}"
+  },
+  "EditBuilding": {
+    "backToBuilding": "Powrót do budynku",
+    "title": "Edytuj budynek",
+    "subtitle": "Zaktualizuj dane budynku. Zmiany będą widoczne dla inwestorów.",
+    "defaultBlock": "Blok A",
+    "saveSuccess": "Budynek pomyślnie zapisany.",
+    "saving": "Zapisywanie...",
+    "saveChanges": "Zapisz zmiany",
+    "cancel": "Anuluj",
+    "form": {
+      "nameLabel": "Nazwa budynku / projektu",
+      "namePlaceholder": "np. Rezydencja Parkowa",
+      "addressLabel": "Pełny adres lub lokalizacja",
+      "addressPlaceholder": "np. ul. Kwiatowa 15, Warszawa",
+      "bannerLabel": "Zdjęcie główne (Banner)",
+      "bannerSubtitle": "Główne zdjęcie strony szczegółów budynku. Pozostaw puste, aby zachować obecne.",
+      "changePhoto": "Zmień zdjęcie",
+      "uploadPhoto": "Prześlij zdjęcie główne",
+      "removePhoto": "Usuń zdjęcie",
+      "unitsLabel": "Liczba lokali",
+      "unitsPlaceholder": "np. 24",
+      "blocksLabel": "Nazwy bloków",
+      "blocksSubtitle": "Zdefiniuj bloki lub wieże (np. Blok A). Będą one używane przy przypisywaniu inwestorów.",
+      "blockPlaceholder": "np. Blok A",
+      "removeBlock": "Usuń blok",
+      "newBlockName": "Nazwa nowego bloku",
+      "addBlock": "Dodaj blok",
+      "floorsLabel": "Liczba pięter",
+      "floorsPlaceholder": "np. 8",
+      "countryLabel": "Kraj",
+      "countryPlaceholder": "Wybierz kraj",
+      "cityLabel": "Miasto",
+      "cityPlaceholder": "Wybierz miasto",
+      "loadingCities": "Ładowanie miast...",
+      "statusLabel": "Status",
+      "milestonePlan": "Plan kamieni milowych",
+      "milestoneSubtitle": "Dodaj kamienie milowe i wybierz aktualny etap.",
+      "addMilestone": "Dodaj kamień milowy",
+      "noMilestones": "Brak zaplanowanych etapów.",
+      "setAsCurrent": "Ustaw jako aktualny",
+      "current": "Aktualnie",
+      "milestoneTitle": "Tytuł",
+      "milestoneTitlePlaceholder": "np. Malowanie elewacji",
+      "targetDate": "Planowana data i czas",
+      "removeMilestone": "Usuń etap",
+      "sustainabilityDashboard": "Panel Zrównoważonego Rozwoju (Green Score)",
+      "sustainabilitySubtitle": "Pokaż inwestorom ekologiczny wpływ swojego projektu.",
+      "greenScoreLabel": "Całkowity Green Score (obliczony automatycznie)",
+      "greenScoreHint": "Wynik jest obliczany na podstawie wybranych funkcji poniżej.",
+      "addFeatures": "Dodaj ekologiczne funkcje projektu"
+    }
+  },
+  "StatusOptions": {
+    "Planned": { "label": "Planowane", "helper": "Przygotowanie do startu" },
+    "In progress": { "label": "W toku", "helper": "Budowa trwa" },
+    "At risk": { "label": "Zagrożone", "helper": "Wymaga uwagi" },
+    "On hold": { "label": "Wstrzymane", "helper": "Tymczasowo wstrzymane" },
+    "Completed": { "label": "Zakończone", "helper": "Odbiór zakończony" },
+    "Cancelled": { "label": "Anulowane", "helper": "Trwale przerwane" }
+  },
+  "SustainabilityFeatures": {
+    "Solar Panels": "Panele słoneczne",
+    "EV Charging Stations": "Stacje ładowania aut elektrycznych",
+    "Rainwater Harvesting": "Odzyskiwanie wody deszczowej",
+    "Energy Efficient Lighting": "Energooszczędne oświetlenie",
+    "Waste & Recycling Management": "Zarządzanie odpadami i recykling",
+    "Smart Home Tech": "Technologia Smart Home",
+    "Natural Ventilation": "Naturalna wentylacja",
+    "Green Roof / Sky Garden": "Zielony dach / Sky Garden",
+    "Advanced Thermal Insulation": "Zaawansowana izolacja termiczna",
+    "Eco-friendly Materials": "Ekologiczne materiały",
+    "Professional Garden Design": "Profesjonalny projekt ogrodu",
+    "Eco-friendly Infrastructure": "Ekologiczna infrastruktura",
+    "Pet Friendly Spaces": "Miejsca przyjazne zwierzętom",
+    "Secure Bicycle Parking": "Bezpieczny parking dla rowerów",
+    "High-efficiency HVAC": "Wydajne systemy HVAC",
+    "Water-saving Fixtures": "Urządzenia oszczędzające wodę"
+  },
+  "InvestorDashboard": {
+    "header": {
+      "title": "Moje Rezydencje",
+      "subtitle": "Witaj ponownie, wartość Twoich nieruchomości rośnie zgodnie z planem.",
+      "notifications": "Powiadomienia",
+      "logout": "Wyloguj się"
+    },
+    "portfolio": {
+      "assetValue": "Wartość aktywów",
+      "paymentsMade": "Dokonane płatności",
+      "assetValueDesc": "Całkowita wartość Twoich nieruchomości",
+      "paymentsMadeDesc": "Suma zapłaconych składek do dziś",
+      "valueLabel": "Wartość",
+      "paidLabel": "Zapłacono",
+      "current": "Obecnie"
+    },
+    "upcomingMilestones": {
+      "title": "Nadchodzące Etapy",
+      "live": "Na żywo",
+      "updatedJustNow": "Zaktualizowano przed chwilą",
+      "updatedAgo": "Zaktualizowano {seconds}s temu",
+      "empty": "Brak nadchodzących etapów dla Twoich nieruchomości.",
+      "viewProperties": "Zobacz nieruchomości"
+    },
+    "myProperties": {
+      "title": "Moje Aktywne Nieruchomości",
+      "totalValue": "Wartość całkowita:",
+      "totalPaid": "Łącznie zapłacono:",
+      "viewAllAssets": "Zobacz wszystkie aktywa",
+      "viewAllProperties": "Zobacz wszystkie nieruchomości",
+      "propertyBadge": "Nieruchomość",
+      "assignedUnitUpdate": "Przypisany lokal. Zobacz szczegóły aktualizacji."
+    },
+    "propertyCard": {
+      "constructionProgress": "Postęp budowy",
+      "area": "Powierzchnia",
+      "viewDetails": "Zobacz szczegóły"
+    },
+    "weeklyPhoto": {
+      "title": "Zdjęcie Tygodnia",
+      "noUpdates": "Brak aktualizacji",
+      "openFullscreen": "Otwórz zdjęcie na pełnym ekranie",
+      "fallbackDescription": "Tygodniowa aktualizacja postępów",
+      "viewGallery": "Zobacz galerię zdjęć",
+      "emptyText": "Gdy pracownik udostępni zdjęcia Twojej nieruchomości, pojawią się one tutaj."
+    }
+  },
+  "PropertiesPage": {
+    "title": "Moje Nieruchomości",
+    "subtitleBuyer": "Zarządzaj i śledź wszystkie swoje aktywa nieruchomościowe.",
+    "subtitleRenter": "Zarządzaj i śledź swoje wynajmowane lokale.",
+    "summary": {
+      "totalProperties": "Suma nieruchomości",
+      "underConstruction": "W budowie",
+      "completed": "Zakończone",
+      "totalValue": "Wartość całkowita",
+      "totalPaid": "Łącznie zapłacono"
+    },
+    "filter": {
+      "all": "Wszystkie",
+      "active": "Aktywne",
+      "completed": "Zakończone",
+      "planning": "Planowanie",
+      "search": "Szukaj nieruchomości..."
+    },
+    "card": {
+      "underConstruction": "W budowie",
+      "planningPhase": "Faza planowania",
+      "completed": "Zakończone",
+      "constructionProgress": "Postęp budowy",
+      "delivery": "Odbiór:",
+      "viewDetails": "Zobacz szczegóły",
+      "propertyBadge": "Nieruchomość"
+    },
+    "empty": {
+      "noFound": "Nie znaleziono nieruchomości.",
+      "noAssigned": "Nie masz jeszcze przypisanych lokali. Skontaktuj się z zarządcą.",
+      "tryAdjusting": "Spróbuj zmienić parametry wyszukiwania lub filtry."
+    }
+  },
+  "PropertyDetail": {
+    "backToProperties": "Powrót do nieruchomości",
+    "propertyBadge": "Nieruchomość",
+    "yourUnit": "Twój lokal:",
+    "progress": "Postęp",
+    "value": "Wartość",
+    "area": "Powierzchnia",
+    "delivery": "Odbiór",
+    "currentMilestone": "Aktualny etap",
+    "nextMilestone": "Następny etap",
+    "milestoneFallback": "Etap",
+    "sustainability": {
+      "title": "Zrównoważony Rozwój",
+      "subtitle": "Wpływ na środowisko i certyfikaty",
+      "greenScore": "Green Score"
+    },
+    "plans": {
+      "title": "Plany i harmonogram",
+      "subtitle": "Śledzenie mapy drogowej",
+      "inProgress": "W toku"
+    },
+    "weeklyPhotos": {
+      "title": "Postępy Tygodniowe",
+      "subtitle": "Raporty wizualne z budowy"
+    },
+    "activityLog": {
+      "title": "Dziennik aktywności"
+    },
+    "fullList": "Zobacz pełną listę",
+    "showLess": "Pokaż mniej"
+  },
+  "RequestsPage": {
+    "title": "Moje zgłoszenia",
+    "subtitle": "Wysyłaj i śledź prośby o wizyty na budowie, przyłącza mediów i dokumenty.",
+    "newRequest": "Nowe zgłoszenie",
+    "form": {
+      "title": "Wyślij nowe zgłoszenie",
+      "typeLabel": "Typ zgłoszenia",
+      "buildingLabel": "Budynek / Projekt",
+      "buildingPlaceholder": "Wybierz nieruchomość",
+      "noteLabel": "Uwaga (opcjonalnie)",
+      "notePlaceholder": "np. preferowana data wizyty lub dane do przyłącza",
+      "attachLabel": "Załącz zdjęcia (opcjonalnie)",
+      "filesSelected": "Wybrano {count} plik(ów)",
+      "submitButton": "Wyślij zgłoszenie",
+      "submitting": "Wysyłanie…",
+      "cancelButton": "Anuluj",
+      "chooseFile": "Wybierz plik"
+    },
+    "types": {
+      "Site tour": "Wizyta na budowie",
+      "Information": "Informacja",
+      "Water connection": "Przyłącze wody",
+      "Electricity connection": "Przyłącze prądu",
+      "Gas connection": "Przyłącze gazu",
+      "Handover inspection": "Przegląd przedodbiorowy",
+      "Document request": "Prośba o dokumenty",
+      "Maintenance request": "Zgłoszenie konserwacji",
+      "Repair request": "Zgłoszenie naprawy"
+    },
+    "filters": {
+      "summary": "Pokazano {count} zgłoszeń ({pending} oczekujących).",
+      "type": "Typ",
+      "building": "Budynek",
+      "status": "Status",
+      "allTypes": "Wszystkie typy",
+      "allBuildings": "Wszystkie budynki",
+      "allStatuses": "Wszystkie statusy",
+      "emptyTitle": "Brak zgłoszeń pasujących do filtrów.",
+      "clearFilters": "Wyczyść filtry"
+    },
+    "list": {
+      "submitted": "Wysłano {date}",
+      "cancelButton": "Anuluj zgłoszenie",
+      "cancelling": "Anulowanie…"
+    },
+    "modals": {
+      "cancel": {
+        "title": "Anulować zgłoszenie?",
+        "body": "Czy na pewno chcesz anulować to zgłoszenie? {type} dla {building} zostanie przerwane.",
+        "keep": "Zatrzymaj zgłoszenie",
+        "confirm": "Tak, anuluj"
+      }
+    },
+    "statuses": {
+      "Pending": "W oczekiwaniu",
+      "In progress": "W toku",
+      "Done": "Zakończone",
+      "Cancelled": "Anulowane"
+    },
+    "toasts": {
+      "success": "Zgłoszenie wysłane pomyślnie.",
+      "cancelled": "Zgłoszenie zostało anulowane."
+    }
+  },
+  "FinancialsPage": {
+    "title": "Finanse i Raty",
+    "subtitle": "Śledź etapy płatności i pozostałe saldo dla swoich nieruchomości.",
+    "exportButton": "Eksportuj raport",
+    "progress": {
+      "title": "Całkowity postęp",
+      "paid": "Zapłacono",
+      "remaining": "Pozostało",
+      "contractValue": "Całkowita wartość kontraktu",
+      "paidToDate": "Zapłacono do dziś",
+      "balance": "Pozostałe saldo"
+    },
+    "table": {
+      "title": "Płatności",
+      "payment": "Płatność",
+      "dueDate": "Termin płatności",
+      "amount": "Kwota",
+      "status": "Status",
+      "empty": "Brak zarejestrowanych płatności.",
+      "statuses": {
+        "paid": "Zapłacone",
+        "pending": "W oczekiwaniu"
+      }
+    }
+  },
+  "FeesPage": {
+    "title": "Opłaty i Płatności",
+    "subtitle": "Śledź i opłacaj składki miesięczne (aidat) oraz koszty wspólne.",
+    "stats": {
+      "totalDue": "Suma należności",
+      "itemsToPay": "{count} pozycja(i) do zapłaty",
+      "paidMonth": "Zapłacono w tym miesiącu",
+      "payments": "{count} wpłat(a)",
+      "nextDue": "Termin kolejnej płatności",
+      "commonCharges": "Koszty wspólne (Aidat)",
+      "noUpcoming": "Brak nadchodzących opłat"
+    },
+    "table": {
+      "title": "Wszystkie opłaty i koszty",
+      "downloadInvoice": "Pobierz fakturę",
+      "building": "Budynek / Lokal",
+      "type": "Typ",
+      "period": "Okres",
+      "dueDate": "Termin",
+      "amount": "Kwota",
+      "status": "Status",
+      "invoice": "Faktura",
+      "action": "Akcja",
+      "empty": "Brak zarejestrowanych opłat. Opłaty pojawią się tutaj, gdy zarządca skonfiguruje okresy rozliczeniowe.",
+      "commonChargesLabel": "Koszty wspólne (Aidat)"
+    },
+    "actions": {
+      "pay": "Zapłać",
+      "sending": "Wysyłanie…",
+      "paid": "Zapłacone",
+      "paidOn": "Zapłacono {date}, {time}",
+      "due": "Należne",
+      "overdue": "Zaległe"
+    },
+    "footer": "Kliknij \"Zapłać\", aby dokonać płatności przez Stripe. Kwota musi zostać ustawiona przez zarządcę.",
+    "toasts": {
+      "success": "Płatność zakończona. Dziękujemy.",
+      "error": "Nie udało się potwierdzić płatności.",
+      "startError": "Nie udało się zainicjować płatności."
+    }
+  },
+  "Weather": {
+    "clear_sky": "Czyste niebo",
+    "mainly_clear": "Prawie czyste",
+    "partly_cloudy": "Częściowe zachmurzenie",
+    "overcast": "Zachmurzenie całkowite",
+    "fog": "Mgła",
+    "light_drizzle": "Lekka mżawka",
+    "moderate_drizzle": "Umiarkowana mżawka",
+    "dense_drizzle": "Gęsta mżawka",
+    "slight_rain": "Lekki deszcz",
+    "moderate_rain": "Umiarkowany deszcz",
+    "heavy_rain": "Silny deszcz",
+    "slight_snow": "Lekki śnieg",
+    "moderate_snow": "Umiarkowany śnieg",
+    "heavy_snow": "Silny śnieg",
+    "thunderstorm": "Burza",
+    "cloudy": "Pochmurno"
+  },
+  "StaffAgreementModal": {
+    "title": "Umowa o Świadczenie Usług",
+    "subtitle": "Prosimy o zapoznanie się i zaakceptowanie naszych warunków profesjonalnych.",
+    "section1Title": "Własność Danych i Prywatność",
+    "section1Body": "Użytkownik (Pracownik) jest właścicielem wszystkich przesłanych treści (zdjęcia, dokumenty); jednak Riviola otrzymuje prawo do ich przetwarzania w celu zapewnienia funkcjonalności systemu.",
+    "section2Title": "Ograniczenie Odpowiedzialności",
+    "section2Body": "Riviola jest wyłącznie platformą do wymiany informacji. Użytkownik ponosi wyłączną odpowiedzialność za saktowność danych.",
+    "section3Title": "Licencja SaaS",
+    "section3Body": "To jest oprogramowanie jako usługa (SaaS). Własność oprogramowania, kodu i designu należy wyłącznie do Rivoli.",
+    "section4Title": "Płatności i Zawieszenie",
+    "section4Body": "Ciągłość dostępu zależy od terminowych płatności. W przypadku zwłoki powyżej 7 dni roboczych, dostęp zostanie automatycznie zawieszony.",
+    "section5Title": "Status Niezależnego Wykonawcy",
+    "section5Body": "Korzystanie z Rivoli nie tworzy relacji pracodawca-pracownik. Użytkownik działa jako niezależny profesjonalista.",
+    "checkboxLabel": "Przeczytałem, zrozumiałem i akceptuję Umowę o Świadczenie Usług Riviola.",
+    "confirmButton": "Potwierdź i wejdź do panelu",
+    "processing": "Przetwarzanie...",
+    "errorNotChecked": "Zaznacz pole akceptacji regulaminu.",
+    "successToast": "Umowa zaakceptowana pomyślnie.",
+    "errorToast": "Błąd aktualizacji statusu umowy."
+  },
+  "Demo": {
+    "notice": "Demo Panelu Pracownika — dane służą wyłącznie do celów prezentacyjnych",
+    "label": "Demo",
+    "companyName": "Budownictwo Przykład (Demo)",
+    "nav": {
+      "overview": "Przegląd",
+      "buildings": "Budynki",
+      "investors": "Inwestorzy",
+      "requests": "Zgłoszenia",
+      "dues": "Składki",
+      "subscription": "Subskrypcja"
+    },
+    "backToLanding": "Powrót do strony",
+    "staff": {
+      "actions": {
+        "addPhoto": {
+          "title": "Dodaj cotygodniowe zdjęcie",
+          "description": "Przesyłaj zdjęcia postępów prac dla projektów."
+        },
+        "createAccount": {
+          "title": "Utwórz konto inwestora",
+          "description": "Utwórz dane do logowania dla inwestorów."
+        }
+      },
+      "overview": {
+        "title": "Przegląd",
+        "subtitle": "Zarządzaj budynkami i twórz konta inwestorów.",
+        "stats": {
+          "buildings": "Budynki",
+          "activeProjects": "Aktywne projekty",
+          "completed": "Zakończone",
+          "investors": "Konta inwestorów"
+        }
+      }
+    },
+    "investors": {
+      "title": "Inwestorzy",
+      "create": "Utwórz konto inwestora"
+    },
+    "requests": {
+      "title": "Zgłoszenia inwestorów",
+      "subtitle": "Wizyty, informacje, przyłącza i inne prośby.",
+      "status": {
+        "all": "Wszystkie",
+        "Pending": "W oczekiwaniu",
+        "In progress": "W toku",
+        "Done": "Zakończone",
+        "Cancelled": "Anulowane"
+      },
+      "types": {
+        "all": "Wszystkie typy",
+        "Site tour": "Wizyta na budowie",
+        "Information": "Informacja",
+        "Water connection": "Przyłącze wody",
+        "Electricity connection": "Przyłącze prądu",
+        "Gas connection": "Przyłącze gazu",
+        "Handover inspection": "Przegląd przedodbiorowy",
+        "Document request": "Prośba o dokumenty",
+        "Maintenance request": "Konserwacja",
+        "Repair request": "Naprawa"
+      },
+      "empty": "Brak zgłoszeń pasujących do filtrów.",
+      "requestedOn": "Zgłoszono {date}",
+      "viewBuilding": "Zobacz budynek"
+    },
+    "buildings": {
+      "title": "Budynki",
+      "addPhoto": "Dodaj zdjęcie",
+      "units": "{count} lokali",
+      "see": "Zobacz",
+      "edit": "Edytuj",
+      "status": {
+        "Planned": "Planowane",
+        "In progress": "W toku",
+        "At risk": "Zagrożone",
+        "On hold": "Wstrzymane",
+        "Completed": "Zakończone",
+        "Cancelled": "Anulowane"
+      },
+      "editPage": {
+        "back": "Powrót",
+        "title": "Edytuj budynek",
+        "subtitle": "Zmiany będą widoczne dla inwestorów."
+      },
+      "addPage": {
+        "back": "Powrót",
+        "title": "Dodaj budynek",
+        "description": "Utwórz nowy rekord budynku, zdefiniuj bloki i lokale.",
+        "form": {
+          "name": "Nazwa budynku / projektu",
+          "namePlaceholder": "np. Apartamenty Centrum",
+          "address": "Adres",
+          "addressPlaceholder": "np. ul. Długa 1, Wrocław",
+          "status": "Status",
+          "statusHint": "Ustaw aktualny stan inwestycji.",
+          "statusOptions": {
+            "Planned": { "label": "Planowane", "helper": "Przygotowanie" },
+            "In progress": { "label": "W toku", "helper": "Budowa trwa" },
+            "At risk": { "label": "Zagrożone", "helper": "Uwaga" },
+            "On hold": { "label": "Wstrzymane", "helper": "Pauza" },
+            "Completed": { "label": "Zakończone", "helper": "Odbiór" },
+            "Cancelled": { "label": "Anulowane", "helper": "Przerwane" }
+          },
+          "blocks": "Nazwy bloków",
+          "blocksHint": "Zdefiniuj podział na bloki/wieże.",
+          "newBlockPlaceholder": "Nazwa bloku",
+          "addBlock": "Dodaj blok",
+          "floors": "Liczba pięter",
+          "floorsPlaceholder": "np. 5",
+          "units": "Liczba lokali",
+          "unitsPlaceholder": "np. 20",
+          "milestones": {
+            "title": "Plan etapów",
+            "subtitle": "Dodaj kamienie milowe budowy.",
+            "add": "Dodaj etap",
+            "empty": "Brak zaplanowanych etapów.",
+            "next": "Następny",
+            "milestoneTitle": "Tytuł",
+            "milestoneTitlePlaceholder": "np. Stan surowy zamknięty",
+            "targetDate": "Planowana data"
+          },
+          "submit": "Dodaj budynek",
+          "cancel": "Anuluj"
+        }
+      }
+    }
+  },
+  "Onboarding": {
+    "exit": "Wyjdź",
+    "stepOf": "Krok {step} z {total}",
+    "continue": "Dalej",
+    "back": "Wstecz",
+    "welcome": "Witaj w Rivoli",
+    "getStarted": "Zacznij teraz",
+    "transition": "Przejdźmy do następnego kroku.",
+    "step1": {
+      "title": "Do czego będziesz używać Rivoli?",
+      "subtitle": "Możesz wybrać więcej niż jedną opcję.",
+      "useCases": {
+        "property-management": {
+          "label": "Zarządzanie nieruchomościami",
+          "desc": "Zarządzaj budynkami, lokalami i obłożeniem."
+        },
+        "dues-collection": {
+          "label": "Opłaty i składki",
+          "desc": "Śledź windykację aidat i automatyzuj faktury."
+        },
+        "investor-relations": {
+          "label": "Relacje inwestorskie",
+          "desc": "Informuj akcjonariuszy za pomocą jasnych raportów."
+        },
+        "maintenance-requests": {
+          "label": "Zgłoszenia konserwacji",
+          "desc": "Zbieraj i zarządzaj zadaniami pracowników."
+        },
+        "weekly-updates": {
+          "label": "Cotygodniowe zdjęcia postępów",
+          "desc": "Dokumentuj postępy w formie wizualnej."
+        },
+        "financial-reporting": {
+          "label": "Raportowanie finansowe",
+          "desc": "Monitoruj przepływy pieniężne i raty."
+        }
+      }
+    },
+    "step2": {
+      "title": "Szybkie dane projektu",
+      "subtitle": "Tylko pięć pól — to wszystko, czego potrzebujemy.",
+      "fullName": "Imię i nazwisko",
+      "fullNamePlaceholder": "np. Jan Kowalski",
+      "companyName": "Nazwa firmy",
+      "companyNamePlaceholder": "np. Developer Sp. z o.o.",
+      "location": "Lokalizacja",
+      "locationPlaceholder": "Miasto, Kraj",
+      "email": "E-mail kontaktowy",
+      "emailPlaceholder": "ty@twojafirma.pl",
+      "phone": "Telefon"
+    },
+    "step3": {
+      "title": "Doświadcz Rivoli",
+      "subtitle": "Zarezerwuj prywatne demo, a my dostosujemy sesję do Twojego projektu.",
+      "cardTitle": "Zarezerwuj prywatne demo",
+      "cardBadge": "Polecane",
+      "cardDesc": "Umów się na sesję ze specjalistą Rivoli.",
+      "chooseTime": "Wybierz czas"
+    },
+    "step4": {
+      "title": "Wybierz datę i czas",
+      "subtitle": "Wybierz termin na personalizowaną sesję demo.",
+      "pickDayFirst": "Najpierw wybierz dzień",
+      "selectDate": "Wybierz datę",
+      "timezone": "Strefa czasowa",
+      "confirmBooking": "Potwierdź rezerwację",
+      "submitting": "Wysyłanie..."
+    },
+    "loading": {
+      "messages": [
+        "Analizujemy szczegóły Twojego projektu...",
+        "Konfigurujemy Twoje spersonalizowane demo...",
+        "Przygotowujemy Twój panel sterowania...",
+        "Już prawie gotowe — dopinamy ostatnie szczegóły..."
+      ],
+      "tagline": "Twoje ekskluzywne doświadczenie jest tworzone specjalnie dla Ciebie."
+    },
+    "success": {
+      "title": "Wszystko gotowe!",
+      "body": "Twoje spersonalizowane demo jest gotowe. Wejdź teraz, aby je poznać.",
+      "cta": "Poznaj Panel Demo"
+    }
+  },
+  "Privacy": {
+    "backToHome": "Mback to Home",
+    "title": "Polityka Prywatności",
+    "lastUpdated": "Ostatnia aktualizacja:",
+    "s1title": "1. Wstęp",
+    "s1body": "Riviola szanuje Twoją prywatność. Ta polityka wyjaśnia, jak zbieramy i chronimy Twoje dane.",
+    "s2title": "2. Zbierane dane",
+    "s2body": "Zbieramy dane podane bezpośrednio (imię, e-mail, płatności) oraz dane zbierane automatycznie.",
+    "s3title": "3. Wykorzystanie danych",
+    "s3body": "Dane są używane do świadczenia usług, komunikacji oraz przetwarzania transakcji.",
+    "s4title": "4. Bezpieczeństwo",
+    "s4body": "Dane są przechowywane bezpiecznie i tylko tak długo, jak jest to konieczne.",
+    "s5title": "5. Twoje prawa",
+    "s5body": "Masz prawo do dostępu, poprawienia lub usunięcia swoich danych.",
+    "s6title": "6. Kontakt",
+    "s6body": "Pytania prosimy kierować na privacy@riviola.com."
+  },
+  "Terms": {
+    "backToHome": "Powrót do strony głównej",
+    "title": "Regulamin Świadczenia Usług",
+    "lastUpdated": "Ostatnia aktualizacja:",
+    "s1title": "1. Akceptacja warunków",
+    "s1body": "Korzystając z Rivoli, akceptujesz poniższe warunki.",
+    "s2title": "2. Opis usług",
+    "s2body": "Riviola dostarcza platformę do zarządzania budową i inwestycjami.",
+    "s3title": "3. Konta",
+    "s3body": "Musisz podać prawdziwe dane podczas tworzenia konta.",
+    "s4title": "4. Płatności",
+    "s4body": "Opłaty są naliczane zgodnie z wybranym planem subskrypcyjnym.",
+    "s5title": "5. Dopuszczalne użytkowanie",
+    "s5body": "Zobowiązujesz się nie używać serwisu do celów niezgodnych z prawem.",
+    "s6title": "6. Odpowiedzialność",
+    "s6body": "Riviola nie odpowiada za szkody pośrednie wynikłe z użytkowania platformy.",
+    "s7title": "7. Kontakt",
+    "s7body": "Kontakt prawny: legal@riviola.com."
+  },
+  "Cookies": {
+    "backToHome": "Powrót",
+    "title": "Polityka Plików Cookie",
+    "lastUpdated": "Ostatnia aktualizacja:",
+    "s1title": "1. Czym są pliki cookie",
+    "s1body": "Pliki cookie to małe pliki tekstowe zapisywane na Twoim urządzeniu.",
+    "s2title": "2. Rodzaje plików cookie",
+    "s2intro": "Stosujemy następujące pliki:",
+    "s2li1bold": "Niezbędne:",
+    "s2li1": "Wymagane do działania serwisu.",
+    "s2li2bold": "Funkcjonalne:",
+    "s2li2": "Zapamiętują Twoje wybory (język, region).",
+    "s2li3bold": "Analityczne:",
+    "s2li3": "Pomagają nam zrozumieć ruch na stronie.",
+    "s2li4bold": "Marketingowe:",
+    "s2li4": "Służą do personalizacji reklam.",
+    "s3title": "3. Zarządzanie",
+    "s3body": "Możesz wyłączyć pliki cookie w ustawieniach swojej przeglądarki.",
+    "s4title": "4. Aktualizacje",
+    "s4body": "Możemy zmieniać tę politykę wraz z rozwojem serwisu.",
+    "s5title": "5. Kontakt",
+    "s5body": "Pytania: privacy@riviola.com."
+  }
+}

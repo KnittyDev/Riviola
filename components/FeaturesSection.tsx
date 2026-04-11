@@ -41,9 +41,9 @@ export async function FeaturesSection() {
         </div>
 
         {/* Bento Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 min-h-[800px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 md:gap-6 min-h-[auto] md:min-h-[800px]">
           {/* Main Feature - Hub (Span 2x2) */}
-          <div className="md:col-span-2 md:row-span-2 group relative p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden">
+          <div className="md:col-span-2 md:row-span-2 group relative p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col justify-between overflow-hidden">
             <div className={`absolute inset-0 bg-gradient-to-br ${features[0].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
             <div className="relative z-10">
               <div className="w-20 h-20 rounded-3xl bg-[#134e4a] flex items-center justify-center mb-8 text-white shadow-lg shadow-[#134e4a]/20 transform group-hover:rotate-6 transition-transform duration-500">
@@ -62,7 +62,7 @@ export async function FeaturesSection() {
           </div>
 
           {/* Medium Feature - Investor (Span 2x1) */}
-          <div className="md:col-span-2 group relative p-8 rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex items-start gap-8 overflow-hidden">
+          <div className="md:col-span-2 group relative p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-start gap-6 md:gap-8 overflow-hidden">
             <div className={`absolute inset-0 bg-gradient-to-br ${features[1].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
             <div className="relative z-10 w-16 h-16 shrink-0 rounded-2xl bg-[#134e4a]/10 flex items-center justify-center text-[#134e4a]">
               <i className={`${features[1].iconClass} text-3xl`} aria-hidden />
@@ -74,7 +74,7 @@ export async function FeaturesSection() {
           </div>
 
           {/* Medium Feature - Payments (Span 2x1) */}
-          <div className="md:col-span-2 group relative p-8 rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex items-start gap-8 overflow-hidden">
+          <div className="md:col-span-2 group relative p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-start gap-6 md:gap-8 overflow-hidden">
             <div className={`absolute inset-0 bg-gradient-to-br ${features[2].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
             <div className="relative z-10 w-16 h-16 shrink-0 rounded-2xl bg-[#134e4a]/10 flex items-center justify-center text-[#134e4a]">
               <i className={`${features[2].iconClass} text-3xl`} aria-hidden />
@@ -86,7 +86,7 @@ export async function FeaturesSection() {
           </div>
 
           {/* Small Features Row */}
-          <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-4">
+          <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-0 md:mt-4">
             {features.slice(3).map((feature) => (
               <div
                 key={feature.id}

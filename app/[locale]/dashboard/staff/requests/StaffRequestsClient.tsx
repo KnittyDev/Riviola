@@ -23,6 +23,7 @@ function formatDate(dateStr: string, locale: string) {
     tr: "tr-TR",
     sr: "sr-RS",
     sq: "sq-AL",
+    pl: "pl-PL",
   };
   return new Date(dateStr).toLocaleDateString(localeMap[locale] || "en-GB", {
     day: "numeric",

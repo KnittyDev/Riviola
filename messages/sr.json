@@ -31,7 +31,8 @@
     "pricing": "Cene",
     "contact": "Kontakt",
     "signIn": "Prijavi se",
-    "getStarted": "Započni"
+    "getStarted": "Započni",
+    "language": "Jezik"
   },
   "Marquee": {
     "title": "Poverenje svetskih lidera u infrastrukturi"
