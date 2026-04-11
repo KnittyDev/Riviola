@@ -5,9 +5,10 @@ const features = [
   { id: "hub", iconClass: "las la-building", size: "large", gradient: "from-emerald-500/10 to-teal-500/10" },
   { id: "investor", iconClass: "las la-user-friends", size: "medium", gradient: "from-blue-500/10 to-indigo-500/10" },
   { id: "payments", iconClass: "las la-receipt", size: "medium", gradient: "from-amber-500/10 to-orange-500/10" },
+  { id: "sustainability", iconClass: "las la-leaf", size: "small" },
+  { id: "requests", iconClass: "las la-clipboard-list", size: "small" },
   { id: "docs", iconClass: "las la-file-contract", size: "small" },
   { id: "insights", iconClass: "las la-chart-line", size: "small" },
-  { id: "maintenance", iconClass: "las la-tools", size: "small" },
   { id: "photos", iconClass: "las la-camera-retro", size: "small" },
 ];
 
@@ -86,7 +87,7 @@ export async function FeaturesSection() {
           </div>
 
           {/* Small Features Row */}
-          <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-0 md:mt-4">
+          <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6 mt-0 md:mt-4">
             {features.slice(3).map((feature) => (
               <div
                 key={feature.id}

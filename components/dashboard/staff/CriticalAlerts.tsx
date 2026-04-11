@@ -26,13 +26,14 @@ function formatPaidAt(paidAt: string, locale: string): string {
 type Props = {
   recentPayments: StaffRecentPaymentItem[];
   overdueDues: StaffOverdueDueItem[];
+  pendingRequests?: any[]; // For demo/extensibility
 };
 
-export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
+export function CriticalAlerts({ recentPayments, overdueDues, pendingRequests = [] }: Props) {
   const t = useTranslations("Staff.alerts");
   const locale = useLocale();
-  const totalAlerts = overdueDues.length;
-  const hasItems = recentPayments.length > 0 || overdueDues.length > 0;
+  const totalAlerts = overdueDues.length + pendingRequests.length;
+  const hasItems = recentPayments.length > 0 || overdueDues.length > 0 || pendingRequests.length > 0;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
@@ -45,8 +46,35 @@ export function CriticalAlerts({ recentPayments, overdueDues }: Props) {
         )}
       </div>
       <div className="flex-1 overflow-auto">
-        {overdueDues.length > 0 && (
+        {pendingRequests.length > 0 && (
           <div className="px-6 py-3">
+            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">
+              Pending Requests
+            </p>
+            <ul className="space-y-2">
+              {pendingRequests.map((req) => (
+                <li
+                  key={req.id}
+                  className="flex gap-3 px-3 py-2 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-50/80 transition-colors"
+                >
+                  <div className="size-9 rounded-lg flex items-center justify-center shrink-0 bg-blue-100 text-blue-600">
+                    <i className="las la-clock text-sm" aria-hidden />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-900 truncate">
+                      {req.investorName} · {req.type}
+                    </p>
+                    <p className="text-xs text-blue-600 font-medium">
+                      {req.buildingName} · {req.requestedAt}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {overdueDues.length > 0 && (
+          <div className={`px-6 py-3 ${pendingRequests.length > 0 ? 'border-t border-gray-100' : ''}`}>
             <p className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-2">
               {t("overdue")}
             </p>

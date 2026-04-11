@@ -45,31 +45,35 @@
     "items": {
       "hub": {
         "title": "Mülk Merkezi",
-        "description": "Operasyonunuzun kalbi. Üniteleri, kiralamaları ve gerçek zamanlı doluluğu yönetin."
+        "description": "Operasyonun kalbi. Ünitelerin, uygunluğun ve teslimat sürelerinin gerçek zamanlı takibi."
       },
       "investor": {
-        "title": "Yatırımcı Portalı",
-        "description": "Paydaşlar için premium raporlama. Tahsisatları ve dağıtımları sıfır sürtünme ile takip edin."
+        "title": "Yatırımcı Portalları",
+        "description": "Alıcılar ve Kiracılar için özel görünümler. Şeffaf portföy değerleri ve büyüme raporları."
       },
       "payments": {
-        "title": "Aidat & Ödemeler",
-        "description": "Akıllı faturalama ile nakit akışınızı otomatikleştirin."
+        "title": "Ödeme Planları",
+        "description": "Otomatik taksit takibi, ödeme kanıtı kasası ve çoklu para birimi faturalandırma."
       },
       "docs": {
-        "title": "Güvenli Depo",
-        "description": "Uyumluluk zahmetsiz hale geldi. Planları ve sözleşmeleri güvenle saklayın."
+        "title": "Varlık Kasası",
+        "description": "Bina bazında sözleşmeler, planlar ve yasal belgeler için güvenli depolama."
       },
       "insights": {
-        "title": "Finansal Analizler",
-        "description": "Derinlemesine analizler ve özel raporlama panoları."
+        "title": "Akıllı Analizler",
+        "description": "Varlık performansı, nakit akışı ve proje trendleri üzerine anlık analizler."
       },
-      "maintenance": {
-        "title": "Akıllı Talepler",
-        "description": "Bakım taleplerini anında takip edin."
+      "sustainability": {
+        "title": "Sürdürülebilirlik",
+        "description": "Çevresel etkiyi, verimlilik puanlarını ve yeşil bina standartlarını takip edin."
+      },
+      "requests": {
+        "title": "Süreç Yönetimi",
+        "description": "Saha turları, dokümantasyon ve teslimat süreçlerini kesintisiz yönetin."
       },
       "photos": {
         "title": "Görsel Güncellemeler",
-        "description": "Haftalık ilerleme fotoğrafları tüm paydaşlara ulaşsın."
+        "description": "Paydaşlara doğrudan iletilen periyodik yüksek çözünürlüklü ilerleme fotoğrafları."
       }
     }
   },

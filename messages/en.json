@@ -44,32 +44,36 @@
     "seeHowItWorks": "See how it works",
     "items": {
       "hub": {
-        "title": "Properties Hub",
-        "description": "The heartbeat of your operation. Manage units, leases, and real-time availability from a high-level command center."
+        "title": "Property Hub",
+        "description": "The heartbeat of your operation. Real-time tracking of units, availability, and delivery periods."
       },
       "investor": {
-        "title": "Investor Portal",
-        "description": "Premium reporting for stakeholders. Track allocations and distributions with zero friction."
+        "title": "Investor Portals",
+        "description": "Tailored views for Buyers and Renters. Transparent portfolio values and growth reporting."
       },
       "payments": {
-        "title": "Dues & Payments",
-        "description": "Automate the pulse of your cashflow with smart invoicing and reconciliation."
+        "title": "Payment Plans",
+        "description": "Automated installment tracking, proof-of-payment vault, and multi-currency billing."
       },
       "docs": {
-        "title": "Secure Vault",
-        "description": "Compliance made effortless. Store blueprints and contracts securely."
+        "title": "Asset Vault",
+        "description": "Secure storage for contracts, blueprints, and legal documentation per building."
       },
       "insights": {
-        "title": "Financial Insights",
-        "description": "Deep-dive analytics and custom reporting boards."
+        "title": "Smart Insights",
+        "description": "Real-time analytics on asset performance, cashflow, and project trends."
       },
-      "maintenance": {
-        "title": "Smart Requests",
-        "description": "Track maintenance from request to resolution instantly."
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "Track environmental impact, efficiency scores, and green building standards."
+      },
+      "requests": {
+        "title": "Service Lifecycle",
+        "description": "Seamlessly manage site tours, documentation, connections, and handovers."
       },
       "photos": {
         "title": "Visual Updates",
-        "description": "Weekly progress photos delivered to every stakeholder."
+        "description": "Periodic high-def progress photos delivered directly to stakeholders."
       }
     }
   },

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { staffBuildings } from "@/lib/staffBuildingsData";
+import { staffRequests } from "@/lib/staffRequestsData";
 import { StaffPerformanceChart } from "@/components/dashboard/staff/StaffPerformanceChart";
 import { CriticalAlerts } from "@/components/dashboard/staff/CriticalAlerts";
 import { ActiveProjectsSection } from "@/components/dashboard/staff/ActiveProjectsSection";
@@ -8,6 +9,8 @@ import { useTranslations } from "next-intl";
 
 export default function StaffPage() {
   const t = useTranslations("Demo.staff");
+
+  const pendingRequests = staffRequests.filter(r => r.status === "Pending").slice(0, 3);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -86,6 +89,7 @@ export default function StaffPage() {
         </div>
         <div className="lg:col-span-4 min-h-[320px]">
           <CriticalAlerts
+            pendingRequests={pendingRequests}
             recentPayments={[
               {
                 id: "rp1",
