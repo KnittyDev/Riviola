@@ -25,6 +25,8 @@ export type CompanyInvestorPropertyRow = {
   delivery_period: string | null;
   purchase_value: number | null;
   purchase_currency: string | null;
+  language: string | null;
+  currency: string | null;
 };
 
 /**
@@ -58,18 +60,20 @@ export async function getCompanyInvestorProperties(
   }
 
   const profileIds = [...new Set((rows ?? []).map((r: { profile_id: string }) => r.profile_id))];
-  const profileMap = new Map<string, { full_name: string | null; email: string | null; phone: string | null; investor_type: "renter" | "buyer" | null }>();
+  const profileMap = new Map<string, { full_name: string | null; email: string | null; phone: string | null; investor_type: "renter" | "buyer" | null; language: string | null; currency: string | null }>();
   if (profileIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, full_name, email, phone, investor_type")
+      .select("id, full_name, email, phone, investor_type, language, currency")
       .in("id", profileIds);
-    (profiles ?? []).forEach((p: { id: string; full_name: string | null; email: string | null; phone: string | null; investor_type: "renter" | "buyer" | null }) => {
+    (profiles ?? []).forEach((p: { id: string; full_name: string | null; email: string | null; phone: string | null; investor_type: "renter" | "buyer" | null; language: string | null; currency: string | null }) => {
       profileMap.set(p.id, {
         full_name: p.full_name?.trim() ?? null,
         email: p.email?.trim() ?? null,
         phone: p.phone?.trim() ?? null,
         investor_type: p.investor_type ?? null,
+        language: p.language ?? null,
+        currency: p.currency ?? null,
       });
     });
   }
@@ -103,6 +107,8 @@ export async function getCompanyInvestorProperties(
       delivery_period: r.delivery_period ?? null,
       purchase_value: r.purchase_value != null ? Number(r.purchase_value) : null,
       purchase_currency: r.purchase_currency ?? null,
+      language: profile?.language ?? null,
+      currency: profile?.currency ?? null,
     };
   });
 }

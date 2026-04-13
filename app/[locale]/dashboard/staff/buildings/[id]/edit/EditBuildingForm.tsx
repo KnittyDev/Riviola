@@ -31,6 +31,7 @@ type Props = {
   defaultCurrentMilestoneId?: string | null;
   defaultSustainabilityScore?: number;
   defaultSustainabilityFeatures?: string[];
+  defaultDuesActive?: boolean;
   /** Base path for redirect/cancel (e.g. /dashboard/staff or /demo/staff). Defaults to /dashboard/staff. */
   basePath?: string;
 };
@@ -77,6 +78,7 @@ export function EditBuildingForm({
   defaultCurrentMilestoneId = null,
   defaultSustainabilityScore = 0,
   defaultSustainabilityFeatures = [],
+  defaultDuesActive = true,
   basePath = DEFAULT_BASE,
 }: Props) {
   const t = useTranslations("EditBuilding");
@@ -141,6 +143,7 @@ export function EditBuildingForm({
   const [plannedMilestones, setPlannedMilestones] = useState<PlannedMilestone[]>(defaultPlannedMilestones);
   const [currentMilestoneId, setCurrentMilestoneId] = useState<string | null>(defaultCurrentMilestoneId ?? null);
   const [sustainabilityFeatures, setSustainabilityFeatures] = useState<string[]>(defaultSustainabilityFeatures);
+  const [duesActive, setDuesActive] = useState<boolean>(defaultDuesActive);
 
   const sustainabilityScore = useMemo(() => {
     // Each feature contributes a certain amount to the total score, capped at 100.
@@ -229,6 +232,14 @@ export function EditBuildingForm({
       setError(updateError.message);
       return;
     }
+
+    // Also update building_dues_settings
+    await supabase.from("building_dues_settings").upsert({
+      building_id: id,
+      is_active: duesActive,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "building_id" });
+
     toast.success(t("saveSuccess"));
     router.push(`${basePath}/buildings/${id}`);
     router.refresh();
@@ -444,6 +455,29 @@ export function EditBuildingForm({
               )}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 p-5 bg-blue-50/20">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 ${duesActive ? 'bg-[#134e4a] text-white' : 'bg-gray-200 text-gray-400'}`}>
+              <i className={`las la-wallet text-xl`} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gray-900">{t("form.duesToggleLabel") || "Dues Payments (Aidat)"}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{t("form.duesToggleSubtitle") || "Toggle if this building should collect monthly dues."}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setDuesActive(!duesActive)}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#134e4a] focus:ring-offset-2 ${duesActive ? 'bg-[#134e4a]' : 'bg-gray-200'}`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${duesActive ? 'translate-x-5' : 'translate-x-0'}`}
+            />
+          </button>
         </div>
       </div>
 

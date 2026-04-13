@@ -34,6 +34,12 @@ export default async function EditBuildingPage({
     ? building.planned_milestones
     : [];
 
+  const { data: duesSettings } = await supabase
+    .from("building_dues_settings")
+    .select("is_active")
+    .eq("building_id", id)
+    .single();
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-8">
       <Link
@@ -65,6 +71,7 @@ export default async function EditBuildingPage({
         defaultCurrentMilestoneId={building.current_milestone_id ?? null}
         defaultSustainabilityScore={building.sustainability_score ?? 0}
         defaultSustainabilityFeatures={building.sustainability_features ?? []}
+        defaultDuesActive={duesSettings?.is_active ?? true}
       />
     </div>
   );

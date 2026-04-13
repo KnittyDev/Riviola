@@ -18,6 +18,8 @@ export type CreateInvestorInput = {
   purchaseValue: number | null;
   purchaseCurrency: string | null;
   investorType: "renter" | "buyer";
+  language?: string | null;
+  currency?: string | null;
 };
 
 export async function createInvestorAction(
@@ -77,6 +79,8 @@ export async function createInvestorAction(
     phone: phoneTrimmed,
     full_name: fullName,
     investor_type: investorType,
+    language: input.language || "en",
+    currency: input.currency || "EUR",
   }).eq("id", profileId);
 
   const { error: insertError } = await supabase.from("investor_properties").insert({
@@ -115,6 +119,8 @@ export type UpdateInvestorInput = {
   deliveryPeriod: string | null;
   purchaseValue: number | null;
   purchaseCurrency: string | null;
+  language: string | null;
+  currency: string | null;
 };
 
 export async function updateInvestorAction(
@@ -150,6 +156,8 @@ export async function updateInvestorAction(
     email: (input.email ?? "").trim().toLowerCase() || null,
     phone: (input.phone ?? "").trim() || null,
     investor_type: input.investorType,
+    language: input.language,
+    currency: input.currency,
   }).eq("id", input.profileId);
 
   const { error: updateError } = await supabase

@@ -566,6 +566,7 @@
       "deliveryPeriod": "Teslim dönemi",
       "purchaseValue": "Satın alma değeri",
       "currency": "Para birimi",
+      "language": "Dil",
       "save": "Kaydet",
       "saveChanges": "Değişiklikleri Kaydet",
       "saving": "Kaydediliyor...",
@@ -586,6 +587,8 @@
       "phonePlaceholder": "Örn: +90 555 123 4567",
       "phoneNote": "* Lütfen ülke kodunu (+90, +382 vb.) kaldırmayın veya silmeyin.",
       "investorType": "Yatırımcı tipi",
+      "userLanguage": "Hesap Dili",
+      "userCurrency": "Referans Para Birimi",
       "project": "Proje / Bina",
       "selectProject": "Proje seçin",
       "block": "Blok adı",
@@ -790,7 +793,9 @@
       "sustainabilitySubtitle": "Projenizin çevresel etkisini küresel yatırımcılara gösterin.",
       "greenScoreLabel": "Genel Yeşil Skor (Otomatik hesaplanır)",
       "greenScoreHint": "Skor, aşağıda seçtiğiniz yeşil özelliklere göre hesaplanır.",
-      "addFeatures": "Proje Sürdürülebilirlik Özelliklerini Ekle"
+      "addFeatures": "Proje Sürdürülebilirlik Özellikleri Ekle",
+      "duesToggleLabel": "Aidat Ödemeleri",
+      "duesToggleSubtitle": "Bu bina için aylık aidat toplanıp toplanmayacağını seçin."
     }
   },
   "StatusOptions": {

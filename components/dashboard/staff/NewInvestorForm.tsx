@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { createInvestorAction } from "@/app/[locale]/dashboard/staff/investors/actions";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#134e4a] focus:ring-2 focus:ring-[#134e4a]/20 outline-none transition-colors";
@@ -57,6 +57,7 @@ function formatAmount(value: number, currency: string): string {
 export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) {
   const t = useTranslations("Investors.newAccount");
   const tModal = useTranslations("Investors.modal");
+  const locale = useLocale();
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -72,6 +73,10 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
   const [investorType, setInvestorType] = useState<"renter" | "buyer">("buyer");
   const [paymentPlanType, setPaymentPlanType] = useState<"full" | "installments">("full");
   const [installmentCount, setInstallmentCount] = useState<number>(6);
+  const [userLanguage, setUserLanguage] = useState<string>(
+    ["en", "tr", "sr", "sq", "pl"].includes(locale) ? locale : "en"
+  );
+  const [userCurrency, setUserCurrency] = useState<string>("EUR");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -113,6 +118,8 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         purchaseValue: isValidTotal ? totalNum! : null,
         purchaseCurrency: currency.trim() || null,
         investorType,
+        language: userLanguage,
+        currency: userCurrency,
       });
       if (!result) {
         setError(t("serverError"));
@@ -251,6 +258,45 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
             <option value="buyer">{tModal("investorTypeOptions.buyer")}</option>
             <option value="renter">{tModal("investorTypeOptions.renter")}</option>
           </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="userLanguage" className={labelClass}>
+              {t("userLanguage") || "Account Language"}
+            </label>
+            <select
+              id="userLanguage"
+              value={userLanguage}
+              onChange={(e) => setUserLanguage(e.target.value)}
+              className={inputClass}
+            >
+              <option value="en">English</option>
+              <option value="tr">Türkçe</option>
+              <option value="sr">Srpski</option>
+              <option value="sq">Shqip</option>
+              <option value="pl">Polski</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="userCurrency" className={labelClass}>
+              {t("userCurrency") || "Reference Currency"}
+            </label>
+            <select
+              id="userCurrency"
+              value={userCurrency}
+              onChange={(e) => setUserCurrency(e.target.value)}
+              className={inputClass}
+            >
+              <option value="EUR">EUR (€)</option>
+              <option value="USD">USD ($)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="TRY">TRY (₺)</option>
+            </select>
+            <p className="text-[10px] text-gray-400 mt-1 italic">
+              Dashboard default currency
+            </p>
+          </div>
         </div>
 
         <hr className="border-gray-200" />

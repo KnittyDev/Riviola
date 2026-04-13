@@ -564,6 +564,7 @@
       "deliveryPeriod": "Delivery period",
       "purchaseValue": "Purchase value",
       "currency": "Currency",
+      "language": "Language",
       "save": "Save",
       "saveChanges": "Save Changes",
       "saving": "Saving...",
@@ -584,6 +585,8 @@
       "phonePlaceholder": "e.g. +90 555 123 4567",
       "phoneNote": "* Please do not remove or delete the country code (e.g., +90, +382).",
       "investorType": "Investor type",
+      "userLanguage": "Account Language",
+      "userCurrency": "Dashboard Currency",
       "project": "Project / building",
       "selectProject": "Select project",
       "block": "Block name",
@@ -789,7 +792,9 @@
       "sustainabilitySubtitle": "Showcase your project's environmental impact to global investors.",
       "greenScoreLabel": "Overall Green Score (Auto-calculated)",
       "greenScoreHint": "The score is calculated based on the green features you select below.",
-      "addFeatures": "Add Project Sustainability Features"
+      "addFeatures": "Add Project Sustainability Features",
+      "duesToggleLabel": "Dues Payments (Aidat)",
+      "duesToggleSubtitle": "Toggle if this building should collect monthly dues."
     }
   },
   "StatusOptions": {
@@ -1152,7 +1157,14 @@
     },
     "investors": {
       "title": "Investors",
-      "create": "Create investor account"
+      "create": "Create investor account",
+      "newAccount": {
+        "userLanguage": "Language",
+        "userCurrency": "Currency"
+      },
+      "modal": {
+        "language": "Language"
+      }
     },
     "requests": {
       "title": "Investor requests",

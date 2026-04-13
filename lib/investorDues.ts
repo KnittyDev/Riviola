@@ -74,7 +74,7 @@ export async function getInvestorDuesFees(
 
   const { data: settingsRows } = await supabase
     .from("building_dues_settings")
-    .select("building_id, payment_window_start_day, payment_window_end_day, amount_cents, currency, area_pricing")
+    .select("building_id, payment_window_start_day, payment_window_end_day, amount_cents, currency, area_pricing, is_active")
     .in("building_id", buildingIds);
   const settingsByBuilding = new Map(
     (settingsRows ?? []).map((s) => [
@@ -85,6 +85,7 @@ export async function getInvestorDuesFees(
         amount_cents: s.amount_cents ?? null,
         currency: s.currency ?? "EUR",
         area_pricing: s.area_pricing as { min: number; max: number; amount_cents: number }[] | null,
+        is_active: s.is_active ?? true,
       },
     ])
   );
@@ -151,6 +152,8 @@ export async function getInvestorDuesFees(
       : `Block ${prop.block}, Unit ${prop.unit}`;
       
     const settings = settingsByBuilding.get(prop.building_id);
+    if (settings && !settings.is_active) continue;
+
     let amountCents = settings?.amount_cents ?? null;
     
     if (settings?.area_pricing && settings.area_pricing.length > 0 && prop.area_m2 != null) {

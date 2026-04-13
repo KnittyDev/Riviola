@@ -86,6 +86,8 @@ export function InvestorsTable({
     const deliveryPeriod = (form.querySelector("[name=deliveryPeriod]") as HTMLInputElement)?.value?.trim() ?? "";
     const purchaseValueRaw = (form.querySelector("[name=purchaseValue]") as HTMLInputElement)?.value?.trim() ?? "";
     const purchaseCurrency = (form.querySelector("[name=purchaseCurrency]") as HTMLSelectElement)?.value?.trim() ?? "";
+    const language = (form.querySelector("[name=language]") as HTMLSelectElement)?.value?.trim() ?? "en";
+    const currency = (form.querySelector("[name=currency]") as HTMLSelectElement)?.value?.trim() ?? "EUR";
 
     const areaM2 = areaM2Raw === "" ? null : parseFloat(areaM2Raw);
     const validArea = areaM2 != null && !Number.isNaN(areaM2) && areaM2 >= 0;
@@ -106,6 +108,8 @@ export function InvestorsTable({
       deliveryPeriod: deliveryPeriod || null,
       purchaseValue: validPurchase ? purchaseValue : null,
       purchaseCurrency: purchaseCurrency || null,
+      language,
+      currency,
     });
     setLoading(false);
     if (result.ok) {
@@ -319,6 +323,28 @@ export function InvestorsTable({
                  <div className="space-y-1.5">
                     <label className={labelClass}>{t("modal.email")}</label>
                     <input name="email" type="email" defaultValue={editing.email ?? ""} className={inputClass} />
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                 <div className="space-y-1.5">
+                    <label className={labelClass}>{t("modal.language") || "Language"}</label>
+                    <select name="language" defaultValue={editing.language ?? "en"} className={`${inputClass} appearance-none cursor-pointer pr-10 bg-[url('https://api.iconify.design/las:angle-down.svg')] bg-[length:18px] bg-[right_1rem_center] bg-no-repeat`}>
+                       <option value="en">English</option>
+                       <option value="tr">Türkçe</option>
+                       <option value="sr">Srpski</option>
+                       <option value="sq">Shqip</option>
+                       <option value="pl">Polski</option>
+                    </select>
+                 </div>
+                 <div className="space-y-1.5">
+                    <label className={labelClass}>{t("modal.currency") || "Currency"}</label>
+                    <select name="currency" defaultValue={editing.currency ?? "EUR"} className={`${inputClass} appearance-none cursor-pointer pr-10 bg-[url('https://api.iconify.design/las:angle-down.svg')] bg-[length:18px] bg-[right_1rem_center] bg-no-repeat`}>
+                       <option value="EUR">EUR (€)</option>
+                       <option value="USD">USD ($)</option>
+                       <option value="GBP">GBP (£)</option>
+                       <option value="TRY">TRY (₺)</option>
+                    </select>
                  </div>
               </div>
 
