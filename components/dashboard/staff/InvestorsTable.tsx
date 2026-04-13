@@ -46,6 +46,7 @@ export function InvestorsTable({
   const router = useRouter();
   const [editing, setEditing] = useState<CompanyInvestorPropertyRow | null>(null);
   const [editPhone, setEditPhone] = useState("");
+  const [editType, setEditType] = useState<string>("buyer");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,6 +57,7 @@ export function InvestorsTable({
 
   useEffect(() => {
     setEditPhone(editing?.phone ?? "");
+    setEditType(editing?.investor_type ?? "buyer");
   }, [editing]);
 
   const filteredRows = useMemo(() => {
@@ -363,7 +365,12 @@ export function InvestorsTable({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                  <div className="space-y-1.5">
                     <label className={labelClass}>{t("modal.investorType")}</label>
-                    <select name="investorType" defaultValue={editing.investor_type ?? "buyer"} className={`${inputClass} appearance-none cursor-pointer pr-10 bg-[url('https://api.iconify.design/las:angle-down.svg')] bg-[length:18px] bg-[right_1rem_center] bg-no-repeat`}>
+                    <select 
+                      name="investorType" 
+                      defaultValue={editing.investor_type ?? "buyer"} 
+                      onChange={(e) => setEditType(e.target.value)}
+                      className={`${inputClass} appearance-none cursor-pointer pr-10 bg-[url('https://api.iconify.design/las:angle-down.svg')] bg-[length:18px] bg-[right_1rem_center] bg-no-repeat`}
+                    >
                        <option value="buyer">{t("table.premierBuyer")}</option>
                        <option value="renter">{t("table.verifiedRenter")}</option>
                     </select>
@@ -417,7 +424,9 @@ export function InvestorsTable({
                     <input name="areaM2" type="number" step="0.01" defaultValue={editing.area_m2 ?? ""} className={inputClass} />
                  </div>
                  <div className="space-y-1.5">
-                    <label className={labelClass}>Portfolio Value</label>
+                    <label className={labelClass}>
+                      {editType === "renter" ? (t("modal.monthlyRent") || "Monthly Rent") : (t("modal.purchaseValue") || "Portfolio Value")}
+                    </label>
                     <div className="flex gap-2">
                        <input name="purchaseValue" type="number" step="0.01" defaultValue={editing.purchase_value ?? ""} className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white outline-none transition-all font-bold text-gray-900 text-sm" />
                        <select name="purchaseCurrency" defaultValue={editing.purchase_currency ?? "EUR"} className="w-24 px-2 py-2.5 rounded-xl border-2 border-gray-50 bg-gray-50/50 outline-none font-black text-[10px] text-[#134e4a] appearance-none text-center">

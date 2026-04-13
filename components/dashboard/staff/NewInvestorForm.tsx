@@ -414,9 +414,11 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
         <hr className="border-gray-200" />
 
         <div>
-          <span className={labelClass}>{t("amountTitle")}</span>
+          <span className={labelClass}>
+            {investorType === "renter" ? t("amountTitleRenter") : t("amountTitle")}
+          </span>
           <p className="text-xs text-gray-500 mb-2">
-            {t("amountSubtitle")}
+            {investorType === "renter" ? t("amountSubtitleRenter") : t("amountSubtitle")}
           </p>
           <div className="flex flex-wrap gap-3 items-end">
             <div className="flex-1 min-w-[10rem]">
@@ -451,76 +453,82 @@ export function NewInvestorForm({ buildings }: { buildings: BuildingOption[] }) 
           </div>
         </div>
 
-        <div>
-          <span className={labelClass}>{t("paymentPlan")}</span>
-          <p className="text-xs text-gray-500 mb-3">
-            {t("paymentPlanSubtitle")}
-          </p>
-          <div className="space-y-2">
-            <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
-              <input
-                type="radio"
-                name="paymentPlan"
-                value="full"
-                checked={paymentPlanType === "full"}
-                onChange={() => setPaymentPlanType("full")}
-                className="rounded-full border-gray-300 accent-[#134e4a] focus:ring-[#134e4a] focus:ring-offset-0"
-              />
-              <span className="text-sm font-medium text-gray-900">{t("fullPayment")}</span>
-            </label>
-            <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
-              <input
-                type="radio"
-                name="paymentPlan"
-                value="installments"
-                checked={paymentPlanType === "installments"}
-                onChange={() => setPaymentPlanType("installments")}
-                className="rounded-full border-gray-300 accent-[#134e4a] focus:ring-[#134e4a] focus:ring-offset-0"
-              />
-              <span className="text-sm font-medium text-gray-900">{t("installments")}</span>
-            </label>
-          </div>
-          {paymentPlanType === "installments" && (
-            <div className="mt-4 pl-9">
-              <label htmlFor="installmentCount" className={labelClass}>
-                {t("installmentCount")}
+        {investorType !== "renter" && (
+          <div className="mt-6">
+            <span className={labelClass}>{t("paymentPlan")}</span>
+            <p className="text-xs text-gray-500 mb-3">
+              {t("paymentPlanSubtitle")}
+            </p>
+            <div className="space-y-2">
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                <input
+                  type="radio"
+                  name="paymentPlan"
+                  value="full"
+                  checked={paymentPlanType === "full"}
+                  onChange={() => setPaymentPlanType("full")}
+                  className="rounded-full border-gray-300 accent-[#134e4a] focus:ring-[#134e4a] focus:ring-offset-0"
+                />
+                <span className="text-sm font-medium text-gray-900">{t("fullPayment")}</span>
               </label>
-              <input
-                id="installmentCount"
-                name="installmentCount"
-                type="number"
-                min={2}
-                max={120}
-                value={installmentCount}
-                onChange={(e) => setInstallmentCount(Math.max(2, parseInt(e.target.value, 10) || 2))}
-                className={`${inputClass} max-w-[8rem]`}
-              />
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer">
+                <input
+                  type="radio"
+                  name="paymentPlan"
+                  value="installments"
+                  checked={paymentPlanType === "installments"}
+                  onChange={() => setPaymentPlanType("installments")}
+                  className="rounded-full border-gray-300 accent-[#134e4a] focus:ring-[#134e4a] focus:ring-offset-0"
+                />
+                <span className="text-sm font-medium text-gray-900">{t("installments")}</span>
+              </label>
             </div>
-          )}
-
-          {/* Payment preview */}
-          <div className="mt-4 p-4 rounded-xl bg-teal-50 border border-teal-100">
-            <p className="text-sm font-semibold text-teal-900 mb-1">{t("preview")}</p>
-            {!isValidTotal ? (
-              <p className="text-sm text-teal-700">{t("previewHint")}</p>
-            ) : paymentPlanType === "full" ? (
-              <p className="text-sm text-teal-800">
-                {t("onetimePayment", { amount: formatAmount(totalNum!, currency) })}
-              </p>
-            ) : (
-              <div className="text-sm text-teal-800 space-y-0.5">
-                <p>
-                  {t("installmentsOf", { 
-                    count: installmentCount, 
-                    amount: formatAmount(installmentPreview!, currency) 
-                  })}
-                </p>
-                <p>
-                  {t("totalPreview", { amount: formatAmount(totalNum!, currency) })}
-                </p>
+            {paymentPlanType === "installments" && (
+              <div className="mt-4 pl-9">
+                <label htmlFor="installmentCount" className={labelClass}>
+                  {t("installmentCount")}
+                </label>
+                <input
+                  id="installmentCount"
+                  name="installmentCount"
+                  type="number"
+                  min={2}
+                  max={120}
+                  value={installmentCount}
+                  onChange={(e) => setInstallmentCount(Math.max(2, parseInt(e.target.value, 10) || 2))}
+                  className={`${inputClass} max-w-[8rem]`}
+                />
               </div>
             )}
           </div>
+        )}
+
+        {/* Payment preview */}
+        <div className="mt-4 p-4 rounded-xl bg-teal-50 border border-teal-100">
+          <p className="text-sm font-semibold text-teal-900 mb-1">{t("preview")}</p>
+          {!isValidTotal ? (
+            <p className="text-sm text-teal-700">{t("previewHint")}</p>
+          ) : investorType === "renter" ? (
+            <p className="text-sm text-teal-800">
+              {t("monthlyRentPreview", { amount: formatAmount(totalNum!, currency) })}
+            </p>
+          ) : paymentPlanType === "full" ? (
+            <p className="text-sm text-teal-800">
+              {t("onetimePayment", { amount: formatAmount(totalNum!, currency) })}
+            </p>
+          ) : (
+            <div className="text-sm text-teal-800 space-y-0.5">
+              <p>
+                {t("installmentsOf", { 
+                  count: installmentCount, 
+                  amount: formatAmount(installmentPreview!, currency) 
+                })}
+              </p>
+              <p>
+                {t("totalPreview", { amount: formatAmount(totalNum!, currency) })}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3 pt-2">

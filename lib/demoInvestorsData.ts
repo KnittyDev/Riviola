@@ -16,7 +16,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 65.5,
         delivery_period: "Q4 2024",
         purchase_value: 120000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-2",
@@ -33,7 +35,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 42.0,
         delivery_period: "Q4 2024",
         purchase_value: 85000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-3",
@@ -50,7 +54,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 88.5,
         delivery_period: "Q4 2024",
         purchase_value: 165000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-4",
@@ -67,7 +73,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 55.0,
         delivery_period: "Q4 2024",
         purchase_value: 105000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-5",
@@ -84,7 +92,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 72.0,
         delivery_period: "Q2 2025",
         purchase_value: 210000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-6",
@@ -101,7 +111,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 94.0,
         delivery_period: "Q2 2025",
         purchase_value: 280000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-7",
@@ -118,7 +130,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 50.5,
         delivery_period: "Q2 2025",
         purchase_value: 155000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-8",
@@ -135,7 +149,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 120.0,
         delivery_period: "Q2 2025",
         purchase_value: 340000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-9",
@@ -152,7 +168,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 77.0,
         delivery_period: "Q4 2024",
         purchase_value: 145000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-10",
@@ -169,7 +187,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 60.0,
         delivery_period: "Q4 2024",
         purchase_value: 115000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-11",
@@ -186,7 +206,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 82.5,
         delivery_period: "Q1 2026",
         purchase_value: 235000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-12",
@@ -203,7 +225,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 55.0,
         delivery_period: "Q1 2026",
         purchase_value: 160000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-13",
@@ -220,7 +244,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 95.0,
         delivery_period: "Q1 2026",
         purchase_value: 295000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-14",
@@ -237,7 +263,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 70.0,
         delivery_period: "Q1 2026",
         purchase_value: 205000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-15",
@@ -254,7 +282,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 135.0,
         delivery_period: "Q1 2026",
         purchase_value: 410000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-16",
@@ -271,7 +301,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 45.0,
         delivery_period: "Q1 2026",
         purchase_value: 140000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-17",
@@ -288,7 +320,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 52.0,
         delivery_period: "Q4 2024",
         purchase_value: 98000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-18",
@@ -305,7 +339,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 75.0,
         delivery_period: "Q4 2024",
         purchase_value: 138000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-19",
@@ -322,7 +358,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 64.0,
         delivery_period: "Q2 2025",
         purchase_value: 185000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-20",
@@ -339,7 +377,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 82.0,
         delivery_period: "Q2 2025",
         purchase_value: 235000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-21",
@@ -356,7 +396,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 48.0,
         delivery_period: "Q2 2025",
         purchase_value: 142000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-22",
@@ -373,7 +415,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 105.0,
         delivery_period: "Q2 2025",
         purchase_value: 305000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-23",
@@ -390,7 +434,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 240.0,
         delivery_period: "Completed",
         purchase_value: 850000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-24",
@@ -407,7 +453,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 215.0,
         delivery_period: "Completed",
         purchase_value: 780000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-25",
@@ -424,7 +472,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 265.0,
         delivery_period: "Completed",
         purchase_value: 950000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-26",
@@ -441,7 +491,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 68.0,
         delivery_period: "Q4 2024",
         purchase_value: 128000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-27",
@@ -458,7 +510,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 90.0,
         delivery_period: "Q4 2024",
         purchase_value: 168000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-28",
@@ -475,7 +529,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 58.0,
         delivery_period: "Q2 2025",
         purchase_value: 175000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-29",
@@ -492,7 +548,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 150.0,
         delivery_period: "Q2 2025",
         purchase_value: 450000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-30",
@@ -509,7 +567,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 70.0,
         delivery_period: "Q1 2026",
         purchase_value: 198000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-31",
@@ -526,7 +586,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 60.0,
         delivery_period: "Q1 2026",
         purchase_value: 172000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-32",
@@ -543,7 +605,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 85.0,
         delivery_period: "Q1 2026",
         purchase_value: 245000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-33",
@@ -560,7 +624,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 52.0,
         delivery_period: "Q1 2026",
         purchase_value: 155000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-34",
@@ -577,7 +643,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 105.0,
         delivery_period: "Q1 2026",
         purchase_value: 310000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-35",
@@ -594,7 +662,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 78.0,
         delivery_period: "Q1 2026",
         purchase_value: 235000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-36",
@@ -611,7 +681,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 84.0,
         delivery_period: "Q4 2024",
         purchase_value: 158000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-37",
@@ -628,7 +700,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 58.0,
         delivery_period: "Q4 2024",
         purchase_value: 112000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-38",
@@ -645,7 +719,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 125.0,
         delivery_period: "Q2 2025",
         purchase_value: 385000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-39",
@@ -662,7 +738,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 45.0,
         delivery_period: "Q2 2025",
         purchase_value: 135000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-40",
@@ -679,7 +757,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 92.0,
         delivery_period: "Q4 2024",
         purchase_value: 178000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-41",
@@ -696,7 +776,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 67.0,
         delivery_period: "Q1 2026",
         purchase_value: 205000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-42",
@@ -713,7 +795,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 115.0,
         delivery_period: "Q1 2026",
         purchase_value: 345000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-43",
@@ -730,7 +814,9 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 180.0,
         delivery_period: "Q2 2025",
         purchase_value: 520000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     },
     {
         id: "inv-44",
@@ -747,6 +833,8 @@ export const demoInvestors: CompanyInvestorPropertyRow[] = [
         area_m2: 50.0,
         delivery_period: "Q2 2025",
         purchase_value: 155000,
-        purchase_currency: "EUR"
+        purchase_currency: "EUR",
+        language: "en",
+        currency: "EUR"
     }
 ];
