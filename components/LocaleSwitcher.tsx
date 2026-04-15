@@ -35,7 +35,7 @@ export function LocaleSwitcher({ isMobile = false }: { isMobile?: boolean }) {
     };
   }, [isMobile, isOpen]);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside for the area
   useEffect(() => {
     if (isMobile) return;
     function handleClickOutside(event: MouseEvent) {
