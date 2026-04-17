@@ -23,6 +23,11 @@ const CURRENCY_OPTIONS = [
   { value: "CAD" as const, label: "CAD (C$)" },
   { value: "NOK" as const, label: "NOK (kr)" },
   { value: "SEK" as const, label: "SEK (kr)" },
+  { value: "DKK" as const, label: "DKK (kr)" },
+  { value: "PLN" as const, label: "PLN (zl)" },
+  { value: "RON" as const, label: "RON (lei)" },
+  { value: "BGN" as const, label: "BGN (lv)" },
+  { value: "JPY" as const, label: "JPY (¥)" },
   { value: "AED" as const, label: "AED (د.إ)" },
   { value: "SAR" as const, label: "SAR (﷼)" },
   { value: "ALL" as const, label: "ALL (L)" },
@@ -326,6 +331,11 @@ export function ProfileSettingsForm() {
                           | "CAD"
                           | "NOK"
                           | "SEK"
+                          | "DKK"
+                          | "PLN"
+                          | "RON"
+                          | "BGN"
+                          | "JPY"
                           | "AED"
                           | "SAR"
                           | "ALL"

@@ -34,7 +34,20 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
     { code: "EUR", symbol: "€" },
     { code: "USD", symbol: "$" },
     { code: "TRY", symbol: "₺" },
-    { code: "GBP", symbol: "£" }
+    { code: "GBP", symbol: "£" },
+    { code: "CHF", symbol: "Fr" },
+    { code: "AUD", symbol: "A$" },
+    { code: "CAD", symbol: "C$" },
+    { code: "NOK", symbol: "kr" },
+    { code: "SEK", symbol: "kr" },
+    { code: "DKK", symbol: "kr" },
+    { code: "PLN", symbol: "zl" },
+    { code: "RON", symbol: "lei" },
+    { code: "BGN", symbol: "lv" },
+    { code: "JPY", symbol: "¥" },
+    { code: "AED", symbol: "د.إ" },
+    { code: "SAR", symbol: "﷼" },
+    { code: "ALL", symbol: "L" }
   ];
 
   async function handleSubmit(e: React.FormEvent) {
