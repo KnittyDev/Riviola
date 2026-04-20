@@ -28,8 +28,15 @@ interface WithdrawalRequest {
   };
 }
 
+function withdrawalStatusKey(status: string): "statusPending" | "statusApproved" | "statusRejected" {
+  if (status === "Approved") return "statusApproved";
+  if (status === "Rejected") return "statusRejected";
+  return "statusPending";
+}
+
 export function WithdrawalsClient({ initialRequests }: { initialRequests: WithdrawalRequest[] }) {
   const commonT = useTranslations("Sidebar");
+  const t = useTranslations("Admin");
   const [requests, setRequests] = useState(initialRequests);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const router = useRouter();
@@ -44,15 +51,13 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
       if (error) throw new Error(error);
 
       if (ok) {
-        toast.success(`Request ${newStatus.toLowerCase()} successfully`);
-        setRequests(prev => 
-          prev.map(r => r.id === id ? { ...r, status: newStatus } : r)
-        );
+        toast.success(newStatus === "Approved" ? t("withdrawals.toastApproved") : t("withdrawals.toastRejected"));
+        setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r)));
         router.refresh();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err.message || "Failed to update status");
+      toast.error(err instanceof Error ? err.message : t("withdrawals.updateFailed"));
     } finally {
       setLoadingId(null);
     }
@@ -61,11 +66,16 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
   const getCurrencySymbol = (code?: string | null) => {
     if (!code) return "€";
     switch (code.toUpperCase()) {
-      case "USD": return "$";
-      case "EUR": return "€";
-      case "GBP": return "£";
-      case "TRY": return "₺";
-      default: return code;
+      case "USD":
+        return "$";
+      case "EUR":
+        return "€";
+      case "GBP":
+        return "£";
+      case "TRY":
+        return "₺";
+      default:
+        return code;
     }
   };
 
@@ -73,7 +83,7 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-black text-gray-900 tracking-tight">{commonT("withdrawRequests")}</h1>
-        <p className="text-gray-500 font-medium font-inter">Administrative terminal for auditing and processing organizational divestment triggers.</p>
+        <p className="text-gray-500 font-medium font-inter">{t("withdrawals.subtitle")}</p>
       </div>
 
       <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden">
@@ -81,11 +91,11 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Entity / Requester</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Settlement Destination</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Amount</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-center">Status</th>
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-right">Clearance</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{t("withdrawals.thEntity")}</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{t("withdrawals.thSettlement")}</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{t("withdrawals.thAmount")}</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-center">{t("withdrawals.thStatus")}</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 text-right">{t("withdrawals.thClearance")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 font-inter">
@@ -93,10 +103,10 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
                 <tr>
                   <td colSpan={5} className="px-10 py-20 text-center">
                     <div className="flex flex-col items-center gap-3">
-                       <div className="size-16 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-200">
-                          <i className="las la-inbox text-4xl" />
-                       </div>
-                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest italic">Stable Infrastructure - No Pending Triggers</p>
+                      <div className="size-16 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-200">
+                        <i className="las la-inbox text-4xl" />
+                      </div>
+                      <p className="text-xs text-gray-400 font-bold uppercase tracking-widest italic">{t("withdrawals.empty")}</p>
                     </div>
                   </td>
                 </tr>
@@ -104,47 +114,47 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
                 requests.map((req) => (
                   <tr key={req.id} className="hover:bg-gray-50/30 transition-all group">
                     <td className="px-10 py-8">
-                       <div className="flex items-center gap-4">
-                          <div className="size-12 rounded-xl bg-[#134e4a]/5 flex items-center justify-center text-[#134e4a] shrink-0 border border-[#134e4a]/10">
-                             <i className="las la-building text-2xl" />
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-sm font-black text-gray-900 leading-tight mb-1 truncate">
-                              {req.companies?.name || "Global Entity"}
-                            </span>
-                            <div className="flex items-center gap-2">
-                               <div className="size-4 rounded-full bg-gray-100 flex items-center justify-center">
-                                  <i className="las la-user text-[10px] text-gray-400" />
-                               </div>
-                               <span className="text-[11px] text-gray-500 font-bold tracking-tight truncate">
-                                 {req.profiles?.full_name || "System Automated"}
-                               </span>
+                      <div className="flex items-center gap-4">
+                        <div className="size-12 rounded-xl bg-[#134e4a]/5 flex items-center justify-center text-[#134e4a] shrink-0 border border-[#134e4a]/10">
+                          <i className="las la-building text-2xl" />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-black text-gray-900 leading-tight mb-1 truncate">
+                            {req.companies?.name || t("withdrawals.globalEntity")}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <div className="size-4 rounded-full bg-gray-100 flex items-center justify-center">
+                              <i className="las la-user text-[10px] text-gray-400" />
                             </div>
+                            <span className="text-[11px] text-gray-500 font-bold tracking-tight truncate">
+                              {req.profiles?.full_name || t("withdrawals.systemAutomated")}
+                            </span>
                           </div>
-                       </div>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-10 py-8">
                       <div className="flex flex-col gap-2.5">
                         <div className="flex items-center gap-3">
-                           <div className="flex flex-col">
-                              <span className="text-[11px] font-black text-gray-900 tracking-tight leading-none">
-                                {req.account_holder_name || req.companies?.bank_account_holder || "N/A"}
-                              </span>
-                              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest mt-1">Beneficiary Account</span>
-                           </div>
+                          <div className="flex flex-col">
+                            <span className="text-[11px] font-black text-gray-900 tracking-tight leading-none">
+                              {req.account_holder_name || req.companies?.bank_account_holder || "N/A"}
+                            </span>
+                            <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest mt-1">{t("withdrawals.beneficiaryAccount")}</span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-3">
-                           <div className="px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-100/50 flex flex-col">
-                              <span className="text-[8px] text-orange-400 font-black uppercase tracking-tighter mb-0.5">{req.bank_name || req.companies?.bank_name || "Primary Institution"}</span>
-                              <span className="font-mono text-[10px] text-orange-700 font-black tracking-tight">{req.iban}</span>
-                           </div>
+                          <div className="px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-100/50 flex flex-col">
+                            <span className="text-[8px] text-orange-400 font-black uppercase tracking-tighter mb-0.5">
+                              {req.bank_name || req.companies?.bank_name || t("withdrawals.primaryInstitution")}
+                            </span>
+                            <span className="font-mono text-[10px] text-orange-700 font-black tracking-tight">{req.iban}</span>
+                          </div>
                         </div>
                         {req.note && (
                           <div className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                             <i className="las la-comment-alt text-gray-300 text-sm mt-0.5" />
-                             <p className="text-[10px] text-gray-400 font-medium italic leading-relaxed line-clamp-2">
-                               {req.note}
-                             </p>
+                            <i className="las la-comment-alt text-gray-300 text-sm mt-0.5" />
+                            <p className="text-[10px] text-gray-400 font-medium italic leading-relaxed line-clamp-2">{req.note}</p>
                           </div>
                         )}
                       </div>
@@ -152,37 +162,43 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
                     <td className="px-10 py-8">
                       <div className="flex flex-col">
                         <div className="flex items-baseline gap-1">
-                           <span className="text-[10px] font-black text-gray-400 mr-0.5">{getCurrencySymbol(req.currency)}</span>
-                           <span className="text-2xl font-black text-gray-900 tabular-nums tracking-tighter">
-                             {req.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                           </span>
+                          <span className="text-[10px] font-black text-gray-400 mr-0.5">{getCurrencySymbol(req.currency)}</span>
+                          <span className="text-2xl font-black text-gray-900 tabular-nums tracking-tighter">
+                            {req.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                          </span>
                         </div>
                         <span className="text-[9px] text-gray-300 font-black uppercase tracking-[0.2em] mt-1">
-                           {req.currency || "EUR"} DIVESTMENT
+                          {req.currency || "EUR"} · {t("withdrawals.divestment")}
                         </span>
                       </div>
                     </td>
                     <td className="px-10 py-8 text-center">
                       <div className="flex justify-center">
-                        <span className={`
+                        <span
+                          className={`
                           px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm border
-                          ${req.status === 'Approved' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
-                            req.status === 'Rejected' ? 'bg-rose-50 text-rose-600 border-rose-100' : 
-                            'bg-amber-50 text-amber-600 border-amber-100 animate-pulse'}
-                        `}>
-                          {req.status}
+                          ${
+                            req.status === "Approved"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                              : req.status === "Rejected"
+                                ? "bg-rose-50 text-rose-600 border-rose-100"
+                                : "bg-amber-50 text-amber-600 border-amber-100 animate-pulse"
+                          }
+                        `}
+                        >
+                          {t(`withdrawals.${withdrawalStatusKey(req.status)}`)}
                         </span>
                       </div>
                     </td>
                     <td className="px-10 py-8">
                       <div className="flex justify-end gap-3 isolate">
-                        {req.status === 'Pending' && (
+                        {req.status === "Pending" && (
                           <>
                             <button
                               onClick={() => handleUpdateStatus(req.id, "Rejected")}
                               disabled={loadingId === req.id}
                               className="size-11 rounded-2xl bg-white text-gray-400 border border-gray-100 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 transition-all flex items-center justify-center disabled:opacity-50 shadow-sm active:scale-95"
-                              title="Reject Request"
+                              title={t("withdrawals.rejectTitle")}
                             >
                               <i className="las la-times text-xl" />
                             </button>
@@ -190,16 +206,16 @@ export function WithdrawalsClient({ initialRequests }: { initialRequests: Withdr
                               onClick={() => handleUpdateStatus(req.id, "Approved")}
                               disabled={loadingId === req.id}
                               className="size-11 rounded-2xl bg-[#134e4a] text-white hover:bg-[#115e59] shadow-xl shadow-[#134e4a]/20 transition-all flex items-center justify-center disabled:opacity-50 active:scale-95 border border-[#134e4a]"
-                              title="Authorize Transfer"
+                              title={t("withdrawals.authorizeTitle")}
                             >
                               <i className="las la-check text-xl font-bold" />
                             </button>
                           </>
                         )}
-                        {req.status !== 'Pending' && (
+                        {req.status !== "Pending" && (
                           <div className="flex items-center gap-2 text-gray-300 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
-                             <i className={`las ${req.status === 'Approved' ? 'la-check-circle' : 'la-ban'} text-lg`} />
-                             <span className="text-[9px] font-black uppercase tracking-widest">Finalized</span>
+                            <i className={`las ${req.status === "Approved" ? "la-check-circle" : "la-ban"} text-lg`} />
+                            <span className="text-[9px] font-black uppercase tracking-widest">{t("withdrawals.finalized")}</span>
                           </div>
                         )}
                       </div>

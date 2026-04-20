@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { SettingsClient } from "./SettingsClient";
 
 export default async function AdminSettingsPage() {
+  const t = await getTranslations("Admin");
   const supabase = await createClient();
 
   // Fetch current site settings (first row)
@@ -14,8 +16,8 @@ export default async function AdminSettingsPage() {
   return (
     <div className="p-8 space-y-12 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-black text-gray-900 tracking-tight">Global Platform Settings</h1>
-        <p className="text-gray-500 font-medium font-inter">Administrative nerve center for global overrides and Riviola HQ constants.</p>
+        <h1 className="text-4xl font-black text-gray-900 tracking-tight">{t("settingsPage.title")}</h1>
+        <p className="text-gray-500 font-medium font-inter">{t("settingsPage.subtitle")}</p>
       </div>
 
       <SettingsClient initialMaintenanceMode={settings?.maintenance_mode || false} />
@@ -28,11 +30,11 @@ export default async function AdminSettingsPage() {
                   <i className="las la-history text-2xl" />
                </div>
                <div>
-                  <h4 className="text-xl font-black text-gray-900 tracking-tight">Administrative Logs</h4>
-                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Audit trail for global site modifications.</p>
+                  <h4 className="text-xl font-black text-gray-900 tracking-tight">{t("settingsPage.logsTitle")}</h4>
+                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">{t("settingsPage.logsSubtitle")}</p>
                </div>
             </div>
-            <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-1.5 rounded-full uppercase tracking-widest border border-emerald-100 shadow-sm">Immutable Records</span>
+            <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-1.5 rounded-full uppercase tracking-widest border border-emerald-100 shadow-sm">{t("settingsPage.immutableRecords")}</span>
          </div>
          
          <div className="space-y-4 relative z-10 opacity-30 blur-[2px] select-none pointer-events-none">
@@ -43,8 +45,8 @@ export default async function AdminSettingsPage() {
                        <i className="las la-user-shield" />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">Admin Action {i}</span>
-                       <span className="text-xs text-gray-400 font-medium font-inter">Modification of system constants for jurisdictional compliance.</span>
+                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">{t("settingsPage.logAction", { n: i })}</span>
+                       <span className="text-xs text-gray-400 font-medium font-inter">{t("settingsPage.logBody")}</span>
                     </div>
                  </div>
                  <span className="text-[9px] font-black text-gray-300 font-mono">05 APR 2026 22:54:12</span>

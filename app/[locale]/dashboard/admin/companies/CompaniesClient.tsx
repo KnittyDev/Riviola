@@ -18,6 +18,7 @@ interface Company {
 
 export function CompaniesClient({ initialCompanies }: { initialCompanies: Company[] }) {
   const commonT = useTranslations("Sidebar");
+  const t = useTranslations("Admin");
   const locale = useLocale();
   const [companies] = useState(initialCompanies);
 
@@ -35,7 +36,7 @@ export function CompaniesClient({ initialCompanies }: { initialCompanies: Compan
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-black text-gray-900 tracking-tight">{commonT("companies")}</h1>
-        <p className="text-gray-500 font-medium font-inter">Monitoring all companies registered on the Riviola platform.</p>
+        <p className="text-gray-500 font-medium font-inter">{t("companies.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -57,9 +58,11 @@ export function CompaniesClient({ initialCompanies }: { initialCompanies: Compan
               </div>
               <div className="flex flex-col items-end">
                 <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-widest border border-orange-100 shadow-sm">
-                  {company.country || "GLOBAL"}
+                  {company.country || t("companies.global")}
                 </span>
-                <span className="text-[9px] text-gray-300 mt-2 uppercase font-black tracking-tighter">REF: {company.id.slice(0, 8)}</span>
+                <span className="text-[9px] text-gray-300 mt-2 uppercase font-black tracking-tighter">
+                  {t("companies.ref")} {company.id.slice(0, 8)}
+                </span>
               </div>
             </div>
 
@@ -69,7 +72,7 @@ export function CompaniesClient({ initialCompanies }: { initialCompanies: Compan
             
             <div className="mt-auto pt-8 border-t border-gray-50 flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Treasury Balance</span>
+                <span className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">{t("companies.treasury")}</span>
                 <div className="flex items-baseline gap-1.5">
                    <span className="text-3xl font-black text-[#134e4a] tabular-nums">
                      {company.balance.toLocaleString(locale === 'tr' ? 'tr-TR' : 'en-US', { minimumFractionDigits: 2 })}
@@ -93,7 +96,7 @@ export function CompaniesClient({ initialCompanies }: { initialCompanies: Compan
           <div className="size-16 rounded-2xl bg-gray-100 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-colors">
             <i className="las la-plus text-3xl" />
           </div>
-          <span className="text-gray-400 font-black uppercase text-[10px] tracking-[0.2em] group-hover:text-orange-600 transition-colors">Register New Company</span>
+          <span className="text-gray-400 font-black uppercase text-[10px] tracking-[0.2em] group-hover:text-orange-600 transition-colors">{t("companies.registerNew")}</span>
         </Link>
       </div>
     </div>

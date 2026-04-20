@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "@/lib/toast";
 import { registerNewCompany } from "./actions";
@@ -14,6 +15,7 @@ interface UserProfile {
 }
 
 export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
+  const t = useTranslations("Admin");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,7 +57,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
     setLoading(true);
     
     if (!formData.name.trim() || !formData.country.trim()) {
-      toast.error("Please fill in the required company metadata");
+      toast.error(t("newCompany.toastRequired"));
       setLoading(false);
       return;
     }
@@ -68,7 +70,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
     if (res.error) {
        toast.error(res.error);
     } else {
-       toast.success("New company initialized and team assigned");
+       toast.success(t("newCompany.toastSuccess"));
        router.push("/dashboard/admin/companies");
     }
     setLoading(false);
@@ -97,9 +99,9 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
          </Link>
          <div>
             <div className="flex items-center gap-2 mb-1">
-               <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest leading-none">Venture Onboarding</span>
+               <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest leading-none">{t("newCompany.badge")}</span>
             </div>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Register New Company</h1>
+            <h1 className="text-3xl font-black text-gray-900 tracking-tight">{t("newCompany.title")}</h1>
          </div>
       </div>
 
@@ -111,30 +113,30 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                  <i className="las la-image text-4xl" />
               </div>
               <h4 className="text-lg font-black text-gray-900 mb-2 truncate max-w-full italic px-4">
-                 {formData.name || "Awaiting Agency Title..."}
+                 {formData.name || t("newCompany.awaitingTitle")}
               </h4>
               
               <div className="w-full space-y-6 pt-10 border-t border-gray-50">
                  <div className="relative group text-left">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1 pl-1">Agency Reference Name</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1 pl-1">{t("newCompany.agencyName")}</label>
                     <input 
                       required
                       type="text"
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none text-sm shadow-sm"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      placeholder="e.g. Riviola Properties UK"
+                      placeholder={t("newCompany.agencyNamePh")}
                     />
                  </div>
                  <div className="relative group text-left">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1 pl-1">Primary Jurisdiction</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1 pl-1">{t("newCompany.jurisdiction")}</label>
                     <input 
                       required
                       type="text"
                       className="w-full px-6 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none text-sm shadow-sm"
                       value={formData.country}
                       onChange={(e) => setFormData({...formData, country: e.target.value})}
-                      placeholder="e.g. United Kingdom"
+                      placeholder={t("newCompany.jurisdictionPh")}
                     />
                  </div>
               </div>
@@ -149,8 +151,8 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                        <i className="las la-user-plus text-lg" />
                     </div>
                     <div>
-                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] leading-none block">Recruit Team</span>
-                       <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-1">Convert Investors to Staff</p>
+                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] leading-none block">{t("newCompany.recruitTitle")}</span>
+                       <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-1">{t("newCompany.recruitSubtitle")}</p>
                     </div>
                  </div>
                  <div className="flex items-center gap-1.5 bg-[#134e4a] text-white px-3 py-1 rounded-full shadow-lg shadow-[#134e4a]/20">
@@ -165,7 +167,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search users..."
+                      placeholder={t("newCompany.searchUsers")}
                       className="w-full pl-10 pr-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-50 focus:border-[#134e4a]/30 focus:bg-white outline-none font-bold text-[11px] transition-all"
                     />
                     <i className="las la-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 text-lg group-focus-within:text-[#134e4a]" />
@@ -175,7 +177,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
               <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar relative z-10">
                  {filteredUsers.length === 0 ? (
                     <div className="text-center py-10 opacity-50">
-                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">No users found</p>
+                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{t("newCompany.noUsers")}</p>
                     </div>
                  ) : (
                     filteredUsers.map(user => {
@@ -203,7 +205,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                                    <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
                                       isSelected ? 'bg-white/10 text-white' : (isInvestor ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600')
                                    }`}>
-                                      {isInvestor ? "Investor" : "Staff"}
+                                      {isInvestor ? t("newCompany.investor") : t("newCompany.staff")}
                                    </span>
                                 </div>
                              </div>
@@ -230,8 +232,8 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                        <i className="las la-credit-card text-3xl" />
                     </div>
                     <div>
-                       <h3 className="text-2xl font-black text-gray-900 tracking-tight">Settlement Master Config</h3>
-                       <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Pre-Approved Fiscal Corridor Architecture</p>
+                       <h3 className="text-2xl font-black text-gray-900 tracking-tight">{t("newCompany.settlementTitle")}</h3>
+                       <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">{t("newCompany.settlementSubtitle")}</p>
                     </div>
                  </div>
                  <button 
@@ -239,7 +241,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                    disabled={loading}
                    className="px-14 py-5 rounded-[2rem] bg-[#134e4a] text-white font-black hover:bg-[#115e59] disabled:opacity-50 transition-all shadow-2xl shadow-[#134e4a]/30 active:scale-95 text-xs tracking-[0.3em] uppercase flex items-center gap-3 shrink-0"
                  >
-                   {loading ? "Initializing..." : "Commit Infrastructure"}
+                   {loading ? t("newCompany.submitLoading") : t("newCompany.submitIdle")}
                    <i className="las la-chevron-right text-lg" />
                  </button>
               </div>
@@ -247,7 +249,7 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 relative z-10">
                  {/* Currency */}
                  <div className="space-y-4">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Settlement Currency</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("newCompany.currency")}</label>
                     <select 
                       required
                       className="w-full px-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 appearance-none focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none text-sm shadow-sm"
@@ -262,40 +264,40 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
 
                  {/* Account Holder */}
                  <div className="space-y-4">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Account Title</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("newCompany.accountTitle")}</label>
                     <input 
                       required
                       type="text"
                       className="w-full px-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none text-sm shadow-sm"
                       value={formData.bankAccountHolder}
                       onChange={(e) => setFormData({...formData, bankAccountHolder: e.target.value})}
-                      placeholder="Legal Entity Name"
+                      placeholder={t("newCompany.accountTitlePh")}
                     />
                  </div>
 
                  {/* IBAN */}
                  <div className="space-y-4 md:col-span-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Master IBAN</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("newCompany.iban")}</label>
                     <input 
                       required
                       type="text"
                       className="w-full px-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-mono font-black text-gray-900 outline-none text-sm shadow-sm"
                       value={formData.iban}
                       onChange={(e) => setFormData({...formData, iban: e.target.value.toUpperCase()})}
-                      placeholder="e.g. TR00..."
+                      placeholder={t("newCompany.ibanPh")}
                     />
                  </div>
 
                  {/* Bank Name */}
                  <div className="space-y-4 md:col-span-2">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Financial Institution</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("newCompany.bank")}</label>
                     <input 
                       required
                       type="text"
                       className="w-full px-6 py-4 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none text-sm shadow-sm"
                       value={formData.bankName}
                       onChange={(e) => setFormData({...formData, bankName: e.target.value})}
-                      placeholder="e.g. Deutsche Bank"
+                      placeholder={t("newCompany.bankPh")}
                     />
                  </div>
               </div>
@@ -307,10 +309,8 @@ export function NewCompanyClient({ allUsers }: { allUsers: UserProfile[] }) {
                     <i className="las la-info-circle text-3xl" />
                  </div>
                  <div className="flex-1">
-                    <h6 className="text-[10px] font-black uppercase tracking-[0.2em] mb-1">Administrative Alert</h6>
-                    <p className="text-white/80 text-[11px] font-inter font-medium leading-relaxed">
-                       Assigning an 'Investor' using the Recruitment panel will automatically upgrade their role to 'Staff' upon entity registration.
-                    </p>
+                    <h6 className="text-[10px] font-black uppercase tracking-[0.2em] mb-1">{t("newCompany.alertTitle")}</h6>
+                    <p className="text-white/80 text-[11px] font-inter font-medium leading-relaxed">{t("newCompany.alertBody")}</p>
                  </div>
               </div>
            </div>

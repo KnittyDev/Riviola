@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "@/lib/toast";
 import { updateCompanyFinancials } from "./actions";
@@ -36,6 +37,7 @@ export function CompanyDetailClient({
   allUsers: UserProfile[];
   locale: string;
 }) {
+  const t = useTranslations("Admin");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,7 +87,7 @@ export function CompanyDetailClient({
     if (res.error) {
        toast.error(res.error);
     } else {
-       toast.success("Profile, roles, and personnel updated successfully");
+       toast.success(t("companyDetail.toastSuccess"));
        router.refresh();
     }
     setLoading(false);
@@ -115,7 +117,7 @@ export function CompanyDetailClient({
            </Link>
            <div>
               <div className="flex items-center gap-2 mb-1">
-                 <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest leading-none">Administrative Panel</span>
+                 <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest leading-none">{t("companyDetail.badge")}</span>
               </div>
               <h1 className="text-3xl font-black text-gray-900 tracking-tight">{company.name}</h1>
            </div>
@@ -123,7 +125,7 @@ export function CompanyDetailClient({
         
         <div className="bg-white px-8 py-4 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-8">
            <div className="flex flex-col">
-              <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Treasury Balance</span>
+              <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{t("companyDetail.treasury")}</span>
               <div className="flex items-baseline gap-2">
                  <span className="text-2xl font-black text-[#134e4a] tabular-nums">
                    {company.balance.toLocaleString(locale === "tr" ? "tr-TR" : "en-US", { minimumFractionDigits: 2 })}
@@ -147,8 +149,8 @@ export function CompanyDetailClient({
                        <i className="las la-user-shield text-lg" />
                     </div>
                     <div>
-                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] leading-none block">System Personnel</span>
-                       <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-1">Convert Investors to Staff</p>
+                       <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] leading-none block">{t("companyDetail.personnelTitle")}</span>
+                       <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-1">{t("companyDetail.personnelSubtitle")}</p>
                     </div>
                  </div>
                  <div className="flex items-baseline gap-1 bg-[#134e4a] text-white px-3 py-1 rounded-full">
@@ -163,7 +165,7 @@ export function CompanyDetailClient({
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search users..."
+                      placeholder={t("companyDetail.searchUsers")}
                       className="w-full pl-10 pr-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-50 focus:border-[#134e4a]/30 focus:bg-white outline-none font-bold text-[11px] transition-all"
                     />
                     <i className="las la-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300 text-lg group-focus-within:text-[#134e4a]" />
@@ -173,7 +175,7 @@ export function CompanyDetailClient({
               <div className="space-y-3 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar relative z-10">
                  {filteredUsers.length === 0 ? (
                     <div className="text-center py-10 opacity-50">
-                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">No users found</p>
+                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{t("companyDetail.noUsers")}</p>
                     </div>
                  ) : (
                     filteredUsers.map(user => {
@@ -202,13 +204,13 @@ export function CompanyDetailClient({
                                    <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
                                       isSelected ? 'bg-white/10 text-white' : 'bg-gray-200/50 text-gray-400'
                                    }`}>
-                                      {isInvestor ? "Investor" : "Staff"}
+                                      {isInvestor ? t("companyDetail.investor") : t("companyDetail.staff")}
                                    </span>
                                    {isStaffInOtherCompany && !isSelected && (
-                                      <span className="text-[8px] font-black uppercase text-orange-400 tracking-tighter">Active @ Other</span>
+                                      <span className="text-[8px] font-black uppercase text-orange-400 tracking-tighter">{t("companyDetail.staffOtherCompany")}</span>
                                    )}
                                    {currentStaff && !isSelected && (
-                                      <span className="text-[8px] font-black uppercase text-teal-500 tracking-tighter">Assigned Here</span>
+                                      <span className="text-[8px] font-black uppercase text-teal-500 tracking-tighter">{t("companyDetail.assignedHere")}</span>
                                    )}
                                 </div>
                              </div>
@@ -235,8 +237,8 @@ export function CompanyDetailClient({
                        <i className="las la-cog text-2xl" />
                     </div>
                     <div>
-                       <h3 className="text-xl font-black text-gray-900 tracking-tight">Settlement Infrastructure</h3>
-                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Global Transaction Parameters</p>
+                       <h3 className="text-xl font-black text-gray-900 tracking-tight">{t("companyDetail.formTitle")}</h3>
+                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">{t("companyDetail.formSubtitle")}</p>
                     </div>
                  </div>
                  <button 
@@ -244,14 +246,14 @@ export function CompanyDetailClient({
                    disabled={loading}
                    className="px-12 py-5 rounded-[2rem] bg-[#134e4a] text-white font-black hover:bg-[#115e59] disabled:opacity-50 transition-all shadow-xl shadow-[#134e4a]/40 active:scale-95 text-xs tracking-[0.2em] uppercase"
                  >
-                   {loading ? "Persisting Architecture..." : "Sync Company Ecosystem"}
+                   {loading ? t("companyDetail.saveLoading") : t("companyDetail.saveIdle")}
                  </button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 relative z-10">
                  {/* Currency Selection */}
                  <div className="space-y-4">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">System Currency</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("companyDetail.systemCurrency")}</label>
                     <div className="relative group">
                        <select 
                          required
@@ -271,7 +273,7 @@ export function CompanyDetailClient({
 
                  {/* Bank Account Holder */}
                  <div className="space-y-4">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Official Account Title</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("companyDetail.officialAccountTitle")}</label>
                     <div className="relative group">
                        <input 
                          required
@@ -279,7 +281,7 @@ export function CompanyDetailClient({
                          value={formData.bankAccountHolder}
                          onChange={(e) => setFormData({...formData, bankAccountHolder: e.target.value})}
                          className="w-full pl-14 pr-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none group-hover:bg-gray-50"
-                         placeholder="Legal Corporate Person Name"
+                         placeholder={t("companyDetail.officialAccountPh")}
                        />
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
                           <i className="las la-user-tag text-2xl opacity-60" />
@@ -289,7 +291,7 @@ export function CompanyDetailClient({
 
                  {/* IBAN */}
                  <div className="space-y-4 sm:col-span-1">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Settlement Master IBAN</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("companyDetail.settlementIban")}</label>
                     <div className="relative group">
                        <input 
                          required
@@ -297,7 +299,7 @@ export function CompanyDetailClient({
                          value={formData.iban}
                          onChange={(e) => setFormData({...formData, iban: e.target.value.toUpperCase()})}
                          className="w-full pl-14 pr-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-mono font-black text-gray-900 outline-none group-hover:bg-gray-50"
-                         placeholder="TR00 0000 0000..."
+                         placeholder={t("companyDetail.ibanPh")}
                        />
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
                           <i className="las la-id-card-alt text-2xl opacity-60" />
@@ -307,7 +309,7 @@ export function CompanyDetailClient({
 
                  {/* Bank Name */}
                  <div className="space-y-4 sm:col-span-1">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">Governing Financial Institution</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block pl-2">{t("companyDetail.governingBank")}</label>
                     <div className="relative group">
                        <input 
                          required
@@ -315,7 +317,7 @@ export function CompanyDetailClient({
                          value={formData.bankName}
                          onChange={(e) => setFormData({...formData, bankName: e.target.value})}
                          className="w-full pl-14 pr-6 py-5 rounded-3xl border-2 border-gray-50 bg-gray-50/50 focus:border-[#134e4a] focus:bg-white transition-all font-black text-gray-900 outline-none group-hover:bg-gray-50"
-                         placeholder="Bank Name"
+                         placeholder={t("companyDetail.bankNamePh")}
                        />
                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#134e4a] pointer-events-none">
                           <i className="las la-building text-2xl opacity-60" />
@@ -332,10 +334,8 @@ export function CompanyDetailClient({
                     <i className="las la-info-circle text-4xl" />
                  </div>
                  <div className="flex-1 text-center sm:text-left">
-                    <h6 className="text-[11px] font-black uppercase tracking-[0.3em] mb-2">Automated Transition Logic</h6>
-                    <p className="text-white/80 text-xs font-inter font-medium leading-relaxed pr-8">
-                       Selecting an Investor in the Roster above will automatically 'graduate' them to a Staff role upon saving. Deselecting an existing Staff member will revert them to Investor status and clear their organizational access.
-                    </p>
+                    <h6 className="text-[11px] font-black uppercase tracking-[0.3em] mb-2">{t("companyDetail.infoTitle")}</h6>
+                    <p className="text-white/80 text-xs font-inter font-medium leading-relaxed pr-8">{t("companyDetail.infoBody")}</p>
                  </div>
               </div>
               <div className="absolute -bottom-10 -right-10 size-48 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
