@@ -175,7 +175,7 @@ export function LocaleSwitcher({ isMobile = false }: { isMobile?: boolean }) {
         </div>
       )}
 
-      {/* Mobile Modal (via Portal) */}
+      {/* Mobile Modal (via Portal for mobile ios/android/huawei) */}
       {mobileModal}
     </div>
   );
