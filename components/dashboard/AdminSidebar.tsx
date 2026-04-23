@@ -49,13 +49,14 @@ export function AdminSidebar({ fullName = "Admin", open = false, onClose }: Admi
       >
         <div className="flex items-center justify-between p-4 lg:p-6">
           <Link href="/dashboard/admin" className="flex items-center gap-3" onClick={onClose}>
-            <div className="shrink-0 w-10 h-10 rounded-lg bg-orange-600 flex items-center justify-center overflow-hidden">
+            <div className="relative group shrink-0">
+              <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-[#134e4a] to-[#2dd4bf] opacity-25 blur transition duration-1000 group-hover:opacity-40 group-hover:duration-200" />
               <Image
                 src="/mainlogo.png"
-                alt="Riviola Admin"
+                alt="Riviola"
                 width={LOGO_SIZE}
                 height={LOGO_SIZE}
-                className="w-full h-full object-contain p-1.5 grayscale invert brightness-0"
+                className="relative size-10 rounded-xl object-contain shrink-0"
                 priority
               />
             </div>
@@ -63,7 +64,7 @@ export function AdminSidebar({ fullName = "Admin", open = false, onClose }: Admi
               <h1 className="text-gray-900 text-base font-bold leading-tight">
                 Riviola HQ
               </h1>
-              <p className="text-orange-600 text-[10px] font-black uppercase tracking-widest">
+              <p className="text-[#134e4a] text-[10px] font-black uppercase tracking-widest">
                 {t("adminPanel")}
               </p>
             </div>
